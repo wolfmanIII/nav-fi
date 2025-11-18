@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Captain Log - Ship{% endblock %}
+
+{% block pageContent %}
+
+    {{ form_start(form) }}
+    {{ form_widget(form._token) }}
+
+    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xl border p-4">
+        <legend class="fieldset-legend">Ship</legend>
+
+        <label class="label">Name</label>
+        {{ form_widget(form.name) }}
+        {{ form_errors(form.name) }}
+
+        {% if ship.id %}
+            <label class="label">Code</label>
+            {{ form_widget(form.code) }}
+            {{ form_errors(form.code) }}
+        {% endif %}
+
+        <label class="label">Type</label>
+        {{ form_widget(form.type) }}
+        {{ form_errors(form.type) }}
+
+        <label class="label">Class</label>
+        {{ form_widget(form.class) }}
+        {{ form_errors(form.class) }}
+
+        <label class="label">Price</label>
+        {{ form_widget(form.price) }}
+        {{ form_errors(form.price) }}
+
+    </fieldset>
+
+    <button type="submit" class="btn btn-primary mt-5 mb-5">Save</button>
+
+    {{ form_end(form, { render_rest: false }) }}
+
+{% endblock %}
+

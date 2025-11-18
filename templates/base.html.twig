@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html data-theme="abyss" lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{% block title %}Captain Log{% endblock %}</title>
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    {% block stylesheets %}
+    {% endblock %}
+
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    {% endblock %}
+</head>
+<body>
+
+    <div class="drawer lg:drawer-open">
+        <input id="my-drawer-4" type="checkbox" class="drawer-toggle"/>
+
+        <!-- CONTENUTO PAGINA -->
+        <div class="drawer-content flex flex-col">
+            <nav class="navbar w-full bg-base-300">
+                <!-- Bottone: visibile solo su schermi piccoli -->
+                <div class="flex-none lg:hidden">
+                    <label for="my-drawer-4"
+                           aria-label="open sidebar"
+                           class="btn btn-square btn-ghost drawer-button">
+                        <!-- icona -->
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                             stroke-linejoin="round" stroke-linecap="round"
+                             stroke-width="2" fill="none" stroke="currentColor"
+                             class="my-1.5 inline-block size-4">
+                            <path d="M4 6h16"></path>
+                            <path d="M4 12h16"></path>
+                            <path d="M4 18h16"></path>
+                        </svg>
+                    </label>
+                </div>
+
+                <div class="flex-1 px-4">
+                    Captain Log
+                </div>
+            </nav>
+
+            <div class="p-4">
+                {% block pageContent %}{% endblock %}
+            </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="drawer-side">
+            <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
+
+            <div class="min-h-full w-64 bg-base-200 flex flex-col items-start">
+                <ul class="menu w-full grow">
+                    <li>
+                        <a href="{{ path('app_home') }}">
+                            <!-- icona home -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                 stroke-linejoin="round" stroke-linecap="round"
+                                 stroke-width="2" fill="none" stroke="currentColor"
+                                 class="my-1.5 inline-block size-4">
+                                <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
+                                <path
+                                    d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            </svg>
+                            <span>Homepage</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ path('app_ship_index') }}">
+                            <!-- icona settings -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                 stroke-linejoin="round" stroke-linecap="round"
+                                 stroke-width="2" fill="none" stroke="currentColor"
+                                 class="my-1.5 inline-block size-4">
+                                <path d="M20 7h-9"></path>
+                                <path d="M14 17H5"></path>
+                                <circle cx="17" cy="17" r="3"></circle>
+                                <circle cx="7" cy="7" r="3"></circle>
+                            </svg>
+                            <span>Ships</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
