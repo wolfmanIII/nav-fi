@@ -23,19 +23,20 @@ class CrewType extends AbstractType
             ->add('birthYear', NumberType::class, ['attr' => ['class' => 'input m-1 w-full'], 'required' => false])
             ->add('birthDay', NumberType::class, ['attr' => ['class' => 'input m-1 w-full'], 'required' => false])
             ->add('birthWorld', TextType::class, ['attr' => ['class' => 'input m-1 w-full'], 'required' => false])
-            ->add('code', TextType::class, ['attr' => ['class' => 'input m-1 w-full', 'readonly' => true], 'required' => false])
             ->add('ship', EntityType::class, [
                 'class' => Ship::class,
                 'choice_label' => 'name',
                 'required' => false,
-                'attr' => ['class' => 'input m-1 w-full'],
+                'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('shipRoles', EntityType::class, [
                 'class' => ShipRole::class,
-                'choice_label' => 'name',
+                'choice_label' => function (ShipRole $role) {
+                    return $role->getCode() . ' - ' . $role->getName();
+                },
                 'multiple' => true,
                 'required' => false,
-                'attr' => ['class' => 'input m-1 h-40 w-full'],
+                'attr' => ['class' => 'select m-1 h-72 w-full'],
             ])
         ;
     }

@@ -14,8 +14,7 @@
         {% if crew.id %}
             <div>
                 <label class="label">Code</label>
-                {{ form_widget(form.code) }}
-                {{ form_errors(form.code) }}
+                <div><b>{{ crew.code }}</b></div>
             </div>
             <div></div>
         {% endif %}
