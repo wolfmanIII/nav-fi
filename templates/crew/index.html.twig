@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Captain Log - Ships{% endblock %}
+
+{% block pageContent %}
+
+    <div class="p-10">
+
+        <header class="prose">
+            <h1>Crew</h1>
+        </header>
+
+        <div class="flow-root">
+            <a href="{{ path('app_crew_new') }}" role="button" class="btn btn-outline btn-primary btn-xs mt-5 mb-5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </a>
+        </div>
+
+        <div class="flow-root">
+
+            <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+                <table class="table">
+                    <!-- head -->
+                    <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Surname</th>
+                        <th>Nickname</th>
+                        <th>Birth Date</th>
+                        <th>Birth World</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if crew|length > 0 %}
+                        {% for member in crew %}
+                            <tr>
+                                <td>{{ member.code }}</td>
+                                <td>{{ member.name }}</td>
+                                <td>{{ member.surname }}</td>
+                                <td>{{ member.nickname }}</td>
+                                <td>{{ member.birthDay }} - {{ member.birthYear }}</td>
+                                <td>{{ member.birthWorld }}</td>
+                                <td>
+                                    <a href="{{ path('app_crew_edit', {id: member.id}) }}" role="button" class="btn btn-outline btn-primary btn-xs">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></svg>
+                                    </a>
+                                    <a href="{{ path('app_crew_delete', {id: member.id}) }}" role="button" class="btn btn-outline btn-error btn-xs">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5">Insert a new Crew Member</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}
