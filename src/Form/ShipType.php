@@ -15,11 +15,13 @@ class ShipType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('code', TextType::class, ['attr' => ['class' => 'input m-1', 'readonly' => true], 'required' => false])
-            ->add('name', TextType::class, ['attr' => ['class' => 'input m-1']])
-            ->add('type', TextType::class, ['attr' => ['class' => 'input m-1']])
-            ->add('class', TextType::class, ['attr' => ['class' => 'input m-1']])
-            ->add('price', NumberType::class, ['attr' => ['class' => 'input m-1']])
+            ->add('code', TextType::class, ['attr' => ['class' => 'input m-1 w-full', 'readonly' => true], 'required' => false])
+            ->add('name', TextType::class, ['attr' => ['class' => 'input m-1 w-full']])
+            ->add('type', TextType::class, ['attr' => ['class' => 'input m-1 w-full']])
+            ->add('class', TextType::class, ['attr' => ['class' => 'input m-1 w-full']])
+            ->add('price', NumberType::class, [
+                'attr' => ['class' => 'input m-1 w-full'],
+            ])
         ;
     }
 
