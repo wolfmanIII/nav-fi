@@ -37,9 +37,16 @@ class Ship
     #[ORM\OneToMany(targetEntity: Mortgage::class, mappedBy: 'ship', orphanRemoval: true)]
     private Collection $mortgages;
 
+    /**
+     * @var Collection<int, Crew>
+     */
+    #[ORM\OneToMany(targetEntity: Crew::class, mappedBy: 'ship')]
+    private Collection $crews;
+
     public function __construct()
     {
         $this->mortgages = new ArrayCollection();
+        $this->crews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -131,6 +138,36 @@ class Ship
             // set the owning side to null (unless already changed)
             if ($mortgage->getShip() === $this) {
                 $mortgage->setShip(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Crew>
+     */
+    public function getCrews(): Collection
+    {
+        return $this->crews;
+    }
+
+    public function addCrew(Crew $crew): static
+    {
+        if (!$this->crews->contains($crew)) {
+            $this->crews->add($crew);
+            $crew->setShip($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCrew(Crew $crew): static
+    {
+        if ($this->crews->removeElement($crew)) {
+            // set the owning side to null (unless already changed)
+            if ($crew->getShip() === $this) {
+                $crew->setShip(null);
             }
         }
 

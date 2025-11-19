@@ -19,7 +19,7 @@
         <input id="my-drawer-4" type="checkbox" class="drawer-toggle"/>
 
         <!-- CONTENUTO PAGINA -->
-        <div class="drawer-content flex flex-col">
+        <div class="drawer-content flex flex-col min-h-screen">
             <nav class="navbar w-full bg-base-300">
                 <!-- Bottone: visibile solo su schermi piccoli -->
                 <div class="flex-none lg:hidden">
@@ -47,7 +47,7 @@
                 {% block pageContent %}{% endblock %}
             </div>
 
-            <footer class="footer sm:footer-horizontal footer-center bg-base-300 text-base-content p-4 sticky top-[100vh]">
+            <footer class="footer sm:footer-horizontal footer-center bg-neutral text-base-content p-4 sticky top-[100vh]">
                 <aside>
                     <p>Space Wolf</p>
                 </aside>

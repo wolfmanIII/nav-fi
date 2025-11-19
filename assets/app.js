@@ -1,5 +1,5 @@
 import './stimulus_bootstrap.js';
-import { Turbo } from "@hotwired/turbo";
+//import { Turbo } from "@hotwired/turbo";
 /*
  * Welcome to your app's main JavaScript file!
  *
@@ -8,6 +8,6 @@ import { Turbo } from "@hotwired/turbo";
  */
 import './styles/app.css';
 
-Turbo.session.drive = false;
+//Turbo.session.drive = false;
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
