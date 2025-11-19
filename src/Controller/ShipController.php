@@ -14,7 +14,7 @@ use Symfony\Component\Uid\Uuid;
 final class ShipController extends AbstractController
 {
     const CONTROLLER_NAME = "ShipController";
-    #[Route('/ship/index', name: 'app_ship_index')]
+    #[Route('/ship/index', name: 'app_ship_index', methods: ['GET'])]
     public function index(EntityManagerInterface $em): Response
     {
         $ships = $em->getRepository(Ship::class)->findAll();
@@ -24,7 +24,7 @@ final class ShipController extends AbstractController
         ]);
     }
 
-    #[Route('/ship/new', name: 'app_ship_new')]
+    #[Route('/ship/new', name: 'app_ship_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $ship = new Ship();

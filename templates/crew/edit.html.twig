@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Captain Log - Crew{% endblock %}
+
+{% block pageContent %}
+
+    {{ form_start(form) }}
+    {{ form_widget(form._token) }}
+
+    <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-250">
+        <legend class="fieldset-legend">Ship</legend>
+
+
+        {% if crew.id %}
+            <div>
+                <label class="label">Code</label>
+                {{ form_widget(form.code) }}
+                {{ form_errors(form.code) }}
+            </div>
+            <div></div>
+        {% endif %}
+
+        <div>
+            <label class="label">Name</label>
+            {{ form_widget(form.name) }}
+            {{ form_errors(form.name) }}
+        </div>
+
+        <div>
+            <label class="label">Surname</label>
+            {{ form_widget(form.surname) }}
+            {{ form_errors(form.surname) }}
+        </div>
+
+        <div>
+            <label class="label">Nickname</label>
+            {{ form_widget(form.nickname) }}
+            {{ form_errors(form.nickname) }}
+        </div>
+
+        <div>
+            <label class="label">Birth Day</label>
+            {{ form_widget(form.birthDay) }}
+            {{ form_errors(form.birthDay) }}
+        </div>
+
+        <div>
+            <label class="label">Birth Year</label>
+            {{ form_widget(form.birthYear) }}
+            {{ form_errors(form.birthYear) }}
+        </div>
+
+        <div>
+            <label class="label">Ship</label>
+            {{ form_widget(form.ship) }}
+            {{ form_errors(form.ship) }}
+        </div>
+
+        <div class="row-span-3">
+            <label class="label">Ship Roles</label>
+            {{ form_widget(form.shipRoles) }}
+            {{ form_errors(form.shipRoles) }}
+        </div>
+
+    </fieldset>
+
+    <button type="submit" class="btn btn-outline btn-primary mt-4 mb-4 mr-4">Save</button>
+    <a href="{{ path('app_crew_index') }}" role="button" class="btn btn-outline btn-default mt-4 mb-4 mr-4">Cancel</a>
+
+    {{ form_end(form, { render_rest: false }) }}
+
+{% endblock %}
+
