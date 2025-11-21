@@ -1,0 +1,144 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Captain Log - Ship Crew{% endblock %}
+
+{% block pageContent %}
+
+    <div class="p-10">
+
+        <header class="prose">
+            <h1>Ship</h1>
+        </header>
+
+        <div class="card w-96 bg-base-100 card-lg shadow-sm">
+            <div class="card-body">
+                <h2 class="card-title">{{ ship.name }}</h2>
+                <p>
+                    <b>{{ ship.code }}</b><br>
+                    <b>{{ ship.type }} - {{ ship.class }}</b><br>
+                </p>
+            </div>
+        </div>
+
+        <header class="prose">
+            <h2>Crew Members</h2>
+        </header>
+
+        <button class="btn btn-outline btn-primary btn-xs mt-5 mb-5" onclick="m_crew_select.showModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+
+        <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100" data-controller="crew-select">
+            <table class="table">
+                <!-- head -->
+                <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Nickname</th>
+                    <th>Surname</th>
+                    <th>Roles</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for member in ship.crews %}
+                    <tr>
+                        <td>{{ member.code }}</td>
+                        <td>{{ member.name }}</td>
+                        <td>"{{ member.nickname }}"</td>
+                        <td>{{ member.surname }}</td>
+                        <td>
+                            {% for role in member.shipRoles %}
+                                {{ role.name }}
+                                {% if loop.index != loop.last %}
+                                    -
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <a href="{{ path('app_ship_crew_remove', {id: member.id}) }}" role="button" class="btn btn-outline btn-error btn-xs">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <dialog id="m_crew_select" class="modal">
+            <div class="modal-box w-full max-w-5xl">
+                <h3 class="text-lg font-bold mb-4">Select Crew Members</h3>
+
+                {{ form_start(form) }}
+                <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100" {{ stimulus_controller('crew_select') }}>
+                    <table class="table">
+                        <!-- head -->
+                        <thead>
+                        <tr>
+                            <th>
+                                <input
+                                    type="checkbox"
+                                    class="checkbox"
+                                    data-crew-select-target="selectAll"
+                                    data-action="change->crew-select#toggleAll"
+                                >
+                            </th>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Nickname</th>
+                            <th>Surname</th>
+                            <th>Roles</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if form.crewIds|length > 0 %}
+                            {% for id in form.crewIds %}
+                                {% set member = crewToSelect[loop.index0] %}
+                                <tr>
+                                    <td>
+                                        {{ form_widget(id, { attr: {
+                                            class: 'checkbox crew-checkbox',
+                                            'data-crew-select-target': 'item'
+                                        } }) }}
+                                    </td>
+                                    <td>{{ member.code }}</td>
+                                    <td>{{ member.name }}</td>
+                                    <td>"{{ member.nickname }}"</td>
+                                    <td>{{ member.surname }}</td>
+                                    <td>
+                                        {% for role in member.shipRoles %}
+                                            {{ role.name }}
+                                            {% if loop.index != loop.last %}
+                                                -
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5">No more crew members to add</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="modal-action">
+                    <button type="submit" class="btn btn-outline btn-primary mt-4 mb-4 mr-4">Save</button>
+                    <button type="button" class="btn btn-outline btn-default mt-4 mb-4 mr-4" onclick="m_crew_select.close()">Close</button>
+                </div>
+                {{ form_end(form) }}
+
+            </div>
+            <form method="dialog" class="modal-backdrop">
+                <button>close</button>
+            </form>
+        </dialog>
+
+    </div>
+
+{% endblock %}
+

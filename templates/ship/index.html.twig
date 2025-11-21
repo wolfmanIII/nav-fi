@@ -7,7 +7,7 @@
     <div class="p-10">
 
         <header class="prose">
-            <h2>Ships</h2>
+            <h1>Ships</h1>
         </header>
 
         <div class="flow-root">
@@ -42,7 +42,7 @@
                                 <td>{{ ship.class }}</td>
                                 <td>{{ ship.price|number_format(2, ',', '.') }}</td>
                                 <td>
-                                    <a href="{{ path('app_ship_index', {id: ship.id}) }}" role="button" class="btn btn-outline btn-primary btn-xs">
+                                    <a href="{{ path('app_ship_crew_select', {id: ship.id}) }}" role="button" class="btn btn-outline btn-primary btn-xs">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                                     </a>
                                 </td>

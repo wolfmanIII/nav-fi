@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Crew;
 use App\Entity\Ship;
+use App\Form\CrewSelectType;
 use App\Form\ShipType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -74,4 +76,45 @@ final class ShipController extends AbstractController
 
         return $this->redirectToRoute('app_ship_index');
     }
+
+    #[Route('/ship/crew/select/{id}', name: 'app_ship_crew_select', methods: ['GET', 'POST'])]
+    public function crewSelect(Ship $ship, Request $request, EntityManagerInterface $em): Response
+    {
+
+        $crewToSelect = $em->getRepository(Crew::class)->findBy(['ship' => null]);
+        $form = $this->createForm(CrewSelectType::class, null, [
+            'crewToSelect' => $crewToSelect,
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $selectedIds = $form->get('crewIds')->getData();
+            foreach ($selectedIds as $selectedId) {
+                $crewMember = $em->getRepository(Crew::class)->find($selectedId);
+                $crewMember->setShip($ship);
+                $em->persist($crewMember);
+                $em->flush();
+            }
+
+            return $this->redirectToRoute('app_ship_crew_select', ['id' => $ship->getId()]);
+        }
+
+        return $this->render('ship/crew_select.html.twig', [
+            'controller_name' => self::CONTROLLER_NAME,
+            'form' => $form->createView(),
+            'ship' => $ship,
+            'crewToSelect' => $crewToSelect,
+        ]);
+    }
+
+    #[Route('/ship/crew/remove/{id}', name: 'app_ship_crew_remove', methods: ['GET', 'POST'])]
+    public function removeCrew(Crew $crew, Request $request, EntityManagerInterface $em): Response
+    {
+        $ship = $crew->getShip();
+        $crew->setShip(null);
+        $em->persist($ship);
+        $em->flush();
+        return $this->redirectToRoute('app_ship_crew_select', ['id' => $ship->getId()]);
+    }
+
 }
