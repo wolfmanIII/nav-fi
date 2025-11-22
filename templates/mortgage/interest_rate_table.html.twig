@@ -16,7 +16,7 @@
                     <th>Duration (years)</th>
                     <th>Price Multiplier</th>
                     <th>Price Divider</th>
-                    <th>Annual Interest Rate (%)</th>
+                    <th>Interest Rate (%)</th>
                 </tr>
             </thead>
             <tbody>
@@ -54,4 +54,5 @@
     >
 
     {{ form_errors(form.interestRate) }}
+    {% do form.interestRate.setRendered %}
 </div>

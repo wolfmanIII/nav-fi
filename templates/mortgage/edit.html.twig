@@ -6,19 +6,15 @@
 
     {{ form_start(form) }}
 
-    <fieldset class="fieldset bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-        <legend class="fieldset-legend">Ship</legend>
+    <fieldset class="fieldset bg-base-200 border-base-300 gap-4 p-4 border rounded w-350">
+        <legend class="fieldset-legend">Mortgage</legend>
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-3 gap-4">
             <div>
                 <label class="label">Name</label>
                 {{ form_widget(form.name) }}
                 {{ form_errors(form.name) }}
             </div>
-            <div></div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
             <div>
                 <label class="label">Start Day</label>
                 {{ form_widget(form.startDay) }}
@@ -28,6 +24,24 @@
                 <label class="label">Start Year</label>
                 {{ form_widget(form.startYear) }}
                 {{ form_errors(form.startYear) }}
+            </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4">
+            <div>
+                <label class="label">Discount(%)</label>
+                {{ form_widget(form.discount) }}
+                {{ form_errors(form.discount) }}
+            </div>
+            <div>
+                <label class="label">Ship Shares</label>
+                {{ form_widget(form.shipShares) }}
+                {{ form_errors(form.shipShares) }}
+            </div>
+            <div>
+                <label class="label">Advance Payment(Cr)</label>
+                {{ form_widget(form.advancePayment) }}
+                {{ form_errors(form.advancePayment) }}
             </div>
         </div>
 

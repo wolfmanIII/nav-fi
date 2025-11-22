@@ -14,8 +14,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-use function Symfony\Component\String\s;
-
 class MortgageType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -42,7 +40,7 @@ class MortgageType extends AbstractType
             ->add('interestRate', EntityType::class, [
                 'class' => InterestRate::class,
                 'choice_label' => fn (InterestRate $rate) =>
-                    sprintf('%d anni – x%s / %s – %s%%',
+                    sprintf('%d years – x%s / %s – %s%%',
                         $rate->getDuration(),
                         $rate->getPriceMultiplier(),
                         $rate->getPriceDivider(),
