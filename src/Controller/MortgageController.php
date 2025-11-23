@@ -60,7 +60,30 @@ final class MortgageController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($mortgage);
             $em->flush();
-            return $this->redirectToRoute('app_mortgage_index');
+            return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
+        }
+
+        $summary = $mortgage->calculate();
+
+        return $this->render('mortgage/edit.html.twig', [
+            'controller_name' => self::CONTROLLER_NAME,
+            'mortgage' => $mortgage,
+            'summary' => $summary,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/mortgage/sign/{id}', name: 'app_mortgage_sign', methods: ['GET', 'POST'])]
+    public function sign(Mortgage $mortgage, Request $request, EntityManagerInterface $em): Response
+    {
+        $form = $this->createForm(MortgageType::class, $mortgage);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $mortgage->setSigned(true);
+            $em->persist($mortgage);
+            $em->flush();
+            return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
         }
 
         $summary = $mortgage->calculate();

@@ -49,6 +49,9 @@ class Mortgage
     #[ORM\JoinColumn(nullable: true)]
     private ?Insurance $insurance = null;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private ?bool $signed = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -232,5 +235,17 @@ class Mortgage
             * $this->getInsurance()->getAnnualCost()
             / 12
         ;
+    }
+
+    public function isSigned(): ?bool
+    {
+        return $this->signed;
+    }
+
+    public function setSigned(bool $signed): static
+    {
+        $this->signed = $signed;
+
+        return $this;
     }
 }
