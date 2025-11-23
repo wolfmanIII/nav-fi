@@ -11,9 +11,9 @@
 
         <div class="grid grid-cols-3 gap-4">
             <div>
-                <label class="label">Name</label>
-                {{ form_widget(form.name) }}
-                {{ form_errors(form.name) }}
+                <label class="label">Ship</label>
+                {{ form_widget(form.ship) }}
+                {{ form_errors(form.ship) }}
             </div>
             <div>
                 <label class="label">Start Day</label>
@@ -47,6 +47,7 @@
 
         <div class="grid grid-cols-2 gap-4">
             {{ include('mortgage/interest_rate_table.html.twig') }}
+            {{ include('mortgage/insurance_table.html.twig') }}
         </div>
 
 

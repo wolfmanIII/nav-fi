@@ -1,0 +1,54 @@
+<div
+    data-controller="insurance-table"
+    class="w-full"
+>
+    <label class="label m-1">
+        <span class="label-text">
+            {{ form.insurance.vars.label ?? 'Insurance' }}
+        </span>
+    </label>
+
+    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+        <table class="table w-full">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Annual Cost(%)</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for choice in form.insurance.vars.choices %}
+                {% set insurance = choice.data %}
+                {% set isSelected = (form.insurance.vars.value == choice.value) %}
+                <tr>
+                    <td>
+                        <input
+                            type="radio"
+                            class="radio radio-sm"
+                            name="insurance_radio"  {# nome “finto”, solo per il gruppo #}
+                            data-insurance-table-target="radio"
+                            data-action="change->insurance-table#select"
+                            data-value="{{ choice.value }}"
+                            {% if isSelected %}checked{% endif %}
+                        >
+                    </td>
+                    <td>{{ insurance.name }}</td>
+                    <td class="text-right">{{ insurance.annualCost }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {# Hidden effettivamente legato al campo Symfony #}
+    <input
+        type="hidden"
+        name="{{ form.insurance.vars.full_name }}"
+        value="{{ form.insurance.vars.value }}"
+        data-insurance-table-target="hidden"
+    >
+
+    {{ form_errors(form.insurance) }}
+    {% do form.insurance.setRendered %}
+</div>

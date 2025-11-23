@@ -19,7 +19,7 @@ class MortgageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, ['attr' => ['class' => 'input m-1 w-full'],])
+            //->add('name', TextType::class, ['attr' => ['class' => 'input m-1 w-full'],])
             ->add('startDay', NumberType::class, ['attr' => ['class' => 'input m-1 w-full'],])
             ->add('startYear', NumberType::class, ['attr' => ['class' => 'input m-1 w-full'],])
             ->add('shipShares', NumberType::class, ['attr' => ['class' => 'input m-1 w-full'], 'required' => false])
@@ -32,10 +32,15 @@ class MortgageType extends AbstractType
                 'attr' => ['class' => 'input m-1 w-full'], 'required' => false
             ])
             ->add('ship', EntityType::class, [
+                'placeholder' => '-- Select a Ship --',
                 'class' => Ship::class,
-                'choice_label' => function (Ship $ship) {
-                    return $ship->getName() . " - " . $ship->getType();
-                },
+                'choice_label' => fn (Ship $ship) =>
+                    sprintf('%s - %s - %s',
+                        $ship->getName(),
+                        $ship->getType(),
+                        $ship->getClass()
+                ),
+                'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('interestRate', EntityType::class, [
                 'class' => InterestRate::class,
@@ -51,8 +56,13 @@ class MortgageType extends AbstractType
             ])
             ->add('insurance', EntityType::class, [
                 'class' => Insurance::class,
-                'choice_label' => 'name',
-                'required' => false,
+                'choice_label' => fn (Insurance $insurance) =>
+                    sprintf('%s - %d%% Ship Price',
+                        $insurance->getName(),
+                        $insurance->getAnnualCost()
+                    ),
+                'multiple' => false,
+                'expanded' => false,
             ])
         ;
     }
