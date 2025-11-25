@@ -41,28 +41,30 @@
                                 <td>{{ mortgage.ship.name }} - {{ mortgage.ship.type }} - {{ mortgage.ship.class }}</td>
                                 <td>{{ mortgage.ship.price|number_format(2, ',', '.') }}</td>
                                 <td>{{ mortgage.calculateShipCost|number_format(2, ',', '.') }}</td>
-                                <td class="text-center">
-                                    {% if mortgage.signed %}
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" 
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" 
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                        </svg>
-                                    {% else %}
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" 
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                                        </svg>
-                                    {% endif %}
+                                <td>
+                                    <div class="flex justify-center">
+                                        {% if mortgage.signed %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                        {% else %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        {% endif %}
+                                    </div>
                                 </td>
                                 <td>
                                     <a href="{{ path('app_mortgage_edit', {id: mortgage.id}) }}" role="button" class="btn btn-outline btn-primary btn-xs">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></svg>
                                     </a>
-                                    <a href="{{ path('app_mortgage_delete', {id: mortgage.id}) }}" 
-                                        role="button" 
+                                    <a href="{{ path('app_mortgage_delete', {id: mortgage.id}) }}"
+                                        role="button"
                                         class="btn btn-outline btn-error btn-xs"
                                         {% if not is_granted("MORTGAGE_DELETE", mortgage) %} disabled {% endif %}
                                     >

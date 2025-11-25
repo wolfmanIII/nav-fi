@@ -4,6 +4,11 @@
 
 {% block pageContent %}
 
+    <div class="alert alert-info w-315">
+        Mortgage signed! It can not be updated.
+    </div>
+
+
     {{ form_start(form) }}
 
     <fieldset class="fieldset bg-base-200 border-base-300 gap-4 p-4 border rounded w-315">
@@ -96,8 +101,8 @@
                                     <td>
                                         {% if member.captain %}
                                             <div class="flex justify-center">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" 
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                                                 </svg>
@@ -115,16 +120,16 @@
 
     </fieldset>
 
-    <button 
-        type="submit" 
-        name="action" value="save" 
+    <button
+        type="submit"
+        name="action" value="save"
         class="btn btn-outline btn-primary mt-4 mb-4 mr-4"
         {% if not is_granted("MORTGAGE_EDIT", mortgage) %} disabled {% endif %}
     >Save</button>
 
-    <button 
-        type="submit" 
-        name="action" value="sign" 
+    <button
+        type="submit"
+        name="action" value="sign"
         class="btn btn-outline btn-warning mt-4 mb-4 mr-4"
         {% if not is_granted("MORTGAGE_SIGN", mortgage) %} disabled {% endif %}
     >Sign</button>

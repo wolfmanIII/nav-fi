@@ -39,6 +39,7 @@ final class MortgageController extends AbstractController
 
             $mortgage->setCode(Uuid::v7());
             $mortgage->setName("MOR - " . $mortgage->getShip()->getName());
+            $mortgage->setSigned(0);
 
             $em->persist($mortgage);
             $em->flush();
@@ -64,7 +65,7 @@ final class MortgageController extends AbstractController
                 $this->addFlash('error', 'Mortgage Signed, Action Denied!');
                 return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
             }
-            
+
             $action = $request->request->get('action');
 
             if ($action === 'sign') {
