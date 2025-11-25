@@ -4,9 +4,11 @@
 
 {% block pageContent %}
 
-    <div class="alert alert-info w-315">
-        Mortgage signed! It can not be updated.
-    </div>
+    {% if mortgage.signed %}
+        <div class="alert alert-info w-315">
+            Mortgage signed! It can not be updated.
+        </div>
+    {% endif %}
 
 
     {{ form_start(form) }}
