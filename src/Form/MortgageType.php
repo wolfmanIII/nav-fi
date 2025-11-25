@@ -39,7 +39,7 @@ class MortgageType extends AbstractType
                         $ship->getName(),
                         $ship->getType(),
                         number_format($ship->getPrice(), 2, ',', '.') . " Cr"
-                ),
+                    ),
                 'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('interestRate', EntityType::class, [

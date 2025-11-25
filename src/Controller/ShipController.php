@@ -93,8 +93,8 @@ final class ShipController extends AbstractController
             $selectedIds = $form->get('crewIds')->getData();
             foreach ($selectedIds as $selectedId) {
                 $crewMember = $em->getRepository(Crew::class)->find($selectedId);
-                $crewMember->setShip($ship);
-                $em->persist($crewMember);
+                $ship->addCrew($crewMember);
+                $em->persist($ship);
                 $em->flush();
             }
 
@@ -113,7 +113,7 @@ final class ShipController extends AbstractController
     public function removeCrew(Crew $crew, Request $request, EntityManagerInterface $em): Response
     {
         $ship = $crew->getShip();
-        $crew->setShip(null);
+        $ship->removeCrew($crew);
         $em->persist($ship);
         $em->flush();
         return $this->redirectToRoute('app_ship_crew_select', ['id' => $ship->getId()]);
