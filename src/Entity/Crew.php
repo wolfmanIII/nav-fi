@@ -3,11 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\CrewRepository;
+use App\Validator\Captain;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CrewRepository::class)]
+#[Captain]
 class Crew
 {
     #[ORM\Id]
@@ -175,7 +177,7 @@ class Crew
         return $this;
     }
 
-    public function isCaptain()
+    public function isCaptain(): bool
     {
         foreach($this->getShipRoles() as $role) {
             if ($role->getCode() === "CAP") {

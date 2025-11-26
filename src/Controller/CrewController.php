@@ -42,11 +42,26 @@ final class CrewController extends AbstractController
             return $this->redirectToRoute('app_crew_index');
         }
 
+        $response = $this->render('crew/edit.html.twig', [
+            'controller_name' => self::CONTROLLER_NAME,
+            'crew' => $crew,
+            'form' => $form->createView(),
+        ]);
+
+        // IMPORTANTE: se il form è stato sottomesso ma NON è valido → 422 - altrimenti TURBO spacca tutto e gli errori non si vedono
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY); // 422
+        }
+
+        return $response;
+
+        /*
         return $this->render('crew/edit.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'crew' => $crew,
             'form' => $form->createView(),
         ]);
+        */
     }
 
     #[Route('/crew/edit/{id}', name: 'app_crew_edit', methods: ['GET', 'POST'])]

@@ -4,7 +4,16 @@
 
 {% block pageContent %}
 
+    {#
+    {{ form_start(form, {
+        attr: {
+            'data-turbo': 'false'
+        }
+    }) }}
+    #}
+
     {{ form_start(form) }}
+
     {{ form_widget(form._token) }}
 
     <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-250">
