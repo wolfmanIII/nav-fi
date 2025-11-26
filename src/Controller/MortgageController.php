@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Mortgage;
 use App\Form\MortgageType;
-use App\Manager\MortgageManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
