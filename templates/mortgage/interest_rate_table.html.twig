@@ -4,7 +4,7 @@
 >
     <label class="label">
         <span class="label-text">
-            {{ form.interestRate.vars.label ?? 'Interest Rate' }} 
+            {{ form.interestRate.vars.label ?? 'Interest Rate' }}
             <button type="button" class="btn badge badge-sm badge-outline badge-info ml-2" onclick="interest_rate_modal.showModal()">?</button>
         </span>
     </label>
@@ -34,6 +34,7 @@
                             data-action="change->single-select-table#select"
                             data-value="{{ choice.value }}"
                             {% if isSelected %}checked{% endif %}
+                            {% if mortgage.signed %} disabled {% endif %}
                         >
                     </td>
                     <td class="text-right">{{ rate.duration }}</td>

@@ -33,6 +33,7 @@
                             data-action="change->single-select-table#select"
                             data-value="{{ choice.value }}"
                             {% if isSelected %}checked{% endif %}
+                            {% if mortgage.signed %} disabled {% endif %}
                         >
                     </td>
                     <td>{{ insurance.name }}</td>

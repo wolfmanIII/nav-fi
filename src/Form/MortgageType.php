@@ -18,18 +18,24 @@ class MortgageType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var Mortgage $mortgage */
+        $mortgage = $options['data'];
         $builder
             //->add('name', TextType::class, ['attr' => ['class' => 'input m-1 w-full'],])
-            ->add('startDay', NumberType::class, ['attr' => ['class' => 'input m-1 w-full'],])
-            ->add('startYear', NumberType::class, ['attr' => ['class' => 'input m-1 w-full'],])
-            ->add('shipShares', NumberType::class, ['attr' => ['class' => 'input m-1 w-full'], 'required' => false])
+            ->add('startDay', NumberType::class, ['attr' => ['class' => 'input m-1 w-full'], 'disabled' => $mortgage->isSigned(),])
+            ->add('startYear', NumberType::class, ['attr' => ['class' => 'input m-1 w-full'], 'disabled' => $mortgage->isSigned(),])
+            ->add('shipShares', NumberType::class, [
+                'attr' => ['class' => 'input m-1 w-full'],
+                'disabled' => $mortgage->isSigned(),
+                'required' => false
+            ])
             ->add('advancePayment', TravellerMoneyType::class, [
                 'label' => 'Advance Payment(Cr)',
-                'attr' => ['class' => 'input m-1 w-full'], 'required' => false
+                'attr' => ['class' => 'input m-1 w-full'], 'required' => false, 'disabled' => $mortgage->isSigned(),
             ])
             ->add('discount', NumberType::class, [
                 'label' => 'Discount(%)',
-                'attr' => ['class' => 'input m-1 w-full'], 'required' => false
+                'attr' => ['class' => 'input m-1 w-full'], 'required' => false, 'disabled' => $mortgage->isSigned()
             ])
             ->add('ship', EntityType::class, [
                 'placeholder' => '-- Select a Ship --',
@@ -41,6 +47,7 @@ class MortgageType extends AbstractType
                         number_format($ship->getPrice(), 2, ',', '.') . " Cr"
                     ),
                 'attr' => ['class' => 'select m-1 w-full'],
+                'disabled' => $mortgage->isSigned(),
             ])
             ->add('interestRate', EntityType::class, [
                 'class' => InterestRate::class,
