@@ -56,6 +56,7 @@ class Mortgage
     public function __construct()
     {
         $this->setCode(Uuid::v7());
+        $this->setSigned(0);
     }
 
     public function getId(): ?int

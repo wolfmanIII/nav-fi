@@ -35,7 +35,6 @@ final class MortgageController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $mortgage->setName("MOR - " . $mortgage->getShip()->getName());
-            $mortgage->setSigned(0);
 
             $em->persist($mortgage);
             $em->flush();
