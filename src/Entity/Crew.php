@@ -7,6 +7,7 @@ use App\Validator\Captain;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: CrewRepository::class)]
 #[Captain]
@@ -49,6 +50,7 @@ class Crew
 
     public function __construct()
     {
+        $this->setCode(Uuid::v7());
         $this->shipRoles = new ArrayCollection();
     }
 

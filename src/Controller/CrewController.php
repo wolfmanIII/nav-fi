@@ -35,9 +35,6 @@ final class CrewController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Se il code deve essere sempre valorizzato alla creazione, posso anche spostarlo
-            // nel costruttore dell'Entity o in un Doctrine listener prePersist.
-            $crew->setCode(Uuid::v7());
 
             $em->persist($crew);
             $em->flush();
@@ -66,7 +63,7 @@ final class CrewController extends AbstractController
     #[Route('/crew/delete/{id}', name: 'app_crew_delete', methods: ['GET', 'POST'])]
     public function delete(Request $request, Crew $crew, EntityManagerInterface $em): Response
     {
-       
+
         $em->remove($crew);
         $em->flush();
 
