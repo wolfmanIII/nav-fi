@@ -6,8 +6,28 @@ use App\Entity\Crew;
 
 class CrewSelection
 {
-    public function __construct(
-        public Crew $crew,
-        public bool $selected = false
-    ) {}
+    private Crew $crew;
+    private bool $selected = false;
+
+    public function getCrew(): Crew
+    {
+        return $this->crew;
+    }
+
+    public function setCrew(Crew $crew): self
+    {
+        $this->crew = $crew;
+        return $this;
+    }
+
+    public function isSelected(): bool
+    {
+        return $this->selected;
+    }
+
+    public function setSelected(bool $selected): self
+    {
+        $this->selected = $selected;
+        return $this;
+    }
 }

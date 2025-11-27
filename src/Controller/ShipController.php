@@ -86,25 +86,29 @@ final class ShipController extends BaseController
         // Tutti i crew che non hanno una nave
         $crewToSelect = $em->getRepository(Crew::class)->getCrewNotInAnyShip($needCaptain);
 
-        // Costruisco le DTO per la Collection
-        $rows = array_map(
-            fn (Crew $crew) => new CrewSelection($crew),
-            $crewToSelect
-        );
+        // Costruisci le DTO
+        $rows = [];
+        foreach ($crewToSelect as $crew) {
+            $dto = (new CrewSelection())
+                ->setCrew($crew)
+                ->setSelected(false);
+
+            $rows[] = $dto;
+        }
 
         $form = $this->createForm(CrewSelectType::class, [
             'crewSelections' => $rows,
         ]);
 
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
+
             /** @var CrewSelection[] $selections */
             $selections = $form->get('crewSelections')->getData();
 
             foreach ($selections as $selection) {
-                if ($selection->selected) {
-                    $ship->addCrew($selection->crew);
+                if ($selection->isSelected()) {
+                    $ship->addCrew($selection->getCrew());
                 }
             }
 

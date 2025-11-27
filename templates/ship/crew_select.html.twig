@@ -106,10 +106,11 @@
                         </tr>
                         </thead>
                         <tbody>
+
                             {% if form.crewSelections|length > 0 %}
                                 {% for row in form.crewSelections %}
                                     {% set selection = row.vars.data %}
-                                    {% set member = selection.crew %}
+                                    {% set member = selection.crew %} {# Twig chiama getCrew() #}
 
                                     <tr>
                                         <td>
@@ -147,6 +148,7 @@
                                     <td colspan="7">No more crew members to add</td>
                                 </tr>
                             {% endif %}
+
                         </tbody>
                     </table>
                 </div>
