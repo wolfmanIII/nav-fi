@@ -6,6 +6,7 @@ use App\Entity\Mortgage;
 use App\Form\MortgageType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,7 +46,7 @@ final class MortgageController extends AbstractController
             return $this->redirectToRoute('app_mortgage_index');
         }
 
-        return $this->render('mortgage/edit.html.twig', [
+        return $this->renderTurboForm('mortgage/edit.html.twig', $form, [
             'controller_name' => self::CONTROLLER_NAME,
             'mortgage' => $mortgage,
             'form' => $form->createView(),
@@ -78,12 +79,13 @@ final class MortgageController extends AbstractController
 
         $summary = $mortgage->calculate();
 
-        return $this->render('mortgage/edit.html.twig', [
+        return $this->renderTurboForm('mortgage/edit.html.twig', $form, [
             'controller_name' => self::CONTROLLER_NAME,
             'mortgage' => $mortgage,
             'summary' => $summary,
             'form' => $form->createView(),
         ]);
+
     }
 
     #[Route('/mortgage/delete/{id}', name: 'app_mortgage_delete', methods: ['GET', 'POST'])]
@@ -94,5 +96,21 @@ final class MortgageController extends AbstractController
         $em->flush();
 
         return $this->redirectToRoute('app_mortgage_index');
+    }
+
+    /**
+     * Render del form con supporto a Turbo:
+     * - 200 se form non sottomesso
+     * - 422 se form sottomesso ma NON valido (altrimenti Turbo non mostra gli errori)
+     */
+    private function renderTurboForm(string $template, FormInterface $form, array $options): Response
+    {
+        $response = $this->render($template, $options);
+
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY); // 422
+        }
+
+        return $response;
     }
 }
