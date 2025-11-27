@@ -42,7 +42,7 @@ final class MortgageController extends BaseController
             return $this->redirectToRoute('app_mortgage_index');
         }
 
-        return $this->renderTurboForm('mortgage/edit.html.twig', $form, [
+        return $this->renderTurbo('mortgage/edit.html.twig', $form, [
             'controller_name' => self::CONTROLLER_NAME,
             'mortgage' => $mortgage,
             'form' => $form->createView(),
@@ -75,7 +75,7 @@ final class MortgageController extends BaseController
 
         $summary = $mortgage->calculate();
 
-        return $this->renderTurboForm('mortgage/edit.html.twig', $form, [
+        return $this->renderTurbo('mortgage/edit.html.twig', $form, [
             'controller_name' => self::CONTROLLER_NAME,
             'mortgage' => $mortgage,
             'summary' => $summary,

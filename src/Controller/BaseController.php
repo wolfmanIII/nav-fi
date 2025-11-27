@@ -9,11 +9,11 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class BaseController extends AbstractController
 {
     /**
-     * Render del form con supporto a Turbo:
+     * Render con supporto a Turbo:
      * - 200 se form non sottomesso
      * - 422 se form sottomesso ma NON valido (altrimenti Turbo non mostra gli errori)
      */
-    protected function renderTurboForm(string $template, FormInterface $form, array $options = []): Response
+    protected function renderTurbo(string $template, FormInterface $form, array $options = []): Response
     {
         $response = $this->render($template, $options);
 
