@@ -28,7 +28,7 @@ class CrewSelectType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class'   => null,
-            // non ti serve più crewToSelect qui, lo ricavi dalla DTO nel Twig
+            // non serve più crewToSelect qui, lo ricavo dalla DTO nel Twig
         ]);
     }
 }
