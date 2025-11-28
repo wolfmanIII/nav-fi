@@ -16,18 +16,44 @@ class CrewType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var Crew $crew */
+        $crew = $options['data'];
+        $disabled = $crew->hasMortgageSigned();
         $builder
-            ->add('name', TextType::class, ['attr' => ['class' => 'input m-1 w-full']])
-            ->add('surname', TextType::class, ['attr' => ['class' => 'input m-1 w-full']])
-            ->add('nickname', TextType::class, ['attr' => ['class' => 'input m-1 w-full'], 'required' => false])
-            ->add('birthYear', NumberType::class, ['attr' => ['class' => 'input m-1 w-full'], 'required' => false])
-            ->add('birthDay', NumberType::class, ['attr' => ['class' => 'input m-1 w-full'], 'required' => false])
-            ->add('birthWorld', TextType::class, ['attr' => ['class' => 'input m-1 w-full'], 'required' => false])
+            ->add('name', TextType::class, [
+                'attr' => ['class' => 'input m-1 w-full'],
+                'disabled' => $disabled,
+            ])
+            ->add('surname', TextType::class, [
+                'attr' => ['class' => 'input m-1 w-full'],
+                'disabled' => $disabled,
+            ])
+            ->add('nickname', TextType::class, [
+                'attr' => ['class' => 'input m-1 w-full'],
+                'required' => false,
+                'disabled' => $disabled,
+            ])
+            ->add('birthYear', NumberType::class, [
+                'attr' => ['class' => 'input m-1 w-full'],
+                'required' => false,
+                'disabled' => $disabled,
+            ])
+            ->add('birthDay', NumberType::class, [
+                'attr' => ['class' => 'input m-1 w-full'],
+                'required' => false,
+                'disabled' => $disabled,
+            ])
+            ->add('birthWorld', TextType::class, [
+                'attr' => ['class' => 'input m-1 w-full'],
+                'required' => false,
+                'disabled' => $disabled,
+            ])
             ->add('ship', EntityType::class, [
                 'class' => Ship::class,
                 'choice_label' => 'name',
                 'required' => false,
                 'attr' => ['class' => 'select m-1 w-full'],
+                'disabled' => $disabled,
             ])
             ->add('shipRoles', EntityType::class, [
                 'class' => ShipRole::class,
@@ -35,8 +61,8 @@ class CrewType extends AbstractType
                     return $role->getCode() . ' - ' . $role->getName();
                 },
                 'multiple' => true,
-                'required' => false,
                 'attr' => ['class' => 'select m-1 h-72 w-full'],
+                'disabled' => $disabled,
             ])
         ;
     }

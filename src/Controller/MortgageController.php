@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Mortgage;
 use App\Form\MortgageType;
+use App\Security\Voter\MortgageVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -56,7 +57,7 @@ final class MortgageController extends BaseController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if (!$this->isGranted('MORTGAGE_EDIT', $mortgage)) {
+            if (!$this->isGranted(MortgageVoter::EDIT, $mortgage)) {
                 $this->addFlash('error', 'Mortgage Signed, Action Denied!');
                 return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
             }
@@ -84,7 +85,7 @@ final class MortgageController extends BaseController
     }
 
     #[Route('/mortgage/delete/{id}', name: 'app_mortgage_delete', methods: ['GET', 'POST'])]
-    #[IsGranted('MORTGAGE_DELETE', 'mortgage')]
+    #[IsGranted(MortgageVoter::DELETE, 'mortgage')]
     public function delete(Mortgage $mortgage, Request $request, EntityManagerInterface $em): Response
     {
         $em->remove($mortgage);

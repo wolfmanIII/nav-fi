@@ -16,7 +16,6 @@
                     <th class="w-10"></th>
                     <th>Name</th>
                     <th>Annual Cost(% Ship Price)</th>
-                    {#<th>Coverage</th>#}
                 </tr>
             </thead>
             <tbody>
@@ -38,15 +37,6 @@
                     </td>
                     <td>{{ insurance.name }}</td>
                     <td class="text-right">{{ insurance.annualCost }}</td>
-                    {#
-                    <td>
-                        <ul>
-                        {% for cov in insurance.coverage %}
-                            <li>{{ cov }}</li>
-                        {% endfor %}
-                        </ul>
-                    </td>
-                    #}
                 </tr>
             {% endfor %}
             </tbody>

@@ -54,9 +54,7 @@ final class ShipVoter extends Voter
 
     private function canEdit(Ship $ship, UserInterface $user = null): bool
     {
-        if ($ship->hasMortgageSigned()) {
-            return false;
-        }
+        return !$ship->hasMortgageSigned();
     }
 
     private function canDelete(Ship $ship, UserInterface $user = null): bool

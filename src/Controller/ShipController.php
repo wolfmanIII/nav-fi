@@ -7,6 +7,7 @@ use App\Entity\Crew;
 use App\Entity\Ship;
 use App\Form\CrewSelectType;
 use App\Form\ShipType;
+use App\Security\Voter\ShipVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,6 +55,12 @@ final class ShipController extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if (!$this->isGranted(ShipVoter::EDIT, $ship)) {
+                $this->addFlash('error', 'Mortgage Signed, Action Denied!');
+                return $this->redirectToRoute('app_mortgage_edit', ['id' => $ship->getId()]);
+            }
+
             $em->persist($ship);
             $em->flush();
             return $this->redirectToRoute('app_ship_index');
@@ -67,7 +74,7 @@ final class ShipController extends BaseController
     }
 
     #[Route('/ship/delete/{id}', name: 'app_ship_delete', methods: ['GET', 'POST'])]
-    #[IsGranted('SHIP_DELETE', 'ship')]
+    #[IsGranted(ShipVoter::DELETE, 'ship')]
     public function delete(Ship $ship, Request $request, EntityManagerInterface $em): Response
     {
         $em->remove($ship);
@@ -125,6 +132,7 @@ final class ShipController extends BaseController
     }
 
     #[Route('/ship/crew/{id}/remove', name: 'app_ship_crew_remove', methods: ['GET', 'POST'])]
+    #[isGranted(ShipVoter::CREW_REMOVE, 'ship.getCrew()')]
     public function removeCrew(Crew $crew, Request $request, EntityManagerInterface $em): Response
     {
         $ship = $crew->getShip();

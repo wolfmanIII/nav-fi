@@ -1,16 +1,17 @@
 {% extends 'base.html.twig' %}
 
+{% set CAN_EDIT = constant('App\\Security\\Voter\\CrewVoter::EDIT') %}
+{% set can_edit = is_granted(CAN_EDIT, crew) %}
+
 {% block title %}Captain Log - Crew{% endblock %}
 
 {% block pageContent %}
 
-    {#
-    {{ form_start(form, {
-        attr: {
-            'data-turbo': 'false'
-        }
-    }) }}
-    #}
+    {% if crew.mortgageSigned %}
+        <div class="alert alert-info alert-outline w-315">
+            The Crew Member is in a Ship that has Mortgage signed! It can not be updated.
+        </div>
+    {% endif %}
 
     {{ form_start(form) }}
 
@@ -73,7 +74,12 @@
 
     </fieldset>
 
-    <button type="submit" class="btn btn-outline btn-primary mt-4 mb-4 mr-4">Save</button>
+    <button type="submit"
+            class="btn btn-outline btn-primary mt-4 mb-4 mr-4"
+            {% if not can_edit %} disabled {% endif %}
+    >
+        Save
+    </button>
     <a href="{{ path('app_crew_index') }}" role="button" class="btn btn-outline btn-default mt-4 mb-4 mr-4">Cancel</a>
 
     {{ form_end(form, { render_rest: false }) }}

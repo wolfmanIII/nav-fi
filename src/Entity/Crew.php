@@ -188,4 +188,9 @@ class Crew
         }
         return false;
     }
+
+    public function hasMortgageSigned(): bool
+    {
+        return $this->getShip()->hasMortgageSigned();
+    }
 }
