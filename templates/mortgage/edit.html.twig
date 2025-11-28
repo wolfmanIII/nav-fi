@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
+{% set CAN_EDIT = constant('App\\Security\\Voter\\MortgageVoter::EDIT') %}
+{% set CAN_SIGN = constant('App\\Security\\Voter\\MortgageVoter::SIGN') %}
+{% set can_edit = is_granted(CAN_EDIT, mortgage) %}
+{% set can_sign = is_granted(CAN_SIGN, mortgage) %}
+
 {% block title %}Captain Log - Mortgage{% endblock %}
 
 {% block pageContent %}
@@ -126,14 +131,14 @@
         type="submit"
         name="action" value="save"
         class="btn btn-outline btn-primary mt-4 mb-4 mr-4"
-        {% if not is_granted("MORTGAGE_EDIT", mortgage) %} disabled {% endif %}
+        {% if not can_edit %} disabled {% endif %}
     >Save</button>
 
     <button
         type="submit"
         name="action" value="sign"
         class="btn btn-outline btn-warning mt-4 mb-4 mr-4"
-        {% if not is_granted("MORTGAGE_SIGN", mortgage) %} disabled {% endif %}
+        {% if not can_sign %} disabled {% endif %}
     >Sign</button>
     <a href="{{ path('app_mortgage_index') }}" role="button" class="btn btn-outline btn-default mt-4 mb-4 mr-4">Cancel</a>
 

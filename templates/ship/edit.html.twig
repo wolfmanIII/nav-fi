@@ -1,5 +1,8 @@
 {% extends 'base.html.twig' %}
 
+{% set CAN_EDIT = constant('App\\Security\\Voter\\ShipVoter::EDIT') %}
+{% set can_edit = is_granted(CAN_EDIT, ship) %}
+
 {% block title %}Captain Log - Ship{% endblock %}
 
 {% block pageContent %}
@@ -50,7 +53,12 @@
 
     </fieldset>
 
-    <button type="submit" class="btn btn-outline btn-primary mt-4 mb-4 mr-4">Save</button>
+    <button type="submit"
+            class="btn btn-outline btn-primary mt-4 mb-4 mr-4"
+            {% if not can_edit %} disabled {% endif %}
+    >
+        Save
+    </button>
     <a href="{{ path('app_ship_index') }}" role="button" class="btn btn-outline btn-default mt-4 mb-4 mr-4">Cancel</a>
 
     {{ form_end(form) }}
