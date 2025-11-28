@@ -47,17 +47,17 @@ final class ShipVoter extends Voter
         };
     }
 
-    private function canView(Ship $ship, UserInterface $user = null): bool
+    private function canView(Ship $ship, ?UserInterface $user = null): bool
     {
         return true;
     }
 
-    private function canEdit(Ship $ship, UserInterface $user = null): bool
+    private function canEdit(Ship $ship, ?UserInterface $user = null): bool
     {
         return !$ship->hasMortgageSigned();
     }
 
-    private function canDelete(Ship $ship, UserInterface $user = null): bool
+    private function canDelete(Ship $ship, ?UserInterface $user = null): bool
     {
         if (
             $ship->getCrews()->count() >= 0
@@ -69,7 +69,7 @@ final class ShipVoter extends Voter
         return $this->canEdit($ship, $user);
     }
 
-    private function canCrewRemove(Ship $ship, UserInterface $user = null): bool
+    private function canCrewRemove(Ship $ship, ?UserInterface $user = null): bool
     {
         return $this->canEdit($ship, $user);
     }

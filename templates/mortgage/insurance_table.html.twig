@@ -39,7 +39,7 @@
                         >
                     </td>
                     <td>{{ insurance.name }}</td>
-                    <td class="text-right">{{ insurance.annualCost }}</td>
+                    <td class="text-right">{{ insurance.annualCost|number_format(2, ',', '.') }}</td>
                 </tr>
             {% endfor %}
             </tbody>

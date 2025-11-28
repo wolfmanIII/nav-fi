@@ -25,8 +25,8 @@
                     <tr>
                         <th>Code</th>
                         <th>Name</th>
-                        <th>Surname</th>
                         <th>Nickname</th>
+                        <th>Surname</th>
                         <th>Ship</th>
                         <th>Roles</th>
                         <th>Mortgage Signed</th>
@@ -39,8 +39,8 @@
                             <tr>
                                 <td>{{ member.code }}</td>
                                 <td>{{ member.name }}</td>
-                                <td>{{ member.surname }}</td>
                                 <td>{{ member.nickname }}</td>
+                                <td>{{ member.surname }}</td>
                                 <td>{% if member.ship %}{{ member.ship.name }}{% endif %}</td>
                                 <td>
                                     {% for role in member.shipRoles %}

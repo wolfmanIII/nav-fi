@@ -41,9 +41,9 @@
                         >
                     </td>
                     <td class="text-right">{{ rate.duration }}</td>
-                    <td class="text-right">{{ rate.priceMultiplier }}</td>
+                    <td class="text-right">{{ rate.priceMultiplier|number_format(2, ',', '.') }}</td>
                     <td class="text-right">{{ rate.priceDivider }}</td>
-                    <td class="text-right">{{ rate.annualInterestRate }}</td>
+                    <td class="text-right">{{ rate.annualInterestRate|number_format(2, ',', '.') }}</td>
                 </tr>
             {% endfor %}
             </tbody>

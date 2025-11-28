@@ -191,6 +191,9 @@ class Crew
 
     public function hasMortgageSigned(): bool
     {
-        return $this->getShip()->hasMortgageSigned();
+        if ($this->getShip()) {
+            return $this->getShip()->hasMortgageSigned();
+        }
+        return false;
     }
 }

@@ -44,17 +44,17 @@ final class CrewVoter extends Voter
         };
     }
 
-    private function canView(Crew $crew, UserInterface $user = null): bool
+    private function canView(Crew $crew, ?UserInterface $user = null): bool
     {
         return true;
     }
 
-    private function canEdit(Crew $crew, UserInterface $user = null): bool
+    private function canEdit(Crew $crew, ?UserInterface $user = null): bool
     {
         return !$crew->hasMortgageSigned();
     }
 
-    private function canDelete(Crew $crew, UserInterface $user = null): bool
+    private function canDelete(Crew $crew, ?UserInterface $user = null): bool
     {
         return $this->canEdit($crew, $user);
     }

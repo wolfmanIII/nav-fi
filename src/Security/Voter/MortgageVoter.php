@@ -51,27 +51,27 @@ final class MortgageVoter extends Voter
         };
     }
 
-    private function canView(Mortgage $mortgage, UserInterface $user = null): bool
+    private function canView(Mortgage $mortgage, ?UserInterface $user = null): bool
     {
         return true;
     }
 
-    private function canEdit(Mortgage $mortgage, UserInterface $user = null): bool
+    private function canEdit(Mortgage $mortgage, ?UserInterface $user = null): bool
     {
         return !$mortgage->isSigned();
     }
 
-    private function canDelete(Mortgage $mortgage, UserInterface $user = null): bool
+    private function canDelete(Mortgage $mortgage, ?UserInterface $user = null): bool
     {
         return $this->canEdit($mortgage, $user);
     }
 
-    private function canSign(Mortgage $mortgage, UserInterface $user = null): bool
+    private function canSign(Mortgage $mortgage, ?UserInterface $user = null): bool
     {
-        return !( $mortgage->isSigned() || !$mortgage->getCode() );
+        return !$mortgage->isSigned() && $mortgage->getId();
     }
 
-    private function canPayInstallment(Mortgage $mortgage, UserInterface $user = null): bool
+    private function canPayInstallment(Mortgage $mortgage, ?UserInterface $user = null): bool
     {
         return $mortgage->isSigned();
     }
