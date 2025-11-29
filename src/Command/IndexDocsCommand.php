@@ -57,7 +57,19 @@ class IndexDocsCommand extends Command
                 'path',
                 null,
                 InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-                'Sotto-percorso relativo da indicizzare (es: "manuali", "log/2025"). Puoi usarlo più volte.',
+                'Sotto-percorso relativo da indicizzare (es: "manuali", "log/2025"). Puoi usarlo più volte.'
+            )
+            ->addOption(
+                'dry-run',
+                null,
+                InputOption::VALUE_NONE,
+                'Mostra cosa verrebbe indicizzato, senza scrivere su DB e senza chiamare OpenAI'
+            )
+            ->addOption(
+                'test-mode',
+                null,
+                InputOption::VALUE_NONE,
+                'Usa embeddings finti invece di chiamare OpenAI (non vengono consumati crediti)'
             );
     }
 
@@ -71,23 +83,37 @@ class IndexDocsCommand extends Command
         }
 
         $forceReindex = (bool) $input->getOption('force-reindex');
+        $dryRun       = (bool) $input->getOption('dry-run');
+
+        // test-mode via opzione OPPURE via env
+        $testMode     =
+            (bool) $input->getOption('test-mode') ||
+            (($_ENV['APP_AI_TEST_MODE'] ?? 'false') === 'true');
+
+        $offlineFallback =
+            ($_ENV['APP_AI_OFFLINE_FALLBACK'] ?? 'true') === 'true';
+
         /** @var string[] $pathsFilter */
         $pathsFilter  = $input->getOption('path') ?? [];
 
         if (!empty($pathsFilter)) {
-            // normalizziamo rimuovendo slash iniziali/finali
-            $pathsFilter = array_map(static function (string $p) {
-                return trim($p, '/');
-            }, $pathsFilter);
-
+            $pathsFilter = array_map(static fn(string $p) => trim($p, '/'), $pathsFilter);
             $output->writeln('<info>Filtro path attivo:</info> '.implode(', ', $pathsFilter));
         }
 
         if ($forceReindex) {
-            $output->writeln('<comment>Opzione --force-reindex attiva: tutti i file saranno reindicizzati.</comment>');
+            $output->writeln('<comment>--force-reindex: tutti i file selezionati saranno reindicizzati.</comment>');
         }
 
-        // 1) Raccogliamo tutti i file candidati (ricorsivo)
+        if ($dryRun) {
+            $output->writeln('<comment>--dry-run: nessuna scrittura su DB, nessuna chiamata reale a OpenAI.</comment>');
+        }
+
+        if ($testMode) {
+            $output->writeln('<comment>Test mode attivo: uso embeddings finti, niente OpenAI.</comment>');
+        }
+
+        // 1) Raccogliamo i file candidati (ricorsivo)
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($rootDir, \FilesystemIterator::SKIP_DOTS)
         );
@@ -101,25 +127,21 @@ class IndexDocsCommand extends Command
 
             $ext = strtolower($fileInfo->getExtension());
             if (!in_array($ext, $this->extensions, true)) {
-                continue; // estensione non supportata
+                continue;
             }
 
-            // path relativo rispetto a rootDir, es: "manuali/cap1.pdf"
             $relPath = substr($filePath, strlen($rootDir) + 1);
             $dirName = trim(dirname($relPath), '.');
 
-            // 1a) esclusione cartelle
             if ($this->isInExcludedDir($dirName)) {
                 continue;
             }
 
-            // 1b) esclusione filename per pattern
             $fileName = $fileInfo->getFilename();
             if ($this->isExcludedName($fileName)) {
                 continue;
             }
 
-            // 1c) filtro per sotto-percorsi (se specificato)
             if (!empty($pathsFilter) && !$this->matchesPathsFilter($relPath, $pathsFilter)) {
                 continue;
             }
@@ -139,8 +161,11 @@ class IndexDocsCommand extends Command
             $progressBar->start();
         }
 
-        // 3) Client OpenAI
-        $client = OpenAI::client($_ENV['OPENAI_API_KEY']);
+        // 3) Client OpenAI solo se serve
+        $client = null;
+        if (!$dryRun && !$testMode) {
+            $client = OpenAI::client($_ENV['OPENAI_API_KEY']);
+        }
 
         foreach ($files as $file) {
             $relPath   = substr($file, strlen($rootDir) + 1); // es: "manuali/cap1.pdf"
@@ -151,8 +176,8 @@ class IndexDocsCommand extends Command
                 $output->writeln("\nFile: <info>$relPath</info>");
             }
 
-            // 3a) se NON forceReindex, controlla se esiste già path+hash
-            if (!$forceReindex) {
+            // 3a) se NON forceReindex & NON dryRun & NON test-mode → controlla hash
+            if (!$forceReindex && !$dryRun && !$testMode) {
                 $existing = $this->em->createQueryBuilder()
                     ->select('COUNT(c.id)')
                     ->from(DocumentChunk::class, 'c')
@@ -186,7 +211,26 @@ class IndexDocsCommand extends Command
                 continue;
             }
 
-            // 3c) elimina vecchi chunk (per path) prima di reinserire
+            // 3c) split in chunk
+            $chunks = $this->splitIntoChunks($text, 1000);
+            $now    = new \DateTimeImmutable();
+
+            if ($dryRun) {
+                $approxTokens = (int) (mb_strlen($text) / 4);
+                $output->writeln(sprintf(
+                    "\n[dry-run] %s → %d chunk, ~%d token",
+                    $relPath,
+                    count($chunks),
+                    $approxTokens
+                ));
+                if ($progressBar) {
+                    $progressBar->advance();
+                }
+                // niente DB, niente embeddings
+                continue;
+            }
+
+            // 3d) elimina vecchi chunk per questo path
             $this->em->createQueryBuilder()
                 ->delete(DocumentChunk::class, 'c')
                 ->where('c.path = :path')
@@ -194,17 +238,33 @@ class IndexDocsCommand extends Command
                 ->getQuery()
                 ->execute();
 
-            // 3d) spezza testo in chunk e salva con embedding
-            $chunks = $this->splitIntoChunks($text, 1000);
-            $now    = new \DateTimeImmutable();
-
             foreach ($chunks as $index => $chunkText) {
                 // embedding del chunk
-                $embResp = $client->embeddings()->create([
-                    'model' => 'text-embedding-3-small',
-                    'input' => $chunkText,
-                ]);
-                $embedding = $embResp->embeddings[0]->embedding;
+                $embedding = null;
+
+                if ($testMode) {
+                    // embedding finto deterministico
+                    $embedding = $this->fakeEmbeddingFromText($chunkText, 1536);
+                } else {
+                    try {
+                        $embResp = $client->embeddings()->create([
+                            'model' => 'text-embedding-3-small',
+                            'input' => $chunkText,
+                        ]);
+                        $embedding = $embResp->embeddings[0]->embedding;
+                    } catch (\Throwable $e) {
+                        if ($offlineFallback) {
+                            if ($output->isVeryVerbose()) {
+                                $output->writeln('  -> Errore embeddings, uso fallback finto: '.$e->getMessage());
+                            }
+                            $embedding = $this->fakeEmbeddingFromText($chunkText, 1536);
+                        } else {
+                            $output->writeln('<error>Errore embeddings: '.$e->getMessage().'</error>');
+                            // saltiamo questo chunk
+                            continue;
+                        }
+                    }
+                }
 
                 $chunk = (new DocumentChunk())
                     ->setPath($relPath)
@@ -232,7 +292,7 @@ class IndexDocsCommand extends Command
 
         if ($progressBar) {
             $progressBar->finish();
-            $output->writeln(''); // newline
+            $output->writeln('');
         }
 
         $output->writeln('<info>Indicizzazione completata.</info>');
@@ -270,7 +330,6 @@ class IndexDocsCommand extends Command
             return false;
         }
 
-        // splitta percorso in segmenti e verifica se uno è in excludedDirs
         $segments = explode(DIRECTORY_SEPARATOR, $dirName);
         foreach ($segments as $seg) {
             if (in_array($seg, $this->excludedDirs, true)) {
@@ -292,16 +351,6 @@ class IndexDocsCommand extends Command
         return false;
     }
 
-    /**
-     * Ritorna true se il path relativo rientra in uno dei sotto-percorsi richiesti.
-     *
-     * Esempi:
-     *   relPath: "manuali/cap1.pdf"
-     *   filters: ["manuali"]           → true
-     *   filters: ["log"]               → false
-     *   relPath: "log/2025/eventoA.md"
-     *   filters: ["log/2025"]          → true
-     */
     private function matchesPathsFilter(string $relPath, array $pathsFilter): bool
     {
         $relPathNorm = ltrim($relPath, '/');
@@ -319,5 +368,21 @@ class IndexDocsCommand extends Command
         }
 
         return false;
+    }
+
+    /**
+     * Genera un embedding finto ma deterministico, dato il testo.
+     */
+    private function fakeEmbeddingFromText(string $text, int $dimensions): array
+    {
+        $hash = hash('sha256', $text, true); // 32 byte
+        $vector = [];
+
+        for ($i = 0; $i < $dimensions; $i++) {
+            $b = ord($hash[$i % 32]);       // 0..255
+            $vector[] = ($b / 128.0) - 1.0; // circa -1..+1
+        }
+
+        return $vector;
     }
 }

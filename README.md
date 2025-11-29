@@ -1,5 +1,5 @@
-### 1. Symfony
-#### Dipendenze aggiuntive da installare
+## 1. Indicizzatore Documenti
+### Dipendenze aggiuntive da installare
 ```bash
 composer require \
     smalot/pdfparser \
@@ -8,18 +8,18 @@ composer require \
     partitech/doctrine-pgvector
 ```
 ---
-### 2. Open AI
-#### Nel file .env.local metti la chiave:
+## 2. Open AI
+### Nel file .env.local metti la chiave:
 ```env
 OPENAI_API_KEY=sk-...
 ```
 ---
-### 3. PostgreSQL + pgvector + Doctrine
-#### Installare postgres + pgvector
+## 3. PostgreSQL + pgvector + Doctrine
+### Installare postgres + pgvector
 ```bash
 sudo apt install postgresql-18 postgresql-18-pgvector
 ```
-#### Nel database PostgreSQL (una volta sola)
+### Nel database PostgreSQL (una volta sola)
 sql
 ```sql
 CREATE EXTENSION IF NOT EXISTS vector;
@@ -30,7 +30,7 @@ yaml
 ```yaml
 doctrine:
   dbal:
-    # ... il tuo config solito (url, ecc.)
+    # ... il config solito (url, ecc.)
     types:
       vector: Partitech\DoctrinePgVector\Type\VectorType
 
@@ -42,4 +42,27 @@ doctrine:
         distance: Partitech\DoctrinePgVector\Query\Distance
 
 ```
-### Indicizzatore - esempi di utilizzo
+---
+## 4. Command per indicizzare
+### Esempi di utilizzo
+#### 1. Full index, sfruttando hash (solo file nuovi/modificati)
+```bash
+php bin/console app:index-docs -v
+```
+#### 2. Reindicizza TUTTO ignorando hash
+```bash
+php bin/console app:index-docs --force-reindex -v
+```
+#### 3. Solo la sotto-cartella manuali/
+```bash
+php bin/console app:index-docs --path=manuali --path=log/2025 -v
+```
+#### 4. Simulazione pura (solo vedere cosa succederebbe)
+```bash
+php bin/console app:index-docs --dry-run -v
+```
+#### 5. Indicizzare davvero, ma con embeddings finti (test locale)
+```bash
+php bin/console app:index-docs --test-mode -v
+# oppure: APP_AI_TEST_MODE=true php bin/console app:index-docs -v
+```
