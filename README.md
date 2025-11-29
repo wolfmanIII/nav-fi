@@ -8,6 +8,13 @@ composer require \
     partitech/doctrine-pgvector
 ```
 ---
+### Nel file config/services.yaml
+```yaml
+services:
+  ...
+  Smalot\PdfParser\Parser: ~
+```
+---
 ## 2. Open AI
 ### Nel file .env.local metti la chiave:
 ```env

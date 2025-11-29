@@ -23,3 +23,5 @@ services:
     # Doctrine\DBAL\Driver\AbstractSQLiteDriver\Middleware\EnableForeignKeys:
     #    tags:
     #        - { name: 'doctrine.middleware' }
+
+    Smalot\PdfParser\Parser: ~

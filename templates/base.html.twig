@@ -145,6 +145,22 @@
                     </li>
 
                     <li>
+                        <a href="{{ path('app_ai_console') }}"
+                            class="{% if controller_name == constant('App\\Controller\\ChatController::CONTROLLER_NAME') %}menu-active{% endif %}">
+                            {# icona "sparkles" #}
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                stroke-linejoin="round" stroke-linecap="round"
+                                stroke-width="2" fill="none" stroke="currentColor"
+                                class="my-1.5 inline-block size-4">
+                                <path d="M12 3l1.5 3.5L17 8l-3.5 1.5L12 13l-1.5-3.5L7 8l3.5-1.5L12 3z"></path>
+                                <path d="M5 16l.75 1.75L8 18.5l-1.75.75L5 21l-.75-1.75L2.5 18.5 4.25 17.75 5 16z"></path>
+                                <path d="M18 14l.75 1.75L21 16.5l-1.75.75L18 19l-.75-1.75L15.5 16.5 17.25 15.75 18 14z"></path>
+                            </svg>
+                            <span>AI Console</span>
+                        </a>
+                    </li>
+
+                    <li>
                         <a href="{{ path('admin') }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -156,6 +172,7 @@
                             <span>Settings</span>
                         </a>
                     </li>
+
                 </ul>
             </div>
         </div>

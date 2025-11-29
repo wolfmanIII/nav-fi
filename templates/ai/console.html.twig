@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Captain Log - AI Console{% endblock %}
+
+{% block pageContent %}
+    <div class="p-10">
+
+        <header class="prose mb-4">
+            <h1>AI Console</h1>
+        </header>
+        <p class="mt-4 mb-4">
+            Interroga il motore AI sui documenti indicizzati(<code>var/knowledge</code>) di Captain Log.
+        </p>
+
+        <div class="grid gap-4 lg:grid-cols-[2fr,1fr]" data-controller="ai-console">
+
+            {# COLONNA SINISTRA: chat #}
+            <div class="card bg-base-200 shadow-md">
+                <div class="card-body gap-3">
+
+                    <div class="h-[420px] overflow-y-auto space-y-3 bg-base-100 rounded-md p-3"
+                         data-ai-console-target="messages">
+                        {# messaggi verranno inseriti via Stimulus #}
+                        <p class="text-sm opacity-70">
+                            Scrivi una domanda qui sotto. Il motore userà solo i documenti indicizzati.
+                        </p>
+                    </div>
+
+                    <form class="mt-2 flex flex-col gap-2"
+                          data-action="submit->ai-console#submit">
+                        <textarea
+                            class="textarea textarea-bordered w-full min-h-24"
+                            placeholder="Es: Spiegami le condizioni del mutuo standard..."
+                            data-ai-console-target="input"
+                        ></textarea>
+
+                        <div class="flex items-center justify-between gap-2">
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                                data-ai-console-target="button">
+                                Invia domanda
+                            </button>
+
+                            <span class="text-xs opacity-70">
+                                Endpoint: <code>/api/chat</code>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {# COLONNA DESTRA: stato & note #}
+            <div class="card bg-base-200 shadow-sm">
+                <div class="card-body text-sm gap-3">
+                    <h2 class="card-title text-sm">Stato motore AI</h2>
+
+                    <ul class="list-disc list-inside text-xs">
+                        <li>
+                            Test mode:
+                            <span class="{{ test_mode ? 'text-warning' : 'text-success' }}">
+                                {{ test_mode ? 'ATTIVO (no chiamate OpenAI)' : 'disattivo' }}
+                            </span>
+                        </li>
+                        <li>
+                            Offline fallback:
+                            <span class="{{ offline_fallback ? 'text-success' : 'text-warning' }}">
+                                {{ offline_fallback ? 'ATTIVO (usa solo DB se OpenAI non risponde)' : 'disattivo' }}
+                            </span>
+                        </li>
+                    </ul>
+
+                    <div class="divider my-1"></div>
+
+                    <p class="text-xs opacity-80">
+                        <b>Consiglio:</b> dopo aver aggiunto/modificato documenti,
+                        ricordati di eseguire:
+                    </p>
+                    <pre class="text-xs bg-base-300 rounded-md p-2 overflow-x-auto">
+php bin/console app:index-docs -v
+                    </pre>
+
+                    <p class="text-xs opacity-70">
+                        In <code>.env.local</code> puoi usare:
+                    </p>
+                    <pre class="text-xs bg-base-300 rounded-md p-2 overflow-x-auto">
+APP_AI_TEST_MODE={{ test_mode ? 'true' : 'false' }}
+APP_AI_OFFLINE_FALLBACK={{ offline_fallback ? 'true' : 'false' }}
+                    </pre>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

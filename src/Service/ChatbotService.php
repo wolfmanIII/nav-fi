@@ -18,11 +18,11 @@ class ChatbotService
         $offlineFallbackEnabled =
             ($_ENV['APP_AI_OFFLINE_FALLBACK'] ?? 'true') === 'true';
 
+        // In test-mode NON chiama OpenAI, usa solo il DB
         if ($testMode) {
             return $this->answerInTestMode($question);
         }
 
-        // Proviamo a usare embeddings + modello
         try {
             $client = OpenAI::client($_ENV['OPENAI_API_KEY']);
 
@@ -30,6 +30,8 @@ class ChatbotService
             $embResp = $client->embeddings()->create([
                 'model' => 'text-embedding-3-small',
                 'input' => $question,
+                // se si usa vector(1536) non serve "dimensions"
+                // 'dimensions' => 1536,
             ]);
             $queryVec = $embResp->embeddings[0]->embedding;
 
@@ -71,7 +73,7 @@ TXT;
 
             // 3) Chiamata al modello
             $resp = $client->chat()->create([
-                'model' => 'gpt-4o-mini',
+                'model' => 'gpt-5.1-mini',
                 'messages' => [
                     ['role' => 'system', 'content' => $system],
                     ['role' => 'user', 'content' => $user],
@@ -85,23 +87,40 @@ TXT;
                 return $this->answerInOfflineFallback($question, $e);
             }
 
-            // fallback "brutto" se disattivi la modalità offline
             return 'Errore nella chiamata al servizio AI: '.$e->getMessage();
         }
     }
 
     /**
      * Modalità test: nessuna chiamata ad OpenAI.
-     * Fa una ricerca full-text semplice e restituisce un testo di debug.
+     * Usa una ricerca a keyword (OR) nel contenuto dei chunk.
      */
     private function answerInTestMode(string $question): string
     {
+        $keywords = $this->buildKeywords($question);
+
         $qb = $this->em->createQueryBuilder()
             ->select('c')
             ->from(DocumentChunk::class, 'c')
-            ->where('LOWER(c.content) LIKE :q')
-            ->setMaxResults(5)
-            ->setParameter('q', '%'.mb_strtolower($question).'%');
+            ->setMaxResults(5);
+
+        if ($keywords) {
+            // costruisco un OR: LOWER(c.content) LIKE :k0 OR :k1 ...
+            $expr = $qb->expr();
+            $orX  = $expr->orX();
+
+            foreach ($keywords as $idx => $kw) {
+                $paramName = 'k'.$idx;
+                $orX->add($expr->like('LOWER(c.content)', ':'.$paramName));
+                $qb->setParameter($paramName, '%'.$kw.'%');
+            }
+
+            $qb->where($orX);
+        } else {
+            // fallback: LIKE sull'intera domanda (caso limite)
+            $qb->where('LOWER(c.content) LIKE :q')
+               ->setParameter('q', '%'.mb_strtolower($question).'%');
+        }
 
         /** @var DocumentChunk[] $chunks */
         $chunks = $qb->getQuery()->getResult();
@@ -110,8 +129,8 @@ TXT;
             return "[TEST MODE] Nessun documento sembra contenere la query.\n\nDomanda: ".$question;
         }
 
-        $out = "[TEST MODE] Non sto chiamando OpenAI.\n"
-             . "Questi sono alcuni estratti che sembrano rilevanti:\n\n";
+        $out = "[TEST MODE] Non sto chiamando OpenAI.\n";
+        $out .= "Questi sono alcuni estratti che sembrano rilevanti:\n\n";
 
         foreach ($chunks as $chunk) {
             $preview = mb_substr($chunk->getContent(), 0, 300);
@@ -124,16 +143,32 @@ TXT;
 
     /**
      * Modalità fallback offline: si attiva se la chiamata ad OpenAI fallisce.
-     * Usa solo il DB locale per dare qualche info utile.
+     * Usa gli stessi keyword della modalità test-mode per cercare nel DB locale.
      */
     private function answerInOfflineFallback(string $question, \Throwable $e): string
     {
+        $keywords = $this->buildKeywords($question);
+
         $qb = $this->em->createQueryBuilder()
             ->select('c')
             ->from(DocumentChunk::class, 'c')
-            ->where('LOWER(c.content) LIKE :q')
-            ->setMaxResults(5)
-            ->setParameter('q', '%'.mb_strtolower($question).'%');
+            ->setMaxResults(5);
+
+        if ($keywords) {
+            $expr = $qb->expr();
+            $orX  = $expr->orX();
+
+            foreach ($keywords as $idx => $kw) {
+                $paramName = 'k'.$idx;
+                $orX->add($expr->like('LOWER(c.content)', ':'.$paramName));
+                $qb->setParameter($paramName, '%'.$kw.'%');
+            }
+
+            $qb->where($orX);
+        } else {
+            $qb->where('LOWER(c.content) LIKE :q')
+               ->setParameter('q', '%'.mb_strtolower($question).'%');
+        }
 
         /** @var DocumentChunk[] $chunks */
         $chunks = $qb->getQuery()->getResult();
@@ -155,5 +190,46 @@ TXT;
         $out .= "\n(Dettaglio tecnico: ".$e->getMessage().")";
 
         return $out;
+    }
+
+    /**
+     * Estrae keyword significative dalla domanda:
+     * - minuscole
+     * - rimuove punteggiatura
+     * - tiene solo parole con almeno 3 caratteri
+     * - rimuove duplicati
+     *
+     * Es:
+     *   "Chi è M. Trast?" → ["trast"]
+     *   "Dimmi di Malen Trast e della sua nave" → ["dimmi", "malen", "trast", "nave"]
+     */
+    private function buildKeywords(string $text): array
+    {
+        $text = mb_strtolower($text);
+
+        // Sostitusce tutto ciò che NON è lettera/numero/spazio con spazio
+        // \p{L} = tutte le lettere Unicode, \p{N} = numeri
+        $text = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $text);
+        if ($text === null) {
+            return [];
+        }
+
+        $parts = preg_split('/\s+/', trim($text));
+        if (!$parts) {
+            return [];
+        }
+
+        $keywords = [];
+        foreach ($parts as $p) {
+            if (mb_strlen($p) < 3) {
+                continue; // scarta parole troppo corte tipo "è", "di", "a"
+            }
+            $keywords[] = $p;
+        }
+
+        // Rimuovi duplicati
+        $keywords = array_values(array_unique($keywords));
+
+        return $keywords;
     }
 }

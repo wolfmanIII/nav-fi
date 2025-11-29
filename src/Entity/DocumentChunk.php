@@ -36,7 +36,7 @@ class DocumentChunk
     private string $fileHash;
 
     // embedding vettoriale (pgvector)
-    #[ORM\Column(type: 'vector', nullable: true)]
+    #[ORM\Column(type: 'vector', length: 1536, nullable: true)]
     private ?array $embedding = null;
 
     public function getId(): ?int

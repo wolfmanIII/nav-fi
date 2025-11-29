@@ -2,9 +2,7 @@
 
 namespace App\Service;
 
-use PhpOffice\PhpWord\IOFactory as PhpWordIOFactory;
 use Smalot\PdfParser\Parser as PdfParser;
-use ZipArchive;
 
 class DocumentTextExtractor
 {
@@ -12,50 +10,87 @@ class DocumentTextExtractor
         private PdfParser $pdfParser,
     ) {}
 
+    /**
+     * Estrae il testo da un file in base all'estensione.
+     *
+     * Supporta: PDF, MD, ODT, DOCX.
+     * Alla fine passa sempre per sanitizeText(), che:
+     *  - rimuove emoji
+     *  - normalizza spazi
+     */
     public function extract(string $path): ?string
     {
         $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
-        return match ($ext) {
-            'pdf'  => $this->extractFromPdf($path),
-            'md'   => $this->extractFromMarkdown($path),
-            'odt'  => $this->extractFromOdt($path),
-            'docx' => $this->extractFromDocx($path),
-            default => null,
-        };
+        $text = null;
+
+        switch ($ext) {
+            case 'pdf':
+                $text = $this->extractPdf($path);
+                break;
+
+            case 'md':
+                $text = $this->extractMarkdown($path);
+                break;
+
+            case 'odt':
+                $text = $this->extractOdt($path);
+                break;
+
+            case 'docx':
+                $text = $this->extractDocx($path);
+                break;
+
+            default:
+                return null;
+        }
+
+        return $this->sanitizeText($text);
     }
 
-    private function extractFromPdf(string $path): ?string
+    // ======================================================================
+    // METODI SPECIFICI PER TIPO DI FILE
+    // ======================================================================
+
+    private function extractPdf(string $path): ?string
     {
         try {
-            $pdf  = $this->pdfParser->parseFile($path);
-            $text = $pdf->getText();
-            $text = $this->normalizeWhitespace($text);
-
-            return $text !== '' ? $text : null;
+            $pdf    = $this->pdfParser->parseFile($path);
+            $text   = $pdf->getText();
         } catch (\Throwable $e) {
-            return null;
-        }
-    }
-
-    private function extractFromMarkdown(string $path): ?string
-    {
-        $text = @file_get_contents($path);
-        if ($text === false) {
+            // Log, oppure lascia silenzioso
             return null;
         }
 
-        $text = preg_replace('/!\[[^\]]*]\([^)]*\)/', '', $text);
-        $text = preg_replace('/<img[^>]*>/i', '', $text);
-
-        $text = $this->normalizeWhitespace($text);
-
-        return $text !== '' ? $text : null;
+        return $text ?: null;
     }
 
-    private function extractFromOdt(string $path): ?string
+    private function extractMarkdown(string $path): ?string
     {
-        $zip = new ZipArchive();
+        if (!is_readable($path)) {
+            return null;
+        }
+
+        $content = file_get_contents($path);
+        if ($content === false) {
+            return null;
+        }
+
+        // Si potrebbe aggiungere qui rimozione di front matter YAML, se usi --- ... ---
+        // Esempio molto semplice:
+        // if (str_starts_with($content, "---\n")) { ... }
+
+        return $content ?: null;
+    }
+
+    private function extractOdt(string $path): ?string
+    {
+        if (!class_exists(\ZipArchive::class)) {
+            // Senza zip non posso leggere l'ODT
+            return null;
+        }
+
+        $zip = new \ZipArchive();
         if ($zip->open($path) !== true) {
             return null;
         }
@@ -67,73 +102,99 @@ class DocumentTextExtractor
             return null;
         }
 
-        $dom = new \DOMDocument();
-        $dom->loadXML($contentXml);
+        // content.xml è XML con tag <text:p>, <text:span>, ecc.
+        // Rimuove i tag e normalizzo gli spazi
+        $text = strip_tags($contentXml);
 
-        $xpath = new \DOMXPath($dom);
-        $xpath->registerNamespace('text', 'urn:oasis:names:tc:opendocument:xmlns:text:1.0');
-
-        $nodes = $xpath->query('//text:p | //text:h');
-        $lines = [];
-
-        foreach ($nodes as $node) {
-            $lines[] = $node->textContent;
-        }
-
-        $text = implode("\n", $lines);
-        $text = $this->normalizeWhitespace($text);
-
-        return $text !== '' ? $text : null;
+        return $text ?: null;
     }
 
-    private function extractFromDocx(string $path): ?string
+    private function extractDocx(string $path): ?string
     {
-        try {
-            $phpWord = PhpWordIOFactory::load($path);
-        } catch (\Throwable $e) {
+        if (!class_exists(\ZipArchive::class)) {
+            // Anche DOCX è uno zip, senza ZipArchive non posso leggerlo
             return null;
         }
 
-        $textParts = [];
-
-        foreach ($phpWord->getSections() as $section) {
-            foreach ($section->getElements() as $element) {
-                if ($element instanceof \PhpOffice\PhpWord\Element\Image) {
-                    continue;
-                }
-
-                if ($element instanceof \PhpOffice\PhpWord\Element\TextRun) {
-                    $runText = [];
-                    foreach ($element->getElements() as $child) {
-                        if ($child instanceof \PhpOffice\PhpWord\Element\Text) {
-                            $runText[] = $child->getText();
-                        }
-                    }
-                    if ($runText) {
-                        $textParts[] = implode(' ', $runText);
-                    }
-                    continue;
-                }
-                
-                /** @var SomeClassWithGetText|mixed $element */
-                if (method_exists($element, 'getText')) {
-                    $textParts[] = $element->getText();
-                }
-            }
+        $zip = new \ZipArchive();
+        if ($zip->open($path) !== true) {
+            return null;
         }
 
-        $text = implode("\n", $textParts);
-        $text = $this->normalizeWhitespace($text);
+        $contentXml = $zip->getFromName('word/document.xml');
+        $zip->close();
 
-        return $text !== '' ? $text : null;
+        if ($contentXml === false) {
+            return null;
+        }
+
+        // Anche qui, è XML con tag <w:p>, <w:t>, ecc.
+        $text = strip_tags($contentXml);
+
+        return $text ?: null;
     }
 
-    private function normalizeWhitespace(string $text): string
+    // ======================================================================
+    // SANITIZZAZIONE TESTO (EMOJI, SPAZI, ECC.)
+    // ======================================================================
+
+    /**
+     * Pulizia finale del testo estratto:
+     *  - rimuove emoji e simboli decorativi
+     *  - normalizza spazi
+     *  - normalizza ritorni a capo multipli
+     */
+    private function sanitizeText(?string $text): ?string
     {
-        $text = str_replace("\r", "\n", $text);
+        if ($text === null) {
+            return null;
+        }
+
+        // Rimuove emoji e simboli "decorativi"
+        $text = $this->stripEmoji($text);
+
+        // Normalizza spazi multipli in uno solo
         $text = preg_replace('/[ \t]+/', ' ', $text);
-        $text = preg_replace('/\n{2,}/', "\n\n", $text);
+
+        // Normalizza ritorni a capo multipli (max 2 di fila)
+        $text = preg_replace('/\n{3,}/', "\n\n", $text);
 
         return trim($text);
     }
+
+    /**
+     * Rimuove la maggior parte degli emoji (range Unicode standard + bandiere + variation selectors).
+     */
+    private function stripEmoji(string $text): string
+    {
+        // 1) Tentativo "generico" con property Unicode
+        $regexGeneric = '/\p{Extended_Pictographic}|[\x{1F1E6}-\x{1F1FF}]|\x{FE0F}/u';
+        $clean = @preg_replace($regexGeneric, '', $text);
+
+        if ($clean !== null) {
+            return $clean;
+        }
+
+        // 2) Fallback: regex a range, se per qualche motivo la property non è supportata
+        $regexFallback = '/['
+            . '\x{1F300}-\x{1F5FF}'
+            . '\x{1F600}-\x{1F64F}'
+            . '\x{1F680}-\x{1F6FF}'
+            . '\x{1F700}-\x{1F77F}'
+            . '\x{1F780}-\x{1F7FF}'
+            . '\x{1F800}-\x{1F8FF}'
+            . '\x{1F900}-\x{1F9FF}'
+            . '\x{1FA00}-\x{1FA6F}'
+            . '\x{1FA70}-\x{1FAFF}'
+            . '\x{2600}-\x{26FF}'
+            . '\x{2700}-\x{27BF}'
+            . '\x{FE00}-\x{FE0F}'
+            . '\x{1F1E6}-\x{1F1FF}'
+            . ']/u';
+
+        $cleanFallback = preg_replace($regexFallback, '', $text);
+
+        return $cleanFallback ?? $text;
+    }
+
 }
