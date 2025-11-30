@@ -24,4 +24,10 @@ services:
     #    tags:
     #        - { name: 'doctrine.middleware' }
 
+    # abilta il servizio per il parsing dei file PDF
     Smalot\PdfParser\Parser: ~
+
+    # Middleware per abilitare l'uso delle sonde sugli indici ivfflat(pgvector)
+    App\Middleware\PgvectorIvfflatMiddleware:
+        arguments:
+            $probes: '%env(int:APP_IVFFLAT_PROBES)%'

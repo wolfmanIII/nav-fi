@@ -1,4 +1,6 @@
-# 1. Indicizzatore di Documenti
+# Motore RAG(Retrieval-Augmented Generation)
+## Definizione
+Un motore AI RAG (o sistema RAG) è un’architettura che combina modelli di linguaggio (LLM) con un motore di ricerca interno per produrre risposte più accurate, verificabili e basate su dati propri.
 ## Dipendenze aggiuntive da installare
 ```bash
 composer require \
@@ -27,6 +29,13 @@ sudo apt install postgresql-18 postgresql-18-pgvector
 sql
 ```sql
 CREATE EXTENSION IF NOT EXISTS vector;
+```
+### Creare indice ivfflat per velocizzare le ricerche(dopo aver generato la entity DocumentChunk e relativa tabella su postgres)
+```sql
+CREATE INDEX IF NOT EXISTS document_chunk_embedding_ivfflat_idx
+ON document_chunk
+USING ivfflat (embedding vector_cosine_ops)
+WITH (lists = 100)
 ```
 ## Cos'è pgvector
 __pgvector__ è un’estensione per PostgreSQL che aggiunge:
@@ -78,7 +87,7 @@ Qui accadono 2 cose molto importanti:
 ### Cos’è la cosine similarity in parole povere
 Immagina ogni embedding come una freccia in uno spazio a 1536 dimensioni 😅
 
-La ***cosine similarity*** misura l’angolo tra le due frecce:
+La ***cosine similarity*** misura l’angolo tra le due frecce(domanda, chunk):
 * angolo piccolo → frecce “puntano” nella stessa direzione → __contenuti simili__
 * angolo grande → frecce “puntano” in direzioni diverse → __contenuti diversi__
 
@@ -95,7 +104,6 @@ si sta chiedendo:
 ***“Recupera per primi i chunk il cui significato è più vicino al significato della domanda”.***
 ## Abilitare pgvector e cosine_similarity
 ### In config/packages/doctrine.yaml aggiungi il tipo e le funzioni DQL:
-yaml
 ```yaml
 doctrine:
   dbal:
@@ -109,8 +117,22 @@ doctrine:
       string_functions:
         cosine_similarity: Partitech\DoctrinePgVector\Query\CosineSimilarity
         distance: Partitech\DoctrinePgVector\Query\Distance
-
 ```
+### Abilitare le sonde sugli indici ivfflat(pgvector)
+```yaml
+services:
+  # ...
+
+  # Middleware per abilitare l'uso delle sonde sugli indici ivfflat(pgvector)
+  App\Middleware\PgvectorIvfflatMiddleware:
+    arguments:
+      $probes: '%env(int:APP_IVFFLAT_PROBES)%'
+```
+Tramite la variabile di ambiente __APP_IVFFLAT_PROBES__:   
+impostiamo il rapporto qualità velocità del nostro sistema RAG:  
+* 5–10 = super veloce
+* 20–30 = molto preciso
+* 50–100 = qualità altissima (RAG più consistente, più lento)
 # 4. Command per indicizzare per open-ai
 ## Esempi di utilizzo
 ### 1. Full index, sfruttando hash (solo file nuovi/modificati)
