@@ -36,13 +36,13 @@ Nel nostro schema abbiamno:
 #[ORM\Column(type: 'vector', length: 1536)]
 private array $embedding;
 ```
-questo campo su __DocumentChunk__ è letteralmente:  
+questo campo su `DocumentChunk` è letteralmente:  
 ***il posto dove salviamo il vettore di embedding del chunk di testo***
 ### Definizione di embedding
 
 Quando viene indicizzato un chunk:
 * viene preso il testo (__$chunkText__)
-* viene passato al modello __text-embedding-3-small__ di open-ai
+* viene passato al modello `text-embedding-3-small` di Ollama
 * il modello restituisce un array di 1536 numeri tipo:
 ```json
 [-0.023, 0.114, ..., 0.002]
@@ -51,12 +51,12 @@ Questo vettore rappresenta il significato del testo in uno spazio numerico.
 In questo spazio:  
 Testi “simili” sono “vicini”; testi diversi sono “lontani”.
 
-__pgvector__ serve esattamente a questo:  
+`pgvector` serve esattamente a questo:  
 Postgres li usa per memorizzare questi vettori e confrontarli.
 
 All'interno dell'applicativo:
-* quando indicizzi → salvi per ogni __DocumentChunk__ il suo __embedding__ (vector(1536))
-* quando interroghi il chatbot → calcoli l’__embedding__ della domanda e lo confronti con quelli salvati.
+* quando indicizzi → salvi per ogni `DocumentChunk` il suo `embedding` (vector(1536))
+* quando interroghi il chatbot → calcoli l’`embedding` della domanda e lo confronti con quelli salvati.
 ### Cos’è cosine_similarity e cosa fa nella query
 Nel ChatbotService abbiamo:
 ```php
@@ -70,14 +70,14 @@ $qb = $this->em->createQueryBuilder()
     ->setParameter('vec', $queryVec);
 ```
 Qui accadono 2 cose molto importanti:
-1. __:vec__ è l’embedding della domanda (array di 1536 float).
-2. __cosine_similarity(c.embedding, :vec)__ è una funzione di pgvector che calcola quanto sono simili i due vettori.
+1. `:vec` è l’embedding della domanda (array di 1536 float).
+2. `cosine_similarity(c.embedding, :vec)` è una funzione di pgvector che calcola quanto sono simili i due vettori.
 ### Cos’è la cosine similarity in parole povere
 Immagina ogni embedding come una freccia in uno spazio a 1536 dimensioni 😅
 
-La ***cosine similarity*** misura l’angolo tra le due frecce(domanda, chunk):
-* angolo piccolo → frecce “puntano” nella stessa direzione → __contenuti simili__
-* angolo grande → frecce “puntano” in direzioni diverse → __contenuti diversi__
+La `cosine similarity` misura l’angolo tra le due frecce(domanda, chunk):
+* angolo piccolo → frecce “puntano” nella stessa direzione → `contenuti simili`
+* angolo grande → frecce “puntano” in direzioni diverse → `contenuti diversi`
 
 Il valore è tra -1 e 1:
 * 1 → identici
@@ -152,7 +152,7 @@ services:
       factory: [ 'App\AI\AiClientFactory', 'create' ]
       arguments: [ '%ai.backend%' ]
 ```
-Tramite la variabile di ambiente __APP_IVFFLAT_PROBES__, impostiamo il rapporto qualità velocità del nostro sistema RAG:
+Tramite la variabile di ambiente `APP_IVFFLAT_PROBES`, impostiamo il rapporto qualità velocità del nostro sistema RAG:
 * 5–10 = super veloce
 * 20–30 = molto preciso
 * 50–100 = qualità altissima (RAG più consistente, più lento)
