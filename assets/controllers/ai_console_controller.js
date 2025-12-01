@@ -74,7 +74,7 @@ export default class extends Controller {
             <div class="chat-header mb-1 text-xs opacity-70">
                 ${this.escapeHtml(headerLabel)}
             </div>
-            <div class="chat-bubble${bubbleExtra} text-sm whitespace-pre-wrap">
+            <div class="chat-bubble${bubbleExtra} text-sm">
                 ${this.escapeHtml(text).replace(/\n/g, "<br>")}
             </div>
         `;

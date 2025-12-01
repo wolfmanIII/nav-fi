@@ -7,7 +7,8 @@ composer require \
     smalot/pdfparser \
     phpoffice/phpword \
     openai-php/client \
-    partitech/doctrine-pgvector
+    partitech/doctrine-pgvector \
+    symfony/uid
 ```
 ## 3. PostgreSQL + pgvector + Doctrine
 ### Installare postgres + pgvector
@@ -149,7 +150,7 @@ services:
 
   # AiClientInterface per gestire il backend Ollama/OpenAi
   App\AI\AiClientInterface:
-      factory: [ 'App\AI\AiClientFactory', 'create' ]
+      factory: [ '@App\AI\AiClientFactory', 'create' ]
       arguments: [ '%ai.backend%' ]
 ```
 Tramite la variabile di ambiente `APP_IVFFLAT_PROBES`, impostiamo il rapporto qualità velocità del nostro sistema RAG:

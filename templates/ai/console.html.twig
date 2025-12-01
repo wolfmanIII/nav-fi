@@ -59,13 +59,13 @@
                         <li>
                             Test mode:
                             <span class="{{ test_mode ? 'text-warning' : 'text-success' }}">
-                                {{ test_mode ? 'ATTIVO (no chiamate OpenAI)' : 'disattivo' }}
+                                {{ test_mode ? 'ATTIVO (no chiamate Engine AI)' : 'disattivo' }}
                             </span>
                         </li>
                         <li>
                             Offline fallback:
                             <span class="{{ offline_fallback ? 'text-success' : 'text-warning' }}">
-                                {{ offline_fallback ? 'ATTIVO (usa solo DB se OpenAI non risponde)' : 'disattivo' }}
+                                {{ offline_fallback ? 'ATTIVO (usa solo DB se l\'engine AI non risponde)' : 'disattivo' }}
                             </span>
                         </li>
                     </ul>

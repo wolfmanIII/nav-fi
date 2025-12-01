@@ -35,6 +35,6 @@ services:
 
     # AiClientInterface per gestire il backend Ollama/OpenAi
     App\AI\AiClientInterface:
-        factory: [ 'App\AI\AiClientFactory', 'create' ]
-        arguments: [ '%ai.backend%' ]
+        factory: ['@App\AI\AiClientFactory', 'create']
+        arguments: ['%ai.backend%']
 
