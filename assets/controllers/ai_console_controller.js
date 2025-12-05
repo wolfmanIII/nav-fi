@@ -75,7 +75,7 @@ export default class extends Controller {
                 ${this.escapeHtml(headerLabel)}
             </div>
             <div class="chat-bubble${bubbleExtra} text-sm">
-                ${this.escapeHtml(text).replace(/\n/g, "<br>")}
+                ${this.escapeHtml(text).replace(/\n/g, "<br>")}<br>
             </div>
         `;
 
