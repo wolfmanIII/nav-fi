@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpClient\Exception\TransportException;
 
 final class ChatController extends BaseController
 {
@@ -15,20 +16,28 @@ final class ChatController extends BaseController
     #[Route('/ai/console', name: 'app_ai_console', methods: ['GET'])]
     public function console(HttpClientInterface $httpClient): Response
     {
-        $response = $httpClient->request(
-            'GET',
-            'http://127.0.0.1:8000/engine/status'
-        );
+        try {
+            $response = $httpClient->request(
+                'GET',
+                'http://127.0.0.1:8000/engine/status'
+            );
+            $elaraStatus = $response->toArray(false);
+            $testMode = ($elaraStatus["test_mode"] ?? 'false') === 'true';
+            $offlineFallback = ($elaraStatus["offline_fallback"] ?? 'true') === 'true';
+            $elaraIsReachable = true;
+        } catch (TransportException $e) {
+            $testMode = false;
+            $offlineFallback = false;
+            $elaraIsReachable = false;
+        }
 
-        $elaraStatus = $response->toArray(false);
-
-        $testMode = ($elaraStatus["test_mode"] ?? 'false') === 'true';
-        $offlineFallback = ($elaraStatus["offline_fallback"] ?? 'true') === 'true';
+        
 
         return $this->render('ai/console.html.twig', [
             'controller_name'   => self::CONTROLLER_NAME,
             'test_mode'         => $testMode,
             'offline_fallback'  => $offlineFallback,
+            'elara_reachable' => $elaraIsReachable,
         ]);
     }
 

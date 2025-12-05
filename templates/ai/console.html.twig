@@ -57,15 +57,20 @@
 
                     <ul class="list-disc list-inside text-xs">
                         <li>
+                            Reachable:
+                            <span class="{{ not elara_reachable ? 'text-warning' : 'text-success' }}">
+                                {{ elara_reachable ? 'Yes' : 'No' }}
+                            </span>
+                        <li>
                             Test mode:
                             <span class="{{ test_mode ? 'text-warning' : 'text-success' }}">
-                                {{ test_mode ? 'ATTIVO (no chiamate Engine ELARA)' : 'DISATTIVO' }}
+                                {{ test_mode ? 'Active (no call to Engine ELARA)' : 'Disabled' }}
                             </span>
                         </li>
                         <li>
                             Offline fallback:
                             <span class="{{ offline_fallback ? 'text-success' : 'text-warning' }}">
-                                {{ offline_fallback ? 'ATTIVO (usa solo DB se l\'engine ELARA non risponde)' : 'DISATTIVO' }}
+                                {{ offline_fallback ? 'Active (use only DB is the engine ELARA do not respond)' : 'Disabled' }}
                             </span>
                         </li>
                     </ul>
