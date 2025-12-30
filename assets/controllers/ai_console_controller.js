@@ -22,35 +22,107 @@ export default class extends Controller {
 
         this.toggleLoading(true);
 
+        const assistantBubble = this.appendMessage("assistant", "");
+
         try {
-            const response = await fetch("/elara/api/chat", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-                body: JSON.stringify({ question: text }),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                const msg = errorData.error || `Errore HTTP ${response.status}`;
-                throw new Error(msg);
-            }
-
-            const data = await response.json();
-            const answer = data.answer ?? "[Nessuna risposta dal engine Elara]";
-
-            this.appendMessage("assistant", answer);
-        } catch (e) {
+            const streamedAnswer = await this.streamAnswer(text, assistantBubble);
+            this.setBubbleText(assistantBubble, streamedAnswer);
+        } catch (streamError) {
+            this.setBubbleText(
+                assistantBubble,
+                "Errore durante la chiamata al chatbot (streaming)."
+            );
             this.appendMessage(
                 "error",
-                "Errore durante la chiamata al chatbot: " + (e.message || e.toString())
+                "Streaming fallito: " +
+                    (streamError.message || streamError.toString())
             );
         } finally {
             this.toggleLoading(false);
             this.scrollToBottom();
         }
+    }
+
+    async streamAnswer(question, bubbleElement) {
+        const response = await fetch("/elara/api/chat/stream", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+            body: JSON.stringify({ question }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            const msg = errorData.error || `Errore HTTP ${response.status}`;
+            throw new Error(msg);
+        }
+
+        if (!response.body || !response.body.getReader) {
+            throw new Error("Streaming non supportato dal browser.");
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let fullText = "";
+        let buffer = "";
+
+        while (true) {
+            const { value, done } = await reader.read();
+            buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+
+            let delimiterIndex;
+            while ((delimiterIndex = buffer.indexOf("\n\n")) !== -1) {
+                const eventChunk = buffer.slice(0, delimiterIndex);
+                buffer = buffer.slice(delimiterIndex + 2);
+
+                const dataLine = eventChunk
+                    .split("\n")
+                    .filter((line) => line.startsWith("data:"))
+                    .map((line) => line.slice(5).trim())
+                    .join("\n");
+
+                if (!dataLine) {
+                    continue;
+                }
+
+                let payload;
+                try {
+                    payload = JSON.parse(dataLine);
+                } catch {
+                    payload = { chunk: dataLine };
+                }
+
+                if (payload.chunk) {
+                    fullText += payload.chunk;
+                    this.setBubbleText(bubbleElement, fullText);
+                    this.scrollToBottom();
+                }
+
+                if (payload.error) {
+                    fullText = payload.error;
+                    this.setBubbleText(bubbleElement, fullText);
+                    return fullText;
+                }
+
+                if (payload.done) {
+                    return fullText || "[Nessuna risposta dal engine Elara]";
+                }
+            }
+
+            if (done) {
+                break;
+            }
+        }
+
+        // process any trailing buffer as plain text
+        if (buffer.trim()) {
+            fullText += buffer.trim();
+            this.setBubbleText(bubbleElement, fullText);
+        }
+
+        return fullText || "[Nessuna risposta dal engine Elara]";
     }
 
     appendMessage(role, text) {
@@ -70,18 +142,34 @@ export default class extends Controller {
         }
 
         wrapper.className = `chat ${chatSideClass}`;
-        wrapper.innerHTML = `
-            <div class="chat-header mb-1 text-xs opacity-70">
-                ${this.escapeHtml(headerLabel)}
-            </div>
-            <div class="chat-bubble${bubbleExtra} text-sm">
-                ${this.escapeHtml(text).replace(/\n/g, "<br>")}<br>
-            </div>
-        `;
+
+        const header = document.createElement("div");
+        header.className = "chat-header mb-1 text-xs opacity-70";
+        header.textContent = headerLabel;
+
+        const bubble = document.createElement("div");
+        bubble.className = `chat-bubble${bubbleExtra} text-sm`;
+        this.setBubbleText(bubble, text);
+
+        wrapper.appendChild(header);
+        wrapper.appendChild(bubble);
 
         this.messagesTarget.appendChild(wrapper);
         this.scrollToBottom();
+
+        return bubble;
     }
+
+    setBubbleText(bubbleElement, text) {
+        if (!bubbleElement) {
+            return;
+        }
+        bubbleElement.innerHTML = this.escapeHtml(text ?? "").replace(
+            /\n/g,
+            "<br>"
+        );
+    }
+
 
     toggleLoading(isLoading) {
         if (!this.hasButtonTarget) {

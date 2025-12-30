@@ -6,6 +6,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpClient\Exception\TransportException;
 
@@ -90,5 +91,75 @@ final class ChatController extends BaseController
             'question' => $payload["question"] ?? ($data['question'] ?? $data['message'] ?? ''),
             'answer'   => $payload["answer"] ?? $payload["message"] ?? '',
         ]);
+    }
+
+    #[Route('/elara/api/chat/stream', name: 'elara_api_chat_stream', methods: ['POST'])]
+    public function chatStream(Request $request, HttpClientInterface $httpClient): Response
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+
+        try {
+            $upstreamResponse = $httpClient->request(
+                'POST',
+                'https://127.0.0.1:8080/api/chat/stream',
+                [
+                    'headers' => [
+                        'Authorization' => 'Bearer 4ad352a3f3c2b3b8940d7ef9caa9361e',
+                        'Accept'        => 'text/event-stream',
+                    ],
+                    'json'          => $data,
+                    'max_redirects' => 0,
+                ]
+            );
+        } catch (TransportException $e) {
+            return $this->json(
+                [
+                    'error'  => 'Errore di comunicazione con il motore Elara (stream).',
+                    'status' => Response::HTTP_BAD_GATEWAY,
+                ],
+                Response::HTTP_BAD_GATEWAY
+            );
+        }
+
+        $statusCode = $upstreamResponse->getStatusCode();
+        if ($statusCode >= Response::HTTP_BAD_REQUEST) {
+            $body = $upstreamResponse->getContent(false);
+            $payload = json_decode($body, true) ?? [];
+            $message = $payload['message'] ?? $payload['error'] ?? 'Errore durante la chiamata al motore Elara (stream).';
+
+            return $this->json(
+                [
+                    'error'  => $message,
+                    'status' => $statusCode,
+                ],
+                $statusCode
+            );
+        }
+
+        $headers = $upstreamResponse->getHeaders(false);
+
+        $streamedResponse = new StreamedResponse(
+            function () use ($httpClient, $upstreamResponse): void {
+                foreach ($httpClient->stream($upstreamResponse) as $chunk) {
+                    if ($chunk->isTimeout()) {
+                        continue;
+                    }
+
+                    echo $chunk->getContent();
+                    @ob_flush();
+                    flush();
+                }
+            }
+        );
+
+        $streamedResponse->headers->set(
+            'Content-Type',
+            $headers['content-type'][0] ?? 'text/event-stream'
+        );
+        $streamedResponse->headers->set('X-Accel-Buffering', 'no');
+        $streamedResponse->headers->set('Cache-Control', 'no-cache');
+        $streamedResponse->setStatusCode($statusCode);
+
+        return $streamedResponse;
     }
 }
