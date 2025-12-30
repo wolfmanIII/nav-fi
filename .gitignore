@@ -23,3 +23,7 @@
 /node_modules/
 ###< node modules ###
 /.idea/dataSources.xml
+
+# Chat session helper (non versionare)
+/.chat-session
+/docs/chat-log.md
