@@ -6,7 +6,6 @@ use App\Entity\Income;
 use App\Form\IncomeType;
 use App\Security\Voter\IncomeVoter;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -56,13 +55,13 @@ final class IncomeController extends BaseController
 
     #[Route('/income/edit/{id}', name: 'app_income_edit', methods: ['GET', 'POST'])]
     public function edit(
-        #[CurrentUser] ?\App\Entity\User $user,
         int $id,
         Request $request,
         EntityManagerInterface $em
     ): Response
     {
-        if (!$user) {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -91,12 +90,12 @@ final class IncomeController extends BaseController
 
     #[Route('/income/delete/{id}', name: 'app_income_delete', methods: ['GET', 'POST'])]
     public function delete(
-        #[CurrentUser] ?\App\Entity\User $user,
         int $id,
         EntityManagerInterface $em
     ): Response
     {
-        if (!$user) {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
         }
 

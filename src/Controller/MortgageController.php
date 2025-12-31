@@ -8,7 +8,6 @@ use App\Form\MortgageInstallmentType;
 use App\Form\MortgageType;
 use App\Security\Voter\MortgageVoter;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -65,13 +64,13 @@ final class MortgageController extends BaseController
 
     #[Route('/mortgage/edit/{id}', name: 'app_mortgage_edit', methods: ['GET', 'POST'])]
     public function edit(
-        #[CurrentUser] ?\App\Entity\User $user,
         int $id,
         Request $request,
         EntityManagerInterface $em
     ): Response
     {
-        if (!$user) {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -123,12 +122,12 @@ final class MortgageController extends BaseController
 
     #[Route('/mortgage/delete/{id}', name: 'app_mortgage_delete', methods: ['GET', 'POST'])]
     public function delete(
-        #[CurrentUser] ?\App\Entity\User $user,
         int $id,
         EntityManagerInterface $em
     ): Response
     {
-        if (!$user) {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -147,13 +146,13 @@ final class MortgageController extends BaseController
 
     #[Route('/mortgage/{id}/pay', name: 'app_mortgage_pay', methods: ['GET', 'POST'])]
     public function pay(
-        #[CurrentUser] ?\App\Entity\User $user,
         int $id,
         Request $request,
         EntityManagerInterface $em
     ): Response
     {
-        if (!$user) {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
         }
 

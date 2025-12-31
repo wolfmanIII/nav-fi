@@ -6,7 +6,6 @@ use App\Entity\AnnualBudget;
 use App\Form\AnnualBudgetType;
 use App\Security\Voter\AnnualBudgetVoter;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -56,13 +55,13 @@ final class AnnualBudgetController extends BaseController
 
     #[Route('/annual-budget/edit/{id}', name: 'app_annual_budget_edit', methods: ['GET', 'POST'])]
     public function edit(
-        #[CurrentUser] ?\App\Entity\User $user,
         int $id,
         Request $request,
         EntityManagerInterface $em
     ): Response
     {
-        if (!$user) {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -91,12 +90,12 @@ final class AnnualBudgetController extends BaseController
 
     #[Route('/annual-budget/delete/{id}', name: 'app_annual_budget_delete', methods: ['GET', 'POST'])]
     public function delete(
-        #[CurrentUser] ?\App\Entity\User $user,
         int $id,
         EntityManagerInterface $em
     ): Response
     {
-        if (!$user) {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
         }
 

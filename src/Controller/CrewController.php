@@ -6,7 +6,6 @@ use App\Entity\Crew;
 use App\Form\CrewType;
 use App\Security\Voter\CrewVoter;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,13 +57,13 @@ final class CrewController extends BaseController
 
     #[Route('/crew/edit/{id}', name: 'app_crew_edit', methods: ['GET', 'POST'])]
     public function edit(
-        #[CurrentUser] ?\App\Entity\User $user,
         int $id,
         Request $request,
         EntityManagerInterface $em
     ): Response
     {
-        if (!$user) {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -94,12 +93,12 @@ final class CrewController extends BaseController
     #[Route('/crew/delete/{id}', name: 'app_crew_delete', methods: ['GET', 'POST'])]
     public function delete(
         Request $request,
-        #[CurrentUser] ?\App\Entity\User $user,
         int $id,
         EntityManagerInterface $em
     ): Response
     {
-        if (!$user) {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
         }
 

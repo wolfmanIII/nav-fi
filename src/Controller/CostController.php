@@ -6,7 +6,6 @@ use App\Entity\Cost;
 use App\Form\CostType;
 use App\Security\Voter\CostVoter;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -56,13 +55,13 @@ final class CostController extends BaseController
 
     #[Route('/cost/edit/{id}', name: 'app_cost_edit', methods: ['GET', 'POST'])]
     public function edit(
-        #[CurrentUser] ?\App\Entity\User $user,
         int $id,
         Request $request,
         EntityManagerInterface $em
     ): Response
     {
-        if (!$user) {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -91,12 +90,12 @@ final class CostController extends BaseController
 
     #[Route('/cost/delete/{id}', name: 'app_cost_delete', methods: ['GET', 'POST'])]
     public function delete(
-        #[CurrentUser] ?\App\Entity\User $user,
         int $id,
         EntityManagerInterface $em
     ): Response
     {
-        if (!$user) {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
         }
 
