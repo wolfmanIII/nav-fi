@@ -30,10 +30,12 @@ final class ChatController extends BaseController
                         'Authorization' => 'Bearer 4ad352a3f3c2b3b8940d7ef9caa9361e',
                         'Accept'        => 'application/json',
                     ],
-                    'max_redirects' => 0,
+                    // Elara risponde 302 prima del 200, quindi seguiamo i redirect
+                    'max_redirects' => 5,
                 ]
             );
-            if ($response->getStatusCode() === Response::HTTP_OK) {
+            $status = $response->getStatusCode();
+            if (in_array($status, [Response::HTTP_OK, Response::HTTP_FOUND], true)) {
                 $elaraStatus = json_decode($response->getContent(false), true) ?? [];
                 $testMode = ($elaraStatus["test_mode"] ?? 'false') === 'true';
                 $offlineFallback = ($elaraStatus["offline_fallback"] ?? 'true') === 'true';
@@ -61,15 +63,16 @@ final class ChatController extends BaseController
         $response = $httpClient->request(
             'POST',
             'https://127.0.0.1:8080/api/chat',
-            [
-                'headers' => [
-                    'Authorization' => 'Bearer 4ad352a3f3c2b3b8940d7ef9caa9361e',
-                    'Accept'        => 'application/json',
-                ],
-                'json'          => $data,
-                'max_redirects' => 0,
-            ]
-        );
+                [
+                    'headers' => [
+                        'Authorization' => 'Bearer 4ad352a3f3c2b3b8940d7ef9caa9361e',
+                        'Accept'        => 'application/json',
+                    ],
+                    'json'          => $data,
+                    // Elara risponde 302 prima del 200, quindi seguiamo i redirect
+                    'max_redirects' => 5,
+                ]
+            );
 
         $statusCode = $response->getStatusCode();
         $body = $response->getContent(false);
@@ -108,7 +111,8 @@ final class ChatController extends BaseController
                         'Accept'        => 'text/event-stream',
                     ],
                     'json'          => $data,
-                    'max_redirects' => 0,
+                    // Elara risponde 302 prima del 200, quindi seguiamo i redirect
+                    'max_redirects' => 5,
                 ]
             );
         } catch (TransportException $e) {
