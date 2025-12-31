@@ -28,4 +28,15 @@ class ShipRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findOneForUser(int $id, User $user): ?Ship
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.id = :id')
+            ->andWhere('s.user = :user')
+            ->setParameter('id', $id)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

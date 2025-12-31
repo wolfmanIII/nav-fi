@@ -28,4 +28,15 @@ class MortgageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findOneForUser(int $id, User $user): ?Mortgage
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.id = :id')
+            ->andWhere('m.user = :user')
+            ->setParameter('id', $id)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

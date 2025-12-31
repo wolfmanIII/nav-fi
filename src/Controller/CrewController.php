@@ -6,6 +6,7 @@ use App\Entity\Crew;
 use App\Form\CrewType;
 use App\Security\Voter\CrewVoter;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -50,8 +51,18 @@ final class CrewController extends BaseController
     }
 
     #[Route('/crew/edit/{id}', name: 'app_crew_edit', methods: ['GET', 'POST'])]
-    public function edit(Crew $crew, Request $request, EntityManagerInterface $em): Response
+    public function edit(int $id, Request $request, EntityManagerInterface $em): Response
     {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $crew = $em->getRepository(Crew::class)->findOneForUser($id, $user);
+        if (!$crew) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        }
+
         $form = $this->createForm(CrewType::class, $crew);
         $form->handleRequest($request);
 
@@ -69,9 +80,21 @@ final class CrewController extends BaseController
     }
 
     #[Route('/crew/delete/{id}', name: 'app_crew_delete', methods: ['GET', 'POST'])]
-    #[IsGranted(CrewVoter::DELETE, 'crew')]
-    public function delete(Request $request, Crew $crew, EntityManagerInterface $em): Response
+    public function delete(Request $request, int $id, EntityManagerInterface $em): Response
     {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $crew = $em->getRepository(Crew::class)->findOneForUser($id, $user);
+        if (!$crew) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        }
+
+        if (!$this->isGranted(CrewVoter::DELETE, $crew)) {
+            throw $this->createAccessDeniedException();
+        }
 
         $em->remove($crew);
         $em->flush();

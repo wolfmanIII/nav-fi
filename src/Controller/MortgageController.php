@@ -8,6 +8,7 @@ use App\Form\MortgageInstallmentType;
 use App\Form\MortgageType;
 use App\Security\Voter\MortgageVoter;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,8 +58,18 @@ final class MortgageController extends BaseController
     }
 
     #[Route('/mortgage/edit/{id}', name: 'app_mortgage_edit', methods: ['GET', 'POST'])]
-    public function edit(Mortgage $mortgage, Request $request, EntityManagerInterface $em): Response
+    public function edit(int $id, Request $request, EntityManagerInterface $em): Response
     {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $mortgage = $em->getRepository(Mortgage::class)->findOneForUser($id, $user);
+        if (!$mortgage) {
+            throw new NotFoundHttpException();
+        }
+
         $form = $this->createForm(MortgageType::class, $mortgage);
 
         $form->handleRequest($request);
@@ -100,8 +111,18 @@ final class MortgageController extends BaseController
 
     #[Route('/mortgage/delete/{id}', name: 'app_mortgage_delete', methods: ['GET', 'POST'])]
     #[IsGranted(MortgageVoter::DELETE, 'mortgage')]
-    public function delete(Mortgage $mortgage, Request $request, EntityManagerInterface $em): Response
+    public function delete(int $id, Request $request, EntityManagerInterface $em): Response
     {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $mortgage = $em->getRepository(Mortgage::class)->findOneForUser($id, $user);
+        if (!$mortgage) {
+            throw new NotFoundHttpException();
+        }
+
         $em->remove($mortgage);
         $em->flush();
 
@@ -109,8 +130,18 @@ final class MortgageController extends BaseController
     }
 
     #[Route('/mortgage/{id}/pay', name: 'app_mortgage_pay', methods: ['GET', 'POST'])]
-    public function pay(Mortgage $mortgage, Request $request, EntityManagerInterface $em): Response
+    public function pay(int $id, Request $request, EntityManagerInterface $em): Response
     {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $mortgage = $em->getRepository(Mortgage::class)->findOneForUser($id, $user);
+        if (!$mortgage) {
+            throw new NotFoundHttpException();
+        }
+
         $payment = new MortgageInstallment();
         $payment->setMortgage($mortgage);
         $paymentForm = $this->createForm(MortgageInstallmentType::class, $payment);

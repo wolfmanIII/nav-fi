@@ -74,4 +74,15 @@ class CrewRepository extends ServiceEntityRepository
 
         return $result;
     }
+
+    public function findOneForUser(int $id, User $user): ?Crew
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.id = :id')
+            ->andWhere('c.user = :user')
+            ->setParameter('id', $id)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
