@@ -72,8 +72,6 @@ final class CrewController extends BaseController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        $this->denyAccessUnlessGranted(CrewVoter::EDIT, $crew);
-
         $form = $this->createForm(CrewType::class, $crew, ['user' => $user]);
         $form->handleRequest($request);
 

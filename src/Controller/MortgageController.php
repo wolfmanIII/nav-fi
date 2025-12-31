@@ -79,8 +79,6 @@ final class MortgageController extends BaseController
             throw new NotFoundHttpException();
         }
 
-        $this->denyAccessUnlessGranted(MortgageVoter::EDIT, $mortgage);
-
         $form = $this->createForm(MortgageType::class, $mortgage, ['user' => $user]);
 
         $form->handleRequest($request);
