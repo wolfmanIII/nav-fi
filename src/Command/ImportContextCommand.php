@@ -5,9 +5,11 @@ namespace App\Command;
 use App\Entity\Insurance;
 use App\Entity\InterestRate;
 use App\Entity\ShipRole;
+use App\Entity\CostCategory;
 use App\Repository\InsuranceRepository;
 use App\Repository\InterestRateRepository;
 use App\Repository\ShipRoleRepository;
+use App\Repository\CostCategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -26,6 +28,7 @@ class ImportContextCommand extends Command
 {
     public function __construct(
         private readonly InsuranceRepository $insuranceRepository,
+        private readonly CostCategoryRepository $costCategoryRepository,
         private readonly InterestRateRepository $interestRateRepository,
         private readonly ShipRoleRepository $shipRoleRepository,
         private readonly EntityManagerInterface $entityManager,
@@ -73,17 +76,20 @@ class ImportContextCommand extends Command
         [$insCreated, $insUpdated] = $this->importInsurance($decoded['insurance'] ?? []);
         [$rateCreated, $rateUpdated] = $this->importInterestRates($decoded['interest_rates'] ?? []);
         [$roleCreated, $roleUpdated] = $this->importShipRoles($decoded['ship_roles'] ?? []);
+        [$catCreated, $catUpdated] = $this->importCostCategories($decoded['cost_categories'] ?? []);
 
         $this->entityManager->flush();
 
         $io->success(sprintf(
-            'Import completato. Insurance: %d nuovi / %d aggiornati; InterestRate: %d nuovi / %d aggiornati; ShipRole: %d nuovi / %d aggiornati.',
+            'Import completato. Insurance: %d nuovi / %d aggiornati; InterestRate: %d nuovi / %d aggiornati; ShipRole: %d nuovi / %d aggiornati; CostCategory: %d nuovi / %d aggiornati.',
             $insCreated,
             $insUpdated,
             $rateCreated,
             $rateUpdated,
             $roleCreated,
-            $roleUpdated
+            $roleUpdated,
+            $catCreated,
+            $catUpdated
         ));
 
         return Command::SUCCESS;
@@ -174,6 +180,36 @@ class ImportContextCommand extends Command
         return [$created, $updated];
     }
 
+    /**
+     * @param array<int, array<string, mixed>> $rows
+     *
+     * @return array{int, int} [creati, aggiornati]
+     */
+    private function importCostCategories(array $rows): array
+    {
+        $created = 0;
+        $updated = 0;
+
+        foreach ($rows as $row) {
+            if (!isset($row['code'])) {
+                continue;
+            }
+
+            $entity = $this->costCategoryRepository->findOneBy(['code' => $row['code']]) ?? new CostCategory();
+            $isNew = $entity->getId() === null;
+
+            $entity
+                ->setCode((string) $row['code'])
+                ->setDescription(isset($row['description']) ? (string) $row['description'] : '')
+            ;
+
+            $this->entityManager->persist($entity);
+            $isNew ? $created++ : $updated++;
+        }
+
+        return [$created, $updated];
+    }
+
     private function truncateTables(): void
     {
         $connection = $this->entityManager->getConnection();
@@ -184,13 +220,14 @@ class ImportContextCommand extends Command
             $connection->executeStatement('TRUNCATE TABLE ship_role');
             $connection->executeStatement('TRUNCATE TABLE insurance');
             $connection->executeStatement('TRUNCATE TABLE interest_rate');
+            $connection->executeStatement('TRUNCATE TABLE cost_category');
             $connection->executeStatement('SET FOREIGN_KEY_CHECKS=1');
 
             return;
         }
 
         if ($platform === 'postgresql' || $platform === 'postgres') {
-            $connection->executeStatement('TRUNCATE TABLE ship_role, insurance, interest_rate RESTART IDENTITY CASCADE');
+            $connection->executeStatement('TRUNCATE TABLE ship_role, insurance, interest_rate, cost_category RESTART IDENTITY CASCADE');
 
             return;
         }
@@ -200,7 +237,8 @@ class ImportContextCommand extends Command
         $connection->executeStatement('DELETE FROM ship_role');
         $connection->executeStatement('DELETE FROM insurance');
         $connection->executeStatement('DELETE FROM interest_rate');
-        $connection->executeStatement("DELETE FROM sqlite_sequence WHERE name IN ('ship_role','insurance','interest_rate')");
+        $connection->executeStatement('DELETE FROM cost_category');
+        $connection->executeStatement("DELETE FROM sqlite_sequence WHERE name IN ('ship_role','insurance','interest_rate','cost_category')");
         $connection->executeStatement('PRAGMA foreign_keys = ON');
     }
 
