@@ -33,6 +33,12 @@ class Income
     #[ORM\Column(nullable: true)]
     private ?int $paymentYear = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $cancelDay = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $cancelYear = null;
+
     #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2)]
     private ?string $amount = null;
 
@@ -129,6 +135,30 @@ class Income
     public function setPaymentYear(?int $paymentYear): static
     {
         $this->paymentYear = $paymentYear;
+
+        return $this;
+    }
+
+    public function getCancelDay(): ?int
+    {
+        return $this->cancelDay;
+    }
+
+    public function setCancelDay(?int $cancelDay): static
+    {
+        $this->cancelDay = $cancelDay;
+
+        return $this;
+    }
+
+    public function getCancelYear(): ?int
+    {
+        return $this->cancelYear;
+    }
+
+    public function setCancelYear(?int $cancelYear): static
+    {
+        $this->cancelYear = $cancelYear;
 
         return $this;
     }

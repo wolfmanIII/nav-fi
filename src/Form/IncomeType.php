@@ -39,6 +39,14 @@ class IncomeType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
+            ->add('cancelDay', NumberType::class, [
+                'required' => false,
+                'attr' => ['class' => 'input m-1 w-full'],
+            ])
+            ->add('cancelYear', NumberType::class, [
+                'required' => false,
+                'attr' => ['class' => 'input m-1 w-full'],
+            ])
             ->add('amount', TravellerMoneyType::class, [
                 'label' => 'Amount (Cr)',
                 'attr' => ['class' => 'input m-1 w-full'],

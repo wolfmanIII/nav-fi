@@ -65,6 +65,18 @@
         </div>
 
         <div>
+            <label class="label">Cancel Day</label>
+            {{ form_widget(form.cancelDay) }}
+            {{ form_errors(form.cancelDay) }}
+        </div>
+
+        <div>
+            <label class="label">Cancel Year</label>
+            {{ form_widget(form.cancelYear) }}
+            {{ form_errors(form.cancelYear) }}
+        </div>
+
+        <div>
             <label class="label">Category</label>
             {{ form_widget(form.incomeCategory) }}
             {{ form_errors(form.incomeCategory) }}
