@@ -13,6 +13,13 @@
         </div>
     {% endif %}
 
+    <div class="alert alert-info shadow-sm mb-4">
+        <div>
+            <h3 class="font-semibold">Crew sheet</h3>
+            <p class="text-sm opacity-80">Definisci ruoli di plancia e capitano prima di salpare: l’equipaggio è il cuore della tua nave.</p>
+        </div>
+    </div>
+
     {{ form_start(form) }}
 
     {{ form_widget(form._token) }}
@@ -85,4 +92,3 @@
     {{ form_end(form, { render_rest: false }) }}
 
 {% endblock %}
-
