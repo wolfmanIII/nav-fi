@@ -177,12 +177,31 @@ class ImportContextCommand extends Command
     private function truncateTables(): void
     {
         $connection = $this->entityManager->getConnection();
+        $platform = $connection->getDatabasePlatform()->getName();
 
-        $connection->executeStatement('SET FOREIGN_KEY_CHECKS=0');
-        $connection->executeStatement('TRUNCATE TABLE ship_role');
-        $connection->executeStatement('TRUNCATE TABLE insurance');
-        $connection->executeStatement('TRUNCATE TABLE interest_rate');
-        $connection->executeStatement('SET FOREIGN_KEY_CHECKS=1');
+        if ($platform === 'mysql') {
+            $connection->executeStatement('SET FOREIGN_KEY_CHECKS=0');
+            $connection->executeStatement('TRUNCATE TABLE ship_role');
+            $connection->executeStatement('TRUNCATE TABLE insurance');
+            $connection->executeStatement('TRUNCATE TABLE interest_rate');
+            $connection->executeStatement('SET FOREIGN_KEY_CHECKS=1');
+
+            return;
+        }
+
+        if ($platform === 'postgresql' || $platform === 'postgres') {
+            $connection->executeStatement('TRUNCATE TABLE ship_role, insurance, interest_rate RESTART IDENTITY CASCADE');
+
+            return;
+        }
+
+        // fallback per SQLite o altri: delete e reset della sequence
+        $connection->executeStatement('PRAGMA foreign_keys = OFF');
+        $connection->executeStatement('DELETE FROM ship_role');
+        $connection->executeStatement('DELETE FROM insurance');
+        $connection->executeStatement('DELETE FROM interest_rate');
+        $connection->executeStatement("DELETE FROM sqlite_sequence WHERE name IN ('ship_role','insurance','interest_rate')");
+        $connection->executeStatement('PRAGMA foreign_keys = ON');
     }
 
     private function resolvePath(string $file): string
