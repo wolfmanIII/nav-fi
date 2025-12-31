@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Captain Log - Annual Budget{% endblock %}
+
+{% block pageContent %}
+
+    {{ form_start(form) }}
+
+    <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
+        <legend class="fieldset-legend">Annual Budget</legend>
+
+        {% if budget.id %}
+            <div>
+                <label class="label">Code</label>
+                <div><b>{{ budget.code }}</b></div>
+            </div>
+            <div></div>
+        {% endif %}
+
+        <div class="col-span-2">
+            <div class="alert alert-info alert-outline shadow-sm w-full">
+                <div>
+                    <h3 class="font-semibold">Periodo di missione</h3>
+                    <p class="text-sm opacity-80">Definisci finestra di inizio e fine per il budget della nave: pianifica crediti e missioni sul calendario imperiale.</p>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <label class="label">Start Day</label>
+            {{ form_widget(form.startDay) }}
+            {{ form_errors(form.startDay) }}
+        </div>
+
+        <div>
+            <label class="label">Start Year</label>
+            {{ form_widget(form.startYear) }}
+            {{ form_errors(form.startYear) }}
+        </div>
+
+        <div>
+            <label class="label">End Day</label>
+            {{ form_widget(form.endDay) }}
+            {{ form_errors(form.endDay) }}
+        </div>
+
+        <div>
+            <label class="label">End Year</label>
+            {{ form_widget(form.endYear) }}
+            {{ form_errors(form.endYear) }}
+        </div>
+
+        <div>
+            <label class="label">Ship</label>
+            {{ form_widget(form.ship) }}
+            {{ form_errors(form.ship) }}
+        </div>
+
+        <div></div>
+
+        <div class="col-span-2">
+            <label class="label">Note</label>
+            {{ form_widget(form.note) }}
+            {{ form_errors(form.note) }}
+        </div>
+
+    </fieldset>
+
+    <button type="submit" class="btn btn-outline btn-primary mt-4 mb-4 mr-4">
+        Save
+    </button>
+    <a href="{{ path('app_annual_budget_index') }}" role="button" class="btn btn-outline btn-default mt-4 mb-4 mr-4">Cancel</a>
+
+    {{ form_end(form, { render_rest: false }) }}
+
+{% endblock %}

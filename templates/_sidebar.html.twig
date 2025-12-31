@@ -62,6 +62,15 @@
             </li>
 
             <li>
+                <a href="{{ path('app_annual_budget_index') }}"
+                   class="{% if controller_name == constant('App\\Controller\\AnnualBudgetController::CONTROLLER_NAME') %}menu-active{% endif %}"
+                >
+                    {% include 'icons/handbook.html.twig' %}
+                    <span>Annual Budget</span>
+                </a>
+            </li>
+
+            <li>
                 <a href="{{ path('app_ai_console') }}"
                     class="{% if controller_name == constant('App\\Controller\\ChatController::CONTROLLER_NAME') %}menu-active{% endif %}">
                     {# icona "elara" #}

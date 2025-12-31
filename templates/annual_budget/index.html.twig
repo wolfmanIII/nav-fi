@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Captain Log - Annual Budget{% endblock %}
+
+{% block pageContent %}
+
+    <div class="p-10">
+
+        <header class="prose">
+            <h1>Annual Budget</h1>
+        </header>
+
+        <div class="alert alert-info alert-outline shadow-sm mb-4">
+            <div>
+                <h3 class="font-semibold">Rotta finanziaria</h3>
+                <p class="text-sm opacity-80">Definisci l’arco di tempo da monitorare per la nave: inizio e fine di periodo per tenere la rotta dei crediti.</p>
+            </div>
+        </div>
+
+        <div class="flow-root">
+            <a href="{{ path('app_annual_budget_new') }}" role="button" class="btn btn-outline btn-primary btn-xs mt-5 mb-5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </a>
+        </div>
+
+        <div class="flow-root">
+
+            <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+                <table class="table border-separate border-spacing-0 inner-bordered-table">
+                    <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Ship</th>
+                        <th class="text-right">Start</th>
+                        <th class="text-right">End</th>
+                        <th>Note</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if budgets|length > 0 %}
+                        {% for budget in budgets %}
+                            <tr>
+                                <td>{{ budget.code }}</td>
+                                <td>{{ budget.ship.name }}</td>
+                                <td class="text-right">{{ budget.startDay }}/{{ budget.startYear }}</td>
+                                <td class="text-right">{{ budget.endDay }}/{{ budget.endYear }}</td>
+                                <td class="max-w-xs truncate">{{ budget.note }}</td>
+                                <td>
+                                    <a href="{{ path('app_annual_budget_edit', {id: budget.id}) }}" role="button" class="btn btn-outline btn-primary btn-xs">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></svg>
+                                    </a>
+                                    <a href="{{ path('app_annual_budget_delete', {id: budget.id}) }}" role="button" class="btn btn-outline btn-error btn-xs">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6">Insert a new Annual Budget</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}
