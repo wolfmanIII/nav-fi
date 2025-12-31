@@ -32,7 +32,7 @@
                     <div><b>{{ mortgage.code }}</b></div>
                 </div>
 
-                <div>
+                <div class="{{ mortgage.signed ? 'alert alert-info alert-outline' : '' }}">
                     <label class="label mt-1 mb-1">Signed</label>
                     {% if mortgage.signed %}
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
