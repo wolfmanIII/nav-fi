@@ -48,11 +48,18 @@ class Ship
     #[ORM\OneToMany(targetEntity: Crew::class, mappedBy: 'ship')]
     private Collection $crews;
 
+    /**
+     * @var Collection<int, Cost>
+     */
+    #[ORM\OneToMany(targetEntity: Cost::class, mappedBy: 'ship')]
+    private Collection $costs;
+
     public function __construct()
     {
         $this->setCode(Uuid::v7());
         $this->mortgages = new ArrayCollection();
         $this->crews = new ArrayCollection();
+        $this->costs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -186,6 +193,35 @@ class Ship
             // set the owning side to null (unless already changed)
             if ($crew->getShip() === $this) {
                 $crew->setShip(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cost>
+     */
+    public function getCosts(): Collection
+    {
+        return $this->costs;
+    }
+
+    public function addCost(Cost $cost): static
+    {
+        if (!$this->costs->contains($cost)) {
+            $this->costs->add($cost);
+            $cost->setShip($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCost(Cost $cost): static
+    {
+        if ($this->costs->removeElement($cost)) {
+            if ($cost->getShip() === $this) {
+                $cost->setShip(null);
             }
         }
 

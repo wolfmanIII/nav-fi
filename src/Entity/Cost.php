@@ -1,0 +1,150 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\CostRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
+
+#[ORM\Entity(repositoryClass: CostRepository::class)]
+class Cost
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 36)]
+    private ?string $code = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $title = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2)]
+    private ?string $amount = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $paymentDay = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $paymentYear = null;
+
+    #[ORM\ManyToOne(inversedBy: 'costs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?CostCategory $costCategory = null;
+
+    #[ORM\ManyToOne(inversedBy: 'costs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Ship $ship = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $user = null;
+
+    public function __construct()
+    {
+        $this->setCode(Uuid::v7());
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): static
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): static
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getAmount(): ?string
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(string $amount): static
+    {
+        $this->amount = $amount;
+
+        return $this;
+    }
+
+    public function getPaymentDay(): ?int
+    {
+        return $this->paymentDay;
+    }
+
+    public function setPaymentDay(?int $paymentDay): static
+    {
+        $this->paymentDay = $paymentDay;
+
+        return $this;
+    }
+
+    public function getPaymentYear(): ?int
+    {
+        return $this->paymentYear;
+    }
+
+    public function setPaymentYear(?int $paymentYear): static
+    {
+        $this->paymentYear = $paymentYear;
+
+        return $this;
+    }
+
+    public function getCostCategory(): ?CostCategory
+    {
+        return $this->costCategory;
+    }
+
+    public function setCostCategory(?CostCategory $costCategory): static
+    {
+        $this->costCategory = $costCategory;
+
+        return $this;
+    }
+
+    public function getShip(): ?Ship
+    {
+        return $this->ship;
+    }
+
+    public function setShip(?Ship $ship): static
+    {
+        $this->ship = $ship;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+}

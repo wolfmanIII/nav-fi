@@ -3,6 +3,7 @@
 namespace App\EventSubscriber;
 
 use App\Entity\Crew;
+use App\Entity\Cost;
 use App\Entity\Mortgage;
 use App\Entity\MortgageInstallment;
 use App\Entity\Ship;
@@ -32,6 +33,7 @@ class AssignUserSubscriber
             || $entity instanceof Ship
             || $entity instanceof Mortgage
             || $entity instanceof MortgageInstallment
+            || $entity instanceof Cost
         ) {
             if (method_exists($entity, 'getUser') && method_exists($entity, 'setUser') && $entity->getUser() === null) {
                 $entity->setUser($user);

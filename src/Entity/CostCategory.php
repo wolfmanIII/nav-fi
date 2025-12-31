@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CostCategoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CostCategoryRepository::class)]
@@ -18,6 +20,17 @@ class CostCategory
 
     #[ORM\Column(length: 255)]
     private ?string $description = null;
+
+    /**
+     * @var Collection<int, Cost>
+     */
+    #[ORM\OneToMany(targetEntity: Cost::class, mappedBy: 'costCategory')]
+    private Collection $costs;
+
+    public function __construct()
+    {
+        $this->costs = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -44,6 +57,35 @@ class CostCategory
     public function setDescription(string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cost>
+     */
+    public function getCosts(): Collection
+    {
+        return $this->costs;
+    }
+
+    public function addCost(Cost $cost): static
+    {
+        if (!$this->costs->contains($cost)) {
+            $this->costs->add($cost);
+            $cost->setCostCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCost(Cost $cost): static
+    {
+        if ($this->costs->removeElement($cost)) {
+            if ($cost->getCostCategory() === $this) {
+                $cost->setCostCategory(null);
+            }
+        }
 
         return $this;
     }
