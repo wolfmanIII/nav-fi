@@ -1,6 +1,6 @@
 # Captain Log Web
 
-Applicazione Symfony 7.3 per la gestione di navi, equipaggi e mutui, con area amministrativa EasyAdmin e comandi di import/export dei dati di contesto.
+Applicazione Symfony 7.3 per la gestione di navi, equipaggi e mutui, pensata per il gioco di ruolo **Traveller**. Include area amministrativa EasyAdmin e comandi di import/export dei dati di contesto.
 
 ## Caratteristiche principali
 - Navi, equipaggi, ruoli di bordo e mutui (rate, tassi, assicurazioni).

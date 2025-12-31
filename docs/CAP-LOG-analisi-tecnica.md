@@ -1,5 +1,7 @@
 # Captain Log Web – Analisi tecnica
 
+Applicazione Symfony dedicata alla gestione di navi, equipaggi e mutui nel contesto del gioco di ruolo **Traveller**.
+
 Questo documento descrive in modo discorsivo l’architettura attuale di Captain Log Web, le sue dipendenze, i componenti applicativi principali e alcuni punti di attenzione operativi.
 
 ## Stack e infrastruttura
