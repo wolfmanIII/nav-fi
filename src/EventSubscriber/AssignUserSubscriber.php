@@ -8,9 +8,9 @@ use App\Entity\MortgageInstallment;
 use App\Entity\Ship;
 use App\Entity\User;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Events;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class AssignUserSubscriber implements EventSubscriber
 {
@@ -23,7 +23,7 @@ class AssignUserSubscriber implements EventSubscriber
         return [Events::prePersist];
     }
 
-    public function prePersist(LifecycleEventArgs $args): void
+    public function prePersist(PrePersistEventArgs $args): void
     {
         $user = $this->security->getUser();
         if (!$user instanceof User) {
