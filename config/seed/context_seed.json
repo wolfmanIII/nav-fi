@@ -1,0 +1,114 @@
+{
+    "insurance": [
+        {
+            "name": "No Insurance",
+            "annual_cost": "0",
+            "coverage": [
+                "No Coverage"
+            ]
+        },
+        {
+            "name": "Base",
+            "annual_cost": "0.5",
+            "coverage": [
+                "Collision damage",
+                "Ship theft (not negligence)",
+                "Structural failures"
+            ]
+        },
+        {
+            "name": "Extended",
+            "annual_cost": "1",
+            "coverage": [
+                "Everything included in Base",
+                "Piracy",
+                "Space Anomalies",
+                "Auto navigation errors"
+            ]
+        },
+        {
+            "name": "Premium",
+            "annual_cost": "2",
+            "coverage": [
+                "Everything included in Extended",
+                "War zones",
+                "Military actions",
+                "Dangerous experiments",
+                "Full refund in case of loss"
+            ]
+        }
+    ],
+    "interest_rates": [
+        {
+            "duration": 40,
+            "price_multiplier": "2",
+            "price_divider": "240",
+            "annual_interest_rate": "1.75"
+        },
+        {
+            "duration": 30,
+            "price_multiplier": "1.75",
+            "price_divider": "206",
+            "annual_interest_rate": "1.88"
+        },
+        {
+            "duration": 20,
+            "price_multiplier": "1.5",
+            "price_divider": "160",
+            "annual_interest_rate": "2.05"
+        },
+        {
+            "duration": 10,
+            "price_multiplier": "1.25",
+            "price_divider": "96",
+            "annual_interest_rate": "2.26"
+        }
+    ],
+    "ship_roles": [
+        {
+            "code": "CAP",
+            "name": "Captain",
+            "description": "Spaceship Captain"
+        },
+        {
+            "code": "ENG",
+            "name": "Engineer",
+            "description": "Spaceship Engineer"
+        },
+        {
+            "code": "PIL",
+            "name": "Pilot",
+            "description": "Spaceship Pilot"
+        },
+        {
+            "code": "NAV",
+            "name": "Navigator",
+            "description": "Spaceship Navigator"
+        },
+        {
+            "code": "SCI",
+            "name": "Scientist",
+            "description": "Spaceship Scientist"
+        },
+        {
+            "code": "MED",
+            "name": "Medic",
+            "description": "Spaceship Medic"
+        },
+        {
+            "code": "MAR",
+            "name": "Marine",
+            "description": "Spaceship Marine"
+        },
+        {
+            "code": "TEC",
+            "name": "Technician",
+            "description": "Spaceship Technician"
+        },
+        {
+            "code": "STE",
+            "name": "Steward",
+            "description": "Spaceship Steward"
+        }
+    ]
+}

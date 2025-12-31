@@ -1,0 +1,82 @@
+{% extends 'base_plain.html.twig' %}
+
+{% block title %}Accedi - Captain Log{% endblock %}
+
+{% block pageContent %}
+<div class="flex items-center justify-center min-h-[60vh] py-6">
+    <div class="card w-full max-w-5xl bg-base-100 border border-base-300 shadow-lg">
+        <div class="grid grid-cols-1 md:grid-cols-2 h-full">
+            <div class="card-body space-y-6">
+                <div class="flex items-center gap-3">
+                    <img src="{{ asset('img/captain_log_logo.png') }}" alt="Captain Log" class="w-12 h-12">
+                    <div>
+                    <p class="text-lg font-semibold">Captain Log</p>
+                    <p class="text-sm opacity-70">Autenticazione richiesta</p>
+                </div>
+            </div>
+
+            <p class="text-sm opacity-80">
+                Accedi per utilizzare funzioni interne (console RAG, monitor).
+            </p>
+
+            {% if error %}
+                <div class="alert alert-error text-sm">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
+            <form method="post" class="space-y-4">
+                <div class="form-control w-full">
+                    <input
+                        type="email"
+                        name="email"
+                        value="{{ last_username }}"
+                        class="input input-bordered w-full"
+                        placeholder="Email"
+                        required
+                        autofocus
+                    >
+                </div>
+
+                <div class="form-control w-full">
+                    <input
+                        type="password"
+                        name="password"
+                        class="input input-bordered w-full"
+                        placeholder="Password"
+                        required
+                    >
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <button class="btn btn-primary w-full mt-2" type="submit">
+                    Entra
+                </button>
+            </form>
+
+            <a href="{{ path('app_home') }}" class="btn btn-outline w-full">
+                Torna alla homepage
+            </a>
+            </div>
+
+            <div class="bg-base-200/60 p-6 rounded-r-2xl flex flex-col justify-between text-sm">
+                <div>
+                    <h2 class="font-semibold mb-2 text-base">Area riservata</h2>
+                    <p class="opacity-80">
+                        Le credenziali sono personali. I dati vengono trattati in modo confidenziale
+                        e protetti con adeguate misure di sicurezza. Effettua sempre il logout su 
+                        dispositivi condivisi.
+                    </p>
+                </div>
+                <div class="mt-6 opacity-70">
+                    <p class="text-xs">
+                        Accedendo confermi di utilizzare credenziali personali e di mantenere riservate 
+                        le informazioni visualizzate.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
