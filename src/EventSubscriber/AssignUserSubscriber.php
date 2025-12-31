@@ -7,8 +7,8 @@ use App\Entity\Mortgage;
 use App\Entity\MortgageInstallment;
 use App\Entity\Ship;
 use App\Entity\User;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PrePersistEventArgs;
-use Symfony\Bridge\Doctrine\Attribute\AsDoctrineListener;
 use Symfony\Bundle\SecurityBundle\Security;
 
 #[AsDoctrineListener(event: 'prePersist')]
