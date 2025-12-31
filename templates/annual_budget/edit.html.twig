@@ -9,6 +9,8 @@
     <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-250">
         <legend class="fieldset-legend">Annual Budget</legend>
 
+        {{ form_widget(form._token) }}
+
         {% if budget.id %}
             <div>
                 <label class="label">Code</label>
