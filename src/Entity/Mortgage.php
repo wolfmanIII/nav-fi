@@ -209,72 +209,89 @@ class Mortgage
         return $this;
     }
 
-    public function calculateShipCost(): float|int|string|null
+    public function calculateShipCost(): string
     {
-        $shipCost = 0.00;
-        $shipCost = $this->getShip()->getPrice();
-        $shipCost = $shipCost - ($this->getShipShares() * self::SHIP_SHARE_VALUE);
+        $shipPrice = $this->normalizeAmount($this->getShip()?->getPrice());
+        $shipSharesValue = bcmul((string)($this->getShipShares() ?? 0), (string)self::SHIP_SHARE_VALUE, 4);
+
+        $shipCost = bcsub($shipPrice, $shipSharesValue, 6);
         if ($this->getAdvancePayment()) {
-            $shipCost = $shipCost - $this->getAdvancePayment();
+            $shipCost = bcsub($shipCost, $this->normalizeAmount($this->getAdvancePayment()), 6);
         }
 
         if ($this->getDiscount()) {
-            $discount = $this->getShip()->getPrice() * $this->getDiscount() / 100;
-            $shipCost = $shipCost - $discount;
+            $discount = bcdiv(
+                bcmul($shipPrice, $this->normalizeAmount($this->getDiscount()), 6),
+                '100',
+                6
+            );
+            $shipCost = bcsub($shipCost, $discount, 6);
         }
 
-        return $shipCost;
+        return bcadd($shipCost, '0', 6);
     }
 
-    public function calculateInsuranceCost(): float|int
+    public function calculateInsuranceCost(): string
     {
-        return $this->getShip()->getPrice()
-            / 100
-            * $this->getInsurance()->getAnnualCost()
-            / 12
-            ;
+        $shipPrice = $this->normalizeAmount($this->getShip()?->getPrice());
+        $annualCost = $this->normalizeAmount($this->getInsurance()?->getAnnualCost());
+
+        $base = bcdiv($shipPrice, '100', 6);
+        $annualPayment = bcmul($base, $annualCost, 6);
+
+        return bcdiv($annualPayment, '12', 6);
     }
 
     public function calculate(): array
     {
         $shipCost = $this->calculateShipCost();
-        $monthlyPayment =
-            $shipCost
-            * $this->getInterestRate()->getPriceMultiplier()
-            / $this->getInterestRate()->getDuration()
-            / 12
-        ;
+        $multiplier = $this->normalizeAmount($this->getInterestRate()?->getPriceMultiplier());
+        $duration = $this->getInterestRate()?->getDuration() ?? 1;
 
-        $annualPayment = $monthlyPayment * 12;
+        $monthlyPayment = bcdiv(
+            bcdiv(
+                bcmul($shipCost, $multiplier, 6),
+                (string)$duration,
+                6
+            ),
+            '12',
+            6
+        );
 
-        $insuranceMonthlyPayment = 0.00;
-        $insuranceAnnualPayment = 0.00;
+        $annualPayment = bcmul($monthlyPayment, '12', 6);
+
+        $insuranceMonthlyPayment = '0.00';
+        $insuranceAnnualPayment = '0.00';
         if ($this->getInsurance()) {
             $insuranceMonthlyPayment = $this->calculateInsuranceCost();
-            $insuranceAnnualPayment = $insuranceMonthlyPayment * 12;
+            $insuranceAnnualPayment = bcmul($insuranceMonthlyPayment, '12', 6);
         }
 
-        $totalMonthlyPayment = $monthlyPayment + $insuranceMonthlyPayment;
-        $totalAnnualPayment = $annualPayment + $insuranceAnnualPayment;
+        $totalMonthlyPayment = bcadd($monthlyPayment, $insuranceMonthlyPayment, 6);
+        $totalAnnualPayment = bcadd($annualPayment, $insuranceAnnualPayment, 6);
 
-        $totalMortgage = $shipCost * $this->getInterestRate()->getPriceMultiplier();
+        $totalMortgage = bcmul($shipCost, $multiplier, 6);
 
-        $totalMortgagePaid = 0.00;
-        foreach($this->getMortgageInstallments() as $installment) {
-            $totalMortgagePaid = $totalMortgagePaid + $installment->getPayment();
+        $totalMortgagePaid = '0.00';
+        foreach ($this->getMortgageInstallments() as $installment) {
+            $totalMortgagePaid = bcadd(
+                $totalMortgagePaid,
+                $this->normalizeAmount($installment->getPayment()),
+                6
+            );
         }
 
         return [
-            'ship_cost' => round($shipCost, 2, PHP_ROUND_HALF_DOWN),
-            'mortgage_monthly' => round($monthlyPayment, 2, PHP_ROUND_HALF_DOWN),
-            'mortgage_annual' => round($annualPayment, 2 , PHP_ROUND_HALF_DOWN),
-            'insurance_monthly' => round($insuranceMonthlyPayment, 2 , PHP_ROUND_HALF_DOWN),
-            'insurance_annual' => round($insuranceAnnualPayment, 2, PHP_ROUND_HALF_DOWN),
-            'total_monthly_payment' => round($totalMonthlyPayment, 2, PHP_ROUND_HALF_DOWN),
-            'total_annual_payment' => round($totalAnnualPayment, 2, PHP_ROUND_HALF_DOWN),
-            'total_mortgage' => round($totalMortgage, 2, PHP_ROUND_HALF_DOWN),
+            'ship_cost' => $this->roundAmount($shipCost),
+            'mortgage_monthly' => $this->roundAmount($monthlyPayment),
+            'mortgage_annual' => $this->roundAmount($annualPayment),
+            'insurance_monthly' => $this->roundAmount($insuranceMonthlyPayment),
+            'insurance_annual' => $this->roundAmount($insuranceAnnualPayment),
+            'total_monthly_payment' => $this->roundAmount($totalMonthlyPayment),
+            'total_annual_payment' => $this->roundAmount($totalAnnualPayment),
+            'total_mortgage' => $this->roundAmount($totalMortgage),
             'installments_paid' => $this->getMortgageInstallments()->count(),
-            'total_mortgage_paid' => round($totalMortgagePaid, 2, PHP_ROUND_HALF_UP)
+            'total_mortgage_paid' => $this->roundAmount($totalMortgagePaid, 2, PHP_ROUND_HALF_UP)
         ];
     }
 
@@ -318,5 +335,19 @@ class Mortgage
         }
 
         return $this;
+    }
+
+    private function normalizeAmount(float|int|string|null $value, int $scale = 2): string
+    {
+        if ($value === null) {
+            return bcadd('0', '0', $scale);
+        }
+
+        return bcadd((string)$value, '0', $scale);
+    }
+
+    private function roundAmount(string $value, int $precision = 2, int $mode = PHP_ROUND_HALF_DOWN): float
+    {
+        return round((float)$value, $precision, $mode);
     }
 }
