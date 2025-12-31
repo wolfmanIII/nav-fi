@@ -20,7 +20,8 @@ final class ShipController extends BaseController
     #[Route('/ship/index', name: 'app_ship_index', methods: ['GET'])]
     public function index(EntityManagerInterface $em): Response
     {
-        $ships = $em->getRepository(Ship::class)->findAll();
+        $user = $this->getUser();
+        $ships = $user ? $em->getRepository(Ship::class)->findAllForUser($user) : [];
         return $this->render('ship/index.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'ships' => $ships,
@@ -91,7 +92,7 @@ final class ShipController extends BaseController
     ): Response {
         $needCaptain = !$ship->hasCaptain();
         // Tutti i crew che non hanno una nave
-        $crewToSelect = $em->getRepository(Crew::class)->getCrewNotInAnyShip($needCaptain);
+        $crewToSelect = $em->getRepository(Crew::class)->getCrewNotInAnyShip($needCaptain, $this->getUser());
 
         // Costruisci le DTO
         $rows = [];

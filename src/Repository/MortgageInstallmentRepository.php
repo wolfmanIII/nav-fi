@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\MortgageInstallment;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,15 @@ class MortgageInstallmentRepository extends ServiceEntityRepository
         parent::__construct($registry, MortgageInstallment::class);
     }
 
-//    /**
-//     * @return MortgageRate[] Returns an array of MortgageRate objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?MortgageRate
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return MortgageInstallment[]
+     */
+    public function findAllForUser(User $user): array
+    {
+        return $this->createQueryBuilder('mi')
+            ->andWhere('mi.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
 }

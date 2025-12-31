@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Crew;
 use App\Entity\Ship;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -15,6 +16,18 @@ class CrewRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Crew::class);
+    }
+
+    /**
+     * @return Crew[]
+     */
+    public function findAllForUser(User $user): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
     }
 
     public function findOneByCaptainOnShip(Ship $ship, ?Crew $exclude = null): ?Crew
@@ -39,11 +52,13 @@ class CrewRepository extends ServiceEntityRepository
      * @param bool $needCaptain
      * @return array
      */
-    public function getCrewNotInAnyShip(bool $needCaptain): array
+    public function getCrewNotInAnyShip(bool $needCaptain, ?User $user = null): array
     {
         $crew = $this->createQueryBuilder('c')
             ->join('c.shipRoles', 'r')
             ->where('c.ship IS NULL')
+            ->andWhere($user ? 'c.user = :user' : '1 = 1')
+            ->setParameter('user', $user)
             ->getQuery()->getResult();
 
         $result = [];

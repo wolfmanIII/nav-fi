@@ -20,7 +20,8 @@ final class MortgageController extends BaseController
     #[Route('/mortgage/index', name: 'app_mortgage_index')]
     public function index(EntityManagerInterface $em): Response
     {
-        $mortgages = $em->getRepository(Mortgage::class)->findAll();
+        $user = $this->getUser();
+        $mortgages = $user ? $em->getRepository(Mortgage::class)->findAllForUser($user) : [];
 
         return $this->render('mortgage/index.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,

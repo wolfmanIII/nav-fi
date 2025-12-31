@@ -18,7 +18,8 @@ final class CrewController extends BaseController
     #[Route('/crew/index', name: 'app_crew_index', methods: ['GET'])]
     public function index(EntityManagerInterface $em): Response
     {
-        $crew = $em->getRepository(Crew::class)->findAll();
+        $user = $this->getUser();
+        $crew = $user ? $em->getRepository(Crew::class)->findAllForUser($user) : [];
 
         return $this->render('crew/index.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
