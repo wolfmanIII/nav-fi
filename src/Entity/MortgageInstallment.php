@@ -31,6 +31,10 @@ class MortgageInstallment
     #[ORM\JoinColumn(nullable: false)]
     private ?Mortgage $mortgage = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->setCode(Uuid::v7());
@@ -97,6 +101,18 @@ class MortgageInstallment
     public function setMortgage(?Mortgage $mortgage): static
     {
         $this->mortgage = $mortgage;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

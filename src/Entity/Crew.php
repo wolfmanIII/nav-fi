@@ -42,6 +42,10 @@ class Crew
     #[ORM\ManyToOne(inversedBy: 'crews')]
     private ?Ship $ship = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $user = null;
+
     /**
      * @var Collection<int, ShipRole>
      */
@@ -161,6 +165,18 @@ class Crew
     public function getShipRoles(): Collection
     {
         return $this->shipRoles;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
     }
 
     public function addShipRole(ShipRole $shipRole): static

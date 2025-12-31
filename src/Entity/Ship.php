@@ -32,6 +32,10 @@ class Ship
     #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2)]
     private ?float $price = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $user = null;
+
     /**
      * @var Collection<int, Mortgage>
      */
@@ -112,6 +116,18 @@ class Ship
     public function setPrice(float $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

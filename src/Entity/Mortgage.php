@@ -55,6 +55,10 @@ class Mortgage
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private ?bool $signed = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $user = null;
+
     /**
      * @var Collection<int, MortgageInstallment>
      */
@@ -189,6 +193,18 @@ class Mortgage
     public function setInsurance(?Insurance $insurance): static
     {
         $this->insurance = $insurance;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
