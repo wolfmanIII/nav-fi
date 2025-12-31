@@ -14,10 +14,13 @@ use Symfony\Component\HttpClient\Exception\TransportException;
 final class ChatController extends BaseController
 {
     public const CONTROLLER_NAME = 'ChatController';
+    private string $elaraBaseUrl;
 
     public function __construct(
         #[Autowire(env: 'ELARA_API_TOKEN')] private readonly string $elaraApiToken,
+        #[Autowire(env: 'ELARA_BASE_URL')] string $elaraBaseUrl,
     ) {
+        $this->elaraBaseUrl = rtrim($elaraBaseUrl, '/');
     }
 
     #[Route('/ai/console', name: 'app_ai_console', methods: ['GET'])]
@@ -30,7 +33,7 @@ final class ChatController extends BaseController
         try {
             $response = $httpClient->request(
                 'GET',
-                'https://127.0.0.1:8080/status/engine',
+                sprintf('%s/status/engine', $this->elaraBaseUrl),
                 [
                     'headers' => [
                         'Authorization' => sprintf('Bearer %s', $this->elaraApiToken),
@@ -68,7 +71,7 @@ final class ChatController extends BaseController
         
         $response = $httpClient->request(
             'POST',
-            'https://127.0.0.1:8080/api/chat',
+            sprintf('%s/api/chat', $this->elaraBaseUrl),
             [
                 'headers' => [
                     'Authorization' => sprintf('Bearer %s', $this->elaraApiToken),
@@ -110,7 +113,7 @@ final class ChatController extends BaseController
         try {
             $upstreamResponse = $httpClient->request(
                 'POST',
-                'https://127.0.0.1:8080/api/chat/stream',
+                sprintf('%s/api/chat/stream', $this->elaraBaseUrl),
                 [
                     'headers' => [
                         'Authorization' => sprintf('Bearer %s', $this->elaraApiToken),
