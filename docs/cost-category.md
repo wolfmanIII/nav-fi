@@ -1,4 +1,4 @@
-# Categorie di costo
+# Cost category
 
 - Personal cost => PERSONAL
 - Crew gear cost => CREW_GEAR
