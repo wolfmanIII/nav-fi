@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Insurance;
 use App\Entity\InterestRate;
 use App\Entity\ShipRole;
+use App\Entity\CostCategory;
 use App\Entity\DocumentFile;
 use App\Entity\DocumentChunk;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
@@ -56,5 +57,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Interest Rate', 'fas fa-list', InterestRate::class);
         yield MenuItem::linkToCrud('Insurance', 'fas fa-list', Insurance::class);
         yield MenuItem::linkToCrud('ShipRole', 'fas fa-list', ShipRole::class);
+        yield MenuItem::linkToCrud('Cost Category', 'fas fa-list', CostCategory::class);
     }
 }
