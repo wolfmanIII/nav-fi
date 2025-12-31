@@ -36,11 +36,8 @@ class Ship
     #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
 
-    /**
-     * @var Collection<int, Mortgage>
-     */
-    #[ORM\OneToMany(targetEntity: Mortgage::class, mappedBy: 'ship')]
-    private Collection $mortgages;
+    #[ORM\OneToOne(mappedBy: 'ship', cascade: ['persist', 'remove'])]
+    private ?Mortgage $mortgage = null;
 
     /**
      * @var Collection<int, Crew>
@@ -54,12 +51,18 @@ class Ship
     #[ORM\OneToMany(targetEntity: Cost::class, mappedBy: 'ship')]
     private Collection $costs;
 
+    /**
+     * @var Collection<int, Income>
+     */
+    #[ORM\OneToMany(targetEntity: Income::class, mappedBy: 'ship')]
+    private Collection $incomes;
+
     public function __construct()
     {
         $this->setCode(Uuid::v7());
-        $this->mortgages = new ArrayCollection();
         $this->crews = new ArrayCollection();
         $this->costs = new ArrayCollection();
+        $this->incomes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -139,32 +142,24 @@ class Ship
         return $this;
     }
 
-    /**
-     * @return Collection<int, Mortgage>
-     */
-    public function getMortgages(): Collection
+    public function getMortgage(): ?Mortgage
     {
-        return $this->mortgages;
+        return $this->mortgage;
     }
 
-    public function addMortgage(Mortgage $mortgage): static
+    public function setMortgage(?Mortgage $mortgage): static
     {
-        if (!$this->mortgages->contains($mortgage)) {
-            $this->mortgages->add($mortgage);
+        // unset owning side of the relation if necessary
+        if ($mortgage === null && $this->mortgage !== null) {
+            $this->mortgage->setShip(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($mortgage !== null && $mortgage->getShip() !== $this) {
             $mortgage->setShip($this);
         }
 
-        return $this;
-    }
-
-    public function removeMortgage(Mortgage $mortgage): static
-    {
-        if ($this->mortgages->removeElement($mortgage)) {
-            // set the owning side to null (unless already changed)
-            if ($mortgage->getShip() === $this) {
-                $mortgage->setShip(null);
-            }
-        }
+        $this->mortgage = $mortgage;
 
         return $this;
     }
@@ -229,6 +224,35 @@ class Ship
     }
 
     /**
+     * @return Collection<int, Income>
+     */
+    public function getIncomes(): Collection
+    {
+        return $this->incomes;
+    }
+
+    public function addIncome(Income $income): static
+    {
+        if (!$this->incomes->contains($income)) {
+            $this->incomes->add($income);
+            $income->setShip($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIncome(Income $income): static
+    {
+        if ($this->incomes->removeElement($income)) {
+            if ($income->getShip() === $this) {
+                $income->setShip(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function hasCaptain(): bool
@@ -243,16 +267,11 @@ class Ship
 
     public function hasMortgage(): bool
     {
-        return $this->getMortgages()->count() > 0;
+        return $this->getMortgage() !== null;
     }
 
     public function hasMortgageSigned(): bool
     {
-        foreach ($this->getMortgages() as $mortgage) {
-            if ($mortgage->isSigned()) {
-                return true;
-            }
-        }
-        return false;
+        return $this->getMortgage()?->isSigned() === true;
     }
 }

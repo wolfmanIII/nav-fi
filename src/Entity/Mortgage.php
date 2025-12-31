@@ -25,8 +25,8 @@ class Mortgage
     #[ORM\Column(length: 100)]
     private ?string $name = null;
 
-    #[ORM\ManyToOne(inversedBy: 'mortgages')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\OneToOne(inversedBy: 'mortgage')]
+    #[ORM\JoinColumn(nullable: false, unique: true)]
     private ?Ship $ship = null;
 
     #[ORM\Column]
@@ -109,6 +109,11 @@ class Mortgage
     public function setShip(?Ship $ship): static
     {
         $this->ship = $ship;
+
+        // ensure inverse side is synchronized
+        if ($ship !== null && $ship->getMortgage() !== $this) {
+            $ship->setMortgage($this);
+        }
 
         return $this;
     }

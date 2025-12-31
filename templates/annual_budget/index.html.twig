@@ -33,6 +33,7 @@
                         <th>Ship</th>
                         <th class="text-right">Start</th>
                         <th class="text-right">End</th>
+                        <th class="text-right">Budget</th>
                         <th>Note</th>
                         <th>Chart</th>
                         <th>Action</th>
@@ -46,6 +47,7 @@
                                 <td>{{ budget.ship.name }}</td>
                                 <td class="text-right">{{ budget.startDay }}/{{ budget.startYear }}</td>
                                 <td class="text-right">{{ budget.endDay }}/{{ budget.endYear }}</td>
+                                <td class="text-right">{{ budget.calculateBudget|number_format(2, ',', '.') }}</td>
                                 <td class="max-w-xs truncate">{{ budget.note }}</td>
                                 <td>
                                     <a href="{{ path('app_annual_budget_chart', {id: budget.id}) }}" role="button" class="btn btn-outline btn-primary btn-xs">

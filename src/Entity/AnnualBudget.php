@@ -146,4 +146,24 @@ class AnnualBudget
 
         return $this;
     }
+
+    public function calculateBudget()
+    {
+        $budget = 0.00; 
+        foreach($this->getShip()->getIncomes() as $income) {
+            if (
+                is_null($income->getCancelDay())
+                && is_null($income->getCancelYear())
+            ) {
+                $budget = bcadd($budget, $income->getAmount(), 4);
+            }
+        }
+
+        foreach($this->getShip()->getCosts() as $cost) {
+            $budget = bcsub($budget, $cost->getAmount(), 4);
+        }
+
+        return round($budget, 2, PHP_ROUND_HALF_DOWN);
+
+    }
 }

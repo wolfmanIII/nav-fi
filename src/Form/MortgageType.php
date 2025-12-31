@@ -23,6 +23,8 @@ class MortgageType extends AbstractType
         $mortgage = $options['data'];
         $disabled = $mortgage->isSigned();
         $user = $options['user'];
+        $currentShipId = $mortgage->getShip()?->getId();
+
         $builder
             //->add('name', TextType::class, ['attr' => ['class' => 'input m-1 w-full'],])
             ->add('startDay', NumberType::class, [
@@ -58,10 +60,18 @@ class MortgageType extends AbstractType
                         $ship->getType(),
                         number_format($ship->getPrice(), 2, ',', '.') . " Cr"
                     ),
-                'query_builder' => function (ShipRepository $repo) use ($user) {
-                    $qb = $repo->createQueryBuilder('s')->orderBy('s.name', 'ASC');
+                'query_builder' => function (ShipRepository $repo) use ($user, $currentShipId) {
+                    $qb = $repo->createQueryBuilder('s')
+                        ->leftJoin('s.mortgage', 'm')
+                        ->orderBy('s.name', 'ASC');
                     if ($user) {
                         $qb->andWhere('s.user = :user')->setParameter('user', $user);
+                    }
+                    if ($currentShipId) {
+                        $qb->andWhere('(m.id IS NULL OR s.id = :currentShip)')
+                            ->setParameter('currentShip', $currentShipId);
+                    } else {
+                        $qb->andWhere('m.id IS NULL');
                     }
 
                     return $qb;
