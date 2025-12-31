@@ -155,12 +155,16 @@ class AnnualBudget
                 is_null($income->getCancelDay())
                 && is_null($income->getCancelYear())
             ) {
-                $budget = bcadd($budget, $income->getAmount(), 4);
+                $budget = bcadd($budget, $income->getAmount(), 6);
             }
         }
 
         foreach($this->getShip()->getCosts() as $cost) {
-            $budget = bcsub($budget, $cost->getAmount(), 4);
+            $budget = bcsub($budget, $cost->getAmount(), 6);
+        }
+
+        foreach($this->getShip()->getMortgage()->getMortgageInstallments() as $payment) {
+            $budget = bcsub($budget, $payment->getPayment(), 6);
         }
 
         return round($budget, 2, PHP_ROUND_HALF_DOWN);
