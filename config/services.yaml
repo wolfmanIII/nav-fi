@@ -21,9 +21,9 @@ services:
     # please note that last definitions always *replace* previous ones
 
     # Abilita i foreign keys su TUTTE le connessioni SQLite
-    # Doctrine\DBAL\Driver\AbstractSQLiteDriver\Middleware\EnableForeignKeys:
-    #    tags:
-    #        - { name: 'doctrine.middleware' }
+    Doctrine\DBAL\Driver\AbstractSQLiteDriver\Middleware\EnableForeignKeys:
+       tags:
+           - { name: 'doctrine.middleware' }
 
     App\EventSubscriber\AssignUserSubscriber:
         tags: ['doctrine.event_subscriber']

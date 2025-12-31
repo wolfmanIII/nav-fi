@@ -8,7 +8,7 @@ use App\Entity\MortgageInstallment;
 use App\Entity\Ship;
 use App\Entity\User;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\ORM\Event\PrePersistEventArgs;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
 use Symfony\Bundle\SecurityBundle\Security;
 
@@ -20,26 +20,31 @@ class AssignUserSubscriber implements EventSubscriber
 
     public function getSubscribedEvents(): array
     {
-        return [Events::prePersist];
+        return [Events::onFlush];
     }
 
-    public function prePersist(PrePersistEventArgs $args): void
+    public function onFlush(OnFlushEventArgs $args): void
     {
         $user = $this->security->getUser();
         if (!$user instanceof User) {
             return;
         }
 
-        $entity = $args->getObject();
+        $em = $args->getObjectManager();
+        $uow = $em->getUnitOfWork();
 
-        if (
-            $entity instanceof Crew
-            || $entity instanceof Ship
-            || $entity instanceof Mortgage
-            || $entity instanceof MortgageInstallment
-        ) {
-            if (method_exists($entity, 'getUser') && method_exists($entity, 'setUser') && $entity->getUser() === null) {
-                $entity->setUser($user);
+        foreach ($uow->getScheduledEntityInsertions() as $entity) {
+            if (
+                $entity instanceof Crew
+                || $entity instanceof Ship
+                || $entity instanceof Mortgage
+                || $entity instanceof MortgageInstallment
+            ) {
+                if (method_exists($entity, 'getUser') && method_exists($entity, 'setUser') && $entity->getUser() === null) {
+                    $entity->setUser($user);
+                    $meta = $em->getClassMetadata($entity::class);
+                    $uow->recomputeSingleEntityChangeSet($meta, $entity);
+                }
             }
         }
     }
