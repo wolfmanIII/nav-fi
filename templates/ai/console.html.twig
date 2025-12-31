@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Captain Log - Elara Chatbot{% endblock %}
+{% block title %}Captain Log - Elara Ship AI{% endblock %}
 
 {% block pageContent %}
     <div class="p-10">
 
         <header class="prose mb-4">
-            <h1>Elara Chatbot</h1>
+            <h1>Elara Ship AI</h1>
         </header>
         <p class="mt-4 mb-4">
-            Interroga il motore Elara sulle fonti disponibili(<code>Elara var/knowledge</code>).
+            Chiedi ad Elara informazioni sulla tua campagna(<code>Elara var/knowledge</code>).
         </p>
 
         <div class="grid gap-4 lg:grid-cols-[2fr,1fr]" data-controller="ai-console">
@@ -22,7 +22,7 @@
                          data-ai-console-target="messages">
                         {# messaggi verranno inseriti via Stimulus #}
                         <p class="text-sm opacity-70">
-                            Scrivi una domanda qui sotto. Il motore userà solo i documenti indicizzati.
+                            Scrivi una domanda qui sotto. Elara userà solo i documenti indicizzati.
                         </p>
                     </div>
 
@@ -53,7 +53,7 @@
             {# COLONNA DESTRA: stato & note #}
             <div class="card bg-base-200 shadow-sm">
                 <div class="card-body text-sm gap-3">
-                    <h2 class="card-title text-sm">Stato engine ELARA</h2>
+                    <h2 class="card-title text-sm">Stato ELARA Ship AI</h2>
 
                     <ul class="list-disc list-inside text-xs">
                         <li>
