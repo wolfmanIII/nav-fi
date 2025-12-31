@@ -37,10 +37,6 @@ final class ShipVoter extends Voter
             return false;
         }
 
-        if (!$this->isOwner($subject, $user)) {
-            return false;
-        }
-
         return match ($attribute) {
             self::VIEW        => $this->canView($subject, $user),
             self::EDIT        => $this->canEdit($subject, $user),
@@ -52,12 +48,12 @@ final class ShipVoter extends Voter
 
     private function canView(Ship $ship, ?UserInterface $user = null): bool
     {
-        return true;
+        return $this->isOwner($ship, $user);
     }
 
     private function canEdit(Ship $ship, ?UserInterface $user = null): bool
     {
-        return !$ship->hasMortgageSigned();
+        return $this->isOwner($ship, $user) && !$ship->hasMortgageSigned();
     }
 
     private function canDelete(Ship $ship, ?UserInterface $user = null): bool
