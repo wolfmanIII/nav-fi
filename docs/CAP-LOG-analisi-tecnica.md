@@ -24,8 +24,9 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 
 ## Sicurezza e autorizzazioni
 - **Autenticazione:** form login (`/login`), CSRF abilitato, provider User (email). Access control: dashboard e rotte protette richiedono ruolo USER/ADMIN.
-- **Voter:** ShipVoter, CrewVoter, MortgageVoter ora vincolano l’accesso all’utente proprietario (`entity->getUser() === app.user`) e bloccano anonimi. Attenzione: entità legacy con `user` nullo verranno rifiutate.
+- **Voter:** ShipVoter, CrewVoter, MortgageVoter vincolano l’accesso all’utente proprietario (`entity->getUser() === app.user`) e bloccano anonimi. Attenzione: entità legacy con `user` nullo verranno rifiutate.
 - **Subscriber:** `AssignUserSubscriber` (annotazione `AsDoctrineListener` su `prePersist`) assegna l’utente corrente se mancante. Se la sessione è anonima, non interviene.
+- **Filtro per ownership nei controller:** i controller Ship/Crew/Mortgage recuperano le entità tramite repository filtrando per `user` e restituiscono 404 se l’entity non appartiene all’utente loggato, come difesa in profondità rispetto ai voter.
 
 ## EasyAdmin
 - Dashboard personalizzata (`templates/admin/dashboard.html.twig`) con card di link rapidi per:
@@ -47,7 +48,7 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 
 ## Note operative e punti di attenzione
 - **User null:** dati preesistenti senza `user` non supereranno i voter; valutare una migrazione di popolamento o un comportamento di fallback.
-- **Filtri per utente:** le liste (repo + controller) sono filtrate su `user`; param converter su rotte /edit /delete non applica filtro automatico: ci si affida ai voter. Se si vuole hardenizzare, aggiungere query builder custom o controlli in controller.
+- **Filtri per utente:** liste e recuperi puntuali delle entità protette passano sempre da repository che filtrano per `user` e i controller restituiscono 404 se l’entità non appartiene all’utente corrente, riducendo il rischio di ID enumeration.
 - **CSRF login:** configurato via form_login con CSRF abilitato; la configurazione CSRF stateless per `authenticate` è stata rimossa.
 - **AI token/URL:** ora in `.env.local`; evitare hardcode. Verificare che la base URL punti al servizio corretto.
 - **Dashboard:** card a sfondo scuro coerenti con tema EasyAdmin dark; testo “Apri” in azzurro.
@@ -62,5 +63,4 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 ## Suggerimenti futuri
 - Convertire importi finanziari a Money/Decimal per evitare drift.
 - Aggiungere fallback per entità legacy senza user (es. assegnare all’utente corrente o bloccare con messaggio dedicato).
-- Integrare controlli di ownership anche sui param converter (filter by user + 404) per difesa in profondità.
-- Aggiungere test funzionali per login/CSRF e per i comandi di import/export di contesto.
+- Aggiungere test funzionali per login/CSRF, filtri per ownership e per i comandi di import/export di contesto.

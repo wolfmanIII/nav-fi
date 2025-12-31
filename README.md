@@ -9,6 +9,7 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi e mutui, pensata per
 - Dashboard EasyAdmin personalizzata e CRUD dedicati alle entità di contesto.
 - Comandi di export/import JSON per ripristinare rapidamente i dati di contesto.
 - Console AI per inoltrare domande a un backend esterno (Elara) tramite HttpClient.
+- I controller e i repository filtrano le entità sull’utente proprietario restituendo 404 se non corrispondono, per difesa in profondità oltre ai voter.
 
 ## Requisiti
 - PHP 8.2+
