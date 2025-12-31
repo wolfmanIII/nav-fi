@@ -20,6 +20,9 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
+    App\EventSubscriber\AssignUserSubscriber:
+        tags: ['doctrine.event_subscriber']
+
     # Abilita i foreign keys su TUTTE le connessioni SQLite
     # Doctrine\DBAL\Driver\AbstractSQLiteDriver\Middleware\EnableForeignKeys:
     #    tags:
