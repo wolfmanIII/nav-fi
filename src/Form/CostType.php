@@ -55,6 +55,10 @@ class CostType extends AbstractType
                 },
                 'attr' => ['class' => 'select m-1 w-full'],
             ])
+            ->add('note', TextareaType::class, [
+                'required' => false,
+                'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 3],
+            ])
         ;
     }
 

@@ -55,6 +55,12 @@
             {{ form_errors(form.ship) }}
         </div>
 
+        <div class="col-span-2">
+            <label class="label">Note</label>
+            {{ form_widget(form.note) }}
+            {{ form_errors(form.note) }}
+        </div>
+
     </fieldset>
 
     <button type="submit" class="btn btn-outline btn-primary mt-4 mb-4 mr-4">
