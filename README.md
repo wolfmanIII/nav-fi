@@ -1,11 +1,12 @@
 # Captain Log Web
 
-Applicazione Symfony 7.3 per la gestione di navi, equipaggi e mutui, pensata per il gioco di ruolo **Traveller**. Include area amministrativa EasyAdmin e comandi di import/export dei dati di contesto.
+Applicazione Symfony 7.3 per la gestione di navi, equipaggi e mutui, pensata per il gioco di ruolo **Traveller**. Include area amministrativa EasyAdmin e comandi di import/export dei dati di contesto. Ogni Annual Budget è agganciato a una singola nave e ne aggrega entrate, costi e rate del mutuo.
 
 ## Caratteristiche principali
-- Navi, equipaggi, ruoli di bordo e mutui (rate, tassi, assicurazioni).
+- Navi, equipaggi, ruoli di bordo e mutui (rate, tassi, assicurazioni) con vincolo uno-a-uno nave↔mutuo.
 - Tipologie di spesa equipaggio (`CostCategory`) e anagrafiche di contesto (InterestRate, Insurance, ShipRole).
 - Tracciamento dell’utente proprietario su Ship, Crew, Mortgage e MortgageInstallment; i voter bloccano l’accesso se l’utente non coincide.
+- Annual Budget per nave: calcolo riepilogativo di ricavi, costi e rate annuali del mutuo, più grafico temporale Income/Cost.
 - Dashboard EasyAdmin personalizzata e CRUD dedicati alle entità di contesto.
 - Comandi di export/import JSON per ripristinare rapidamente i dati di contesto.
 - Console AI per inoltrare domande a un backend esterno (Elara) tramite HttpClient.

@@ -12,16 +12,18 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 
 ## Dominio applicativo
 - **Navi e mutui:** `Ship`, `Mortgage`, `MortgageInstallment`, `InterestRate`, `Insurance`, `ShipRole`.
+- **Annual Budget per nave:** ogni budget è legato a una singola nave e aggrega ricavi (`Income`), costi (`Cost`) e rate del mutuo pagate nel periodo impostato (start/end giorno/anno). Dashboard e grafico mostrano l’andamento temporale Income/Cost.
 - **Equipaggio:** `Crew` con ruoli multipli (`ShipRole`, es. CAP). Metodi helper `hasCaptain()`, `hasMortgageSigned()`.
 - **CostCategory:** tabella di contesto per tipologie di spesa equipaggio (code, description).
-- **IncomeCategory:** tabella di contesto per tipologie di entrata (code, description) per future use-cases di accounting.
+- **IncomeCategory:** tabella di contesto per tipologie di entrata (code, description).
 - **Tracciamento utente:** `user` (FK nullable) su Ship, Crew, Mortgage, MortgageInstallment. Un listener Doctrine (`AssignUserSubscriber`) assegna l’utente loggato in `prePersist`.
 
 ### Relazioni principali
-- Ship 1–N Mortgage, 1–N Crew.
+- Ship 1–1 Mortgage (vincolo univoco: una nave ha al massimo un mutuo).
+- Ship 1–N Crew, 1–N Cost, 1–N Income.
 - Mortgage 1–N MortgageInstallment; ManyToOne InterestRate/Insurance.
 - Crew N–M ShipRole.
-- CostCategory attualmente standalone (solo tabella di riferimento).
+- AnnualBudget ManyToOne Ship (uno per finestra temporale/nave).
 
 ## Sicurezza e autorizzazioni
 - **Autenticazione:** form login (`/login`), CSRF abilitato, provider User (email). Access control: dashboard e rotte protette richiedono ruolo USER/ADMIN.
