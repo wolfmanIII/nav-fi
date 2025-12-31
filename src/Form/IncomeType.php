@@ -45,6 +45,7 @@ class IncomeType extends AbstractType
             ])
             ->add('incomeCategory', EntityType::class, [
                 'class' => IncomeCategory::class,
+                'placeholder' => '-- Select a Category --',
                 'choice_label' => fn (IncomeCategory $cat) => sprintf('%s - %s', $cat->getCode(), $cat->getDescription()),
                 'attr' => ['class' => 'select m-1 w-full'],
             ])

@@ -39,6 +39,7 @@ class CostType extends AbstractType
             ])
             ->add('costCategory', EntityType::class, [
                 'class' => CostCategory::class,
+                'placeholder' => '-- Select a Category --',
                 'choice_label' => fn (CostCategory $cat) =>
                     sprintf('%s - %s', $cat->getCode(), $cat->getDescription()),
                 'attr' => ['class' => 'select m-1 w-full'],
