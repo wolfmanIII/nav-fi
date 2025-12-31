@@ -68,6 +68,8 @@ class ImportContextCommand extends Command
             return Command::FAILURE;
         }
 
+        $this->truncateTables();
+
         [$insCreated, $insUpdated] = $this->importInsurance($decoded['insurance'] ?? []);
         [$rateCreated, $rateUpdated] = $this->importInterestRates($decoded['interest_rates'] ?? []);
         [$roleCreated, $roleUpdated] = $this->importShipRoles($decoded['ship_roles'] ?? []);
@@ -102,17 +104,14 @@ class ImportContextCommand extends Command
                 continue;
             }
 
-            $entity = $this->insuranceRepository->findOneBy(['name' => $row['name']]) ?? new Insurance();
-            $isNew = $entity->getId() === null;
-
-            $entity
+            $entity = (new Insurance())
                 ->setName((string) $row['name'])
                 ->setAnnualCost(isset($row['annual_cost']) ? (string) $row['annual_cost'] : '0.00')
                 ->setCoverage(isset($row['coverage']) && is_array($row['coverage']) ? $row['coverage'] : [])
             ;
 
             $this->entityManager->persist($entity);
-            $isNew ? $created++ : $updated++;
+            $created++;
         }
 
         return [$created, $updated];
@@ -133,15 +132,7 @@ class ImportContextCommand extends Command
                 continue;
             }
 
-            $entity = $this->interestRateRepository->findOneBy([
-                'duration'         => (int) $row['duration'],
-                'price_multiplier' => (string) $row['price_multiplier'],
-                'price_divider'    => (int) $row['price_divider'],
-            ]) ?? new InterestRate();
-
-            $isNew = $entity->getId() === null;
-
-            $entity
+            $entity = (new InterestRate())
                 ->setDuration((int) $row['duration'])
                 ->setPriceMultiplier((string) $row['price_multiplier'])
                 ->setPriceDivider((int) $row['price_divider'])
@@ -149,7 +140,7 @@ class ImportContextCommand extends Command
             ;
 
             $this->entityManager->persist($entity);
-            $isNew ? $created++ : $updated++;
+            $created++;
         }
 
         return [$created, $updated];
@@ -170,20 +161,28 @@ class ImportContextCommand extends Command
                 continue;
             }
 
-            $entity = $this->shipRoleRepository->findOneBy(['code' => $row['code']]) ?? new ShipRole();
-            $isNew = $entity->getId() === null;
-
-            $entity
+            $entity = (new ShipRole())
                 ->setCode((string) $row['code'])
                 ->setName(isset($row['name']) ? (string) $row['name'] : '')
                 ->setDescription(isset($row['description']) ? (string) $row['description'] : '')
             ;
 
             $this->entityManager->persist($entity);
-            $isNew ? $created++ : $updated++;
+            $created++;
         }
 
         return [$created, $updated];
+    }
+
+    private function truncateTables(): void
+    {
+        $connection = $this->entityManager->getConnection();
+
+        $connection->executeStatement('SET FOREIGN_KEY_CHECKS=0');
+        $connection->executeStatement('TRUNCATE TABLE ship_role');
+        $connection->executeStatement('TRUNCATE TABLE insurance');
+        $connection->executeStatement('TRUNCATE TABLE interest_rate');
+        $connection->executeStatement('SET FOREIGN_KEY_CHECKS=1');
     }
 
     private function resolvePath(string $file): string
