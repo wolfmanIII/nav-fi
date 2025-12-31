@@ -44,7 +44,7 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 
 ## Persistenza e migrazioni
 - Migrazioni versionate in `migrations/` (inclusa quella per `cost_category`).
-- Campi monetari: `Ship.price` e importi mutuo sono `DECIMAL` a DB ma tipizzati come `float` in PHP; rischio di perdita di precisione nei calcoli finanziari (vedi Mortgage::calculate). Per maggiore accuratezza si suggerisce l’uso di value object Money/Decimal o `string` + `bc*`.
+- Campi monetari: `Ship.price` e importi mutuo sono `DECIMAL` a DB ma tipizzati come `float` in PHP; rischio di perdita di precisione nei calcoli finanziari (vedi Mortgage::calculate). Anche con valuta fittizia conviene un tipo esatto (string + `bc*` o integer di “crediti” con fattore 100) per evitare drift.
 
 ## Note operative e punti di attenzione
 - **User null:** dati preesistenti senza `user` non supereranno i voter; valutare una migrazione di popolamento o un comportamento di fallback.
@@ -61,6 +61,6 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 5. Accesso admin: `/admin` con utente ROLE_ADMIN.
 
 ## Suggerimenti futuri
-- Convertire importi finanziari a Money/Decimal per evitare drift.
+- Gestire importi finanziari con tipo esatto anche per la valuta fittizia (string + BCMath o integer di crediti) per evitare drift.
 - Aggiungere fallback per entità legacy senza user (es. assegnare all’utente corrente o bloccare con messaggio dedicato).
 - Aggiungere test funzionali per login/CSRF, filtri per ownership e per i comandi di import/export di contesto.
