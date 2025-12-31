@@ -26,8 +26,8 @@
                         <th>Code</th>
                         <th>Name</th>
                         <th>Ship</th>
-                        <th>Ship Price(Cr)</th>
-                        <th>Ship Cost(Cr)</th>
+                        <th class="text-right">Ship Price(Cr)</th>
+                        <th class="text-right">Ship Cost(Cr)</th>
                         <th>Signed</th>
                         <th>Action</th>
                     </tr>
@@ -39,8 +39,8 @@
                                 <td>{{ mortgage.code }}</td>
                                 <td>{{ mortgage.name }}</td>
                                 <td>{{ mortgage.ship.name }} - {{ mortgage.ship.type }} - {{ mortgage.ship.class }}</td>
-                                <td>{{ mortgage.ship.price|number_format(2, ',', '.') }}</td>
-                                <td>{{ mortgage.calculateShipCost|number_format(2, ',', '.') }}</td>
+                                <td class="text-right">{{ mortgage.ship.price|number_format(2, ',', '.') }}</td>
+                                <td class="text-right">{{ mortgage.calculateShipCost|number_format(2, ',', '.') }}</td>
                                 <td>
                                     <div class="flex justify-center">
                                         {% if mortgage.signed %}

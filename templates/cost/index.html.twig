@@ -26,8 +26,8 @@
                         <th>Title</th>
                         <th>Category</th>
                         <th>Ship</th>
-                        <th>Amount</th>
-                        <th>Payment (Imperial)</th>
+                        <th class="text-right">Amount</th>
+                        <th class="text-right">Payment (Imperial)</th>
                         <th>Action</th>
                     </tr>
                     </thead>
@@ -39,8 +39,8 @@
                                 <td>{{ cost.title }}</td>
                                 <td>{{ cost.costCategory.description }}</td>
                                 <td>{{ cost.ship.name }}</td>
-                                <td>{{ cost.amount|number_format(2, ',', '.') }}</td>
-                                <td>
+                                <td class="text-right">{{ cost.amount|number_format(2, ',', '.') }}</td>
+                                <td class="text-right">
                                     {% if cost.paymentDay is not null and cost.paymentYear is not null %}
                                         {{ cost.paymentDay }}/{{ cost.paymentYear }}
                                     {% else %}

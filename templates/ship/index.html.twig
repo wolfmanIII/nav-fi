@@ -27,7 +27,7 @@
                         <th>Name</th>
                         <th>Type</th>
                         <th>Class</th>
-                        <th>Price(Cr)</th>
+                        <th class="text-right">Price(Cr)</th>
                         <th>Crew</th>
                         <th>Mortgage Signed</th>
                         <th>Action</th>
@@ -41,7 +41,7 @@
                                 <td>{{ ship.name }}</td>
                                 <td>{{ ship.type }}</td>
                                 <td>{{ ship.class }}</td>
-                                <td>{{ ship.price|number_format(2, ',', '.') }}</td>
+                                <td class="text-right">{{ ship.price|number_format(2, ',', '.') }}</td>
                                 <td>
                                     <a href="{{ path('app_ship_crew', {id: ship.id}) }}" role="button" class="btn btn-outline btn-primary btn-xs">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
