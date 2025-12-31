@@ -132,5 +132,19 @@
             "code": "MIS",
             "description": "Miscellaneous income"
         }
+    ],
+    "cost_categories": [
+        { "code": "PERSONAL", "description": "Personal cost" },
+        { "code": "CREW_GEAR", "description": "Crew gear cost" },
+        { "code": "SHIP_GEAR", "description": "Ship gear cost" },
+        { "code": "SHIP_SOFTWARE", "description": "Ship software cost" },
+        { "code": "SHIP_MAINT", "description": "Ship maintenance cost" },
+        { "code": "SHIP_REPAIR", "description": "Ship repair cost" },
+        { "code": "MEDICAL", "description": "Medical cost" },
+        { "code": "TRAVEL", "description": "Travel cost" },
+        { "code": "PENALTY", "description": "Penalty cost" },
+        { "code": "MORTGAGE_PENALTY", "description": "Mortgage penalty cost" },
+        { "code": "LEGAL", "description": "Legal cost" },
+        { "code": "RECRUITMENT", "description": "Recruitment cost" }
     ]
 }
