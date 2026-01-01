@@ -84,6 +84,12 @@
             {{ form_errors(form.company) }}
         </div>
 
+        <div>
+            <label class="label">Local Law</label>
+            {{ form_widget(form.localLaw) }}
+            {{ form_errors(form.localLaw) }}
+        </div>
+
         <div class="grid grid-cols-3 gap-4">
             <div>
                 <label class="label">Discount(%)</label>

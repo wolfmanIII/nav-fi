@@ -97,6 +97,12 @@
             {{ form_errors(form.ship) }}
         </div>
 
+        <div>
+            <label class="label">Local Law</label>
+            {{ form_widget(form.localLaw) }}
+            {{ form_errors(form.localLaw) }}
+        </div>
+
         <div class="col-span-2">
             <label class="label">Note</label>
             {{ form_widget(form.note) }}

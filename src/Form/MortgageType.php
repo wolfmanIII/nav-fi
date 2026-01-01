@@ -123,7 +123,10 @@ class MortgageType extends AbstractType
                 'class' => LocalLaw::class,
                 'placeholder' => '-- Select a Local Law --',
                 'required' => false,
-                'choice_label' => fn (LocalLaw $l) => sprintf('%s - %s', $l->getCode(), $l->getDescription()),
+                'choice_label' => function (LocalLaw $l): string {
+                    $label = $l->getShortDescription() ?: $l->getDescription();
+                    return sprintf('%s - %s', $l->getCode(), $label);
+                },
                 'attr' => ['class' => 'select m-1 w-full'],
                 'disabled' => $disabled,
             ])
