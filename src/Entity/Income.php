@@ -52,6 +52,10 @@ class Income
     private ?string $note = null;
 
     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Company $company = null;
+
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?IncomeCategory $incomeCategory = null;
 
@@ -249,6 +253,18 @@ class Income
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getCompany(): ?Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Company $company): static
+    {
+        $this->company = $company;
 
         return $this;
     }

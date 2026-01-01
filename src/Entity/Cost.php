@@ -45,6 +45,10 @@ class Cost
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $note = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Company $company = null;
+
     public function __construct()
     {
         $this->setCode(Uuid::v7());
@@ -159,6 +163,18 @@ class Cost
     public function setNote(?string $note): static
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    public function getCompany(): ?Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Company $company): static
+    {
+        $this->company = $company;
 
         return $this;
     }
