@@ -67,21 +67,21 @@
         <div class="card bg-base-200 border border-base-300 shadow-sm">
             <div class="card-body p-4">
                 <h2 class="card-title text-lg mb-3">Mortgage</h2>
-                <table class="table w-full text-sm">
+                <table class="table w-full text-sm border border-base-300">
                     <thead>
                         <tr>
-                            <th>Ship cost</th>
-                            <th>Monthly</th>
-                            <th>Annual</th>
-                            <th>Total</th>
+                            <th class="text-left border border-base-300 px-2">Ship cost</th>
+                            <th class="text-left border border-base-300 px-2">Monthly</th>
+                            <th class="text-left border border-base-300 px-2">Annual</th>
+                            <th class="text-left border border-base-300 px-2">Total</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="text-right">{{ summary.ship_cost|number_format(2, ',', '.') }} Cr</td>
-                            <td class="text-right">{{ summary.mortgage_monthly|number_format(2, ',', '.') }} Cr</td>
-                            <td class="text-right">{{ summary.mortgage_annual|number_format(2, ',', '.') }} Cr</td>
-                            <td class="text-right">{{ summary.total_mortgage|number_format(2, ',', '.') }} Cr</td>
+                            <td class="text-right border border-base-300 px-2">{{ summary.ship_cost|number_format(2, ',', '.') }} Cr</td>
+                            <td class="text-right border border-base-300 px-2">{{ summary.mortgage_monthly|number_format(2, ',', '.') }} Cr</td>
+                            <td class="text-right border border-base-300 px-2">{{ summary.mortgage_annual|number_format(2, ',', '.') }} Cr</td>
+                            <td class="text-right border border-base-300 px-2">{{ summary.total_mortgage|number_format(2, ',', '.') }} Cr</td>
                         </tr>
                     </tbody>
                 </table>
@@ -91,25 +91,25 @@
         <div class="card bg-base-200 border border-base-300 shadow-sm">
             <div class="card-body p-4">
                 <h2 class="card-title text-lg mb-3">Insurance & totals</h2>
-                <table class="table w-full text-sm">
+                <table class="table w-full text-sm border border-base-300">
                     <thead>
                         <tr>
-                            <th>Ins. monthly</th>
-                            <th>Ins. annual</th>
-                            <th>Total monthly</th>
-                            <th>Total annual</th>
-                            <th>Paid (count)</th>
-                            <th>Paid (Cr)</th>
+                            <th class="text-left border border-base-300 px-2">Ins. monthly</th>
+                            <th class="text-left border border-base-300 px-2">Ins. annual</th>
+                            <th class="text-left border border-base-300 px-2">Total monthly</th>
+                            <th class="text-left border border-base-300 px-2">Total annual</th>
+                            <th class="text-left border border-base-300 px-2">Paid (count)</th>
+                            <th class="text-left border border-base-300 px-2">Paid (Cr)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="text-right">{{ summary.insurance_monthly|number_format(2, ',', '.') }} Cr</td>
-                            <td class="text-right">{{ summary.insurance_annual|number_format(2, ',', '.') }} Cr</td>
-                            <td class="text-right">{{ summary.total_monthly_payment|number_format(2, ',', '.') }} Cr</td>
-                            <td class="text-right">{{ summary.total_annual_payment|number_format(2, ',', '.') }} Cr</td>
-                            <td class="text-right">{{ summary.installments_paid }}</td>
-                            <td class="text-right">{{ summary.total_mortgage_paid|number_format(2, ',', '.') }} Cr</td>
+                            <td class="text-right border border-base-300 px-2">{{ summary.insurance_monthly|number_format(2, ',', '.') }} Cr</td>
+                            <td class="text-right border border-base-300 px-2">{{ summary.insurance_annual|number_format(2, ',', '.') }} Cr</td>
+                            <td class="text-right border border-base-300 px-2">{{ summary.total_monthly_payment|number_format(2, ',', '.') }} Cr</td>
+                            <td class="text-right border border-base-300 px-2">{{ summary.total_annual_payment|number_format(2, ',', '.') }} Cr</td>
+                            <td class="text-right border border-base-300 px-2">{{ summary.installments_paid }}</td>
+                            <td class="text-right border border-base-300 px-2">{{ summary.total_mortgage_paid|number_format(2, ',', '.') }} Cr</td>
                         </tr>
                     </tbody>
                 </table>
@@ -121,20 +121,20 @@
         <div class="card bg-base-200 border border-base-300 shadow-sm mb-4">
             <div class="card-body p-4">
                 <h2 class="card-title text-lg mb-3">Paid installments</h2>
-                <table class="table w-full text-sm">
+                <table class="table w-full text-sm border border-base-300">
                     <thead>
                         <tr>
-                            <th class="text-left">Code</th>
-                            <th class="text-left">Day/Year</th>
-                            <th class="text-right">Amount (Cr)</th>
+                            <th class="text-left border border-base-300 px-2">Code</th>
+                            <th class="text-left border border-base-300 px-2">Day/Year</th>
+                            <th class="text-right border border-base-300 px-2">Amount (Cr)</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for inst in installments %}
                             <tr>
-                                <td>{{ inst.code }}</td>
-                                <td>{{ inst.paymentDay }}/{{ inst.paymentYear }}</td>
-                                <td class="text-right">{{ inst.payment|number_format(2, ',', '.') }}</td>
+                                <td class="border border-base-300 px-2">{{ inst.code }}</td>
+                                <td class="border border-base-300 px-2">{{ inst.paymentDay }}/{{ inst.paymentYear }}</td>
+                                <td class="text-right border border-base-300 px-2">{{ inst.payment|number_format(2, ',', '.') }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -147,22 +147,22 @@
         <div class="card bg-base-200 border border-base-300 shadow-sm mb-4">
             <div class="card-body p-4">
                 <h2 class="card-title text-lg mb-3">Ship crew</h2>
-                <table class="table w-full text-sm">
+                <table class="table w-full text-sm border border-base-300">
                     <thead>
                         <tr>
-                            <th class="text-left">Name</th>
-                            <th class="text-left">Surname</th>
-                            <th class="text-left">Nickname</th>
-                            <th class="text-left">Roles</th>
+                            <th class="text-left border border-base-300 px-2">Name</th>
+                            <th class="text-left border border-base-300 px-2">Surname</th>
+                            <th class="text-left border border-base-300 px-2">Nickname</th>
+                            <th class="text-left border border-base-300 px-2">Roles</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for member in crew %}
                             <tr>
-                                <td>{{ member.name }}</td>
-                                <td>{{ member.surname }}</td>
-                                <td>{{ member.nickname ?? '-' }}</td>
-                                <td>
+                                <td class="border border-base-300 px-2">{{ member.name }}</td>
+                                <td class="border border-base-300 px-2">{{ member.surname }}</td>
+                                <td class="border border-base-300 px-2">{{ member.nickname ?? '-' }}</td>
+                                <td class="border border-base-300 px-2">
                                     {% for role in member.shipRoles %}
                                         {{ role.name }}{% if not loop.last %}, {% endif %}
                                     {% endfor %}
