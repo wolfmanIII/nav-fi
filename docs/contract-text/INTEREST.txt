@@ -11,7 +11,6 @@ Rate: {{INTEREST_RATE}}%                 Period: {{START_DATE}} → {{END_DATE}}
 Method (opt.): {{CALC_METHOD}} (simple/compound)
 
 Interest Earned: {{INTEREST_EARNED}} {{CURRENCY}}
-Withholding/Fees (opt.): {{WITHHOLDING_FEES}} {{CURRENCY}}
 Net Paid: {{NET_PAID}} {{CURRENCY}}      Payment: {{PAYMENT_TERMS}}
 
 Notes (opt.): {{NOTES}}

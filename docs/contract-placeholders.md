@@ -13,8 +13,8 @@ Documento tecnico di riferimento per i placeholder presenti in `docs/contract-te
 
 **Importi e valuta**
 - `{{CURRENCY}}` → default “Cr” o configurazione di base.
-- `{{PAY_AMOUNT}}`, `{{CHARTER_FEE}}`, `{{FREIGHT_FEE}}`, `{{PAYOUT_AMOUNT}}`, `{{TOTAL_PRICE}}`, `{{UNIT_PRICE}}`, `{{SUBSIDY_AMOUNT}}`, `{{INTEREST_EARNED}}`, `{{PRINCIPAL}}`, ecc. → importi della pratica; `Income.amount` può coprirne uno, altri richiedono campi dedicati o note.
-- `{{PAYMENT_TERMS}}`, `{{DEPOSIT}}`, `{{TAXES_FEES}}`, `{{LIABILITY_LIMIT}}`, `{{WARRANTY}}`, `{{EXPENSES_POLICY}}`, ecc. → termini testuali per il template (campi liberi o modello contratto dedicato).
+- `{{PAY_AMOUNT}}`, `{{PAYOUT_AMOUNT}}`, `{{TOTAL_PRICE}}`, `{{UNIT_PRICE}}`, `{{SUBSIDY_AMOUNT}}`, `{{INTEREST_EARNED}}`, `{{PRINCIPAL}}`, ecc. → importi della pratica; `Income.amount` può coprirne uno, altri richiedono campi dedicati o note.
+- `{{PAYMENT_TERMS}}`, `{{DEPOSIT}}`, `{{LIABILITY_LIMIT}}`, `{{WARRANTY}}`, `{{EXPENSES_POLICY}}`, ecc. → termini testuali per il template (campi liberi o modello contratto dedicato).
 
 **Controparti (nuova `Company`)**
 - Ricorrenze: `{{CARRIER_NAME}}`, `{{SHIPPER_NAME}}`, `{{INSURER_NAME}}`, `{{AUTHORITY_NAME}}`, `{{BUYER_NAME}}`, `{{SELLER_NAME}}`, `{{PATRON_NAME}}`, `{{CONTRACTOR_NAME}}`, `{{CUSTOMER_NAME}}`, `{{PROVIDER_NAME}}`, `{{CAPTOR_NAME}}`, `{{SALVAGE_TEAM_NAME}}`, `{{AUTHORITY_OR_OWNER_NAME}}`, `{{PAYEE_NAME}}`, `{{PAYER_NAME}}`, ecc.

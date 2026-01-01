@@ -14,7 +14,7 @@ Work Summary: {{WORK_SUMMARY}}
 Parts/Materials (opt.): {{PARTS_MATERIALS}}
 Risks/Constraints (opt.): {{RISKS}}
 
-Service Fee: {{SERVICE_FEE}} {{CURRENCY}}    Payment: {{PAYMENT_TERMS}}
+Payment: {{PAYMENT_TERMS}}
 Extras (opt.): {{EXTRAS}}                    Total (opt.): {{TOTAL}} {{CURRENCY}}
 
 Notes (opt.): {{NOTES}}

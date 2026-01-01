@@ -11,7 +11,7 @@ Pickup: {{PICKUP_DATE}}                Delivery ETA: {{DELIVERY_DATE}}
 Cargo: {{CARGO_DESCRIPTION}}
 Qty/Weight: {{CARGO_QTY}}              Declared Value (opt.): {{DECLARED_VALUE}}
 
-Fee: {{FREIGHT_FEE}} {{CURRENCY}}      Payment: {{PAYMENT_TERMS}}
+Payment: {{PAYMENT_TERMS}}
 
 Notes / Handling (opt.): {{NOTES}}
 

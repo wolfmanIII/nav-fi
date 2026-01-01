@@ -14,7 +14,7 @@ Qty/Value (opt.): {{QTY_VALUE}}
 Hazards/Restrictions (opt.): {{HAZARDS}}
 
 Salvage Award: {{SALVAGE_AWARD}} {{CURRENCY}}   Payment: {{PAYMENT_TERMS}}
-Share Split (opt.): {{SPLIT_TERMS}}             Storage/Fees (opt.): {{STORAGE_FEES}}
+Share Split (opt.): {{SPLIT_TERMS}}
 
 Notes (opt.): {{NOTES}}
 

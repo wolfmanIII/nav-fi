@@ -12,8 +12,8 @@ Operating Area / Route (opt.): {{AREA_OR_ROUTE}}
 Purpose: {{PURPOSE}} (e.g., transport, tour, private run)
 Passengers/Cargo (brief): {{MANIFEST_SUMMARY}}
 
-Charter Fee: {{CHARTER_FEE}} {{CURRENCY}}   Payment: {{PAYMENT_TERMS}}
-Deposit (opt.): {{DEPOSIT}} {{CURRENCY}}     Extras (opt.): {{EXTRAS}} (fuel, port fees, crew, etc.)
+Payment: {{PAYMENT_TERMS}}
+Deposit (opt.): {{DEPOSIT}} {{CURRENCY}}     Extras (opt.): {{EXTRAS}} (fuel, port services, crew, etc.)
 
 Notes (opt.): {{NOTES}}
 

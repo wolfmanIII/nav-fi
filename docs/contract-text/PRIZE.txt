@@ -15,7 +15,7 @@ Estimated Value (opt.): {{ESTIMATED_VALUE}} {{CURRENCY}}
 Disposition: {{DISPOSITION}} (e.g., returned, auction, assigned, forfeited)
 
 Award to Captor: {{PRIZE_AWARD}} {{CURRENCY}}    Payment: {{PAYMENT_TERMS}}
-Shares (opt.): {{SHARE_SPLIT}}                   Fees (opt.): {{FEES_DEDUCTIONS}}
+Shares (opt.): {{SHARE_SPLIT}}
 
 Notes (opt.): {{NOTES}}
 

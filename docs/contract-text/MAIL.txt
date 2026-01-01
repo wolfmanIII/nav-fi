@@ -12,7 +12,7 @@ Mail Type: {{MAIL_TYPE}} (e.g., Official / Priority / Secure)
 Package Count: {{PACKAGE_COUNT}}          Total Mass: {{TOTAL_MASS}}
 Security Level (opt.): {{SECURITY_LEVEL}}  Seal Codes (opt.): {{SEAL_CODES}}
 
-Fee: {{MAIL_FEE}} {{CURRENCY}}            Payment: {{PAYMENT_TERMS}}
+Payment: {{PAYMENT_TERMS}}
 
 Notes (opt.): {{NOTES}}
 
