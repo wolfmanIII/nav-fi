@@ -62,6 +62,7 @@
                 <h2 class="card-title text-lg mb-2">Counterparty</h2>
                 {% if mortgage.company %}
                     <p><b>Name:</b> {{ mortgage.company.name }}</p>
+                    <p><b>Role:</b> {{ mortgage.company.companyRole.description }}</p>
                     <p><b>Contact:</b> {{ mortgage.company.contact ?? '—' }}</p>
                     <p><b>Sign label:</b> {{ mortgage.company.signLabel ?? '—' }}</p>
                 {% else %}
