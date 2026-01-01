@@ -48,10 +48,7 @@
                     <div class="grid grid-cols-2 gap-4 text-slate-100">
                         <div class="rounded-xl bg-white/5 p-4 border border-white/10">
                             <div class="flex items-center gap-2 text-cyan-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <path d="M3 16l9-12 9 12-9 4z"></path>
-                                    <path d="M12 4v16"></path>
-                                </svg>
+                                {% include 'icons/far-trader.html.twig' %}
                                 <p class="text-xs uppercase tracking-widest text-cyan-200/80">Ships</p>
                             </div>
                             <p class="text-2xl font-bold mt-2">Fleets and classes</p>
@@ -59,11 +56,7 @@
                         </div>
                         <div class="rounded-xl bg-white/5 p-4 border border-white/10">
                             <div class="flex items-center gap-2 text-cyan-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <path d="M8 5h8l1 5H7z"></path>
-                                    <path d="M7 10h10l1 4H6z"></path>
-                                    <path d="M6 14h12l-1 5H7z"></path>
-                                </svg>
+                                {% include 'icons/crew.html.twig' %}
                                 <p class="text-xs uppercase tracking-widest text-cyan-200/80">Crew</p>
                             </div>
                             <p class="text-2xl font-bold mt-2">Roles and shifts</p>
@@ -71,11 +64,7 @@
                         </div>
                         <div class="rounded-xl bg-white/5 p-4 border border-white/10">
                             <div class="flex items-center gap-2 text-cyan-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <path d="M4 7h16l-2 10H6z"></path>
-                                    <path d="M9 11h6"></path>
-                                    <path d="M9 15h6"></path>
-                                </svg>
+                                {% include 'icons/handbook.html.twig' %}
                                 <p class="text-xs uppercase tracking-widest text-cyan-200/80">Mortgages</p>
                             </div>
                             <p class="text-2xl font-bold mt-2">Rates and penalties</p>
@@ -83,12 +72,7 @@
                         </div>
                         <div class="rounded-xl bg-white/5 p-4 border border-white/10">
                             <div class="flex items-center gap-2 text-cyan-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <path d="M5 19h14"></path>
-                                    <path d="M5 11h14"></path>
-                                    <path d="M9 7l3-3 3 3"></path>
-                                    <path d="M9 15l3 3 3-3"></path>
-                                </svg>
+                                {% include 'icons/annual-budget.html.twig' %}
                                 <p class="text-xs uppercase tracking-widest text-cyan-200/80">Budgets</p>
                             </div>
                             <p class="text-2xl font-bold mt-2">Per-ship balance</p>
@@ -96,10 +80,7 @@
                         </div>
                         <div class="rounded-xl bg-white/5 p-4 border border-white/10">
                             <div class="flex items-center gap-2 text-cyan-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <path d="M5 5h14v14H5z"></path>
-                                    <path d="M9 9h6v6H9z"></path>
-                                </svg>
+                                {% include 'icons/holocron.html.twig' %}
                                 <p class="text-xs uppercase tracking-widest text-cyan-200/80">Context</p>
                             </div>
                             <p class="text-2xl font-bold mt-2">Catalogs</p>
@@ -167,7 +148,7 @@
                     <p class="text-xs uppercase tracking-[0.25em] text-cyan-400">Signals</p>
                 </div>
                 <h3 class="text-xl font-semibold mt-2 text-slate-100">Telemetry at a glance</h3>
-                <p class="text-sm text-slate-300 mt-2">Charts per nave per l’anno imperiale: traccia ingressi e uscite su timeline e chiudi il gap sui crediti.</p>
+                <p class="text-sm text-slate-300 mt-2">Charts per ship on the imperial year: track income and outflows on a timeline to close the credit gap.</p>
             </div>
             <div class="rounded-2xl border border-white/10 bg-base-200/80 p-6 shadow-sm">
                 <div class="flex items-center gap-2 text-cyan-300">
