@@ -51,9 +51,22 @@
         <div class="card">
             <div class="card-body p-4">
                 <h2 class="card-title text-lg mb-2">Vessel</h2>
-                <p><b>Name:</b> {{ ship.name }}</p>
-                <p><b>Type / Class:</b> {{ ship.type }} / {{ ship.class }}</p>
-                <p><b>Price:</b> {{ ship.price|number_format(2, ',', '.') }} Cr</p>
+                <table class="table text-sm">
+                    <thead>
+                        <tr>
+                            <th class="text-left px-2">Name</th>
+                            <th class="text-left px-2">Type / Class</th>
+                            <th class="text-left px-2">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="px-2">{{ ship.name }}</td>
+                            <td class="px-2">{{ ship.type }} / {{ ship.class }}</td>
+                            <td class="text-right px-2">{{ ship.price|number_format(2, ',', '.') }} Cr</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -61,10 +74,24 @@
             <div class="card-body p-4">
                 <h2 class="card-title text-lg mb-2">Counterparty</h2>
                 {% if mortgage.company %}
-                    <p><b>Name:</b> {{ mortgage.company.name }}</p>
-                    <p><b>Role:</b> {{ mortgage.company.companyRole.description }}</p>
-                    <p><b>Contact:</b> {{ mortgage.company.contact ?? '—' }}</p>
-                    <p><b>Sign label:</b> {{ mortgage.company.signLabel ?? '—' }}</p>
+                    <table class="table text-sm">
+                        <thead>
+                            <tr>
+                                <th class="text-left px-2">Name</th>
+                                <th class="text-left px-2">Role</th>
+                                <th class="text-left px-2">Contact</th>
+                                <th class="text-left px-2">Sign label</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="px-2">{{ mortgage.company.name }}</td>
+                                <td class="px-2">{{ mortgage.company.companyRole.description }}</td>
+                                <td class="px-2">{{ mortgage.company.contact ?? '—' }}</td>
+                                <td class="px-2">{{ mortgage.company.signLabel ?? '—' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 {% else %}
                     <p>Not specified</p>
                 {% endif %}
