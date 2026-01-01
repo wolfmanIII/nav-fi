@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\IncomeRepository;
+use App\Entity\LocalLaw;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
@@ -54,6 +55,10 @@ class Income
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
     private ?Company $company = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?LocalLaw $localLaw = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -265,6 +270,18 @@ class Income
     public function setCompany(?Company $company): static
     {
         $this->company = $company;
+
+        return $this;
+    }
+
+    public function getLocalLaw(): ?LocalLaw
+    {
+        return $this->localLaw;
+    }
+
+    public function setLocalLaw(?LocalLaw $localLaw): static
+    {
+        $this->localLaw = $localLaw;
 
         return $this;
     }

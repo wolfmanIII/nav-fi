@@ -7,6 +7,7 @@ use App\Entity\InterestRate;
 use App\Entity\Mortgage;
 use App\Entity\Ship;
 use App\Entity\Company;
+use App\Entity\LocalLaw;
 use App\Form\Type\TravellerMoneyType;
 use App\Repository\ShipRepository;
 use Doctrine\ORM\EntityRepository;
@@ -115,6 +116,14 @@ class MortgageType extends AbstractType
                     }
                     return $qb;
                 },
+                'attr' => ['class' => 'select m-1 w-full'],
+                'disabled' => $disabled,
+            ])
+            ->add('localLaw', EntityType::class, [
+                'class' => LocalLaw::class,
+                'placeholder' => '-- Select a Local Law --',
+                'required' => false,
+                'choice_label' => fn (LocalLaw $l) => sprintf('%s - %s', $l->getCode(), $l->getDescription()),
                 'attr' => ['class' => 'select m-1 w-full'],
                 'disabled' => $disabled,
             ])

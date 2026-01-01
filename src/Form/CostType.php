@@ -6,6 +6,7 @@ use App\Entity\Cost;
 use App\Entity\CostCategory;
 use App\Entity\Ship;
 use App\Entity\Company;
+use App\Entity\LocalLaw;
 use App\Form\Type\TravellerMoneyType;
 use App\Repository\ShipRepository;
 use Doctrine\ORM\EntityRepository;
@@ -71,6 +72,13 @@ class CostType extends AbstractType
                     }
                     return $qb;
                 },
+                'attr' => ['class' => 'select m-1 w-full'],
+            ])
+            ->add('localLaw', EntityType::class, [
+                'class' => LocalLaw::class,
+                'placeholder' => '-- Select a Local Law --',
+                'required' => false,
+                'choice_label' => fn (LocalLaw $l) => sprintf('%s - %s', $l->getCode(), $l->getDescription()),
                 'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('note', TextareaType::class, [

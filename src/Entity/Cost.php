@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CostRepository;
+use App\Entity\LocalLaw;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
@@ -48,6 +49,10 @@ class Cost
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
     private ?Company $company = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?LocalLaw $localLaw = null;
 
     public function __construct()
     {
@@ -175,6 +180,18 @@ class Cost
     public function setCompany(?Company $company): static
     {
         $this->company = $company;
+
+        return $this;
+    }
+
+    public function getLocalLaw(): ?LocalLaw
+    {
+        return $this->localLaw;
+    }
+
+    public function setLocalLaw(?LocalLaw $localLaw): static
+    {
+        $this->localLaw = $localLaw;
 
         return $this;
     }
