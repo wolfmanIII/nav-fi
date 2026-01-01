@@ -39,6 +39,12 @@ class Income
     #[ORM\Column(nullable: true)]
     private ?int $cancelYear = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $expirationDay = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $expirationYear = null;
+
     #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2)]
     private ?string $amount = null;
 
@@ -159,6 +165,30 @@ class Income
     public function setCancelYear(?int $cancelYear): static
     {
         $this->cancelYear = $cancelYear;
+
+        return $this;
+    }
+
+    public function getExpirationDay(): ?int
+    {
+        return $this->expirationDay;
+    }
+
+    public function setExpirationDay(?int $expirationDay): static
+    {
+        $this->expirationDay = $expirationDay;
+
+        return $this;
+    }
+
+    public function getExpirationYear(): ?int
+    {
+        return $this->expirationYear;
+    }
+
+    public function setExpirationYear(?int $expirationYear): static
+    {
+        $this->expirationYear = $expirationYear;
 
         return $this;
     }

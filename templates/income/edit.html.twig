@@ -68,6 +68,18 @@
         </div>
 
         <div>
+            <label class="label">Expiration Day</label>
+            {{ form_widget(form.expirationDay) }}
+            {{ form_errors(form.expirationDay) }}
+        </div>
+
+        <div>
+            <label class="label">Expiration Year</label>
+            {{ form_widget(form.expirationYear) }}
+            {{ form_errors(form.expirationYear) }}
+        </div>
+
+        <div>
             <label class="label">Category</label>
             {{ form_widget(form.incomeCategory) }}
             {{ form_errors(form.incomeCategory) }}

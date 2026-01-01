@@ -9,7 +9,7 @@ use App\Form\Type\TravellerMoneyType;
 use App\Repository\ShipRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -25,25 +25,35 @@ class IncomeType extends AbstractType
             ->add('title', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('signingDay', NumberType::class, [
+            ->add('signingDay', IntegerType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('signingYear', NumberType::class, [
+            ->add('signingYear', IntegerType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('paymentDay', NumberType::class, [
+            ->add('paymentDay', IntegerType::class, [
                 'required' => false,
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('paymentYear', NumberType::class, [
+            ->add('paymentYear', IntegerType::class, [
                 'required' => false,
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('cancelDay', NumberType::class, [
+            ->add('expirationDay', IntegerType::class, [
+                'label' => 'Expiration Day',
                 'required' => false,
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('cancelYear', NumberType::class, [
+            ->add('expirationYear', IntegerType::class, [
+                'label' => 'Expiration Year',
+                'required' => false,
+                'attr' => ['class' => 'input m-1 w-full'],
+            ])
+            ->add('cancelDay', IntegerType::class, [
+                'required' => false,
+                'attr' => ['class' => 'input m-1 w-full'],
+            ])
+            ->add('cancelYear', IntegerType::class, [
                 'required' => false,
                 'attr' => ['class' => 'input m-1 w-full'],
             ])

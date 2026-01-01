@@ -39,6 +39,7 @@
                         <th class="text-right">Amount</th>
                         <th class="text-right">Signing</th>
                         <th class="text-right">Payment</th>
+                        <th class="text-right">Expiration</th>
                         <th class="text-right">Cancel</th>
                         <th>Action</th>
                     </tr>
@@ -56,6 +57,13 @@
                                 <td class="text-right">
                                     {% if income.paymentDay is not null and income.paymentYear is not null %}
                                         {{ income.paymentDay }}/{{ income.paymentYear }}
+                                    {% else %}
+                                        <span class="opacity-60">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-right">
+                                    {% if income.expirationDay is not null and income.expirationYear is not null %}
+                                        {{ income.expirationDay }}/{{ income.expirationYear }}
                                     {% else %}
                                         <span class="opacity-60">—</span>
                                     {% endif %}
