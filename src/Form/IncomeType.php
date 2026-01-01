@@ -5,8 +5,10 @@ namespace App\Form;
 use App\Entity\Income;
 use App\Entity\IncomeCategory;
 use App\Entity\Ship;
+use App\Entity\Company;
 use App\Form\Type\TravellerMoneyType;
 use App\Repository\ShipRepository;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -75,6 +77,20 @@ class IncomeType extends AbstractType
                     $qb = $repo->createQueryBuilder('s')->orderBy('s.name', 'ASC');
                     if ($user) {
                         $qb->andWhere('s.user = :user')->setParameter('user', $user);
+                    }
+                    return $qb;
+                },
+                'attr' => ['class' => 'select m-1 w-full'],
+            ])
+            ->add('company', EntityType::class, [
+                'class' => Company::class,
+                'placeholder' => '-- Select a Company --',
+                'required' => false,
+                'choice_label' => fn (Company $c) => sprintf('%s (%s)', $c->getName(), $c->getCompanyRole()?->getCode()),
+                'query_builder' => function (EntityRepository $er) use ($user) {
+                    $qb = $er->createQueryBuilder('c')->orderBy('c.name', 'ASC');
+                    if ($user) {
+                        $qb->andWhere('c.user = :user')->setParameter('user', $user);
                     }
                     return $qb;
                 },

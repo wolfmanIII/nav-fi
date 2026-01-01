@@ -56,6 +56,12 @@
         </div>
 
         <div>
+            <label class="label">Company</label>
+            {{ form_widget(form.company) }}
+            {{ form_errors(form.company) }}
+        </div>
+
+        <div>
             <label class="label">Category</label>
             {{ form_widget(form.costCategory) }}
             {{ form_errors(form.costCategory) }}
