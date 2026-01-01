@@ -20,6 +20,9 @@
         .items-start { align-items: flex-start; }
         .sign-table { width: 100%; border-collapse: separate; border-spacing: 0; }
         .sign-table td { vertical-align: top; padding: 0.5rem 0; }
+        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 0.5rem; }
+        .header-table td { vertical-align: middle; }
+        .logo { height: 36px; }
         .gap-4 { gap: 0.75rem; }
         .gap-8 { gap: 1rem; }
         .gap-3 { gap: 0.5rem; }
@@ -46,8 +49,52 @@
     {% endfor %}
 
     <div class="mb-6">
-        <h1 class="text-2xl font-bold">Ship Mortgage Agreement</h1>
-        <p class="text-sm font-bold">Code: {{ mortgage.code }}{% if mortgage.signed %} • Signed{% endif %}</p>
+        <table class="header-table">
+            <tr>
+                <td>
+                    <img src="{{ absolute_url(asset('assets/img/captain-log-logo.png')) }}" alt="Captain Log" class="logo">
+                </td>
+                <td class="text-right">
+                    <div class="text-2xl font-bold">Ship Mortgage Agreement</div>
+                    <div class="text-sm font-bold">Code: {{ mortgage.code }}{% if mortgage.signed %} • Signed{% endif %}</div>
+                    <div class="text-sm">Generated on {{ "now"|date('Y-m-d') }}</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Overview</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th class="text-left px-2">Status</th>
+                        <th class="text-left px-2">Start Day/Year</th>
+                        <th class="text-left px-2">Duration</th>
+                        <th class="text-left px-2">Monthly total</th>
+                        <th class="text-left px-2">Annual total</th>
+                        <th class="text-left px-2">Company</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="px-2">{{ mortgage.signed ? 'Signed' : 'Pending' }}</td>
+                        <td class="px-2">{{ mortgage.startDay }}/{{ mortgage.startYear }}</td>
+                        <td class="px-2">{{ mortgage.interestRate.duration }} years</td>
+                        <td class="text-right px-2">{{ summary.total_monthly_payment|number_format(2, ',', '.') }} Cr</td>
+                        <td class="text-right px-2">{{ summary.total_annual_payment|number_format(2, ',', '.') }} Cr</td>
+                        <td class="px-2">
+                            {% if mortgage.company %}
+                                {{ mortgage.company.name }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div class="grid grid-cols-2 gap-4 mb-4">
