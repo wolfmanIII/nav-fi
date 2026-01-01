@@ -2,6 +2,10 @@ knp_snappy:
     pdf:
         enabled: true
         binary: '/usr/local/bin/wkhtmltopdf'
-        options: []
+        options:
+            enable-local-file-access: true
+            javascript-delay: 0
+            load-error-handling: ignore
+            load-media-error-handling: ignore
     image:
         enabled: false
