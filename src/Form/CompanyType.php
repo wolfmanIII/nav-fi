@@ -47,6 +47,7 @@ class CompanyType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Company::class,
+            'user' => null,
         ]);
     }
 }
