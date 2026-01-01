@@ -1,0 +1,26 @@
+MAIL — OFFICIAL COURIER / POSTAL RUN RECEIPT (SHORT FORM)
+
+Run ID: {{RUN_ID}}                       Date: {{DATE}}
+
+Contracting Authority: {{AUTHORITY_NAME}}   Carrier: {{CARRIER_NAME}}
+Ref/Account: {{AUTHORITY_REF}}              Vessel: {{VESSEL_NAME}}
+
+Route: {{ORIGIN}}  →  {{DESTINATION}}
+Dispatch: {{DISPATCH_DATE}}               Delivery ETA: {{DELIVERY_DATE}}
+
+Mail Type: {{MAIL_TYPE}} (e.g., Official / Priority / Secure)
+Package Count: {{PACKAGE_COUNT}}          Total Mass: {{TOTAL_MASS}}
+Security Level (opt.): {{SECURITY_LEVEL}}  Seal Codes (opt.): {{SEAL_CODES}}
+
+Fee: {{MAIL_FEE}} {{CURRENCY}}            Payment: {{PAYMENT_TERMS}}
+
+Notes (opt.): {{NOTES}}
+
+Terms (short):
+1) Carrier will transport sealed mail from {{ORIGIN}} to {{DESTINATION}} with reasonable care.
+2) Sealed items will not be opened by Carrier except when required by lawful inspection.
+3) Liability limit: {{LIABILITY_LIMIT}} (unless otherwise specified by Authority).
+4) Delivery confirmation: {{PROOF_OF_DELIVERY}} (e.g., signature/scan/seal check).
+
+Signatures:
+Authority: {{AUTHORITY_SIGN}}             Carrier: {{CARRIER_SIGN}}

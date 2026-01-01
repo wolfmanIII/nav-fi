@@ -1,0 +1,31 @@
+CONTRACT — MISSION / JOB AGREEMENT (SHORT FORM)
+
+Contract ID: {{CONTRACT_ID}}             Date: {{DATE}}
+
+Patron (Client): {{PATRON_NAME}}         Contractor: {{CONTRACTOR_NAME}}
+Contact: {{PATRON_CONTACT}}              Vessel/Team: {{VESSEL_NAME}}
+
+Job Type: {{JOB_TYPE}} (e.g., delivery, escort, bounty, investigation)
+Location/Area: {{LOCATION}}
+Objective: {{OBJECTIVE}}
+
+Start: {{START_DATE}}                    Deadline: {{DEADLINE}}
+Success Condition: {{SUCCESS_CONDITION}}
+
+Pay: {{PAY_AMOUNT}} {{CURRENCY}}         Payment: {{PAYMENT_TERMS}}
+Bonus (opt.): {{BONUS}}                  Expenses (opt.): {{EXPENSES_POLICY}}
+Deposit (opt.): {{DEPOSIT}} {{CURRENCY}}
+
+Risks / Restrictions (opt.): {{RESTRICTIONS}}
+Confidentiality (opt.): {{CONFIDENTIALITY_LEVEL}}
+
+Notes (opt.): {{NOTES}}
+
+Terms (short):
+1) Contractor will use reasonable efforts to complete the objective.
+2) Contractor is responsible for lawful conduct and required permits.
+3) Failure/partial completion handling: {{FAILURE_TERMS}}.
+4) Cancellation policy: {{CANCELLATION_TERMS}}.
+
+Signatures:
+Patron: {{PATRON_SIGN}}                  Contractor: {{CONTRACTOR_SIGN}}

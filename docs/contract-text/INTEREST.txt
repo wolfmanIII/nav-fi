@@ -1,0 +1,25 @@
+INTEREST — INTEREST / INVESTMENT INCOME RECEIPT (SHORT FORM)
+
+Receipt ID: {{RECEIPT_ID}}               Date: {{DATE}}
+
+Payer (Bank/Issuer): {{PAYER_NAME}}      Payee (Investor): {{PAYEE_NAME}}
+Account/Ref: {{ACCOUNT_REF}}             Contact: {{PAYEE_CONTACT}}
+
+Instrument: {{INSTRUMENT}} (e.g., savings, bond, note, fund share)
+Principal / Balance: {{PRINCIPAL}} {{CURRENCY}}
+Rate: {{INTEREST_RATE}}%                 Period: {{START_DATE}} → {{END_DATE}}
+Method (opt.): {{CALC_METHOD}} (simple/compound)
+
+Interest Earned: {{INTEREST_EARNED}} {{CURRENCY}}
+Withholding/Fees (opt.): {{WITHHOLDING_FEES}} {{CURRENCY}}
+Net Paid: {{NET_PAID}} {{CURRENCY}}      Payment: {{PAYMENT_TERMS}}
+
+Notes (opt.): {{NOTES}}
+
+Terms (short):
+1) Interest is calculated for the stated period on the principal/balance shown.
+2) Rates may vary per instrument terms; this receipt reflects the posted period.
+3) Disputes/adjustments window: {{DISPUTE_WINDOW}}.
+
+Signatures (optional):
+Payer: {{PAYER_SIGN}}                    Payee: {{PAYEE_SIGN}}

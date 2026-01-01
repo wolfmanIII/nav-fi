@@ -1,0 +1,28 @@
+TRADE — BUY/SELL DEAL RECEIPT (SHORT FORM)
+
+Deal ID: {{DEAL_ID}}                     Date: {{DATE}}
+
+Buyer: {{BUYER_NAME}}                    Seller: {{SELLER_NAME}}
+Contact (Buyer): {{BUYER_CONTACT}}       Contact (Seller): {{SELLER_CONTACT}}
+Exchange Location: {{LOCATION}}
+
+Goods: {{GOODS_DESCRIPTION}}
+Qty/Units: {{QTY}}                       Quality/Grade (opt.): {{GRADE}}
+Batch/Container IDs (opt.): {{BATCH_IDS}}
+
+Unit Price: {{UNIT_PRICE}} {{CURRENCY}}  Total Price: {{TOTAL_PRICE}} {{CURRENCY}}
+Payment: {{PAYMENT_TERMS}}               Taxes/Fees (opt.): {{TAXES_FEES}}
+
+Delivery: {{DELIVERY_METHOD}} (e.g., immediate, warehouse pickup, ship-to-ship)
+Delivery Date/ETA: {{DELIVERY_DATE}}     Transfer Point (opt.): {{TRANSFER_POINT}}
+
+Notes (opt.): {{NOTES}}
+
+Terms (short):
+1) Seller transfers ownership of the goods upon {{TRANSFER_CONDITION}} (e.g., full payment / delivery).
+2) Goods are sold as: {{AS_IS_OR_WARRANTY}} (e.g., “as-is” / “with warranty: {{WARRANTY}}”).
+3) Disputes/claims window: {{CLAIM_WINDOW}}.
+4) Cancellation/return policy: {{CANCEL_RETURN_POLICY}}.
+
+Signatures:
+Buyer: {{BUYER_SIGN}}                    Seller: {{SELLER_SIGN}}

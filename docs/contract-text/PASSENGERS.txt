@@ -1,0 +1,25 @@
+PASSENGERS — PASSAGE TICKET / RECEIPT (SHORT FORM)
+
+Ticket ID: {{TICKET_ID}}                Date: {{DATE}}
+
+Passenger(s): {{PASSENGER_NAMES}}       Carrier: {{CARRIER_NAME}}
+Contact: {{PASSENGER_CONTACT}}          Vessel: {{VESSEL_NAME}}
+
+Route: {{ORIGIN}}  →  {{DESTINATION}}
+Departure: {{DEPARTURE_DATE}}           Arrival ETA: {{ARRIVAL_DATE}}
+
+Class / Berth: {{CLASS_OR_BERTH}}       Qty (seats/berths): {{QTY}}
+Baggage Allowance: {{BAGGAGE_ALLOWANCE}}  Extra Baggage (opt.): {{EXTRA_BAGGAGE}}
+
+Fare Total: {{FARE_TOTAL}} {{CURRENCY}}   Payment: {{PAYMENT_TERMS}}
+
+Notes (opt.): {{NOTES}}
+
+Terms (short):
+1) This ticket covers passage from {{ORIGIN}} to {{DESTINATION}} for the passenger(s) named above.
+2) Passenger must comply with ship rules, port authority, and security/customs checks.
+3) Prohibited items are not allowed. Violations may void passage without refund.
+4) Refund/Change policy: {{REFUND_CHANGE_POLICY}}.
+
+Signatures (optional):
+Passenger: {{PASSENGER_SIGN}}           Carrier: {{CARRIER_SIGN}}

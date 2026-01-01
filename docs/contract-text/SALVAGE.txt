@@ -1,0 +1,28 @@
+SALVAGE — RECOVERY / SALVAGE CLAIM RECEIPT (SHORT FORM)
+
+Claim ID: {{CLAIM_ID}}                   Date: {{DATE}}
+
+Salvage Team: {{SALVAGE_TEAM_NAME}}      Claimant/Authority: {{AUTHORITY_OR_OWNER_NAME}}
+Contact: {{SALVAGE_CONTACT}}             Ref/Case: {{CASE_REF}}
+
+Site / Coordinates: {{SITE_LOCATION}}
+Source (opt.): {{SOURCE}} (e.g., wreck, derelict, drift cargo)
+Recovery Window: {{START_DATE}} → {{END_DATE}}
+
+Recovered Items: {{RECOVERED_ITEMS_SUMMARY}}
+Qty/Value (opt.): {{QTY_VALUE}}
+Hazards/Restrictions (opt.): {{HAZARDS}}
+
+Salvage Award: {{SALVAGE_AWARD}} {{CURRENCY}}   Payment: {{PAYMENT_TERMS}}
+Share Split (opt.): {{SPLIT_TERMS}}             Storage/Fees (opt.): {{STORAGE_FEES}}
+
+Notes (opt.): {{NOTES}}
+
+Terms (short):
+1) Salvage Team reports and surrenders recovered items as required by law/authority.
+2) Ownership/rights determined by: {{RIGHTS_BASIS}} (e.g., registered owner, court, port authority).
+3) Salvage Team receives the award upon: {{AWARD_TRIGGER}} (e.g., verified delivery, inspection, legal clearance).
+4) Disputes handled by: {{DISPUTE_PROCESS}}.
+
+Signatures:
+Authority/Owner: {{AUTHORITY_SIGN}}     Salvage Team: {{SALVAGE_SIGN}}

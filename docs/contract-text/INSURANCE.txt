@@ -1,0 +1,26 @@
+INSURANCE — CLAIM PAYOUT RECEIPT (SHORT FORM)
+
+Claim ID: {{CLAIM_ID}}                   Date: {{DATE}}
+
+Insurer: {{INSURER_NAME}}                Insured: {{INSURED_NAME}}
+Policy No.: {{POLICY_NUMBER}}            Contact: {{INSURED_CONTACT}}
+Vessel/Asset: {{VESSEL_NAME}}            Incident Ref: {{INCIDENT_REF}}
+
+Incident Date: {{INCIDENT_DATE}}         Location: {{INCIDENT_LOCATION}}
+Cause (brief): {{INCIDENT_CAUSE}}
+Loss Type: {{LOSS_TYPE}} (e.g., hull, cargo, medical, liability)
+Verified Loss (opt.): {{VERIFIED_LOSS}} {{CURRENCY}}
+
+Payout Amount: {{PAYOUT_AMOUNT}} {{CURRENCY}}    Payment: {{PAYMENT_TERMS}}
+Deductible (opt.): {{DEDUCTIBLE}} {{CURRENCY}}    Coverage Notes (opt.): {{COVERAGE_NOTES}}
+
+Notes (opt.): {{NOTES}}
+
+Terms (short):
+1) This payout is issued under Policy {{POLICY_NUMBER}} for the incident described above.
+2) Acceptance of payout: {{ACCEPTANCE_EFFECT}} (e.g., “settles this claim in full” / “partial payment”).
+3) Subrogation/Recovery (opt.): {{SUBROGATION_TERMS}}.
+4) Fraud or material misstatement voids the claim.
+
+Signatures:
+Insurer: {{INSURER_SIGN}}                Insured: {{INSURED_SIGN}}

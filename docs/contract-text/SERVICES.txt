@@ -1,0 +1,29 @@
+SERVICES — SERVICE WORK ORDER / RECEIPT (SHORT FORM)
+
+Service ID: {{SERVICE_ID}}               Date: {{DATE}}
+
+Customer: {{CUSTOMER_NAME}}              Provider: {{PROVIDER_NAME}}
+Contact: {{CUSTOMER_CONTACT}}            Location: {{LOCATION}}
+Vessel/Asset: {{VESSEL_NAME}}            Reg/ID (opt.): {{VESSEL_ID}}
+
+Service Type: {{SERVICE_TYPE}} (e.g., refuel, repair, towing, escort, docking)
+Requested By: {{REQUESTED_BY}}
+Start: {{START_DATE}}                    End/ETA: {{END_DATE}}
+
+Work Summary: {{WORK_SUMMARY}}
+Parts/Materials (opt.): {{PARTS_MATERIALS}}
+Risks/Constraints (opt.): {{RISKS}}
+
+Service Fee: {{SERVICE_FEE}} {{CURRENCY}}    Payment: {{PAYMENT_TERMS}}
+Extras (opt.): {{EXTRAS}}                    Total (opt.): {{TOTAL}} {{CURRENCY}}
+
+Notes (opt.): {{NOTES}}
+
+Terms (short):
+1) Provider will perform the service described with reasonable care.
+2) Customer is responsible for access, permits, and safe operating conditions unless agreed otherwise.
+3) Liability limit: {{LIABILITY_LIMIT}}.
+4) Cancellation: {{CANCELLATION_TERMS}}.
+
+Signatures:
+Customer: {{CUSTOMER_SIGN}}             Provider: {{PROVIDER_SIGN}}

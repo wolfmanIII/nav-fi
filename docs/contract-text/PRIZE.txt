@@ -1,0 +1,29 @@
+PRIZE — LEGAL SEIZURE / PRIZE AWARD RECEIPT (SHORT FORM)
+
+Prize ID: {{PRIZE_ID}}                   Date: {{DATE}}
+
+Capturing Party: {{CAPTOR_NAME}}         Adjudicating Authority: {{AUTHORITY_NAME}}
+Vessel/Team: {{VESSEL_NAME}}             Case Ref: {{CASE_REF}}
+Contact: {{CAPTOR_CONTACT}}              Jurisdiction: {{JURISDICTION}}
+
+Seizure Location: {{SEIZURE_LOCATION}}
+Seizure Date: {{SEIZURE_DATE}}
+Basis for Seizure: {{LEGAL_BASIS}} (e.g., warrant, letters of marque, customs action)
+
+Prize Description: {{PRIZE_DESCRIPTION}} (ship/cargo)
+Estimated Value (opt.): {{ESTIMATED_VALUE}} {{CURRENCY}}
+Disposition: {{DISPOSITION}} (e.g., returned, auction, assigned, forfeited)
+
+Award to Captor: {{PRIZE_AWARD}} {{CURRENCY}}    Payment: {{PAYMENT_TERMS}}
+Shares (opt.): {{SHARE_SPLIT}}                   Fees (opt.): {{FEES_DEDUCTIONS}}
+
+Notes (opt.): {{NOTES}}
+
+Terms (short):
+1) Prize is subject to verification and legal adjudication by {{AUTHORITY_NAME}}.
+2) Capturing Party must provide logs, manifests, and evidence as requested.
+3) Award is paid upon: {{AWARD_TRIGGER}} (e.g., ruling, auction settlement, clearance).
+4) False claim or unlawful seizure voids this receipt and may incur penalties.
+
+Signatures:
+Authority: {{AUTHORITY_SIGN}}            Captor: {{CAPTOR_SIGN}}

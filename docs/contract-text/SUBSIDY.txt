@@ -1,0 +1,25 @@
+SUBSIDY — ROUTE SUBSIDY / GRANT RECEIPT (SHORT FORM)
+
+Subsidy ID: {{SUBSIDY_ID}}               Date: {{DATE}}
+
+Granting Authority: {{AUTHORITY_NAME}}   Recipient/Carrier: {{CARRIER_NAME}}
+Ref/Program: {{PROGRAM_REF}}             Vessel: {{VESSEL_NAME}}
+Contact (Authority): {{AUTHORITY_CONTACT}}  Contact (Carrier): {{CARRIER_CONTACT}}
+
+Service/Route: {{ORIGIN}}  →  {{DESTINATION}}
+Coverage Period: {{START_DATE}} → {{END_DATE}}
+Service Level: {{SERVICE_LEVEL}} (e.g., weekly run, priority cargo, passenger capacity)
+
+Subsidy Amount: {{SUBSIDY_AMOUNT}} {{CURRENCY}}   Payment: {{PAYMENT_TERMS}}
+Milestones (opt.): {{MILESTONES}}                 Reporting (opt.): {{REPORTING_REQUIREMENTS}}
+
+Notes (opt.): {{NOTES}}
+
+Terms (short):
+1) Recipient will operate the service/route as described for the coverage period.
+2) Proof of service may be required: {{PROOF_REQUIREMENTS}} (logs, manifests, port stamps).
+3) Non-compliance handling: {{NON_COMPLIANCE_TERMS}} (reduction, clawback, suspension).
+4) Cancellation policy: {{CANCELLATION_TERMS}}.
+
+Signatures:
+Authority: {{AUTHORITY_SIGN}}            Recipient/Carrier: {{CARRIER_SIGN}}

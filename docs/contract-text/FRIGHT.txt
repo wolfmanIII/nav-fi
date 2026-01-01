@@ -1,0 +1,25 @@
+FREIGHT — CARGO TRANSPORT RECEIPT (SHORT FORM)
+
+Contract ID: {{CONTRACT_ID}}            Date: {{DATE}}
+
+Shipper (Client): {{SHIPPER_NAME}}      Carrier: {{CARRIER_NAME}}
+Contact: {{SHIPPER_CONTACT}}           Vessel: {{VESSEL_NAME}}
+
+Route: {{ORIGIN}}  →  {{DESTINATION}}
+Pickup: {{PICKUP_DATE}}                Delivery ETA: {{DELIVERY_DATE}}
+
+Cargo: {{CARGO_DESCRIPTION}}
+Qty/Weight: {{CARGO_QTY}}              Declared Value (opt.): {{DECLARED_VALUE}}
+
+Fee: {{FREIGHT_FEE}} {{CURRENCY}}      Payment: {{PAYMENT_TERMS}}
+
+Notes / Handling (opt.): {{NOTES}}
+
+Terms (short):
+1) Carrier will deliver the cargo to {{DESTINATION}} with reasonable care.
+2) No illegal/restricted/hazardous goods unless declared and accepted.
+3) Liability limit: {{LIABILITY_LIMIT}} (or declared value if accepted).
+4) Cancellation: {{CANCELLATION_TERMS}}.
+
+Signatures:
+Shipper: {{SHIPPER_SIGN}}              Carrier: {{CARRIER_SIGN}}
