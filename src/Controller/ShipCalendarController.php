@@ -12,6 +12,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class ShipCalendarController extends BaseController
 {
+    public const CONTROLLER_NAME = 'ShipCalendarController';
+
     #[Route('/ship/{id}/calendar', name: 'app_ship_calendar', methods: ['GET', 'POST'])]
     public function calendar(int $id, Request $request, EntityManagerInterface $em): Response
     {
@@ -37,7 +39,8 @@ final class ShipCalendarController extends BaseController
             return $this->redirectToRoute('app_ship_calendar', ['id' => $ship->getId()]);
         }
 
-        return $this->render('ship/calendar.html.twig', [
+        return $this->renderTurbo('ship/calendar.html.twig', [
+            'controller_name' => self::CONTROLLER_NAME,
             'ship' => $ship,
             'form' => $form->createView(),
         ]);
