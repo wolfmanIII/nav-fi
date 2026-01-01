@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Captain Log - Ship Calendar{% endblock %}
+
+{% block pageContent %}
+    <div class="p-6">
+        <header class="prose">
+            <h1>Ship Calendar – {{ ship.name }}</h1>
+            <p class="text-sm opacity-80">Set the current imperial day/year for this ship during your session.</p>
+        </header>
+
+        <div class="alert alert-info alert-outline shadow-sm my-4">
+            <div class="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M3 4h18v16H3z"></path>
+                    <path d="M8 2v4"></path>
+                    <path d="M16 2v4"></path>
+                    <path d="M3 10h18"></path>
+                </svg>
+                <div>
+                    <h3 class="font-semibold">Session calendar</h3>
+                    <p class="text-sm opacity-80">Quickly adjust the current day/year per ship; useful to sync jumps and contracts.</p>
+                </div>
+            </div>
+        </div>
+
+        {{ form_start(form) }}
+
+        <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-250">
+            <legend class="fieldset-legend">Imperial Date</legend>
+
+            <div>
+                <label class="label">Session Day</label>
+                {{ form_widget(form.sessionDay) }}
+                {{ form_errors(form.sessionDay) }}
+            </div>
+
+            <div>
+                <label class="label">Session Year</label>
+                {{ form_widget(form.sessionYear) }}
+                {{ form_errors(form.sessionYear) }}
+            </div>
+        </fieldset>
+
+        <button type="submit" class="btn btn-outline btn-primary mt-4">Update</button>
+        <a href="{{ path('app_ship_index') }}" class="btn btn-ghost mt-4">Back to ships</a>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

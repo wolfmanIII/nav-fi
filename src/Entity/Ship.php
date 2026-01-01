@@ -36,6 +36,12 @@ class Ship
     #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $sessionDay = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $sessionYear = null;
+
     #[ORM\OneToOne(mappedBy: 'ship', cascade: ['persist', 'remove'])]
     private ?Mortgage $mortgage = null;
 
@@ -138,6 +144,30 @@ class Ship
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getSessionDay(): ?int
+    {
+        return $this->sessionDay;
+    }
+
+    public function setSessionDay(?int $sessionDay): static
+    {
+        $this->sessionDay = $sessionDay;
+
+        return $this;
+    }
+
+    public function getSessionYear(): ?int
+    {
+        return $this->sessionYear;
+    }
+
+    public function setSessionYear(?int $sessionYear): static
+    {
+        $this->sessionYear = $sessionYear;
 
         return $this;
     }
