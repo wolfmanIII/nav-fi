@@ -24,5 +24,7 @@ final class Version20260102120000 extends AbstractMigration
     public function down(Schema $schema): void
     {
         $this->addSql('DROP INDEX UNIQ_MORTGAGE_SHIP_ID');
+        $this->addSql('DROP INDEX IDX_A64C7D97979B1AD6');
+        $this->addSql('ALTER TABLE mortgage DROP COLUMN company_id');
     }
 }
