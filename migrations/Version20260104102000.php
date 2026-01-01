@@ -20,10 +20,8 @@ final class Version20260104102000 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_4FBF0947A76ED395 ON company (user_id)');
         $this->addSql('CREATE INDEX IDX_4FBF0947FA9442D ON company (company_role_id)');
         $this->addSql('ALTER TABLE income ADD company_id INTEGER DEFAULT NULL');
-        $this->addSql('ALTER TABLE income ADD CONSTRAINT FK_249AA25C979B1AD6 FOREIGN KEY (company_id) REFERENCES company (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('CREATE INDEX IDX_249AA25C979B1AD6 ON income (company_id)');
         $this->addSql('ALTER TABLE cost ADD company_id INTEGER DEFAULT NULL');
-        $this->addSql('ALTER TABLE cost ADD CONSTRAINT FK_3C2AA97979B1AD6 FOREIGN KEY (company_id) REFERENCES company (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('CREATE INDEX IDX_3C2AA97979B1AD6 ON cost (company_id)');
     }
 
