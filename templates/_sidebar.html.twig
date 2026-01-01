@@ -62,6 +62,15 @@
             </li>
 
             <li>
+                <a href="{{ path('app_company_index') }}"
+                   class="{% if controller_name == constant('App\\Controller\\CompanyController::CONTROLLER_NAME') %}menu-active{% endif %}"
+                >
+                    {% include 'icons/admin.html.twig' %}
+                    <span>Companies</span>
+                </a>
+            </li>
+
+            <li>
                 <a href="{{ path('app_annual_budget_index') }}"
                    class="{% if controller_name == constant('App\\Controller\\AnnualBudgetController::CONTROLLER_NAME') %}menu-active{% endif %}"
                 >
