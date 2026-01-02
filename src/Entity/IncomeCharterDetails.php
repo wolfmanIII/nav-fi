@@ -27,6 +27,18 @@ class IncomeCharterDetails
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $manifestSummary = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $startDay = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $startYear = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $endDay = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $endYear = null;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $paymentTerms = null;
 
@@ -151,6 +163,54 @@ class IncomeCharterDetails
     public function setCancellationTerms(?string $cancellationTerms): static
     {
         $this->cancellationTerms = $cancellationTerms;
+
+        return $this;
+    }
+
+    public function getStartDay(): ?int
+    {
+        return $this->startDay;
+    }
+
+    public function setStartDay(?int $startDay): static
+    {
+        $this->startDay = $startDay;
+
+        return $this;
+    }
+
+    public function getStartYear(): ?int
+    {
+        return $this->startYear;
+    }
+
+    public function setStartYear(?int $startYear): static
+    {
+        $this->startYear = $startYear;
+
+        return $this;
+    }
+
+    public function getEndDay(): ?int
+    {
+        return $this->endDay;
+    }
+
+    public function setEndDay(?int $endDay): static
+    {
+        $this->endDay = $endDay;
+
+        return $this;
+    }
+
+    public function getEndYear(): ?int
+    {
+        return $this->endYear;
+    }
+
+    public function setEndYear(?int $endYear): static
+    {
+        $this->endYear = $endYear;
 
         return $this;
     }
