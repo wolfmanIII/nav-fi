@@ -5,6 +5,7 @@ namespace App\Form\Type;
 use App\Entity\IncomeInsuranceDetails;
 use App\Form\Config\DayYearLimits;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -45,10 +46,23 @@ class IncomeInsuranceDetailsType extends AbstractType
                 'label' => 'Incident cause',
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('lossType', TextType::class, [
+            ->add('lossType', ChoiceType::class, [
                 'required' => false,
                 'label' => 'Loss type',
-                'attr' => ['class' => 'input m-1 w-full'],
+                'placeholder' => '-- Select loss type --',
+                'choices' => [
+                    'Hull Damage' => 'Hull Damage',
+                    'Cargo Loss/Damage' => 'Cargo Loss/Damage',
+                    'Personal Injury' => 'Personal Injury',
+                    'Medical Expenses' => 'Medical Expenses',
+                    'Liability Claim' => 'Liability Claim',
+                    'Theft / Piracy' => 'Theft / Piracy',
+                    'Fire / Explosion' => 'Fire / Explosion',
+                    'Collision' => 'Collision',
+                    'Systems Failure' => 'Systems Failure',
+                    'Total Loss' => 'Total Loss',
+                ],
+                'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('verifiedLoss', NumberType::class, [
                 'required' => false,
