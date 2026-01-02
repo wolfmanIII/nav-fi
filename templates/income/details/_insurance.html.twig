@@ -43,15 +43,17 @@
         {{ form_widget(detail_form.deductible) }}
         {{ form_errors(detail_form.deductible) }}
     </div>
+
+    <div>
+        {{ form_label(detail_form.acceptanceEffect) }}
+        {{ form_widget(detail_form.acceptanceEffect) }}
+        {{ form_errors(detail_form.acceptanceEffect) }}
+    </div>
+
     <div class="col-span-3">
         {{ form_label(detail_form.paymentTerms) }}
         {{ form_widget(detail_form.paymentTerms) }}
         {{ form_errors(detail_form.paymentTerms) }}
-    </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.acceptanceEffect) }}
-        {{ form_widget(detail_form.acceptanceEffect) }}
-        {{ form_errors(detail_form.acceptanceEffect) }}
     </div>
     <div class="col-span-3">
         {{ form_label(detail_form.subrogationTerms) }}
