@@ -16,6 +16,24 @@ final class IncomeController extends BaseController
 {
     public const CONTROLLER_NAME = 'IncomeController';
 
+    /**
+     * @var array<string, string>
+     */
+    private const DETAIL_FIELDS = [
+        'CHARTER' => 'charterDetails',
+        'SUBSIDY' => 'subsidyDetails',
+        'FREIGHT' => 'freightDetails',
+        'PASSENGERS' => 'passengersDetails',
+        'SERVICES' => 'servicesDetails',
+        'INSURANCE' => 'insuranceDetails',
+        'MAIL' => 'mailDetails',
+        'INTEREST' => 'interestDetails',
+        'TRADE' => 'tradeDetails',
+        'SALVAGE' => 'salvageDetails',
+        'PRIZE' => 'prizeDetails',
+        'CONTRACT' => 'contractDetails',
+    ];
+
     #[Route('/income/index', name: 'app_income_index', methods: ['GET'])]
     public function index(EntityManagerInterface $em): Response
     {
@@ -42,12 +60,14 @@ final class IncomeController extends BaseController
             $category = $em->getRepository(IncomeCategory::class)->find($categoryParam);
             if ($category) {
                 $income->setIncomeCategory($category);
+                $this->clearUnusedDetails($income, $em);
             }
         }
         $form = $this->createForm(IncomeType::class, $income, ['user' => $user]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->clearUnusedDetails($income, $em);
             $em->persist($income);
             $em->flush();
 
@@ -92,6 +112,7 @@ final class IncomeController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->clearUnusedDetails($income, $em);
             $em->flush();
 
             return $this->redirectToRoute('app_income_index');
@@ -126,5 +147,32 @@ final class IncomeController extends BaseController
         $em->flush();
 
         return $this->redirectToRoute('app_income_index');
+    }
+
+    private function clearUnusedDetails(Income $income, EntityManagerInterface $em): void
+    {
+        $currentCode = $income->getIncomeCategory()?->getCode();
+        if (!$currentCode) {
+            return;
+        }
+
+        foreach (self::DETAIL_FIELDS as $code => $property) {
+            if ($code === $currentCode) {
+                continue;
+            }
+
+            $getter = 'get' . ucfirst($property);
+            $setter = 'set' . ucfirst($property);
+
+            if (!method_exists($income, $getter) || !method_exists($income, $setter)) {
+                continue;
+            }
+
+            $detail = $income->$getter();
+            if ($detail) {
+                $em->remove($detail);
+                $income->$setter(null);
+            }
+        }
     }
 }
