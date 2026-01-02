@@ -42,3 +42,11 @@ Guida per collegare i placeholder dei template di contratto (`templates/contract
 - **LocalLaw**: giurisdizione e disclaimer (`LOCAL_LAW_*`).
 - **Crew**: opzionale per liste passeggeri/manifesti.
 - **Altri placeholder**: termini legali, descrizioni cargo/servizio, policy, restrizioni, ecc. restano campi liberi per singolo template.
+
+### Come gestire i campi opzionali di Income per categoria di contratto
+I template hanno molti campi opzionali; per non mostrare tutto sempre:
+- Tieni i campi extra su `Income` come nullable (aggiungi solo quelli richiesti dai contratti).
+- Definisci una mappa “campi per categoria” (es. `IncomeCategory.code` → elenco di campi opzionali).
+- In `IncomeType` usa un event subscriber (`PRE_SET_DATA` / `PRE_SUBMIT`) per aggiungere al form solo i campi previsti dalla categoria selezionata; gli altri non compaiono.
+- Usa validation groups per categoria, così validi solo i campi mostrati.
+- Se serve in EasyAdmin, applica la stessa logica in `configureFields()` o con un form type riusabile.

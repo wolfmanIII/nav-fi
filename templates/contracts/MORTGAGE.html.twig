@@ -327,7 +327,7 @@
                 <div><b>Owner / Operator</b></div>
                 <div>
                     {% if captain %}
-                        {{ captain.name }} {{ captain.surname }}
+                        <i>{{ captain.name }} {{ captain.surname }}</i>
                     {% else %}
                         — 
                     {% endif %}
@@ -336,7 +336,7 @@
             <td style="text-align: right;">
                 <div><b>Counterparty</b></div>
                 {% if mortgage.company %}
-                    <div>{{ mortgage.company.signLabel ?? mortgage.company.name }}</div>
+                    <div><i>{{ mortgage.company.signLabel ?? mortgage.company.name }}</i></div>
                 {% else %}
                     <div>_____________________</div>
                 {% endif %}
