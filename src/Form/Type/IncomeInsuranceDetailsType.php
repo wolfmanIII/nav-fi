@@ -81,10 +81,21 @@ class IncomeInsuranceDetailsType extends AbstractType
                 'label' => 'Payment terms',
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 2],
             ])
-            ->add('acceptanceEffect', TextareaType::class, [
+            ->add('acceptanceEffect', ChoiceType::class, [
                 'required' => false,
                 'label' => 'Acceptance effect',
-                'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 2],
+                'placeholder' => '-- Select acceptance --',
+                'choices' => [
+                    'Settles the claim in full' => 'Settles the claim in full',
+                    'Partial settlement (balance pending)' => 'Partial settlement (balance pending)',
+                    'Advance payment only' => 'Advance payment only',
+                    'Settlement without admission of liability' => 'Settlement without admission of liability',
+                    'Final payment subject to audit' => 'Final payment subject to audit',
+                    'Payment covers listed items only' => 'Payment covers listed items only',
+                    'Payment excludes deductible and fees' => 'Payment excludes deductible and fees',
+                    'Settlement subject to subrogation rights' => 'Settlement subject to subrogation rights',
+                ],
+                'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('subrogationTerms', TextareaType::class, [
                 'required' => false,
