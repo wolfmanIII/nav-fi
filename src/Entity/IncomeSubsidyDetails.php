@@ -63,9 +63,6 @@ class IncomeSubsidyDetails
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $cancellationTerms = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $secretLevel = null;
-
     // Getters/setters
     public function getId(): ?int
     {
@@ -245,17 +242,6 @@ class IncomeSubsidyDetails
     public function setCancellationTerms(?string $cancellationTerms): static
     {
         $this->cancellationTerms = $cancellationTerms;
-        return $this;
-    }
-
-    public function getSecretLevel(): ?string
-    {
-        return $this->secretLevel;
-    }
-
-    public function setSecretLevel(?string $secretLevel): static
-    {
-        $this->secretLevel = $secretLevel;
         return $this;
     }
 }

@@ -5,7 +5,6 @@ namespace App\Form\Type;
 use App\Entity\IncomeSubsidyDetails;
 use App\Form\Config\DayYearLimits;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -96,24 +95,6 @@ class IncomeSubsidyDetailsType extends AbstractType
                 'required' => false,
                 'label' => 'Cancellation terms',
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 2],
-            ])
-            ->add('serviceLevel', ChoiceType::class, [
-                'required' => false,
-                'label' => 'Secret level',
-                'placeholder' => '-- Select level --',
-                'choices' => [
-                    'Basic' => 'Basic',
-                    'Standard' => 'Standard',
-                    'Priority' => 'Priority',
-                    'Express' => 'Express',
-                    'Dedicated' => 'Dedicated',
-                    'Guaranteed Schedule' => 'Guaranteed Schedule',
-                    'High Availability' => 'High Availability',
-                    'Secure Handling' => 'Secure Handling',
-                    'Hazard-Cleared' => 'Hazard-Cleared',
-                    'Premium Support' => 'Premium Support',
-                ],
-                'attr' => ['class' => 'select m-1 w-full'],
             ])
         ;
     }
