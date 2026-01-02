@@ -8,6 +8,7 @@ use App\Entity\Mortgage;
 use App\Entity\Ship;
 use App\Entity\Company;
 use App\Entity\LocalLaw;
+use App\Form\Config\DayYearLimits;
 use App\Form\Type\TravellerMoneyType;
 use App\Repository\ShipRepository;
 use Doctrine\ORM\EntityRepository;
@@ -20,6 +21,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MortgageType extends AbstractType
 {
+    public function __construct(private readonly DayYearLimits $limits)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var Mortgage $mortgage */
@@ -31,11 +36,11 @@ class MortgageType extends AbstractType
         $builder
             //->add('name', TextType::class, ['attr' => ['class' => 'input m-1 w-full'],])
             ->add('startDay', IntegerType::class, [
-                'attr' => ['class' => 'input m-1 w-full'],
+                'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
                 'disabled' => $disabled,
                 ])
             ->add('startYear', IntegerType::class, [
-                'attr' => ['class' => 'input m-1 w-full'],
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
                 'disabled' => $disabled,
                 ])
             ->add('shipShares', IntegerType::class, [

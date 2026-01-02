@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Crew;
 use App\Entity\Ship;
 use App\Entity\ShipRole;
+use App\Form\Config\DayYearLimits;
 use App\Repository\ShipRepository;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -15,6 +16,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CrewType extends AbstractType
 {
+    public function __construct(private readonly DayYearLimits $limits)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var Crew $crew */
@@ -36,12 +41,12 @@ class CrewType extends AbstractType
                 'disabled' => $disabled,
             ])
             ->add('birthYear', IntegerType::class, [
-                'attr' => ['class' => 'input m-1 w-full'],
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
                 'required' => false,
                 'disabled' => $disabled,
             ])
             ->add('birthDay', IntegerType::class, [
-                'attr' => ['class' => 'input m-1 w-full'],
+                'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
                 'required' => false,
                 'disabled' => $disabled,
             ])

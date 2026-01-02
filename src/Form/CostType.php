@@ -7,6 +7,7 @@ use App\Entity\CostCategory;
 use App\Entity\Ship;
 use App\Entity\Company;
 use App\Entity\LocalLaw;
+use App\Form\Config\DayYearLimits;
 use App\Form\Type\TravellerMoneyType;
 use App\Repository\ShipRepository;
 use Doctrine\ORM\EntityRepository;
@@ -20,6 +21,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CostType extends AbstractType
 {
+    public function __construct(private readonly DayYearLimits $limits)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $user = $options['user'];
@@ -34,11 +39,11 @@ class CostType extends AbstractType
             ])
             ->add('paymentDay', IntegerType::class, [
                 'required' => false,
-                'attr' => ['class' => 'input m-1 w-full'],
+                'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
             ])
             ->add('paymentYear', IntegerType::class, [
                 'required' => false,
-                'attr' => ['min' => 1100, 'max' => 1300, 'class' => 'input m-1 w-full'],
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
             ])
             ->add('costCategory', EntityType::class, [
                 'class' => CostCategory::class,

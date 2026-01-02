@@ -4,6 +4,10 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.day_min: '%env(default:1:int:APP_DAY_MIN)%'
+    app.day_max: '%env(default:365:int:APP_DAY_MAX)%'
+    app.year_min: '%env(default:0:int:APP_YEAR_MIN)%'
+    app.year_max: '%env(default:9999:int:APP_YEAR_MAX)%'
     ai.backend: '%env(AI_BACKEND)%' # ollama | openai
 
 services:
@@ -16,6 +20,13 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
+
+    App\Form\Config\DayYearLimits:
+        arguments:
+            $dayMin: '%app.day_min%'
+            $dayMax: '%app.day_max%'
+            $yearMin: '%app.year_min%'
+            $yearMax: '%app.year_max%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

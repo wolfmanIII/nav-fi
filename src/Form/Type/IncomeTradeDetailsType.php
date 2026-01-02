@@ -3,6 +3,7 @@
 namespace App\Form\Type;
 
 use App\Entity\IncomeTradeDetails;
+use App\Form\Config\DayYearLimits;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -13,6 +14,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IncomeTradeDetailsType extends AbstractType
 {
+    public function __construct(private readonly DayYearLimits $limits)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -71,12 +76,12 @@ class IncomeTradeDetailsType extends AbstractType
             ->add('deliveryDay', IntegerType::class, [
                 'required' => false,
                 'label' => 'Delivery Day',
-                'attr' => ['class' => 'input m-1 w-full'],
+                'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
             ])
             ->add('deliveryYear', IntegerType::class, [
                 'required' => false,
                 'label' => 'Delivery Year',
-                'attr' => ['class' => 'input m-1 w-full'],
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
             ])
             ->add('asIsOrWarranty', TextType::class, [
                 'required' => false,

@@ -3,6 +3,7 @@
 namespace App\Form\Type;
 
 use App\Entity\IncomePassengersDetails;
+use App\Form\Config\DayYearLimits;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -12,6 +13,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IncomePassengersDetailsType extends AbstractType
 {
+    public function __construct(private readonly DayYearLimits $limits)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -28,22 +33,22 @@ class IncomePassengersDetailsType extends AbstractType
             ->add('departureDay', IntegerType::class, [
                 'required' => false,
                 'label' => 'Departure Day',
-                'attr' => ['class' => 'input m-1 w-full'],
+                'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
             ])
             ->add('departureYear', IntegerType::class, [
                 'required' => false,
                 'label' => 'Departure Year',
-                'attr' => ['class' => 'input m-1 w-full'],
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
             ])
             ->add('arrivalDay', IntegerType::class, [
                 'required' => false,
                 'label' => 'Arrival Day',
-                'attr' => ['class' => 'input m-1 w-full'],
+                'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
             ])
             ->add('arrivalYear', IntegerType::class, [
                 'required' => false,
                 'label' => 'Arrival Year',
-                'attr' => ['class' => 'input m-1 w-full'],
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
             ])
             ->add('classOrBerth', TextType::class, [
                 'required' => false,

@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\AnnualBudget;
 use App\Entity\Ship;
+use App\Form\Config\DayYearLimits;
 use App\Repository\ShipRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -14,22 +15,26 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AnnualBudgetType extends AbstractType
 {
+    public function __construct(private readonly DayYearLimits $limits)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $user = $options['user'];
 
         $builder
             ->add('startDay', IntegerType::class, [
-                'attr' => ['class' => 'input m-1 w-full'],
+                'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
             ])
             ->add('startYear', IntegerType::class, [
-                'attr' => ['class' => 'input m-1 w-full'],
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
             ])
             ->add('endDay', IntegerType::class, [
-                'attr' => ['class' => 'input m-1 w-full'],
+                'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
             ])
             ->add('endYear', IntegerType::class, [
-                'attr' => ['class' => 'input m-1 w-full'],
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
             ])
             ->add('ship', EntityType::class, [
                 'class' => Ship::class,
