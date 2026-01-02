@@ -1,26 +1,154 @@
-MAIL — OFFICIAL COURIER / POSTAL RUN RECEIPT (SHORT FORM)
+{% extends 'base_plain.html.twig' %}
 
-Run ID: {{RUN_ID}}                       Date: {{DATE}}
+{% block title %}Mail Run Receipt{% endblock %}
+{% block stylesheets %}
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', sans-serif; }
+        .card { border: none; border-radius: 8px; background: #ffffff; }
+        .card-body { padding: 10px; }
+        .table { width: 100%; border-collapse: collapse; border: 1px solid #d1d5db; }
+        .table th, .table td { border: 1px solid #d1d5db; padding: 6px; }
+        .table th { text-align: left; }
+        .text-right { text-align: right; }
+        .mb-4 { margin-bottom: 0.5rem; }
+        .mb-6 { margin-bottom: 0.75rem; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .gap-4 { gap: 0.75rem; }
+        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 0.5rem; }
+        .header-table td { vertical-align: middle; }
+        .logo { height: 64px; }
+        .text-sm { font-size: 0.9rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .font-bold { font-weight: 700; }
+        .card-title { font-weight: 700; }
+    </style>
+{% endblock %}
+{% block javascripts %}{% endblock %}
 
-Contracting Authority: {{AUTHORITY_NAME}}   Carrier: {{CARRIER_NAME}}
-Ref/Account: {{AUTHORITY_REF}}              Vessel: {{VESSEL_NAME}}
+{% block pageContent %}
+    <div class="mb-6">
+        <table class="header-table">
+            <tr>
+                <td>
+                    <img src="{{ absolute_url(asset('img/captain-log-logo.png')) }}" alt="Captain Log" class="logo">
+                </td>
+                <td class="text-right">
+                    <div class="text-2xl font-bold">Mail Run Receipt</div>
+                    <div class="text-sm">Date: {{ '{{DATE}}' }}</div>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-Route: {{ORIGIN}}  →  {{DESTINATION}}
-Dispatch: {{DISPATCH_DATE}}               Delivery ETA: {{DELIVERY_DATE}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Carrier & Vessel</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Carrier</th>
+                        <th>Vessel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{CARRIER_NAME}}' }}</td>
+                        <td>{{ '{{VESSEL_NAME}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-Mail Type: {{MAIL_TYPE}} (e.g., Official / Priority / Secure)
-Package Count: {{PACKAGE_COUNT}}          Total Mass: {{TOTAL_MASS}}
-Security Level (opt.): {{SECURITY_LEVEL}}  Seal Codes (opt.): {{SEAL_CODES}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Route & Schedule</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Origin</th>
+                        <th>Destination</th>
+                        <th>Dispatch</th>
+                        <th>Delivery ETA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{ORIGIN}}' }}</td>
+                        <td>{{ '{{DESTINATION}}' }}</td>
+                        <td>{{ '{{DISPATCH_DATE}}' }}</td>
+                        <td>{{ '{{DELIVERY_DATE}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-Payment: {{PAYMENT_TERMS}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Mail Details</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Mail Type</th>
+                        <th>Package Count</th>
+                        <th>Total Mass</th>
+                        <th>Security Level</th>
+                        <th>Seal Codes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{MAIL_TYPE}}' }}</td>
+                        <td>{{ '{{PACKAGE_COUNT}}' }}</td>
+                        <td>{{ '{{TOTAL_MASS}}' }}</td>
+                        <td>{{ '{{SECURITY_LEVEL}}' }}</td>
+                        <td>{{ '{{SEAL_CODES}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-Notes (opt.): {{NOTES}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Payment & Terms</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Payment</th>
+                        <th>Liability Limit</th>
+                        <th>Proof of Delivery</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{PAYMENT_TERMS}}' }}</td>
+                        <td>{{ '{{LIABILITY_LIMIT}}' }}</td>
+                        <td>{{ '{{PROOF_OF_DELIVERY}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="mt-3 text-sm">
+                Notes: {{ '{{NOTES}}' }}
+            </div>
+        </div>
+    </div>
 
-Terms (short):
-1) Carrier will transport sealed mail from {{ORIGIN}} to {{DESTINATION}} with reasonable care.
-2) Sealed items will not be opened by Carrier except when required by lawful inspection.
-3) Liability limit: {{LIABILITY_LIMIT}} (unless otherwise specified by Authority).
-4) Delivery confirmation: {{PROOF_OF_DELIVERY}} (e.g., signature/scan/seal check).
-
-Signatures:
-Authority: {{AUTHORITY_SIGN}}             Carrier: {{CARRIER_SIGN}}
+    <table class="table text-sm">
+        <thead>
+            <tr>
+                <th>Carrier</th>
+                <th>Delivery Confirmation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ '{{CARRIER_SIGN}}' }}</td>
+                <td>{{ '{{PROOF_OF_DELIVERY}}' }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,25 +1,147 @@
-SUBSIDY — ROUTE SUBSIDY / GRANT RECEIPT (SHORT FORM)
+{% extends 'base_plain.html.twig' %}
 
-Subsidy ID: {{SUBSIDY_ID}}               Date: {{DATE}}
+{% block title %}Route Subsidy / Grant{% endblock %}
+{% block stylesheets %}
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', sans-serif; }
+        .card { border: none; border-radius: 8px; background: #ffffff; }
+        .card-body { padding: 10px; }
+        .table { width: 100%; border-collapse: collapse; border: 1px solid #d1d5db; }
+        .table th, .table td { border: 1px solid #d1d5db; padding: 6px; }
+        .table th { text-align: left; }
+        .text-right { text-align: right; }
+        .mb-4 { margin-bottom: 0.5rem; }
+        .mb-6 { margin-bottom: 0.75rem; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .gap-4 { gap: 0.75rem; }
+        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 0.5rem; }
+        .header-table td { vertical-align: middle; }
+        .logo { height: 64px; }
+        .text-sm { font-size: 0.9rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .font-bold { font-weight: 700; }
+        .card-title { font-weight: 700; }
+    </style>
+{% endblock %}
+{% block javascripts %}{% endblock %}
 
-Granting Authority: {{AUTHORITY_NAME}}   Recipient/Carrier: {{CARRIER_NAME}}
-Ref/Program: {{PROGRAM_REF}}             Vessel: {{VESSEL_NAME}}
-Contact (Authority): {{AUTHORITY_CONTACT}}  Contact (Carrier): {{CARRIER_CONTACT}}
+{% block pageContent %}
+    <div class="mb-6">
+        <table class="header-table">
+            <tr>
+                <td>
+                    <img src="{{ absolute_url(asset('img/captain-log-logo.png')) }}" alt="Captain Log" class="logo">
+                </td>
+                <td class="text-right">
+                    <div class="text-2xl font-bold">Route Subsidy / Grant</div>
+                    <div class="text-sm font-bold">Subsidy ID: {{ '{{SUBSIDY_ID}}' }}</div>
+                    <div class="text-sm">Date: {{ '{{DATE}}' }}</div>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-Service/Route: {{ORIGIN}}  →  {{DESTINATION}}
-Coverage Period: {{START_DATE}} → {{END_DATE}}
-Service Level: {{SERVICE_LEVEL}} (e.g., weekly run, priority cargo, passenger capacity)
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Parties</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Granting Authority</th>
+                        <th>Recipient / Carrier</th>
+                        <th>Program Ref</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{AUTHORITY_NAME}}' }}<br>Contact: {{ '{{AUTHORITY_CONTACT}}' }}</td>
+                        <td>{{ '{{CARRIER_NAME}}' }}<br>Contact: {{ '{{CARRIER_CONTACT}}' }}</td>
+                        <td>{{ '{{PROGRAM_REF}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="text-sm mt-2">Vessel: {{ '{{VESSEL_NAME}}' }}</div>
+        </div>
+    </div>
 
-Subsidy Amount: {{SUBSIDY_AMOUNT}} {{CURRENCY}}   Payment: {{PAYMENT_TERMS}}
-Milestones (opt.): {{MILESTONES}}                 Reporting (opt.): {{REPORTING_REQUIREMENTS}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Service / Route</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Origin</th>
+                        <th>Destination</th>
+                        <th>Coverage Period</th>
+                        <th>Service Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{ORIGIN}}' }}</td>
+                        <td>{{ '{{DESTINATION}}' }}</td>
+                        <td>{{ '{{START_DATE}}' }} → {{ '{{END_DATE}}' }}</td>
+                        <td>{{ '{{SERVICE_LEVEL}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-Notes (opt.): {{NOTES}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Subsidy & Terms</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Subsidy Amount</th>
+                        <th>Payment</th>
+                        <th>Milestones</th>
+                        <th>Reporting</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{SUBSIDY_AMOUNT}}' }} {{ '{{CURRENCY}}' }}</td>
+                        <td>{{ '{{PAYMENT_TERMS}}' }}</td>
+                        <td>{{ '{{MILESTONES}}' }}</td>
+                        <td>{{ '{{REPORTING_REQUIREMENTS}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="grid grid-cols-2 gap-4 text-sm mt-3">
+                <div>
+                    <h3 class="card-title text-sm mb-1">Proof requirements</h3>
+                    <div>{{ '{{PROOF_REQUIREMENTS}}' }}</div>
+                </div>
+                <div>
+                    <h3 class="card-title text-sm mb-1">Non-compliance</h3>
+                    <div>{{ '{{NON_COMPLIANCE_TERMS}}' }}</div>
+                </div>
+            </div>
+            <div class="mt-3 text-sm">
+                Cancellation: {{ '{{CANCELLATION_TERMS}}' }}
+            </div>
+            <div class="mt-2 text-sm">
+                Notes: {{ '{{NOTES}}' }}
+            </div>
+        </div>
+    </div>
 
-Terms (short):
-1) Recipient will operate the service/route as described for the coverage period.
-2) Proof of service may be required: {{PROOF_REQUIREMENTS}} (logs, manifests, port stamps).
-3) Non-compliance handling: {{NON_COMPLIANCE_TERMS}} (reduction, clawback, suspension).
-4) Cancellation policy: {{CANCELLATION_TERMS}}.
-
-Signatures:
-Authority: {{AUTHORITY_SIGN}}            Recipient/Carrier: {{CARRIER_SIGN}}
+    <table class="table text-sm">
+        <thead>
+            <tr>
+                <th>Authority</th>
+                <th>Recipient / Carrier</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ '{{AUTHORITY_SIGN}}' }}</td>
+                <td>{{ '{{CARRIER_SIGN}}' }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

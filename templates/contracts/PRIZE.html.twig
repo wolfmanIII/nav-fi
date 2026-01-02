@@ -1,29 +1,141 @@
-PRIZE — LEGAL SEIZURE / PRIZE AWARD RECEIPT (SHORT FORM)
+{% extends 'base_plain.html.twig' %}
 
-Prize ID: {{PRIZE_ID}}                   Date: {{DATE}}
+{% block title %}Prize / Seizure Award{% endblock %}
+{% block stylesheets %}
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', sans-serif; }
+        .card { border: none; border-radius: 8px; background: #ffffff; }
+        .card-body { padding: 10px; }
+        .table { width: 100%; border-collapse: collapse; border: 1px solid #d1d5db; }
+        .table th, .table td { border: 1px solid #d1d5db; padding: 6px; }
+        .table th { text-align: left; }
+        .text-right { text-align: right; }
+        .mb-4 { margin-bottom: 0.5rem; }
+        .mb-6 { margin-bottom: 0.75rem; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .gap-4 { gap: 0.75rem; }
+        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 0.5rem; }
+        .header-table td { vertical-align: middle; }
+        .logo { height: 64px; }
+        .text-sm { font-size: 0.9rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .font-bold { font-weight: 700; }
+        .card-title { font-weight: 700; }
+    </style>
+{% endblock %}
+{% block javascripts %}{% endblock %}
 
-Capturing Party: {{CAPTOR_NAME}}         Adjudicating Authority: {{AUTHORITY_NAME}}
-Vessel/Team: {{VESSEL_NAME}}             Case Ref: {{CASE_REF}}
-Contact: {{CAPTOR_CONTACT}}              Jurisdiction: {{JURISDICTION}}
+{% block pageContent %}
+    <div class="mb-6">
+        <table class="header-table">
+            <tr>
+                <td>
+                    <img src="{{ absolute_url(asset('img/captain-log-logo.png')) }}" alt="Captain Log" class="logo">
+                </td>
+                <td class="text-right">
+                    <div class="text-2xl font-bold">Prize / Seizure Award</div>
+                    <div class="text-sm font-bold">Prize ID: {{ '{{PRIZE_ID}}' }}</div>
+                    <div class="text-sm">Date: {{ '{{DATE}}' }}</div>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-Seizure Location: {{SEIZURE_LOCATION}}
-Seizure Date: {{SEIZURE_DATE}}
-Basis for Seizure: {{LEGAL_BASIS}} (e.g., warrant, letters of marque, customs action)
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Parties</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Capturing Party</th>
+                        <th>Adjudicating Authority</th>
+                        <th>Vessel / Team</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{CAPTOR_NAME}}' }}<br>Contact: {{ '{{CAPTOR_CONTACT}}' }}</td>
+                        <td>{{ '{{AUTHORITY_NAME}}' }}</td>
+                        <td>{{ '{{VESSEL_NAME}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="text-sm mt-2">
+                Case Ref: {{ '{{CASE_REF}}' }} • Jurisdiction: {{ '{{JURISDICTION}}' }}
+            </div>
+        </div>
+    </div>
 
-Prize Description: {{PRIZE_DESCRIPTION}} (ship/cargo)
-Estimated Value (opt.): {{ESTIMATED_VALUE}} {{CURRENCY}}
-Disposition: {{DISPOSITION}} (e.g., returned, auction, assigned, forfeited)
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Seizure</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Location</th>
+                        <th>Date</th>
+                        <th>Basis for Seizure</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{SEIZURE_LOCATION}}' }}</td>
+                        <td>{{ '{{SEIZURE_DATE}}' }}</td>
+                        <td>{{ '{{LEGAL_BASIS}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-Award to Captor: {{PRIZE_AWARD}} {{CURRENCY}}    Payment: {{PAYMENT_TERMS}}
-Shares (opt.): {{SHARE_SPLIT}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Prize & Award</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Estimated Value</th>
+                        <th>Disposition</th>
+                        <th>Award</th>
+                        <th>Payment Terms</th>
+                        <th>Shares</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{PRIZE_DESCRIPTION}}' }}</td>
+                        <td>{{ '{{ESTIMATED_VALUE}}' }} {{ '{{CURRENCY}}' }}</td>
+                        <td>{{ '{{DISPOSITION}}' }}</td>
+                        <td>{{ '{{PRIZE_AWARD}}' }} {{ '{{CURRENCY}}' }}</td>
+                        <td>{{ '{{PAYMENT_TERMS}}' }}</td>
+                        <td>{{ '{{SHARE_SPLIT}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="mt-3 text-sm">
+                Award trigger: {{ '{{AWARD_TRIGGER}}' }}
+            </div>
+            <div class="mt-2 text-sm">
+                Notes: {{ '{{NOTES}}' }}
+            </div>
+        </div>
+    </div>
 
-Notes (opt.): {{NOTES}}
-
-Terms (short):
-1) Prize is subject to verification and legal adjudication by {{AUTHORITY_NAME}}.
-2) Capturing Party must provide logs, manifests, and evidence as requested.
-3) Award is paid upon: {{AWARD_TRIGGER}} (e.g., ruling, auction settlement, clearance).
-4) False claim or unlawful seizure voids this receipt and may incur penalties.
-
-Signatures:
-Authority: {{AUTHORITY_SIGN}}            Captor: {{CAPTOR_SIGN}}
+    <table class="table text-sm">
+        <thead>
+            <tr>
+                <th>Authority</th>
+                <th>Captor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ '{{AUTHORITY_SIGN}}' }}</td>
+                <td>{{ '{{CAPTOR_SIGN}}' }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

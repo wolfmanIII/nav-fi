@@ -1,31 +1,176 @@
-CONTRACT — MISSION / JOB AGREEMENT (SHORT FORM)
+{% extends 'base_plain.html.twig' %}
 
-Contract ID: {{CONTRACT_ID}}             Date: {{DATE}}
+{% block title %}Mission / Job Agreement{% endblock %}
+{% block stylesheets %}
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', sans-serif; }
+        .card { border: none; border-radius: 8px; background: #ffffff; }
+        .card-body { padding: 10px; }
+        .table { width: 100%; border-collapse: collapse; border: 1px solid #d1d5db; }
+        .table th, .table td { border: 1px solid #d1d5db; padding: 6px; }
+        .table th { text-align: left; }
+        .text-right { text-align: right; }
+        .mb-4 { margin-bottom: 0.5rem; }
+        .mb-6 { margin-bottom: 0.75rem; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .gap-4 { gap: 0.75rem; }
+        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 0.5rem; }
+        .header-table td { vertical-align: middle; }
+        .logo { height: 64px; }
+        .text-sm { font-size: 0.9rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .font-bold { font-weight: 700; }
+        .card-title { font-weight: 700; }
+    </style>
+{% endblock %}
+{% block javascripts %}{% endblock %}
 
-Patron (Client): {{PATRON_NAME}}         Contractor: {{CONTRACTOR_NAME}}
-Contact: {{PATRON_CONTACT}}              Vessel/Team: {{VESSEL_NAME}}
+{% block pageContent %}
+    <div class="mb-6">
+        <table class="header-table">
+            <tr>
+                <td>
+                    <img src="{{ absolute_url(asset('img/captain-log-logo.png')) }}" alt="Captain Log" class="logo">
+                </td>
+                <td class="text-right">
+                    <div class="text-2xl font-bold">Mission / Job Agreement</div>
+                    <div class="text-sm font-bold">Code: {{ '{{CONTRACT_ID}}' }}</div>
+                    <div class="text-sm">Date: {{ '{{DATE}}' }}</div>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-Job Type: {{JOB_TYPE}} (e.g., delivery, escort, bounty, investigation)
-Location/Area: {{LOCATION}}
-Objective: {{OBJECTIVE}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Parties</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Patron (Client)</th>
+                        <th>Contractor</th>
+                        <th>Vessel/Team</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{PATRON_NAME}}' }}<br>Contact: {{ '{{PATRON_CONTACT}}' }}</td>
+                        <td>{{ '{{CONTRACTOR_NAME}}' }}</td>
+                        <td>{{ '{{VESSEL_NAME}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-Start: {{START_DATE}}                    Deadline: {{DEADLINE}}
-Success Condition: {{SUCCESS_CONDITION}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Job</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Job Type</th>
+                        <th>Location / Area</th>
+                        <th>Objective</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{JOB_TYPE}}' }}</td>
+                        <td>{{ '{{LOCATION}}' }}</td>
+                        <td>{{ '{{OBJECTIVE}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table text-sm mt-3">
+                <thead>
+                    <tr>
+                        <th>Start</th>
+                        <th>Deadline</th>
+                        <th>Success Condition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{START_DATE}}' }}</td>
+                        <td>{{ '{{DEADLINE}}' }}</td>
+                        <td>{{ '{{SUCCESS_CONDITION}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-Pay: {{PAY_AMOUNT}} {{CURRENCY}}         Payment: {{PAYMENT_TERMS}}
-Bonus (opt.): {{BONUS}}                  Expenses (opt.): {{EXPENSES_POLICY}}
-Deposit (opt.): {{DEPOSIT}} {{CURRENCY}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Payment</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Pay</th>
+                        <th>Payment Terms</th>
+                        <th>Bonus</th>
+                        <th>Expenses</th>
+                        <th>Deposit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{PAY_AMOUNT}}' }} {{ '{{CURRENCY}}' }}</td>
+                        <td>{{ '{{PAYMENT_TERMS}}' }}</td>
+                        <td>{{ '{{BONUS}}' }}</td>
+                        <td>{{ '{{EXPENSES_POLICY}}' }}</td>
+                        <td>{{ '{{DEPOSIT}}' }} {{ '{{CURRENCY}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-Risks / Restrictions (opt.): {{RESTRICTIONS}}
-Confidentiality (opt.): {{CONFIDENTIALITY_LEVEL}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Terms & Notes</h2>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h3 class="card-title text-sm mb-1">Restrictions</h3>
+                    <div>{{ '{{RESTRICTIONS}}' }}</div>
+                </div>
+                <div>
+                    <h3 class="card-title text-sm mb-1">Confidentiality</h3>
+                    <div>{{ '{{CONFIDENTIALITY_LEVEL}}' }}</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 text-sm mt-3">
+                <div>
+                    <h3 class="card-title text-sm mb-1">Failure handling</h3>
+                    <div>{{ '{{FAILURE_TERMS}}' }}</div>
+                </div>
+                <div>
+                    <h3 class="card-title text-sm mb-1">Cancellation</h3>
+                    <div>{{ '{{CANCELLATION_TERMS}}' }}</div>
+                </div>
+            </div>
+            <div class="mt-3 text-sm">
+                <h3 class="card-title text-sm mb-1">Notes</h3>
+                <div>{{ '{{NOTES}}' }}</div>
+            </div>
+        </div>
+    </div>
 
-Notes (opt.): {{NOTES}}
-
-Terms (short):
-1) Contractor will use reasonable efforts to complete the objective.
-2) Contractor is responsible for lawful conduct and required permits.
-3) Failure/partial completion handling: {{FAILURE_TERMS}}.
-4) Cancellation policy: {{CANCELLATION_TERMS}}.
-
-Signatures:
-Patron: {{PATRON_SIGN}}                  Contractor: {{CONTRACTOR_SIGN}}
+    <table class="table text-sm">
+        <thead>
+            <tr>
+                <th>Patron</th>
+                <th>Contractor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ '{{PATRON_SIGN}}' }}</td>
+                <td>{{ '{{CONTRACTOR_SIGN}}' }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

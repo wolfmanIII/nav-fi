@@ -1,28 +1,155 @@
-SALVAGE — RECOVERY / SALVAGE CLAIM RECEIPT (SHORT FORM)
+{% extends 'base_plain.html.twig' %}
 
-Claim ID: {{CLAIM_ID}}                   Date: {{DATE}}
+{% block title %}Salvage / Recovery Claim{% endblock %}
+{% block stylesheets %}
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', sans-serif; }
+        .card { border: none; border-radius: 8px; background: #ffffff; }
+        .card-body { padding: 10px; }
+        .table { width: 100%; border-collapse: collapse; border: 1px solid #d1d5db; }
+        .table th, .table td { border: 1px solid #d1d5db; padding: 6px; }
+        .table th { text-align: left; }
+        .text-right { text-align: right; }
+        .mb-4 { margin-bottom: 0.5rem; }
+        .mb-6 { margin-bottom: 0.75rem; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .gap-4 { gap: 0.75rem; }
+        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 0.5rem; }
+        .header-table td { vertical-align: middle; }
+        .logo { height: 64px; }
+        .text-sm { font-size: 0.9rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .font-bold { font-weight: 700; }
+        .card-title { font-weight: 700; }
+    </style>
+{% endblock %}
+{% block javascripts %}{% endblock %}
 
-Salvage Team: {{SALVAGE_TEAM_NAME}}      Claimant/Authority: {{AUTHORITY_OR_OWNER_NAME}}
-Contact: {{SALVAGE_CONTACT}}             Ref/Case: {{CASE_REF}}
+{% block pageContent %}
+    <div class="mb-6">
+        <table class="header-table">
+            <tr>
+                <td>
+                    <img src="{{ absolute_url(asset('img/captain-log-logo.png')) }}" alt="Captain Log" class="logo">
+                </td>
+                <td class="text-right">
+                    <div class="text-2xl font-bold">Salvage / Recovery Claim</div>
+                    <div class="text-sm font-bold">Claim ID: {{ '{{CLAIM_ID}}' }}</div>
+                    <div class="text-sm">Date: {{ '{{DATE}}' }}</div>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-Site / Coordinates: {{SITE_LOCATION}}
-Source (opt.): {{SOURCE}} (e.g., wreck, derelict, drift cargo)
-Recovery Window: {{START_DATE}} → {{END_DATE}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Parties</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Salvage Team</th>
+                        <th>Claimant / Authority</th>
+                        <th>Case Ref</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{SALVAGE_TEAM_NAME}}' }}<br>Contact: {{ '{{SALVAGE_CONTACT}}' }}</td>
+                        <td>{{ '{{AUTHORITY_OR_OWNER_NAME}}' }}</td>
+                        <td>{{ '{{CASE_REF}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-Recovered Items: {{RECOVERED_ITEMS_SUMMARY}}
-Qty/Value (opt.): {{QTY_VALUE}}
-Hazards/Restrictions (opt.): {{HAZARDS}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Site & Window</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Site / Coordinates</th>
+                        <th>Source</th>
+                        <th>Recovery Window</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{SITE_LOCATION}}' }}</td>
+                        <td>{{ '{{SOURCE}}' }}</td>
+                        <td>{{ '{{START_DATE}}' }} → {{ '{{END_DATE}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-Salvage Award: {{SALVAGE_AWARD}} {{CURRENCY}}   Payment: {{PAYMENT_TERMS}}
-Share Split (opt.): {{SPLIT_TERMS}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Recovered Items</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Summary</th>
+                        <th>Qty / Value</th>
+                        <th>Hazards</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{RECOVERED_ITEMS_SUMMARY}}' }}</td>
+                        <td>{{ '{{QTY_VALUE}}' }}</td>
+                        <td>{{ '{{HAZARDS}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-Notes (opt.): {{NOTES}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Award & Terms</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Salvage Award</th>
+                        <th>Payment</th>
+                        <th>Share Split</th>
+                        <th>Rights Basis</th>
+                        <th>Award Trigger</th>
+                        <th>Dispute Process</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{SALVAGE_AWARD}}' }} {{ '{{CURRENCY}}' }}</td>
+                        <td>{{ '{{PAYMENT_TERMS}}' }}</td>
+                        <td>{{ '{{SPLIT_TERMS}}' }}</td>
+                        <td>{{ '{{RIGHTS_BASIS}}' }}</td>
+                        <td>{{ '{{AWARD_TRIGGER}}' }}</td>
+                        <td>{{ '{{DISPUTE_PROCESS}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="mt-3 text-sm">Notes: {{ '{{NOTES}}' }}</div>
+        </div>
+    </div>
 
-Terms (short):
-1) Salvage Team reports and surrenders recovered items as required by law/authority.
-2) Ownership/rights determined by: {{RIGHTS_BASIS}} (e.g., registered owner, court, port authority).
-3) Salvage Team receives the award upon: {{AWARD_TRIGGER}} (e.g., verified delivery, inspection, legal clearance).
-4) Disputes handled by: {{DISPUTE_PROCESS}}.
-
-Signatures:
-Authority/Owner: {{AUTHORITY_SIGN}}     Salvage Team: {{SALVAGE_SIGN}}
+    <table class="table text-sm">
+        <thead>
+            <tr>
+                <th>Authority / Owner</th>
+                <th>Salvage Team</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ '{{AUTHORITY_SIGN}}' }}</td>
+                <td>{{ '{{SALVAGE_SIGN}}' }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,27 +1,144 @@
-CHARTER — VESSEL CHARTER AGREEMENT (SHORT FORM)
+{% extends 'base_plain.html.twig' %}
 
-Charter ID: {{CHARTER_ID}}               Date: {{DATE}}
+{% block title %}Charter Agreement{% endblock %}
+{% block stylesheets %}
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', sans-serif; }
+        .card { border: none; border-radius: 8px; background: #ffffff; }
+        .card-body { padding: 10px; }
+        .table { width: 100%; border-collapse: collapse; border: 1px solid #d1d5db; }
+        .table th, .table td { border: 1px solid #d1d5db; padding: 6px; }
+        .table th { text-align: left; }
+        .text-right { text-align: right; }
+        .mb-4 { margin-bottom: 0.5rem; }
+        .mb-6 { margin-bottom: 0.75rem; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .gap-4 { gap: 0.75rem; }
+        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 0.5rem; }
+        .header-table td { vertical-align: middle; }
+        .logo { height: 64px; }
+        .text-sm { font-size: 0.9rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .font-bold { font-weight: 700; }
+        .card-title { font-weight: 700; }
+    </style>
+{% endblock %}
+{% block javascripts %}{% endblock %}
 
-Charterer (Client): {{CHARTERER_NAME}}   Owner/Operator: {{CARRIER_NAME}}
-Contact: {{CHARTERER_CONTACT}}           Vessel: {{VESSEL_NAME}}
+{% block pageContent %}
+    <div class="mb-6">
+        <table class="header-table">
+            <tr>
+                <td>
+                    <img src="{{ absolute_url(asset('img/captain-log-logo.png')) }}" alt="Captain Log" class="logo">
+                </td>
+                <td class="text-right">
+                    <div class="text-2xl font-bold">Charter Agreement</div>
+                    <div class="text-sm font-bold">Code: {{ '{{CHARTER_ID}}' }}</div>
+                    <div class="text-sm">Date: {{ '{{DATE}}' }}</div>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-Charter Type: {{CHARTER_TYPE}} (e.g., Full ship / Partial / Time charter)
-Period: {{START_DATE}}  →  {{END_DATE}}
-Operating Area / Route (opt.): {{AREA_OR_ROUTE}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Parties</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Charterer (Client)</th>
+                        <th>Owner / Operator</th>
+                        <th>Vessel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{CHARTERER_NAME}}' }}<br>Contact: {{ '{{CHARTERER_CONTACT}}' }}</td>
+                        <td>{{ '{{CARRIER_NAME}}' }}</td>
+                        <td>{{ '{{VESSEL_NAME}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-Purpose: {{PURPOSE}} (e.g., transport, tour, private run)
-Passengers/Cargo (brief): {{MANIFEST_SUMMARY}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Charter</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Charter Type</th>
+                        <th>Period</th>
+                        <th>Area / Route</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{CHARTER_TYPE}}' }}</td>
+                        <td>{{ '{{START_DATE}}' }} → {{ '{{END_DATE}}' }}</td>
+                        <td>{{ '{{AREA_OR_ROUTE}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="grid grid-cols-2 gap-4 mt-3">
+                <div>
+                    <h3 class="card-title text-sm mb-1">Purpose</h3>
+                    <div>{{ '{{PURPOSE}}' }}</div>
+                </div>
+                <div>
+                    <h3 class="card-title text-sm mb-1">Passengers / Cargo</h3>
+                    <div>{{ '{{MANIFEST_SUMMARY}}' }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-Payment: {{PAYMENT_TERMS}}
-Deposit (opt.): {{DEPOSIT}} {{CURRENCY}}     Extras (opt.): {{EXTRAS}} (fuel, port services, crew, etc.)
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Payment & Terms</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Payment</th>
+                        <th>Deposit</th>
+                        <th>Extras</th>
+                        <th>Damage</th>
+                        <th>Cancellation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{PAYMENT_TERMS}}' }}</td>
+                        <td>{{ '{{DEPOSIT}}' }} {{ '{{CURRENCY}}' }}</td>
+                        <td>{{ '{{EXTRAS}}' }}</td>
+                        <td>{{ '{{DAMAGE_TERMS}}' }}</td>
+                        <td>{{ '{{CANCELLATION_TERMS}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="mt-3">
+                <h3 class="card-title text-sm mb-1">Notes</h3>
+                <div>{{ '{{NOTES}}' }}</div>
+            </div>
+        </div>
+    </div>
 
-Notes (opt.): {{NOTES}}
-
-Terms (short):
-1) Owner provides vessel and crew (unless stated otherwise) for the charter period.
-2) Charterer must follow safety rules and lawful port/authority requirements.
-3) Damage/cleanup responsibility: {{DAMAGE_TERMS}}.
-4) Cancellation policy: {{CANCELLATION_TERMS}}.
-
-Signatures:
-Charterer: {{CHARTERER_SIGN}}            Owner/Operator: {{CARRIER_SIGN}}
+    <table class="table text-sm">
+        <thead>
+            <tr>
+                <th>Charterer</th>
+                <th>Owner / Operator</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ '{{CHARTERER_SIGN}}' }}</td>
+                <td>{{ '{{CARRIER_SIGN}}' }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

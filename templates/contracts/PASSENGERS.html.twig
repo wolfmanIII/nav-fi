@@ -1,25 +1,153 @@
-PASSENGERS — PASSAGE TICKET / RECEIPT (SHORT FORM)
+{% extends 'base_plain.html.twig' %}
 
-Ticket ID: {{TICKET_ID}}                Date: {{DATE}}
+{% block title %}Passenger Transport Receipt{% endblock %}
+{% block stylesheets %}
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', sans-serif; }
+        .card { border: none; border-radius: 8px; background: #ffffff; }
+        .card-body { padding: 10px; }
+        .table { width: 100%; border-collapse: collapse; border: 1px solid #d1d5db; }
+        .table th, .table td { border: 1px solid #d1d5db; padding: 6px; }
+        .table th { text-align: left; }
+        .text-right { text-align: right; }
+        .mb-4 { margin-bottom: 0.5rem; }
+        .mb-6 { margin-bottom: 0.75rem; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .gap-4 { gap: 0.75rem; }
+        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 0.5rem; }
+        .header-table td { vertical-align: middle; }
+        .logo { height: 64px; }
+        .text-sm { font-size: 0.9rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .font-bold { font-weight: 700; }
+        .card-title { font-weight: 700; }
+    </style>
+{% endblock %}
+{% block javascripts %}{% endblock %}
 
-Passenger(s): {{PASSENGER_NAMES}}       Carrier: {{CARRIER_NAME}}
-Contact: {{PASSENGER_CONTACT}}          Vessel: {{VESSEL_NAME}}
+{% block pageContent %}
+    <div class="mb-6">
+        <table class="header-table">
+            <tr>
+                <td>
+                    <img src="{{ absolute_url(asset('img/captain-log-logo.png')) }}" alt="Captain Log" class="logo">
+                </td>
+                <td class="text-right">
+                    <div class="text-2xl font-bold">Passenger Transport Receipt</div>
+                    <div class="text-sm font-bold">Ticket ID: {{ '{{TICKET_ID}}' }}</div>
+                    <div class="text-sm">Date: {{ '{{DATE}}' }}</div>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-Route: {{ORIGIN}}  →  {{DESTINATION}}
-Departure: {{DEPARTURE_DATE}}           Arrival ETA: {{ARRIVAL_DATE}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Parties</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Passenger(s)</th>
+                        <th>Carrier</th>
+                        <th>Vessel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{PASSENGER_NAMES}}' }}<br>Contact: {{ '{{PASSENGER_CONTACT}}' }}</td>
+                        <td>{{ '{{CARRIER_NAME}}' }}</td>
+                        <td>{{ '{{VESSEL_NAME}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-Class / Berth: {{CLASS_OR_BERTH}}       Qty (seats/berths): {{QTY}}
-Baggage Allowance: {{BAGGAGE_ALLOWANCE}}  Extra Baggage (opt.): {{EXTRA_BAGGAGE}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Route & Schedule</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Origin</th>
+                        <th>Destination</th>
+                        <th>Departure</th>
+                        <th>Arrival</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{ORIGIN}}' }}</td>
+                        <td>{{ '{{DESTINATION}}' }}</td>
+                        <td>{{ '{{DEPARTURE_DATE}}' }}</td>
+                        <td>{{ '{{ARRIVAL_DATE}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-Fare Total: {{FARE_TOTAL}} {{CURRENCY}}   Payment: {{PAYMENT_TERMS}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Cabin & Baggage</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Class / Berth</th>
+                        <th>Quantity</th>
+                        <th>Baggage Allowance</th>
+                        <th>Extra Baggage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{CLASS_OR_BERTH}}' }}</td>
+                        <td>{{ '{{QTY}}' }}</td>
+                        <td>{{ '{{BAGGAGE_ALLOWANCE}}' }}</td>
+                        <td>{{ '{{EXTRA_BAGGAGE}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-Notes (opt.): {{NOTES}}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Payment & Terms</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Payment</th>
+                        <th>Refund / Change Policy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{PAYMENT_TERMS}}' }}</td>
+                        <td>{{ '{{REFUND_CHANGE_POLICY}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="mt-3 text-sm">
+                Notes: {{ '{{NOTES}}' }}
+            </div>
+        </div>
+    </div>
 
-Terms (short):
-1) This ticket covers passage from {{ORIGIN}} to {{DESTINATION}} for the passenger(s) named above.
-2) Passenger must comply with ship rules, port authority, and security/customs checks.
-3) Prohibited items are not allowed. Violations may void passage without refund.
-4) Refund/Change policy: {{REFUND_CHANGE_POLICY}}.
-
-Signatures (optional):
-Passenger: {{PASSENGER_SIGN}}           Carrier: {{CARRIER_SIGN}}
+    <table class="table text-sm">
+        <thead>
+            <tr>
+                <th>Passenger</th>
+                <th>Carrier</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ '{{PASSENGER_SIGN}}' }}</td>
+                <td>{{ '{{CARRIER_SIGN}}' }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}
