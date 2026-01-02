@@ -97,7 +97,7 @@ class IncomeSubsidyDetailsType extends AbstractType
                 'label' => 'Cancellation terms',
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 2],
             ])
-            ->add('secretLevel', ChoiceType::class, [
+            ->add('serviceLevel', ChoiceType::class, [
                 'required' => false,
                 'label' => 'Secret level',
                 'placeholder' => '-- Select level --',
