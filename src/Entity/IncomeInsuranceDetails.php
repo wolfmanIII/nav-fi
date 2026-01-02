@@ -46,9 +46,6 @@ class IncomeInsuranceDetails
     private ?string $verifiedLoss = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2, nullable: true)]
-    private ?string $payoutAmount = null;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2, nullable: true)]
     private ?string $deductible = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -175,17 +172,6 @@ class IncomeInsuranceDetails
     public function setVerifiedLoss(?string $verifiedLoss): static
     {
         $this->verifiedLoss = $verifiedLoss;
-        return $this;
-    }
-
-    public function getPayoutAmount(): ?string
-    {
-        return $this->payoutAmount;
-    }
-
-    public function setPayoutAmount(?string $payoutAmount): static
-    {
-        $this->payoutAmount = $payoutAmount;
         return $this;
     }
 
