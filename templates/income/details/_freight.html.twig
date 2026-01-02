@@ -16,23 +16,23 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-4 gap-4">
-        <div>
+    <div class="flex flex-wrap gap-4">
+        <div class="basis-1/4 min-w-[140px]">
             {{ form_label(detail_form.pickupDay) }}
             {{ form_widget(detail_form.pickupDay) }}
             {{ form_errors(detail_form.pickupDay) }}
         </div>
-        <div>
+        <div class="basis-1/4 min-w-[140px]">
             {{ form_label(detail_form.pickupYear) }}
             {{ form_widget(detail_form.pickupYear) }}
             {{ form_errors(detail_form.pickupYear) }}
         </div>
-        <div>
+        <div class="basis-1/4 min-w-[140px]">
             {{ form_label(detail_form.deliveryDay) }}
             {{ form_widget(detail_form.deliveryDay) }}
             {{ form_errors(detail_form.deliveryDay) }}
         </div>
-        <div>
+        <div class="basis-1/4 min-w-[140px]">
             {{ form_label(detail_form.deliveryYear) }}
             {{ form_widget(detail_form.deliveryYear) }}
             {{ form_errors(detail_form.deliveryYear) }}
