@@ -1,6 +1,6 @@
 ## Contract placeholders – mappatura tecnica (escluso MORTGAGE)
 
-Guida per collegare i placeholder dei template di contratto (`templates/contracts/*.html.twig`) alle entità del dominio. I campi non mappati restano da compilare per singola pratica. Il PDF del mutuo è escluso da questa mappatura.
+Documento di riferimento per collegare i placeholder dei template di contratto (`templates/contracts/*.html.twig`) alle entità del dominio. I campi non mappati vanno compilati per singola pratica. Il PDF del mutuo è escluso da questa mappatura.
 
 ### Entità e campi di riferimento
 - **Ship**: `name`, `type/class`, `price`, `sessionDay/sessionYear` (cronologia di gioco).
@@ -10,16 +10,16 @@ Guida per collegare i placeholder dei template di contratto (`templates/contract
 - **Crew** (opzionale per liste passeggeri/manifesti).
 
 ### Placeholder ricorrenti e mapping consigliato
-- **Identificativi**: `{{CONTRACT_ID}}`, `{{DEAL_ID}}`, `{{RUN_ID}}`, `{{RECEIPT_ID}}`, `{{TICKET_ID}}`, `{{CLAIM_ID}}`, `{{SUBSIDY_ID}}`, `{{PRIZE_ID}}`, `{{SERVICE_ID}}`, `{{PROGRAM_REF}}`, `{{CASE_REF}}` → usa `Income.code` come ID pratica principale; gli altri restano campi liberi template-specifici.
-- **Nave**: `{{VESSEL_NAME}}` (+ type/class se serve) → `Ship`. Per data di contesto di gioco usa `sessionDay/sessionYear`.
+- **Identificativi**: `{{CONTRACT_ID}}`, `{{DEAL_ID}}`, `{{RUN_ID}}`, `{{RECEIPT_ID}}`, `{{TICKET_ID}}`, `{{CLAIM_ID}}`, `{{SUBSIDY_ID}}`, `{{PRIZE_ID}}`, `{{SERVICE_ID}}`, `{{PROGRAM_REF}}`, `{{CASE_REF}}` → utilizzare `Income.code` come ID pratica principale; gli altri restano campi liberi template-specifici.
+- **Nave**: `{{VESSEL_NAME}}` (+ type/class se serve) → `Ship`. Per la cronologia di gioco usare `sessionDay/sessionYear`.
 - **Controparti**: varianti `*_NAME`, `*_CONTACT`, `*_SIGN` (es. `CARRIER`, `SHIPPER`, `INSURER`, `AUTHORITY`, `BUYER`, `SELLER`, `PATRON`, `CONTRACTOR`, `CUSTOMER`, `PROVIDER`, `CAPTOR`, `SALVAGE_TEAM`, `AUTHORITY_OR_OWNER`, `PAYEE`, `PAYER`, ecc.) → `Company` (name/contact/signLabel) con ruolo da `CompanyRole`.
-- **Rotte/luoghi**: `{{ORIGIN}}`, `{{DESTINATION}}`, `{{ROUTE}}`, `{{TRANSFER_POINT}}`, `{{LOCATION}}`, `{{SITE_LOCATION}}`, `{{EXCHANGE_LOCATION}}`, ecc. → dati operativi variabili per pratica; salva su `Income` (campi aggiuntivi o note) o inserisci a runtime.
-- **Date timeline**: `{{DATE}}`, `{{START_DATE}}`, `{{END_DATE}}`, `{{PICKUP_DATE}}`, `{{DELIVERY_DATE}}`, `{{DISPATCH_DATE}}`, `{{ARRIVAL_DATE}}`, `{{DEPARTURE_DATE}}`, `{{SEIZURE_DATE}}`, `{{INCIDENT_DATE}}`, ecc. → riusa `Income.signingDay/Year`, `paymentDay/Year`, `expirationDay/Year`, `cancelDay/Year`; altre date restano specifiche del template.
-- **Importi**: `{{PAY_AMOUNT}}`, `{{PAYMENT_TERMS}}`, `{{SUBSIDY_AMOUNT}}`, `{{PAYOUT_AMOUNT}}`, `{{INTEREST_EARNED}}`, `{{PRINCIPAL}}`, `{{UNIT_PRICE}}`, `{{TOTAL_PRICE}}`, `{{FARE_TOTAL}}`, `{{DEPOSIT}}`, `{{BONUS}}`, ecc. → `Income.amount` per l’importo principale; ulteriori valori sono campi liberi; valuta di default `{{CURRENCY}}` = `Cr`.
-- **Termini legali/testo libero**: `{{LIABILITY_LIMIT}}`, `{{WARRANTY}}`, `{{EXPENSES_POLICY}}`, `{{CANCELLATION_TERMS}}`, `{{FAILURE_TERMS}}`, `{{REFUND_CHANGE_POLICY}}`, `{{NON_COMPLIANCE_TERMS}}`, `{{PROOF_REQUIREMENTS}}`, `{{REPORTING_REQUIREMENTS}}`, `{{RIGHTS_BASIS}}`, `{{DISPUTE_PROCESS}}`, `{{AS_IS_OR_WARRANTY}}`, `{{TRANSFER_CONDITION}}`, `{{CLAIM_WINDOW}}`, `{{CANCEL_RETURN_POLICY}}`, `{{AWARD_TRIGGER}}`, `{{DISPOSITION}}`, ecc. → rimangono campi di testo compilati per singolo contratto.
-- **Quantità/descrizioni operative**: `{{CARGO_DESCRIPTION}}`, `{{CARGO_QTY}}`, `{{TOTAL_MASS}}`, `{{PACKAGE_COUNT}}`, `{{GOODS_DESCRIPTION}}`, `{{QTY}}`, `{{GRADE}}`, `{{BATCH_IDS}}`, `{{PRIZE_DESCRIPTION}}`, `{{RECOVERED_ITEMS_SUMMARY}}`, `{{SERVICE_TYPE}}`, `{{WORK_SUMMARY}}`, `{{MAIL_TYPE}}`, `{{SECURITY_LEVEL}}`, `{{SEAL_CODES}}`, `{{BAGGAGE_ALLOWANCE}}`, `{{EXTRA_BAGGAGE}}`, `{{CLASS_OR_BERTH}}`, ecc. → dati liberi per pratica (preferibilmente su `Income` o note).
-- **Note**: `{{NOTES}}` → usa `Income.note` o campo libero del template.
-- **Local Law**: aggiungi (se serve) placeholder espliciti `{{LOCAL_LAW_CODE}}`, `{{LOCAL_LAW_DESC}}`, `{{LOCAL_LAW_DISCLAIMER}}` legati a `Income.localLaw` (code/shortDescription/description/disclaimer).
+- **Rotte/luoghi**: `{{ORIGIN}}`, `{{DESTINATION}}`, `{{ROUTE}}`, `{{TRANSFER_POINT}}`, `{{LOCATION}}`, `{{SITE_LOCATION}}`, `{{EXCHANGE_LOCATION}}`, ecc. → dati operativi variabili per pratica; memorizzabili su `Income` (campi aggiuntivi o note) oppure inseriti a runtime.
+- **Date timeline**: `{{DATE}}`, `{{START_DATE}}`, `{{END_DATE}}`, `{{PICKUP_DATE}}`, `{{DELIVERY_DATE}}`, `{{DISPATCH_DATE}}`, `{{ARRIVAL_DATE}}`, `{{DEPARTURE_DATE}}`, `{{SEIZURE_DATE}}`, `{{INCIDENT_DATE}}`, ecc. → riutilizzare `Income.signingDay/Year`, `paymentDay/Year`, `expirationDay/Year`, `cancelDay/Year`; altre date restano specifiche del template.
+- **Importi**: `{{PAY_AMOUNT}}`, `{{PAYMENT_TERMS}}`, `{{SUBSIDY_AMOUNT}}`, `{{PAYOUT_AMOUNT}}`, `{{INTEREST_EARNED}}`, `{{PRINCIPAL}}`, `{{UNIT_PRICE}}`, `{{TOTAL_PRICE}}`, `{{FARE_TOTAL}}`, `{{DEPOSIT}}`, `{{BONUS}}`, ecc. → `Income.amount` per l’importo principale; ulteriori valori come campi liberi; valuta di default `{{CURRENCY}}` = `Cr`.
+- **Termini legali/testo libero**: `{{LIABILITY_LIMIT}}`, `{{WARRANTY}}`, `{{EXPENSES_POLICY}}`, `{{CANCELLATION_TERMS}}`, `{{FAILURE_TERMS}}`, `{{REFUND_CHANGE_POLICY}}`, `{{NON_COMPLIANCE_TERMS}}`, `{{PROOF_REQUIREMENTS}}`, `{{REPORTING_REQUIREMENTS}}`, `{{RIGHTS_BASIS}}`, `{{DISPUTE_PROCESS}}`, `{{AS_IS_OR_WARRANTY}}`, `{{TRANSFER_CONDITION}}`, `{{CLAIM_WINDOW}}`, `{{CANCEL_RETURN_POLICY}}`, `{{AWARD_TRIGGER}}`, `{{DISPOSITION}}`, ecc. → campi di testo da compilare per singolo contratto.
+- **Quantità/descrizioni operative**: `{{CARGO_DESCRIPTION}}`, `{{CARGO_QTY}}`, `{{TOTAL_MASS}}`, `{{PACKAGE_COUNT}}`, `{{GOODS_DESCRIPTION}}`, `{{QTY}}`, `{{GRADE}}`, `{{BATCH_IDS}}`, `{{PRIZE_DESCRIPTION}}`, `{{RECOVERED_ITEMS_SUMMARY}}`, `{{SERVICE_TYPE}}`, `{{WORK_SUMMARY}}`, `{{MAIL_TYPE}}`, `{{SECURITY_LEVEL}}`, `{{SEAL_CODES}}`, `{{BAGGAGE_ALLOWANCE}}`, `{{EXTRA_BAGGAGE}}`, `{{CLASS_OR_BERTH}}`, ecc. → dati operativi liberi (preferibilmente su `Income` o note).
+- **Note**: `{{NOTES}}` → `Income.note` o campo libero del template.
+- **Local Law**: eventuali placeholder `{{LOCAL_LAW_CODE}}`, `{{LOCAL_LAW_DESC}}`, `{{LOCAL_LAW_DISCLAIMER}}` legati a `Income.localLaw` (code/shortDescription/description/disclaimer).
 
 ### Placeholder per template principali (escluso MORTGAGE)
 - **CHARTER**: CHARTER_ID, CHARTERER_NAME/CONTACT/SIGN, CARRIER_NAME/SIGN, VESSEL_NAME, DATE/START/END, AREA_OR_ROUTE, PURPOSE, MANIFEST_SUMMARY, PAYMENT_TERMS, DEPOSIT, EXTRAS, DAMAGE_TERMS, CANCELLATION_TERMS, NOTES.
@@ -44,9 +44,9 @@ Guida per collegare i placeholder dei template di contratto (`templates/contract
 - **Altri placeholder**: termini legali, descrizioni cargo/servizio, policy, restrizioni, ecc. restano campi liberi per singolo template.
 
 ### Come gestire i campi opzionali di Income per categoria di contratto
-I template hanno molti campi opzionali; per non mostrare tutto sempre:
-- Tieni i campi extra su `Income` come nullable (aggiungi solo quelli richiesti dai contratti).
-- Definisci una mappa “campi per categoria” (es. `IncomeCategory.code` → elenco di campi opzionali).
-- In `IncomeType` usa un event subscriber (`PRE_SET_DATA` / `PRE_SUBMIT`) per aggiungere al form solo i campi previsti dalla categoria selezionata; gli altri non compaiono.
-- Usa validation groups per categoria, così validi solo i campi mostrati.
-- Se serve in EasyAdmin, applica la stessa logica in `configureFields()` o con un form type riusabile.
+Per limitare i campi ai soli contratti che li richiedono:
+- mantenere i campi extra su `Income` come nullable (solo quelli necessari ai contratti);
+- definire una mappa “campi per categoria” (`IncomeCategory.code` → elenco campi opzionali);
+- in `IncomeType` utilizzare un event subscriber (`PRE_SET_DATA` / `PRE_SUBMIT`) che aggiunge al form solo i campi previsti dalla categoria selezionata;
+- applicare validation groups per categoria, così da validare solo i campi visibili;
+- in EasyAdmin riusare la stessa logica in `configureFields()` o tramite un form type dedicato.
