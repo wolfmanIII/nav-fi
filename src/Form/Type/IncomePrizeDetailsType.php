@@ -50,10 +50,23 @@ class IncomePrizeDetailsType extends AbstractType
                 'scale' => 2,
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('disposition', TextType::class, [
+            ->add('disposition', ChoiceType::class, [
                 'required' => false,
                 'label' => 'Disposition',
-                'attr' => ['class' => 'input m-1 w-full'],
+                'placeholder' => 'Select disposition',
+                'choices' => [
+                    'Returned to Owner' => 'Returned to Owner',
+                    'Released (No Action)' => 'Released (No Action)',
+                    'Held in Custody' => 'Held in Custody',
+                    'Impounded' => 'Impounded',
+                    'Forfeited to Authority' => 'Forfeited to Authority',
+                    'Auctioned' => 'Auctioned',
+                    'Assigned to Captor' => 'Assigned to Captor',
+                    'Destroyed' => 'Destroyed',
+                    'Transferred to Third Party' => 'Transferred to Third Party',
+                    'Pending Adjudication' => 'Pending Adjudication',
+                ],
+                'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('paymentTerms', TextareaType::class, [
                 'required' => false,
