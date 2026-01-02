@@ -5,6 +5,7 @@ namespace App\Form\Type;
 use App\Entity\IncomeServicesDetails;
 use App\Form\Config\DayYearLimits;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -25,10 +26,23 @@ class IncomeServicesDetailsType extends AbstractType
                 'label' => 'Location',
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('serviceType', TextType::class, [
+            ->add('serviceType', ChoiceType::class, [
                 'required' => false,
                 'label' => 'Service type',
-                'attr' => ['class' => 'input m-1 w-full'],
+                'placeholder' => '-- Select service --',
+                'choices' => [
+                    'Refueling' => 'Refueling',
+                    'Repairs / Maintenance' => 'Repairs / Maintenance',
+                    'Towing / Recovery' => 'Towing / Recovery',
+                    'Escort / Protection' => 'Escort / Protection',
+                    'Cargo Handling (Load/Unload)' => 'Cargo Handling (Load/Unload)',
+                    'Storage / Warehousing' => 'Storage / Warehousing',
+                    'Port Services (Berth/Docking)' => 'Port Services (Berth/Docking)',
+                    'Medical Services' => 'Medical Services',
+                    'Communications / Data Relay' => 'Communications / Data Relay',
+                    'Inspection / Certification' => 'Inspection / Certification',
+                ],
+                'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('requestedBy', TextType::class, [
                 'required' => false,
