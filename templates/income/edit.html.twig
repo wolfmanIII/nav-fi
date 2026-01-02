@@ -9,7 +9,7 @@
     {{ form_widget(form._token) }}
 
     <fieldset class="fieldset grid grid-cols-3 bg-base-200 border-base-300 gap-4 p-4 border rounded w-250">
-        <legend class="fieldset-legend">Contract</legend>
+        <legend class="fieldset-legend">{% include 'icons/income.html.twig' %} Contract</legend>
 
         <div class="col-span-3">
             <div class="alert alert-info alert-outline shadow-sm w-full">
@@ -107,74 +107,68 @@
             {{ form_widget(form.expirationYear) }}
             {{ form_errors(form.expirationYear) }}
         </div>
+    </fieldset>
 
-        {% set detail_sections = {
-            'charterDetails': 'CHARTER Details',
-            'subsidyDetails': 'SUBSIDY Details',
-            'freightDetails': 'FREIGHT Details',
-            'passengersDetails': 'PASSENGERS Details',
-            'servicesDetails': 'SERVICES Details',
-            'insuranceDetails': 'INSURANCE Details',
-            'mailDetails': 'MAIL Details',
-            'interestDetails': 'INTEREST Details',
-            'tradeDetails': 'TRADE Details',
-            'salvageDetails': 'SALVAGE Details',
-            'prizeDetails': 'PRIZE Details',
-            'contractDetails': 'CONTRACT Details',
-        } %}
+    {% set detail_sections = {
+        'charterDetails': 'CHARTER Details',
+        'subsidyDetails': 'SUBSIDY Details',
+        'freightDetails': 'FREIGHT Details',
+        'passengersDetails': 'PASSENGERS Details',
+        'servicesDetails': 'SERVICES Details',
+        'insuranceDetails': 'INSURANCE Details',
+        'mailDetails': 'MAIL Details',
+        'interestDetails': 'INTEREST Details',
+        'tradeDetails': 'TRADE Details',
+        'salvageDetails': 'SALVAGE Details',
+        'prizeDetails': 'PRIZE Details',
+        'contractDetails': 'CONTRACT Details',
+    } %}
 
-        {% for detail_name, detail_label in detail_sections %}
-            {% if form[detail_name] is defined %}
-                <div class="col-span-3">
-                    <div class="card bg-base-200 border border-base-300 shadow-sm">
-                        <div class="card-body p-4">
-                            <div class="flex items-center gap-3 mb-2">
-                                {% include 'icons/income.html.twig' %}
-                                <h3 class="font-semibold">{{ detail_label }}</h3>
-                            </div>
-                            <div class="grid grid-cols-3 gap-4">
-                                {% for child in form[detail_name] %}
-                                    <div>
-                                        {{ form_label(child) }}
-                                        {{ form_widget(child) }}
-                                        {{ form_errors(child) }}
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
+    {% for detail_name, detail_label in detail_sections %}
+        {% if form[detail_name] is defined %}
+            <fieldset class="fieldset grid grid-cols-3 bg-base-200 border-base-300 gap-4 p-4 border rounded w-250">
+                <legend class="fieldset-legend">{% include 'icons/income.html.twig' %} {{ detail_label }}</legend>
+                {% for child in form[detail_name] %}
+                    <div>
+                        {{ form_label(child) }}
+                        {{ form_widget(child) }}
+                        {{ form_errors(child) }}
                     </div>
-                </div>
-            {% endif %}
-        {% endfor %}
+                {% endfor %}
+            </fieldset>
+        {% endif %}
+    {% endfor %}
 
+    <fieldset class="fieldset grid grid-cols-3 bg-base-200 border-base-300 gap-4 p-4 border rounded w-250">
+        <legend class="fieldset-legend">{% include 'icons/income.html.twig' %} Note</legend>
         <div class="col-span-3">
             <label class="label">Note</label>
             {{ form_widget(form.note) }}
             {{ form_errors(form.note) }}
         </div>
+    </fieldset>
 
+    <fieldset class="fieldset grid grid-cols-3 bg-base-200 border-base-300 gap-4 p-4 border border-warning rounded w-250">
+        <legend class="fieldset-legend">{% include 'icons/income.html.twig' %} Cancellation</legend>
         {% if income.id %}
             <div class="col-span-3">
-                <div class="alert alert-warning alert-outline shadow-sm w-full">
-                    <div class="grid grid-cols-3 gap-4 items-end">
-                        <div>
-                            <label class="label">Cancel Day</label>
-                            {{ form_widget(form.cancelDay) }}
-                            {{ form_errors(form.cancelDay) }}
-                        </div>
-                        <div>
-                            <label class="label">Cancel Year</label>
-                            {{ form_widget(form.cancelYear) }}
-                            {{ form_errors(form.cancelYear) }}
-                        </div>
-                        <div>
-                            Fill only if the contract was canceled: this date closes its validity window
-                        </div>
+                <div class="grid grid-cols-3 gap-4 items-end">
+                    <div>
+                        <label class="label">Cancel Day</label>
+                        {{ form_widget(form.cancelDay) }}
+                        {{ form_errors(form.cancelDay) }}
+                    </div>
+                    <div>
+                        <label class="label">Cancel Year</label>
+                        {{ form_widget(form.cancelYear) }}
+                        {{ form_errors(form.cancelYear) }}
+                    </div>
+                    <div class="alert alert-warning alert-outline">
+                        Fill only if the contract was canceled: this date closes its validity window
                     </div>
                 </div>
             </div>
         {% endif %}
-
     </fieldset>
 
     <button type="submit" class="btn btn-outline btn-primary mt-4 mb-4 mr-4">

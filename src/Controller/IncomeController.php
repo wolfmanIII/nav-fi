@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Income;
 use App\Form\IncomeType;
 use App\Security\Voter\IncomeVoter;
+use App\Entity\IncomeCategory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,6 +37,13 @@ final class IncomeController extends BaseController
         }
 
         $income = new Income();
+        $categoryParam = $request->query->get('category');
+        if ($categoryParam) {
+            $category = $em->getRepository(IncomeCategory::class)->find($categoryParam);
+            if ($category) {
+                $income->setIncomeCategory($category);
+            }
+        }
         $form = $this->createForm(IncomeType::class, $income, ['user' => $user]);
         $form->handleRequest($request);
 
@@ -71,6 +79,14 @@ final class IncomeController extends BaseController
         }
 
         $this->denyAccessUnlessGranted(IncomeVoter::EDIT, $income);
+
+        $categoryParam = $request->query->get('category');
+        if ($categoryParam) {
+            $category = $em->getRepository(IncomeCategory::class)->find($categoryParam);
+            if ($category) {
+                $income->setIncomeCategory($category);
+            }
+        }
 
         $form = $this->createForm(IncomeType::class, $income, ['user' => $user]);
         $form->handleRequest($request);

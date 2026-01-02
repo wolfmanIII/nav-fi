@@ -81,7 +81,11 @@ class IncomeType extends AbstractType
                 'class' => IncomeCategory::class,
                 'placeholder' => '-- Select a Category --',
                 'choice_label' => fn (IncomeCategory $cat) => sprintf('%s - %s', $cat->getCode(), $cat->getDescription()),
-                'attr' => ['class' => 'select m-1 w-full'],
+                'attr' => [
+                    'class' => 'select m-1 w-full',
+                    'data-controller' => 'income-details',
+                    'data-action' => 'change->income-details#change',
+                ],
             ])
             ->add('ship', EntityType::class, [
                 'class' => Ship::class,
