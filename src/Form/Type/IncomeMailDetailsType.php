@@ -5,6 +5,7 @@ namespace App\Form\Type;
 use App\Entity\IncomeMailDetails;
 use App\Form\Config\DayYearLimits;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -51,10 +52,23 @@ class IncomeMailDetailsType extends AbstractType
                 'label' => 'Delivery Year',
                 'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
             ])
-            ->add('mailType', TextType::class, [
+            ->add('mailType', ChoiceType::class, [
                 'required' => false,
                 'label' => 'Mail type',
-                'attr' => ['class' => 'input m-1 w-full'],
+                'placeholder' => '-- Select mail type --',
+                'choices' => [
+                    'Official Mail' => 'Official Mail',
+                    'Priority Mail' => 'Priority Mail',
+                    'Registered Mail' => 'Registered Mail',
+                    'Secure Pouch' => 'Secure Pouch',
+                    'Diplomatic Bag' => 'Diplomatic Bag',
+                    'Courier Packet' => 'Courier Packet',
+                    'Bulk Post' => 'Bulk Post',
+                    'Parcel Mail' => 'Parcel Mail',
+                    'Medical Dispatch' => 'Medical Dispatch',
+                    'Emergency Dispatch' => 'Emergency Dispatch',
+                ],
+                'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('packageCount', IntegerType::class, [
                 'required' => false,
