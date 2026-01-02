@@ -16,21 +16,24 @@
         </div>
     </div>
 
-    <div class="col-span-3">
-        {{ form_label(detail_form.prizeDescription) }}
-        {{ form_widget(detail_form.prizeDescription) }}
-        {{ form_errors(detail_form.prizeDescription) }}
+    <div class="col-span-3 grid grid-cols-3 gap-4">
+        <div>
+            {{ form_label(detail_form.prizeDescription) }}
+            {{ form_widget(detail_form.prizeDescription) }}
+            {{ form_errors(detail_form.prizeDescription) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.estimatedValue) }}
+            {{ form_widget(detail_form.estimatedValue) }}
+            {{ form_errors(detail_form.estimatedValue) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.disposition) }}
+            {{ form_widget(detail_form.disposition) }}
+            {{ form_errors(detail_form.disposition) }}
+        </div>
     </div>
-    <div>
-        {{ form_label(detail_form.estimatedValue) }}
-        {{ form_widget(detail_form.estimatedValue) }}
-        {{ form_errors(detail_form.estimatedValue) }}
-    </div>
-    <div>
-        {{ form_label(detail_form.disposition) }}
-        {{ form_widget(detail_form.disposition) }}
-        {{ form_errors(detail_form.disposition) }}
-    </div>
+
     <div class="col-span-3">
         {{ form_label(detail_form.paymentTerms) }}
         {{ form_widget(detail_form.paymentTerms) }}
