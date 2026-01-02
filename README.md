@@ -1,11 +1,13 @@
 # Captain Log Web
 
-Applicazione Symfony 7.3 per la gestione di navi, equipaggi e mutui, pensata per il gioco di ruolo **Traveller**. Include area amministrativa EasyAdmin e comandi di import/export dei dati di contesto. Ogni Annual Budget è agganciato a una singola nave e ne aggrega entrate, costi e rate del mutuo.
+Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, pensata per il gioco di ruolo **Traveller**. Include area amministrativa EasyAdmin, PDF per i contratti e comandi di import/export dei dati di contesto. Ogni Annual Budget è agganciato a una singola nave e ne aggrega entrate, costi e rate del mutuo.
 
 ## Caratteristiche principali
 - Navi, equipaggi, ruoli di bordo e mutui (rate, tassi, assicurazioni) con vincolo uno-a-uno nave↔mutuo.
-- Tipologie di spesa equipaggio (`CostCategory`) e anagrafiche di contesto (InterestRate, Insurance, ShipRole).
-- Tracciamento dell’utente proprietario su Ship, Crew, Mortgage e MortgageInstallment; i voter bloccano l’accesso se l’utente non coincide.
+- Tipologie di spesa equipaggio (`CostCategory`) e anagrafiche di contesto (InterestRate, Insurance, ShipRole, CompanyRole, LocalLaw, IncomeCategory).
+- Company e CompanyRole come controparti contrattuali; LocalLaw per giurisdizione e disclaimer.
+- Entrate e costi legati alla nave con dettagli per categoria (es. Freight, Contract): form dinamiche e PDF contrattuali generati con wkhtmltopdf.
+- Tracciamento dell’utente proprietario su Ship, Crew, Mortgage, MortgageInstallment, Cost, Income e budget; i voter bloccano l’accesso se l’utente non coincide.
 - Annual Budget per nave: calcolo riepilogativo di ricavi, costi e rate annuali del mutuo, più grafico temporale Income/Cost.
 - Dashboard EasyAdmin personalizzata e CRUD dedicati alle entità di contesto.
 - Comandi di export/import JSON per ripristinare rapidamente i dati di contesto.
@@ -16,6 +18,7 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi e mutui, pensata per
 ## Requisiti
 - PHP 8.2+
 - Composer
+- wkhtmltopdf disponibile a `/usr/local/bin/wkhtmltopdf` (vedi `config/packages/knp_snappy.yaml`)
 - Database supportato da Doctrine (PostgreSQL/MySQL/SQLite)
 
 ## Configurazione
@@ -28,10 +31,17 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi e mutui, pensata per
    APP_ENV=dev
    APP_SECRET=changeme
    DATABASE_URL="mysql://user:pass@127.0.0.1:3306/captain_log_web?serverVersion=8.0"
+   APP_DAY_MIN=1
+   APP_DAY_MAX=365
+   APP_YEAR_MIN=0
+   APP_YEAR_MAX=6000
 
    # Backend AI esterno (Elara)
    ELARA_BASE_URL="https://127.0.0.1:8080"
    ELARA_API_TOKEN="inserisci-il-token"
+
+   # wkhtmltopdf
+   WKHTMLTOPDF_PATH="/usr/local/bin/wkhtmltopdf"
    ```
 3. Esegui le migrazioni:
    ```bash
@@ -40,7 +50,7 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi e mutui, pensata per
 4. Crea un utente (se sono presenti i comandi appositi, ad es. `app:user:create`) e assegna il ruolo necessario (`ROLE_ADMIN` per l’area /admin).
 
 ## Comandi utili
-- Esporta dati di contesto (InterestRate, Insurance, ShipRole, CostCategory):
+- Esporta dati di contesto (InterestRate, Insurance, ShipRole, CostCategory, IncomeCategory, CompanyRole, LocalLaw):
   ```bash
   php bin/console app:context:export --file=config/seed/context_seed.json
   ```
@@ -63,5 +73,6 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi e mutui, pensata per
 - Console AI: `https://127.0.0.1:8000/ai/console`
 
 ## Note
-- Le liste (Ship, Crew, Mortgage, MortgageInstallment) sono filtrate sull’utente proprietario; il salvataggio assegna automaticamente l’utente loggato.
-- Le entità di contesto (InterestRate, Insurance, ShipRole, CostCategory) sono gestite via EasyAdmin o via comandi di import/export.
+- Le liste (Ship, Crew, Mortgage, MortgageInstallment, Cost, Income, AnnualBudget) sono filtrate sull’utente proprietario; il salvataggio assegna automaticamente l’utente loggato.
+- Le entità di contesto (InterestRate, Insurance, ShipRole, CostCategory, IncomeCategory, CompanyRole, LocalLaw) sono gestite via EasyAdmin o via comandi di import/export.
+- I contratti Income sono tipizzati per categoria con dettagli dedicati e possono essere stampati in PDF tramite i template in `templates/contracts`.

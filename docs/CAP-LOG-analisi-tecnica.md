@@ -1,6 +1,6 @@
 # Captain Log Web – Analisi tecnica
 
-Applicazione Symfony dedicata alla gestione di navi, equipaggi e mutui nel contesto del gioco di ruolo **Traveller**.
+Applicazione Symfony dedicata alla gestione di navi, equipaggi, contratti e mutui nel contesto del gioco di ruolo **Traveller**.
 
 Questo documento descrive in modo discorsivo l’architettura attuale di Captain Log Web, le sue dipendenze, i componenti applicativi principali e alcuni punti di attenzione operativi.
 
@@ -9,14 +9,18 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 - **Persistenza:** Doctrine ORM con PostgreSQL/MySQL/SQLite.
 - **Admin:** EasyAdmin per le entità di contesto.
 - **AI:** integrazione esterna “Elara” via HttpClient (chat e status).
+- **PDF:** wkhtmltopdf via KnpSnappy (`/usr/local/bin/wkhtmltopdf`), template contratti in `templates/contracts`.
+- **Parametri day/year:** limiti configurabili via env (`APP_DAY_MIN/MAX`, `APP_YEAR_MIN/MAX`) e iniettati nei form NumberType dedicati ai campi giorno/anno.
 
 ## Dominio applicativo
 - **Navi e mutui:** `Ship`, `Mortgage`, `MortgageInstallment`, `InterestRate`, `Insurance`, `ShipRole`.
 - **Annual Budget per nave:** ogni budget è legato a una singola nave e aggrega ricavi (`Income`), costi (`Cost`) e rate del mutuo pagate nel periodo impostato (start/end giorno/anno). Dashboard e grafico mostrano l’andamento temporale Income/Cost.
 - **Equipaggio:** `Crew` con ruoli multipli (`ShipRole`, es. CAP). Metodi helper `hasCaptain()`, `hasMortgageSigned()`.
-- **CostCategory:** tabella di contesto per tipologie di spesa equipaggio (code, description).
-- **IncomeCategory:** tabella di contesto per tipologie di entrata (code, description).
-- **Tracciamento utente:** `user` (FK nullable) su Ship, Crew, Mortgage, MortgageInstallment. Un listener Doctrine (`AssignUserSubscriber`) assegna l’utente loggato in `prePersist`.
+- **CostCategory / IncomeCategory:** tabelle di contesto per tipologie di spesa/entrata (code, description) con seeds JSON.
+- **Company e CompanyRole:** controparti contrattuali con `signLabel`; usate da Cost/Income/Mortgage.
+- **LocalLaw:** codice, descrizione breve e disclaimer giurisdizionale; referenziato da Cost, Income, Mortgage.
+- **Income dettagliato per categoria:** relazioni 1–1 (Freight, Passengers, Contract, Trade, Subsidy, Services, Insurance, Interest, Mail, Prize, Salvage, Charter, ecc.) con campi specifici; i form aggiungono le sottoform in base a `IncomeCategory.code`.
+- **Tracciamento utente:** `user` (FK nullable) su Ship, Crew, Mortgage, MortgageInstallment, Cost, Income, AnnualBudget. Un listener Doctrine (`AssignUserSubscriber`) assegna l’utente loggato in `prePersist`.
 
 ### Relazioni principali
 - Ship 1–1 Mortgage (vincolo univoco: una nave ha al massimo un mutuo).
@@ -24,26 +28,32 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 - Mortgage 1–N MortgageInstallment; ManyToOne InterestRate/Insurance.
 - Crew N–M ShipRole.
 - AnnualBudget ManyToOne Ship (uno per finestra temporale/nave).
+- CompanyRole 1–N Company; Company/LocalLaw ManyToOne su Cost/Income/Mortgage.
+- Income 1–1 con ciascuna tabella di dettaglio categoria.
 
 ## Sicurezza e autorizzazioni
 - **Autenticazione:** form login (`/login`), CSRF abilitato, provider User (email). Access control: dashboard e rotte protette richiedono ruolo USER/ADMIN.
-- **Voter:** ShipVoter, CrewVoter, MortgageVoter vincolano l’accesso all’utente proprietario (`entity->getUser() === app.user`) e bloccano anonimi. Attenzione: entità legacy con `user` nullo verranno rifiutate.
+- **Voter:** ShipVoter, CrewVoter, MortgageVoter, CostVoter, IncomeVoter, AnnualBudgetVoter vincolano l’accesso all’utente proprietario (`entity->getUser() === app.user`) e bloccano anonimi. Attenzione: entità legacy con `user` nullo verranno rifiutate. ShipVoter include permesso dedicato per il calendario sessione.
 - **Subscriber:** `AssignUserSubscriber` (annotazione `AsDoctrineListener` su `prePersist`) assegna l’utente corrente se mancante. Se la sessione è anonima, non interviene.
-- **Filtro per ownership nei controller:** i controller Ship/Crew/Mortgage recuperano le entità tramite repository filtrando per `user` e restituiscono 404 se l’entity non appartiene all’utente loggato, come difesa in profondità rispetto ai voter.
+- **Filtro per ownership nei controller:** i controller protetti recuperano le entità tramite repository filtrando per `user` e restituiscono 404 se l’entità non appartiene all’utente loggato, come difesa in profondità rispetto ai voter.
 
 ## EasyAdmin
-- Dashboard personalizzata (`templates/admin/dashboard.html.twig`) con card di link rapidi per:
-  - Interest Rate, Insurance, Ship Role, Cost Category.
-- CRUD dedicato per CostCategory (`CostCategoryCrudController`), e già presenti InterestRate/Insurance/ShipRole.
+- Dashboard personalizzata (`templates/admin/dashboard.html.twig`) con card di link rapidi per le entità di contesto (InterestRate, Insurance, ShipRole, CostCategory, IncomeCategory, CompanyRole, LocalLaw, Company).
+- CRUD dedicati per le tabelle di contesto e per Company.
 
 ## Comandi e seeds di contesto
 - **Export:** `php bin/console app:context:export --file=config/seed/context_seed.json`
 - **Import:** `php bin/console app:context:import --file=config/seed/context_seed.json`
-  - Trunca le tabelle di contesto (ship_role, insurance, interest_rate, cost_category) e reimporta da JSON.
+  - Trunca e ricarica le tabelle di contesto (ship_role, insurance, interest_rate, cost_category, income_category, company_role, local_law).
 
 ## Integrazione AI/Elara
 - Controller `ChatController`: chiama Elara via HttpClient (`/status/engine`, `/api/chat`, `/api/chat/stream`) con token/URL in env (`ELARA_API_TOKEN`, `ELARA_BASE_URL`). `max_redirects` impostato a 5 per gestire 302.
 - Console AI (`/ai/console`) con stream SSE lato frontend (Stimulus).
+
+## Contratti e PDF
+- Template HTML Twig in `templates/contracts` per le principali categorie di Income; i placeholder sono documentati in `docs/contract-placeholders.md`.
+- Servizio `PdfGenerator` basato su KnpSnappy/wkhtmltopdf per stampare i contratti Income e il mutuo; percorso binario configurato in `config/packages/knp_snappy.yaml`.
+- I campi opzionali delle sottoform Income sono determinati dal codice categoria e mostrati solo se richiesti (form dinamiche con event subscriber).
 
 ## Persistenza e migrazioni
 - Migrazioni versionate in `migrations/` (inclusa quella per `cost_category`).
@@ -55,9 +65,11 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 - **CSRF login:** configurato via form_login con CSRF abilitato; la configurazione CSRF stateless per `authenticate` è stata rimossa.
 - **AI token/URL:** ora in `.env.local`; evitare hardcode. Verificare che la base URL punti al servizio corretto.
 - **Dashboard:** card a sfondo scuro coerenti con tema EasyAdmin dark; testo “Apri” in azzurro.
+- **PDF/wkhtmltopdf:** assicurarsi che il binario sia disponibile e che l’opzione `enable-local-file-access` resti abilitata per caricare asset locali nei PDF.
+- **Form giorno/anno:** limiti validativi configurati via env; aggiornare `.env.local` in base al calendario imperiale usato al tavolo.
 
 ## Checklist rapida di setup
-1. Variabili env: `DATABASE_URL`, `ELARA_BASE_URL`, `ELARA_API_TOKEN`, `APP_SECRET`.
+1. Variabili env: `DATABASE_URL`, `ELARA_BASE_URL`, `ELARA_API_TOKEN`, `APP_SECRET`, `APP_DAY_MIN/MAX`, `APP_YEAR_MIN/MAX`.
 2. Dipendenze: `composer install`, frontend già con asset mapper/Stimulus.
 3. Migrazioni: `php bin/console doctrine:migrations:migrate`.
 4. Import seeds di contesto: `php bin/console app:context:import` (facoltativo).
