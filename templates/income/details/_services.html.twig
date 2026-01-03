@@ -68,7 +68,7 @@
         </div>
         {{ form_widget(detail_form.paymentTerms) }}
         {{ form_errors(detail_form.paymentTerms) }}
-        <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle" />
+        <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
             <div class="modal-box">
                 <h3 class="font-bold">Payment terms</h3>
@@ -92,7 +92,7 @@
         </div>
         {{ form_widget(detail_form.liabilityLimit) }}
         {{ form_errors(detail_form.liabilityLimit) }}
-        <input type="checkbox" id="{{ liab_help_id }}" class="modal-toggle" />
+        <input type="checkbox" id="{{ liab_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
             <div class="modal-box">
                 <h3 class="font-bold">Liability limit</h3>
