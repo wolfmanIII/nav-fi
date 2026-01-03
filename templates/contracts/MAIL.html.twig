@@ -36,6 +36,7 @@
                 </td>
                 <td class="text-right">
                     <div class="text-2xl font-bold">Mail Run Receipt</div>
+                    <div class="text-sm font-bold">Run Id: {{ '{{RUN_ID}}' }}</div>
                     <div class="text-sm">Date: {{ '{{DATE}}' }}</div>
                 </td>
             </tr>
@@ -56,6 +57,26 @@
                     <tr>
                         <td>{{ '{{CARRIER_NAME}}' }}</td>
                         <td>{{ '{{VESSEL_NAME}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Authority Ref.</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Authority</th>
+                        <th>Account Ref.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{AUTHORITY_NAME}}' }}</td>
+                        <td>{{ '{{AUTHORITY_SIGN}}' }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -115,40 +136,76 @@
     <div class="card mb-4">
         <div class="card-body p-4">
             <h2 class="card-title text-lg mb-2">Payment & Terms</h2>
+            <table class="table text-sm mb-6">
+                <thead>
+                    <tr>
+                        <th>Terms</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{PAYMENT_TERMS}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
             <table class="table text-sm">
                 <thead>
                     <tr>
-                        <th>Payment</th>
+                        <th>Fee</th>
                         <th>Liability Limit</th>
                         <th>Proof of Delivery</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{ '{{PAYMENT_TERMS}}' }}</td>
+                        <td>{{ '{{MAIL_FEE}}' }}</td>
                         <td>{{ '{{LIABILITY_LIMIT}}' }}</td>
                         <td>{{ '{{PROOF_OF_DELIVERY}}' }}</td>
                     </tr>
                 </tbody>
             </table>
-            <div class="mt-3 text-sm">
-                Notes: {{ '{{NOTES}}' }}
-            </div>
         </div>
     </div>
 
-    <table class="table text-sm">
-        <thead>
-            <tr>
-                <th>Carrier</th>
-                <th>Delivery Confirmation</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>{{ '{{CARRIER_SIGN}}' }}</td>
-                <td>{{ '{{PROOF_OF_DELIVERY}}' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2"></h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="mt-3 text-sm">
+                                {{ '{{NOTES}}' }}
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Delivery</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Carrier</th>
+                        <th>Delivery Confirmation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{CARRIER_SIGN}}' }}</td>
+                        <td>{{ '{{PROOF_OF_DELIVERY}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}

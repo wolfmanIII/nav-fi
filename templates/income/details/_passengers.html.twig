@@ -13,26 +13,34 @@
         {{ form_widget(detail_form.destination) }}
         {{ form_errors(detail_form.destination) }}
     </div>
-    <div>
-        {{ form_label(detail_form.departureDay) }}
-        {{ form_widget(detail_form.departureDay) }}
-        {{ form_errors(detail_form.departureDay) }}
+
+    <div class="col-span-3 grid grid-cols-2 gap-4">
+        <div class="col-span-1 grid grid-cols-2 gap-4">
+            <div>
+                {{ form_label(detail_form.departureDay) }}
+                {{ form_widget(detail_form.departureDay) }}
+                {{ form_errors(detail_form.departureDay) }}
+            </div>
+            <div>
+                {{ form_label(detail_form.departureYear) }}
+                {{ form_widget(detail_form.departureYear) }}
+                {{ form_errors(detail_form.departureYear) }}
+            </div>
+        </div>
+        <div class="col-span-1 grid grid-cols-2 gap-4">
+            <div>
+                {{ form_label(detail_form.arrivalDay) }}
+                {{ form_widget(detail_form.arrivalDay) }}
+                {{ form_errors(detail_form.arrivalDay) }}
+            </div>
+            <div>
+                {{ form_label(detail_form.arrivalYear) }}
+                {{ form_widget(detail_form.arrivalYear) }}
+                {{ form_errors(detail_form.arrivalYear) }}
+            </div>
+        </div>
     </div>
-    <div>
-        {{ form_label(detail_form.departureYear) }}
-        {{ form_widget(detail_form.departureYear) }}
-        {{ form_errors(detail_form.departureYear) }}
-    </div>
-    <div>
-        {{ form_label(detail_form.arrivalDay) }}
-        {{ form_widget(detail_form.arrivalDay) }}
-        {{ form_errors(detail_form.arrivalDay) }}
-    </div>
-    <div>
-        {{ form_label(detail_form.arrivalYear) }}
-        {{ form_widget(detail_form.arrivalYear) }}
-        {{ form_errors(detail_form.arrivalYear) }}
-    </div>
+
     <div>
         {{ form_label(detail_form.classOrBerth) }}
         {{ form_widget(detail_form.classOrBerth) }}
@@ -48,7 +56,7 @@
         {{ form_widget(detail_form.passengerNames) }}
         {{ form_errors(detail_form.passengerNames) }}
     </div>
-    <div class="col-span-3">
+    <div>
         {{ form_label(detail_form.passengerContact) }}
         {{ form_widget(detail_form.passengerContact) }}
         {{ form_errors(detail_form.passengerContact) }}

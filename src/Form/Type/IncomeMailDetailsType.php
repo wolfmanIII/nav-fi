@@ -107,10 +107,23 @@ class IncomeMailDetailsType extends AbstractType
                 'label' => 'Payment terms',
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 2],
             ])
-            ->add('proofOfDelivery', TextareaType::class, [
+            ->add('proofOfDelivery', ChoiceType::class, [
                 'required' => false,
                 'label' => 'Proof of delivery',
-                'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 2],
+                'placeholder' => '-- Select proof --',
+                'choices' => [
+                    'Recipient Signature' => 'Recipient Signature',
+                    'Authority Stamp' => 'Authority Stamp',
+                    'Port Log Entry' => 'Port Log Entry',
+                    'Delivery Scan / Barcode' => 'Delivery Scan / Barcode',
+                    'Seal Check (Intact)' => 'Seal Check (Intact)',
+                    'Chain-of-Custody Form' => 'Chain-of-Custody Form',
+                    'Secure Drop Confirmation' => 'Secure Drop Confirmation',
+                    'Photo Evidence' => 'Photo Evidence',
+                    'Witness Confirmation' => 'Witness Confirmation',
+                    'Encrypted Receipt Code' => 'Encrypted Receipt Code',
+                ],
+                'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('liabilityLimit', NumberType::class, [
                 'required' => false,
