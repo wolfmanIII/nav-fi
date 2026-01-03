@@ -31,79 +31,79 @@
         {% endif %}
 
         <div class="col-span-2">
-            <label class="label">Title</label>
+            {{ form_label(form.title) }}
             {{ form_widget(form.title) }}
             {{ form_errors(form.title) }}
         </div>
 
         <div class="col-span-1">
-            <label class="label">Local Law</label>
+            {{ form_label(form.localLaw) }}
             {{ form_widget(form.localLaw) }}
             {{ form_errors(form.localLaw) }}
         </div>
 
         <div class="col-span-1">
-            <label class="label">Company</label>
+            {{ form_label(form.company) }}
             {{ form_widget(form.company) }}
             {{ form_errors(form.company) }}
         </div>
 
         <div class="col-span-1">
-            <label class="label">Category</label>
+            {{ form_label(form.incomeCategory) }}
             {{ form_widget(form.incomeCategory) }}
             {{ form_errors(form.incomeCategory) }}
         </div>
 
         <div class="col-span-1">
-            <label class="label">Ship</label>
+            {{ form_label(form.ship) }}
             {{ form_widget(form.ship) }}
             {{ form_errors(form.ship) }}
         </div>
 
         <div class="col-span-1">
-            <label class="label">Signing Location</label>
+            {{ form_label(form.signingLocation) }}
             {{ form_widget(form.signingLocation) }}
             {{ form_errors(form.signingLocation) }}
         </div>
 
         <div class="col-span-1">
-            <label class="label">Signing Day</label>
+            {{ form_label(form.signingDay) }}
             {{ form_widget(form.signingDay) }}
             {{ form_errors(form.signingDay) }}
         </div>
 
         <div class="col-span-1">
-            <label class="label">Signing Year</label>
+            {{ form_label(form.signingYear) }}
             {{ form_widget(form.signingYear) }}
             {{ form_errors(form.signingYear) }}
         </div>
 
         <div class="col-span-1">
-            <label class="label">Amount</label>
+            {{ form_label(form.amount) }}
             {{ form_widget(form.amount) }}
             {{ form_errors(form.amount) }}
         </div>
 
         <div class="col-span-1">
-            <label class="label">Payment Day</label>
+            {{ form_label(form.paymentDay) }}
             {{ form_widget(form.paymentDay) }}
             {{ form_errors(form.paymentDay) }}
         </div>
 
         <div class="col-span-1">
-            <label class="label">Payment Year</label>
+            {{ form_label(form.paymentYear) }}
             {{ form_widget(form.paymentYear) }}
             {{ form_errors(form.paymentYear) }}
         </div>
 
         <div class="col-span-1">
-            <label class="label">Expiration Day</label>
+            {{ form_label(form.expirationDay) }}
             {{ form_widget(form.expirationDay) }}
             {{ form_errors(form.expirationDay) }}
         </div>
 
         <div class="col-span-1">
-            <label class="label">Expiration Year</label>
+            {{ form_label(form.expirationYear) }}
             {{ form_widget(form.expirationYear) }}
             {{ form_errors(form.expirationYear) }}
         </div>
@@ -149,7 +149,7 @@
     <fieldset class="fieldset grid grid-cols-3 bg-base-200 border-base-300 gap-4 p-4 border rounded w-250">
         <legend class="fieldset-legend">{% include 'icons/income.html.twig' %} Note</legend>
         <div class="col-span-3">
-            <label class="label">Note</label>
+            {{ form_label(form.note) }}
             {{ form_widget(form.note) }}
             {{ form_errors(form.note) }}
         </div>
@@ -161,12 +161,12 @@
             <div class="col-span-3">
                 <div class="grid grid-cols-3 gap-4 items-end">
                     <div>
-                        <label class="label">Cancel Day</label>
+                        {{ form_label(form.cancelDay) }}
                         {{ form_widget(form.cancelDay) }}
                         {{ form_errors(form.cancelDay) }}
                     </div>
                     <div>
-                        <label class="label">Cancel Year</label>
+                        {{ form_label(form.cancelYear) }}
                         {{ form_widget(form.cancelYear) }}
                         {{ form_errors(form.cancelYear) }}
                     </div>
