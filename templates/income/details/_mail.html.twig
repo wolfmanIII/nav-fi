@@ -66,15 +66,43 @@
         {{ form_widget(detail_form.sealCodes) }}
         {{ form_errors(detail_form.sealCodes) }}
     </div>
+    {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
     <div class="col-span-3">
-        {{ form_label(detail_form.paymentTerms) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.paymentTerms) }}
+            <label for="{{ pay_help_id }}" class="badge badge-outline cursor-pointer">?</label>
+        </div>
         {{ form_widget(detail_form.paymentTerms) }}
         {{ form_errors(detail_form.paymentTerms) }}
+        <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Payment terms</h3>
+                <p class="py-2 text-sm">When and how the mail service is paid (prepaid, COD, staged delivery).</p>
+                <div class="modal-action">
+                    <label for="{{ pay_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
+    {% set pod_help_id = detail_form.proofOfDelivery.vars.id ~ '-help' %}
     <div class="col-span-3">
-        {{ form_label(detail_form.proofOfDelivery) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.proofOfDelivery) }}
+            <label for="{{ pod_help_id }}" class="badge badge-outline cursor-pointer">?</label>
+        </div>
         {{ form_widget(detail_form.proofOfDelivery) }}
         {{ form_errors(detail_form.proofOfDelivery) }}
+        <input type="checkbox" id="{{ pod_help_id }}" class="modal-toggle" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Proof of delivery</h3>
+                <p class="py-2 text-sm">Select the evidence required to validate delivery (signature, stamp, barcode, secure drop, etc.).</p>
+                <div class="modal-action">
+                    <label for="{{ pod_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="col-span-3">
         {{ form_label(detail_form.liabilityLimit) }}
