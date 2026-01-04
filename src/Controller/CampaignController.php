@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Campaign;
+use App\Entity\Ship;
+use App\Dto\ShipSelection;
 use App\Form\CampaignType;
+use App\Form\ShipSelectType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -85,5 +88,86 @@ final class CampaignController extends BaseController
         $em->flush();
 
         return $this->redirectToRoute('app_campaign_index');
+    }
+
+    #[Route('/campaign/{id}/ships', name: 'app_campaign_ships')]
+    public function ships(
+        int $id,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $campaign = $em->getRepository(Campaign::class)->find($id);
+        if (!$campaign) {
+            throw new NotFoundHttpException();
+        }
+
+        $shipsToSelect = $em->getRepository(Ship::class)->findWithoutCampaignForUser($user);
+
+        $rows = [];
+        foreach ($shipsToSelect as $ship) {
+            $dto = (new ShipSelection())
+                ->setShip($ship)
+                ->setSelected(false);
+
+            $rows[] = $dto;
+        }
+
+        $form = $this->createForm(ShipSelectType::class, [
+            'shipSelections' => $rows,
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var ShipSelection[] $selections */
+            $selections = $form->get('shipSelections')->getData();
+
+            foreach ($selections as $selection) {
+                if ($selection->isSelected()) {
+                    $campaign->addShip($selection->getShip());
+                }
+            }
+
+            $em->flush();
+
+            return $this->redirectToRoute('app_campaign_ships', ['id' => $campaign->getId()]);
+        }
+
+        return $this->renderTurbo('campaign/ship_select.html.twig', [
+            'campaign' => $campaign,
+            'form' => $form,
+            'controller_name' => self::CONTROLLER_NAME,
+        ]);
+    }
+
+    #[Route('/campaign/ship/{id}/remove', name: 'app_campaign_ship_remove', methods: ['GET', 'POST'])]
+    public function removeShip(
+        int $id,
+        EntityManagerInterface $em
+    ): Response {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $ship = $em->getRepository(Ship::class)->findOneForUser($id, $user);
+        if (!$ship) {
+            throw new NotFoundHttpException();
+        }
+
+        $campaign = $ship->getCampaign();
+        if (!$campaign) {
+            throw new NotFoundHttpException();
+        }
+
+        $campaign->removeShip($ship);
+        $em->persist($campaign);
+        $em->flush();
+
+        return $this->redirectToRoute('app_campaign_ships', ['id' => $campaign->getId()]);
     }
 }

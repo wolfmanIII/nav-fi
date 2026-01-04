@@ -39,4 +39,17 @@ class ShipRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @return Ship[]
+     */
+    public function findWithoutCampaignForUser(User $user): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.user = :user')
+            ->andWhere('s.campaign IS NULL')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
 }
