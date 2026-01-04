@@ -126,12 +126,12 @@ final class CampaignController extends BaseController
             ->add('sessionDay', NumberType::class, [
                 'label' => 'Session Day',
                 'required' => true,
-                'attr' => ['class' => 'input input-bordered w-full'],
+                'attr' => ['class' => 'input m-1 w-full'],
             ])
             ->add('sessionYear', NumberType::class, [
                 'label' => 'Session Year',
                 'required' => true,
-                'attr' => ['class' => 'input input-bordered w-full'],
+                'attr' => ['class' => 'input m-1 w-full'],
             ])
             ->getForm();
 

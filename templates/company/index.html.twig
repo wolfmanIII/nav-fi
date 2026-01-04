@@ -6,24 +6,27 @@
 
     <div class="p-10">
 
-        <header class="prose">
-            <h1>Companies</h1>
-        </header>
-
-        <div class="alert alert-info alert-outline shadow-sm mb-4 mt-4">
-            <div class="flex items-center gap-3">
-                {% include 'icons/company.html.twig' %}
-                <div>
-                    <h3 class="font-semibold">Partners and roles</h3>
-                    <p class="text-sm opacity-80">Maintain counterparties with role and contacts to reuse in contracts and documents.</p>
+        <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-6">
+            <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
+                 style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
+            </div>
+            <div class="relative p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
+                        {% include 'icons/company.html.twig' %}
+                    </div>
+                    <div>
+                        <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Partners registry</p>
+                        <h1 class="text-3xl font-semibold text-cyan-100 leading-tight">Companies</h1>
+                        <p class="text-sm text-cyan-100/80">Counterparties, roles and contacts ready for contracts and documents.</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <a href="{{ path('app_company_new') }}" role="button" class="btn btn-outline btn-primary btn-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </a>
                 </div>
             </div>
-        </div>
-
-        <div class="flow-root">
-            <a href="{{ path('app_company_new') }}" role="button" class="btn btn-outline btn-primary btn-xs mt-5 mb-5">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            </a>
         </div>
 
         <div class="flow-root">
