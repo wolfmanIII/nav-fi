@@ -41,6 +41,7 @@
                         <th class="text-right">Annual Mortgage(Cr)</th>
                         <th class="text-right">Budget(Cr)</th>
                         <th>Chart</th>
+                        <th>Campaign</th>
                         <th>Action</th>
                     </tr>
                     </thead>
@@ -60,6 +61,16 @@
                                     <a href="{{ path('app_annual_budget_chart', {id: budget.id}) }}" role="button" class="btn btn-outline btn-primary btn-xs">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 8 14 12 20 6"></polyline><polyline points="14 6 20 6 20 12"></polyline></svg>
                                     </a>
+                                </td>
+                                <td>
+                                    {% if budget.ship.campaign %}
+                                        <div class="flex items-center gap-2">
+                                            {% include 'icons/campaign.html.twig' %}
+                                            <span>{{ budget.ship.campaign.title }}</span>
+                                        </div>
+                                    {% else %}
+                                        <span class="opacity-60">—</span>
+                                    {% endif %}
                                 </td>
                                 <td>
                                     <a href="{{ path('app_annual_budget_edit', {id: budget.id}) }}" role="button" class="btn btn-outline btn-primary btn-xs">
