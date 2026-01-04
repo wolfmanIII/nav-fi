@@ -2,8 +2,11 @@
 
 namespace App\Form;
 
+use App\Entity\Campaign;
 use App\Entity\Ship;
+use App\Repository\CampaignRepository;
 use App\Form\Type\TravellerMoneyType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -27,6 +30,17 @@ class ShipType extends AbstractType
             ])
             ->add('class', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
+                'disabled' => $disabled,
+            ])
+            ->add('campaign', EntityType::class, [
+                'class' => Campaign::class,
+                'placeholder' => '-- Select a Campaign --',
+                'required' => false,
+                'choice_label' => fn (Campaign $c) => $c->getTitle(),
+                'query_builder' => function (CampaignRepository $repo) {
+                    return $repo->createQueryBuilder('c')->orderBy('c.title', 'ASC');
+                },
+                'attr' => ['class' => 'select m-1 w-full'],
                 'disabled' => $disabled,
             ])
             ->add('price', TravellerMoneyType::class, [
