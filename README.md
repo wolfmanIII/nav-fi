@@ -3,26 +3,28 @@
 Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, pensata per il gioco di ruolo **Traveller**. Include area amministrativa EasyAdmin, PDF per i contratti e comandi di import/export dei dati di contesto. Ogni Annual Budget è agganciato a una singola nave e ne aggrega entrate, costi e rate del mutuo.
 
 ## Caratteristiche principali
-- Navi, equipaggi, ruoli di bordo e mutui (rate, tassi, assicurazioni) con vincolo uno-a-uno nave↔mutuo.
+- Navi, equipaggi, ruoli di bordo e mutui (rate, tassi, assicurazioni) con vincolo uno-a-uno nave↔mutuo; stampa PDF della scheda nave.
+- Campagne con calendario di sessione (giorno/anno) e relazione 1–N con Ship: le date di sessione sono centralizzate su Campaign e usate ovunque (liste e PDF).
 - Tipologie di spesa equipaggio (`CostCategory`) e anagrafiche di contesto (InterestRate, Insurance, ShipRole, CompanyRole, LocalLaw, IncomeCategory).
 - Company e CompanyRole come controparti contrattuali; LocalLaw per giurisdizione e disclaimer.
 - Entrate e costi legati alla nave con dettagli per categoria (es. Freight, Contract): form dinamiche e PDF contrattuali generati con wkhtmltopdf.
+- Scheda dettagli nave salvata come JSON (`shipDetails`) con campi base e collezioni (weapons, craft, systems, staterooms, software) editabili da form dedicata.
 - Tracciamento dell’utente proprietario su Ship, Crew, Mortgage, MortgageInstallment, Cost, Income e budget; i voter bloccano l’accesso se l’utente non coincide.
 - Annual Budget per nave: calcolo riepilogativo di ricavi, costi e rate annuali del mutuo, più grafico temporale Income/Cost.
 - Dashboard EasyAdmin personalizzata e CRUD dedicati alle entità di contesto.
 - Comandi di export/import JSON per ripristinare rapidamente i dati di contesto.
 - Console AI per inoltrare domande a un backend esterno (Elara) tramite HttpClient.
 - I controller e i repository filtrano le entità sull’utente proprietario restituendo 404 se non corrispondono, per difesa in profondità oltre ai voter.
-- I calcoli del mutuo usano BCMath e importi normalizzati a stringa per evitare drift tipici dei float.
+- I calcoli del mutuo usano BCMath e importi normalizzati a stringa per evitare drift tipici dei float; la formattazione numerica nelle liste/PDF è localizzata tramite `twig/intl-extra`.
 
 ## Requisiti
 - PHP 8.2+
 - Composer
-- wkhtmltopdf disponibile a `/usr/local/bin/wkhtmltopdf` (vedi `config/packages/knp_snappy.yaml`)
+- wkhtmltopdf disponibile e referenziato via variabile `WKHTMLTOPDF_PATH` (vedi `config/packages/knp_snappy.yaml`)
 - Database supportato da Doctrine (PostgreSQL/MySQL/SQLite)
 
 ## KnpSnappy e wkhtmltopdf (patched Qt)
-- Configurazione binario: `config/packages/knp_snappy.yaml` punta a `/usr/local/bin/wkhtmltopdf` (opzione `binary`).
+- Configurazione binario: `config/packages/knp_snappy.yaml` legge `%env(WKHTMLTOPDF_PATH)%` (default suggerito `/usr/local/bin/wkhtmltopdf`).
 - Installazione wkhtmltopdf patchato (Ubuntu 22.04/Jammy):
   ```bash
   sudo apt-get update
@@ -91,6 +93,8 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, 
 - Console AI: `https://127.0.0.1:8000/ai/console`
 
 ## Note
+- Il calendario di sessione (giorno/anno) è centralizzato sulla Campaign; le Ship ne ereditano la visualizzazione nelle liste e nei PDF.
+- La form dettagli nave salva un JSON (`shipDetails`) e alimenta la stampa PDF della scheda nave.
 - Le liste (Ship, Crew, Mortgage, MortgageInstallment, Cost, Income, AnnualBudget) sono filtrate sull’utente proprietario; il salvataggio assegna automaticamente l’utente loggato.
 - Le entità di contesto (InterestRate, Insurance, ShipRole, CostCategory, IncomeCategory, CompanyRole, LocalLaw) sono gestite via EasyAdmin o via comandi di import/export.
 - I contratti Income sono tipizzati per categoria con dettagli dedicati e possono essere stampati in PDF tramite i template in `templates/contracts`.
