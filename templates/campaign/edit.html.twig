@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% if campaign.id %}Edit Campaign{% else %}New Campaign{% endif %}
+{% endblock %}
+
+{% block pageContent %}
+    <div class="p-10">
+        <header class="prose">
+            <h1>
+                {% if campaign.id %}Edit Campaign{% else %}New Campaign{% endif %}
+            </h1>
+        </header>
+
+        {{ form_start(form, {attr: {class: 'grid grid-cols-1 gap-4 max-w-2xl'}}) }}
+            {{ form_row(form.title) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.startingYear) }}
+
+            <div>
+                <button class="btn btn-primary" type="submit">Save</button>
+                <a href="{{ path('app_campaign_index') }}" role="button" class="btn btn-outline btn-default ml-2">Cancel</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
