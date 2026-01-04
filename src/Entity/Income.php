@@ -116,7 +116,7 @@ class Income
     private ?IncomeCategory $incomeCategory = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Ship $ship = null;
 
     #[ORM\ManyToOne]
