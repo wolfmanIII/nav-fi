@@ -200,13 +200,14 @@ final class MortgageController extends BaseController
         ];
 
         $options = [
-            'margin-top' => '18mm',
-            'margin-bottom' => '20mm',
-            'margin-left' => '20mm',
-            'margin-right' => '20mm',
-            'footer-right' => 'Page [page] / [toPage]',
+            'margin-top' => '20mm',
+            'margin-bottom' => '15mm',
+            'margin-left' => '0mm',
+            'margin-right' => '0mm',
+            'footer-right' => 'Page [page] / [topage]',
             'footer-font-size' => 9,
-            'footer-spacing' => 4,
+            'footer-spacing' => 6,
+            'enable-local-file-access' => true,
         ];
 
         $pdfContent = $pdfGenerator->render($htmlTemplate, $context, $options);
