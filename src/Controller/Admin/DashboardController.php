@@ -9,8 +9,6 @@ use App\Entity\CostCategory;
 use App\Entity\IncomeCategory;
 use App\Entity\CompanyRole;
 use App\Entity\LocalLaw;
-use App\Entity\DocumentFile;
-use App\Entity\DocumentChunk;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;

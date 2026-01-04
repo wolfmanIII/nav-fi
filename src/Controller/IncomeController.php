@@ -216,18 +216,18 @@ final class IncomeController extends BaseController
     {
         $code = $income->getIncomeCategory()?->getCode();
         return match ($code) {
-            'CHARTER' => 'contracts/CHARTER.html.twig',
-            'SUBSIDY' => 'contracts/SUBSIDY.html.twig',
-            'PRIZE' => 'contracts/PRIZE.html.twig',
-            'FREIGHT' => 'contracts/FREIGHT.html.twig',
-            'SERVICES' => 'contracts/SERVICES.html.twig',
-            'PASSENGERS' => 'contracts/PASSENGERS.html.twig',
-            'CONTRACT' => 'contracts/CONTRACT.html.twig',
-            'INTEREST' => 'contracts/INTEREST.html.twig',
-            'MAIL' => 'contracts/MAIL.html.twig',
-            'INSURANCE' => 'contracts/INSURANCE.html.twig',
-            'SALVAGE' => 'contracts/SALVAGE.html.twig',
-            'TRADE' => 'contracts/TRADE.html.twig',
+            'CHARTER' => 'pdf/contracts/CHARTER.html.twig',
+            'SUBSIDY' => 'pdf/contracts/SUBSIDY.html.twig',
+            'PRIZE' => 'pdf/contracts/PRIZE.html.twig',
+            'FREIGHT' => 'pdf/contracts/FREIGHT.html.twig',
+            'SERVICES' => 'pdf/contracts/SERVICES.html.twig',
+            'PASSENGERS' => 'pdf/contracts/PASSENGERS.html.twig',
+            'CONTRACT' => 'pdf/contracts/CONTRACT.html.twig',
+            'INTEREST' => 'pdf/contracts/INTEREST.html.twig',
+            'MAIL' => 'pdf/contracts/MAIL.html.twig',
+            'INSURANCE' => 'pdf/contracts/INSURANCE.html.twig',
+            'SALVAGE' => 'pdf/contracts/SALVAGE.html.twig',
+            'TRADE' => 'pdf/contracts/TRADE.html.twig',
             default => throw new NotFoundHttpException('No template for category'),
         };
     }

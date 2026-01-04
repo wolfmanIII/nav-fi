@@ -192,23 +192,55 @@ final class MortgageController extends BaseController
             throw $this->createAccessDeniedException('Mortgage not signed');
         }
 
-        $htmlTemplate = 'contracts/MORTGAGE.html.twig';
+        $htmlTemplate = 'pdf/contracts/MORTGAGE.html.twig';
         $context = [
             'mortgage' => $mortgage,
             'ship' => $mortgage->getShip(),
             'user' => $user,
         ];
 
-        $pdfContent = $pdfGenerator->render($htmlTemplate, $context, [
+        $options = [
+            'margin-top' => '18mm',
+            'margin-bottom' => '20mm',
+            'margin-left' => '20mm',
+            'margin-right' => '20mm',
             'footer-right' => 'Page [page] / [toPage]',
             'footer-font-size' => 9,
             'footer-spacing' => 4,
-            'margin-bottom' => '18mm',
-        ]);
+        ];
+
+        $pdfContent = $pdfGenerator->render($htmlTemplate, $context, $options);
 
         return new Response($pdfContent, 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('inline; filename=\"mortgage-%s.pdf\"', $mortgage->getCode()),
         ]);
     }
+
+    #[Route('/mortgage/{id}/pdf/preview', name: 'app_mortgage_pdf_preview', methods: ['GET'])]
+    public function pdfPreview(
+        int $id,
+        EntityManagerInterface $em
+    ): Response {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $mortgage = $em->getRepository(Mortgage::class)->findOneForUser($id, $user);
+        if (!$mortgage) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$mortgage->isSigned()) {
+            throw $this->createAccessDeniedException('Mortgage not signed');
+        }
+
+        return $this->render('pdf/contracts/MORTGAGE.html.twig', [
+            'mortgage' => $mortgage,
+            'ship' => $mortgage->getShip(),
+            'user' => $user,
+        ]);
+    }
+
 }

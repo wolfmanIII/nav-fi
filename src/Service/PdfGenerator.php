@@ -16,7 +16,7 @@ class PdfGenerator
     /**
      * Render a Twig template to HTML and convert it to PDF.
      *
-     * @param string $template Twig template name (es. templates/contracts/FILE.html.twig)
+     * @param string $template Twig template name (es. templates/pdf/contracts/FILE.html.twig)
      * @param array  $context  Context passed to Twig
      * @param array  $options  Snappy options (override config)
      *
