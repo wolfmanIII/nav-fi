@@ -64,7 +64,7 @@
         <div>
             <div class="flex items-center gap-2">
                 {{ form_label(detail_form.liabilityLimit) }}
-                <label for="{{ liab_help_id }}" class="badge badge-outline badge-info cursor-pointer">?</label>
+                <label for="{{ liab_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
             </div>
             {{ form_widget(detail_form.liabilityLimit) }}
             {{ form_errors(detail_form.liabilityLimit) }}
@@ -86,7 +86,7 @@
         <div>
             <div class="flex items-center gap-2">
                 {{ form_label(detail_form.paymentTerms) }}
-                <label for="{{ pay_help_id }}" class="badge badge-outline badge-info cursor-pointer">?</label>
+                <label for="{{ pay_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
             </div>
             {{ form_widget(detail_form.paymentTerms) }}
             {{ form_errors(detail_form.paymentTerms) }}
@@ -107,5 +107,5 @@
             {{ form_errors(detail_form.cancellationTerms) }}
         </div>
     </div>
-        
+
 </fieldset>
