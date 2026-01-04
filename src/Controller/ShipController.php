@@ -8,6 +8,7 @@ use App\Entity\Ship;
 use App\Form\CrewSelectType;
 use App\Form\ShipType;
 use App\Security\Voter\ShipVoter;
+use App\Dto\ShipDetailsData;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,6 +38,11 @@ final class ShipController extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var ShipDetailsData|null $details */
+            $details = $form->get('shipDetails')->getData();
+            if ($details instanceof ShipDetailsData) {
+                $ship->setShipDetails($details->toArray());
+            }
 
             $em->persist($ship);
             $em->flush();
@@ -71,6 +77,11 @@ final class ShipController extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var ShipDetailsData|null $details */
+            $details = $form->get('shipDetails')->getData();
+            if ($details instanceof ShipDetailsData) {
+                $ship->setShipDetails($details->toArray());
+            }
 
             if (!$this->isGranted(ShipVoter::EDIT, $ship)) {
                 $this->addFlash('error', 'Mortgage Signed, Action Denied!');

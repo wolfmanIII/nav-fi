@@ -90,7 +90,9 @@
                 {{ form_errors(form.price) }}
             </div>
 
-        </fieldset>
+       </fieldset>
+
+        {% include 'ship/_details_form.html.twig' with { detailsForm: form.shipDetails } %}
 
         <div class="flex gap-4">
             <button type="submit"

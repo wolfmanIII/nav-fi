@@ -4,7 +4,9 @@ namespace App\Form;
 
 use App\Entity\Campaign;
 use App\Entity\Ship;
+use App\Dto\ShipDetailsData;
 use App\Repository\CampaignRepository;
+use App\Form\ShipDetailsType;
 use App\Form\Type\TravellerMoneyType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -19,6 +21,7 @@ class ShipType extends AbstractType
         /** @var Ship $ship */
         $ship = $options['data'];
         $disabled = $ship->hasMortgageSigned();
+        $detailsData = ShipDetailsData::fromArray($ship->getShipDetails() ?? []);
         $builder
             ->add('name', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
@@ -47,6 +50,11 @@ class ShipType extends AbstractType
                 'label' => 'Price(Cr)',
                 'attr' => ['class' => 'input m-1 w-full'],
                 'disabled' => $disabled,
+            ])
+            ->add('shipDetails', ShipDetailsType::class, [
+                'mapped' => false,
+                'data' => $detailsData,
+                'label' => 'Ship Details',
             ])
         ;
     }

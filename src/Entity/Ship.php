@@ -49,6 +49,9 @@ class Ship
     #[ORM\OneToOne(mappedBy: 'ship', cascade: ['persist', 'remove'])]
     private ?Mortgage $mortgage = null;
 
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $shipDetails = null;
+
     /**
      * @var Collection<int, Crew>
      */
@@ -319,5 +322,17 @@ class Ship
     public function hasMortgageSigned(): bool
     {
         return $this->getMortgage()?->isSigned() === true;
+    }
+
+    public function getShipDetails(): ?array
+    {
+        return $this->shipDetails;
+    }
+
+    public function setShipDetails(?array $shipDetails): static
+    {
+        $this->shipDetails = $shipDetails;
+
+        return $this;
     }
 }

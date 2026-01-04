@@ -1,0 +1,153 @@
+{% import _self as detailsMacros %}
+
+{% macro render_item(child) %}
+    <div class="grid grid-cols-3 gap-2 border border-base-300 rounded p-3 relative collection-item bg-base-100">
+        <button type="button" class="btn btn-ghost btn-xs absolute right-1 top-1" data-collection-remove>&times;</button>
+        <div>
+            {{ form_label(child.description) }}
+            {{ form_widget(child.description) }}
+            {{ form_errors(child.description) }}
+        </div>
+        <div>
+            {{ form_label(child.tons) }}
+            {{ form_widget(child.tons) }}
+            {{ form_errors(child.tons) }}
+        </div>
+        <div>
+            {{ form_label(child.costMcr) }}
+            {{ form_widget(child.costMcr) }}
+            {{ form_errors(child.costMcr) }}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro render_collection(collection, title) %}
+    <div class="space-y-2" data-collection>
+        <div class="flex items-center justify-between">
+            <h4 class="font-semibold text-cyan-100">{{ title }}</h4>
+            <button type="button" class="btn btn-outline btn-xs" data-collection-add>+ Add</button>
+        </div>
+        <div class="space-y-2" data-collection-list>
+            {% for child in collection %}
+                {{ _self.render_item(child) }}
+            {% endfor %}
+        </div>
+        <template data-collection-prototype>
+            {{ _self.render_item(collection.vars.prototype) }}
+        </template>
+    </div>
+{% endmacro %}
+
+<fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-250">
+    <legend class="fieldset-legend">Ship Details</legend>
+    <div class="col-span-2">
+        <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-4">
+            <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
+                 style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
+            </div>
+            <div class="relative p-4 flex items-start gap-3">
+                <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
+                    {% include 'icons/alien-structure-1.html.twig' %}
+                </div>
+                <div>
+                    <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Ship details</p>
+                    <h3 class="font-semibold text-cyan-100 text-xl leading-tight">Layout & components</h3>
+                    <p class="text-sm text-cyan-100/80">Insert hull, drives, systems and payload in a structured way; data will be stored as JSON.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-span-2 grid grid-cols-3 gap-4">
+        <div>
+            {{ form_label(detailsForm.techLevel) }}
+            {{ form_widget(detailsForm.techLevel) }}
+            {{ form_errors(detailsForm.techLevel) }}
+        </div>
+    </div>
+
+    {% set single_items = [
+        { child: detailsForm.hull, label: 'Hull' },
+        { child: detailsForm.mDrive, label: 'M-Drive' },
+        { child: detailsForm.jDrive, label: 'J-Drive' },
+        { child: detailsForm.powerPlant, label: 'Power Plant' },
+        { child: detailsForm.fuel, label: 'Fuel Tanks' },
+        { child: detailsForm.bridge, label: 'Bridge' },
+        { child: detailsForm.computer, label: 'Computer' },
+        { child: detailsForm.sensors, label: 'Sensors' },
+        { child: detailsForm.commonAreas, label: 'Common Areas' },
+        { child: detailsForm.cargo, label: 'Cargo' },
+    ] %}
+
+    <div class="col-span-2 grid grid-cols-3 gap-4">
+        {% for item in single_items %}
+            <div class="border border-base-300 rounded p-3 bg-base-100">
+                <div class="flex items-center gap-1 mb-1">
+                    <span class="font-semibold">{{ item.label }}</span>
+                </div>
+                <div>
+                    {{ form_label(item.child.description) }}
+                    {{ form_widget(item.child.description) }}
+                    {{ form_errors(item.child.description) }}
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-2">
+                    <div>
+                        {{ form_label(item.child.tons) }}
+                        {{ form_widget(item.child.tons) }}
+                        {{ form_errors(item.child.tons) }}
+                    </div>
+                    <div>
+                        {{ form_label(item.child.costMcr) }}
+                        {{ form_widget(item.child.costMcr) }}
+                        {{ form_errors(item.child.costMcr) }}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="col-span-2 grid grid-cols-1 gap-6">
+        {{ detailsMacros.render_collection(detailsForm.weapons, 'Weapons') }}
+        {{ detailsMacros.render_collection(detailsForm.craft, 'Craft') }}
+        {{ detailsMacros.render_collection(detailsForm.systems, 'Systems') }}
+        {{ detailsMacros.render_collection(detailsForm.staterooms, 'Staterooms') }}
+        {{ detailsMacros.render_collection(detailsForm.software, 'Software') }}
+    </div>
+</fieldset>
+
+<script>
+(function() {
+    const initCollections = () => {
+        document.querySelectorAll('[data-collection]').forEach(section => {
+            const list = section.querySelector('[data-collection-list]');
+            const templateEl = section.querySelector('template[data-collection-prototype]');
+            const addBtn = section.querySelector('[data-collection-add]');
+            if (!templateEl || !list) {
+                return;
+            }
+            const addItem = () => {
+                const index = list.children.length;
+                const html = templateEl.innerHTML.replace(/__name__/g, index);
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = html.trim();
+                const newItem = wrapper.firstElementChild;
+                list.appendChild(newItem);
+            };
+            if (addBtn) {
+                addBtn.addEventListener('click', addItem);
+            }
+            list.addEventListener('click', (event) => {
+                const btn = event.target.closest('[data-collection-remove]');
+                if (btn) {
+                    const item = btn.closest('.collection-item');
+                    if (item) {
+                        item.remove();
+                    }
+                }
+            });
+        });
+    };
+    document.addEventListener('DOMContentLoaded', initCollections);
+    document.addEventListener('turbo:load', initCollections);
+})();
+</script>
