@@ -8,20 +8,23 @@
         {{ form_widget(detail_form.jobType) }}
         {{ form_errors(detail_form.jobType) }}
     </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.location) }}
-        {{ form_widget(detail_form.location) }}
-        {{ form_errors(detail_form.location) }}
-    </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.objective) }}
-        {{ form_widget(detail_form.objective) }}
-        {{ form_errors(detail_form.objective) }}
-    </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.successCondition) }}
-        {{ form_widget(detail_form.successCondition) }}
-        {{ form_errors(detail_form.successCondition) }}
+
+    <div class="col-span-3 grid grid-cols-3 gap-4">
+        <div>
+            {{ form_label(detail_form.location) }}
+            {{ form_widget(detail_form.location) }}
+            {{ form_errors(detail_form.location) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.objective) }}
+            {{ form_widget(detail_form.objective) }}
+            {{ form_errors(detail_form.objective) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.successCondition) }}
+            {{ form_widget(detail_form.successCondition) }}
+            {{ form_errors(detail_form.successCondition) }}
+        </div>
     </div>
 
     <div class="col-span-3 grid grid-cols-2 gap-4">
@@ -62,30 +65,35 @@
         {{ form_errors(detail_form.deposit) }}
     </div>
 
-    <div class"col-span-3">
-        {{ form_label(detail_form.expensesPolicy) }}
-        {{ form_widget(detail_form.expensesPolicy) }}
-        {{ form_errors(detail_form.expensesPolicy) }}
+    <div class="col-span-3 grid grid-cols-3 gap-4">
+        <div>
+            {{ form_label(detail_form.expensesPolicy) }}
+            {{ form_widget(detail_form.expensesPolicy) }}
+            {{ form_errors(detail_form.expensesPolicy) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.restrictions) }}
+            {{ form_widget(detail_form.restrictions) }}
+            {{ form_errors(detail_form.restrictions) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.confidentialityLevel) }}
+            {{ form_widget(detail_form.confidentialityLevel) }}
+            {{ form_errors(detail_form.confidentialityLevel) }}
+        </div>
     </div>
 
-    <div class="col-span-3">
-        {{ form_label(detail_form.restrictions) }}
-        {{ form_widget(detail_form.restrictions) }}
-        {{ form_errors(detail_form.restrictions) }}
+    <div class="col-span-3 grid grid-cols-2 gap-4">
+        <div>
+            {{ form_label(detail_form.failureTerms) }}
+            {{ form_widget(detail_form.failureTerms) }}
+            {{ form_errors(detail_form.failureTerms) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.cancellationTerms) }}
+            {{ form_widget(detail_form.cancellationTerms) }}
+            {{ form_errors(detail_form.cancellationTerms) }}
+        </div>
     </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.confidentialityLevel) }}
-        {{ form_widget(detail_form.confidentialityLevel) }}
-        {{ form_errors(detail_form.confidentialityLevel) }}
-    </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.failureTerms) }}
-        {{ form_widget(detail_form.failureTerms) }}
-        {{ form_errors(detail_form.failureTerms) }}
-    </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.cancellationTerms) }}
-        {{ form_widget(detail_form.cancellationTerms) }}
-        {{ form_errors(detail_form.cancellationTerms) }}
-    </div>
+
 </fieldset>

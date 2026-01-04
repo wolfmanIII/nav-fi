@@ -18,11 +18,6 @@
         {{ form_widget(detail_form.transferCondition) }}
         {{ form_errors(detail_form.transferCondition) }}
     </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.goodsDescription) }}
-        {{ form_widget(detail_form.goodsDescription) }}
-        {{ form_errors(detail_form.goodsDescription) }}
-    </div>
     <div>
         {{ form_label(detail_form.qty) }}
         {{ form_widget(detail_form.qty) }}
@@ -33,68 +28,92 @@
         {{ form_widget(detail_form.grade) }}
         {{ form_errors(detail_form.grade) }}
     </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.batchIds) }}
-        {{ form_widget(detail_form.batchIds) }}
-        {{ form_errors(detail_form.batchIds) }}
+
+    <div class="col-span-3 grid grid-cols-2 gap-4">
+        <div>
+            {{ form_label(detail_form.goodsDescription) }}
+            {{ form_widget(detail_form.goodsDescription) }}
+            {{ form_errors(detail_form.goodsDescription) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.batchIds) }}
+            {{ form_widget(detail_form.batchIds) }}
+            {{ form_errors(detail_form.batchIds) }}
+        </div>
     </div>
+
     <div>
         {{ form_label(detail_form.unitPrice) }}
         {{ form_widget(detail_form.unitPrice) }}
         {{ form_errors(detail_form.unitPrice) }}
     </div>
-    {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-center gap-2">
-            {{ form_label(detail_form.paymentTerms) }}
-            <label for="{{ pay_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
-        </div>
-        {{ form_widget(detail_form.paymentTerms) }}
-        {{ form_errors(detail_form.paymentTerms) }}
-        <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box">
-                <h3 class="font-bold">Payment terms</h3>
-                <p class="py-2 text-sm">Define deposits, balance on delivery/inspection, escrow, or LC conditions for the trade.</p>
-                <div class="modal-action">
-                    <label for="{{ pay_help_id }}" class="btn btn-primary">Close</label>
+
+    <div class="col-span-3 grid grid-cols-2 gap-4">
+        <div class="col-span-1 grid grid-cols-2 gap-4">
+            {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
+            <div>
+                <div class="flex items-center gap-2">
+                    {{ form_label(detail_form.paymentTerms) }}
+                    <label for="{{ pay_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
                 </div>
+                {{ form_widget(detail_form.paymentTerms) }}
+                {{ form_errors(detail_form.paymentTerms) }}
+                <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
+                <div class="modal" role="dialog">
+                    <div class="modal-box">
+                        <h3 class="font-bold">Payment terms</h3>
+                        <p class="py-2 text-sm">Define deposits, balance on delivery/inspection, escrow, or LC conditions for the trade.</p>
+                        <div class="modal-action">
+                            <label for="{{ pay_help_id }}" class="btn btn-primary">Close</label>
+                        </div>
+                    </div>
+                </div>
+            </div>    
+            <div>
+                {{ form_label(detail_form.deliveryDay) }}
+                {{ form_widget(detail_form.deliveryDay) }}
+                {{ form_errors(detail_form.deliveryDay) }}
+            </div>
+        </div>
+        <div class="col-span-1 grid grid-cols-2 gap-4">
+            <div>
+                {{ form_label(detail_form.deliveryYear) }}
+                {{ form_widget(detail_form.deliveryYear) }}
+                {{ form_errors(detail_form.deliveryYear) }}
+            </div>
+            <div>
+                {{ form_label(detail_form.asIsOrWarranty) }}
+                {{ form_widget(detail_form.asIsOrWarranty) }}
+                {{ form_errors(detail_form.asIsOrWarranty) }}
             </div>
         </div>
     </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.deliveryMethod) }}
-        {{ form_widget(detail_form.deliveryMethod) }}
-        {{ form_errors(detail_form.deliveryMethod) }}
-    </div>
-    <div>
-        {{ form_label(detail_form.deliveryDay) }}
-        {{ form_widget(detail_form.deliveryDay) }}
-        {{ form_errors(detail_form.deliveryDay) }}
-    </div>
-    <div>
-        {{ form_label(detail_form.deliveryYear) }}
-        {{ form_widget(detail_form.deliveryYear) }}
-        {{ form_errors(detail_form.deliveryYear) }}
-    </div>
-    <div>
-        {{ form_label(detail_form.asIsOrWarranty) }}
-        {{ form_widget(detail_form.asIsOrWarranty) }}
-        {{ form_errors(detail_form.asIsOrWarranty) }}
-    </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.warrantyText) }}
-        {{ form_widget(detail_form.warrantyText) }}
-        {{ form_errors(detail_form.warrantyText) }}
-    </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.claimWindow) }}
-        {{ form_widget(detail_form.claimWindow) }}
-        {{ form_errors(detail_form.claimWindow) }}
-    </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.returnPolicy) }}
-        {{ form_widget(detail_form.returnPolicy) }}
-        {{ form_errors(detail_form.returnPolicy) }}
+
+
+    <div class="col-span-3 grid grid-cols-2 gap-4">
+        <div class="col-span-1 grid grid-cols-2 gap-4">
+            <div>
+                {{ form_label(detail_form.deliveryMethod) }}
+                {{ form_widget(detail_form.deliveryMethod) }}
+                {{ form_errors(detail_form.deliveryMethod) }}
+            </div>
+            <div>
+                {{ form_label(detail_form.warrantyText) }}
+                {{ form_widget(detail_form.warrantyText) }}
+                {{ form_errors(detail_form.warrantyText) }}
+            </div>
+        </div>
+        <div class="col-span-1 grid grid-cols-2 gap-4">
+            <div>
+                {{ form_label(detail_form.claimWindow) }}
+                {{ form_widget(detail_form.claimWindow) }}
+                {{ form_errors(detail_form.claimWindow) }}
+            </div>
+            <div>
+                {{ form_label(detail_form.returnPolicy) }}
+                {{ form_widget(detail_form.returnPolicy) }}
+                {{ form_errors(detail_form.returnPolicy) }}
+            </div>
+        </div>
     </div>
 </fieldset>

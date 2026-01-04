@@ -3,20 +3,22 @@
         {% include 'icons/income.html.twig' %} CHARTER Details
     </legend>
 
-    <div>
-        {{ form_label(detail_form.areaOrRoute) }}
-        {{ form_widget(detail_form.areaOrRoute) }}
-        {{ form_errors(detail_form.areaOrRoute) }}
+    <div class="col-span-3 grid grid-cols-3 gap-4">
+        <div>
+            {{ form_label(detail_form.areaOrRoute) }}
+            {{ form_widget(detail_form.areaOrRoute) }}
+            {{ form_errors(detail_form.areaOrRoute) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.purpose) }}
+            {{ form_widget(detail_form.purpose) }}
+            {{ form_errors(detail_form.purpose) }}
+        </div>
+        <div>
+        {{ form_label(detail_form.deposit) }}
+        {{ form_widget(detail_form.deposit) }}
+        {{ form_errors(detail_form.deposit) }}
     </div>
-    <div>
-        {{ form_label(detail_form.purpose) }}
-        {{ form_widget(detail_form.purpose) }}
-        {{ form_errors(detail_form.purpose) }}
-    </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.manifestSummary) }}
-        {{ form_widget(detail_form.manifestSummary) }}
-        {{ form_errors(detail_form.manifestSummary) }}
     </div>
 
     <div class="col-span-3 grid grid-cols-2 gap-4">
@@ -45,44 +47,51 @@
             </div>
         </div>
     </div>
-    
-    {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
-    <div class="col-span-3">
-        <div class="flex items-center gap-2">
-            {{ form_label(detail_form.paymentTerms) }}
-            <label for "{{ pay_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+
+    <div class="col-span-3 grid grid-cols-2 gap-4">
+        <div>
+            {{ form_label(detail_form.manifestSummary) }}
+            {{ form_widget(detail_form.manifestSummary) }}
+            {{ form_errors(detail_form.manifestSummary) }}
         </div>
-        {{ form_widget(detail_form.paymentTerms) }}
-        {{ form_errors(detail_form.paymentTerms) }}
-        <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box">
-                <h3 class="font-bold">Payment terms</h3>
-                <p class="py-2 text-sm">Specify advance/on-delivery, milestones, currency, and any penalties for late payment.</p>
-                <div class="modal-action">
-                    <label for="{{ pay_help_id }}" class="btn btn-primary">Close</label>
+        
+        {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
+        <div>
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.paymentTerms) }}
+                <label for "{{ pay_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
+            {{ form_widget(detail_form.paymentTerms) }}
+            {{ form_errors(detail_form.paymentTerms) }}
+            <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Payment terms</h3>
+                    <p class="py-2 text-sm">Specify advance/on-delivery, milestones, currency, and any penalties for late payment.</p>
+                    <div class="modal-action">
+                        <label for="{{ pay_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div>
-        {{ form_label(detail_form.deposit) }}
-        {{ form_widget(detail_form.deposit) }}
-        {{ form_errors(detail_form.deposit) }}
+
+    <div class="col-span-3 grid grid-cols-3 gap-4">
+        <div>
+            {{ form_label(detail_form.extras) }}
+            {{ form_widget(detail_form.extras) }}
+            {{ form_errors(detail_form.extras) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.damageTerms) }}
+            {{ form_widget(detail_form.damageTerms) }}
+            {{ form_errors(detail_form.damageTerms) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.cancellationTerms) }}
+            {{ form_widget(detail_form.cancellationTerms) }}
+            {{ form_errors(detail_form.cancellationTerms) }}
+        </div>
     </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.extras) }}
-        {{ form_widget(detail_form.extras) }}
-        {{ form_errors(detail_form.extras) }}
-    </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.damageTerms) }}
-        {{ form_widget(detail_form.damageTerms) }}
-        {{ form_errors(detail_form.damageTerms) }}
-    </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.cancellationTerms) }}
-        {{ form_widget(detail_form.cancellationTerms) }}
-        {{ form_errors(detail_form.cancellationTerms) }}
-    </div>
+    
 </fieldset>
