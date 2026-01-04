@@ -90,7 +90,7 @@ final class CampaignController extends BaseController
         return $this->redirectToRoute('app_campaign_index');
     }
 
-    #[Route('/campaign/{id}/ships', name: 'app_campaign_ships')]
+    #[Route('/campaign/{id}/details', name: 'app_campaign_details')]
     public function ships(
         int $id,
         Request $request,
@@ -134,7 +134,7 @@ final class CampaignController extends BaseController
 
             $em->flush();
 
-            return $this->redirectToRoute('app_campaign_ships', ['id' => $campaign->getId()]);
+            return $this->redirectToRoute('app_campaign_details', ['id' => $campaign->getId()]);
         }
 
         return $this->renderTurbo('campaign/ship_select.html.twig', [
@@ -168,6 +168,6 @@ final class CampaignController extends BaseController
         $em->persist($campaign);
         $em->flush();
 
-        return $this->redirectToRoute('app_campaign_ships', ['id' => $campaign->getId()]);
+        return $this->redirectToRoute('app_campaign_details', ['id' => $campaign->getId()]);
     }
 }

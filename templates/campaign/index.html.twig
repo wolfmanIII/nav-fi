@@ -60,7 +60,7 @@
                                 </td>
                                 <td class="text-right">{{ campaign.ships|length }}</td>
                                 <td>
-                                    <a href="{{ path('app_campaign_ships', {id: campaign.id}) }}" role="button" class="btn btn-outline btn-secondary btn-xs">
+                                    <a href="{{ path('app_campaign_details', {id: campaign.id}) }}" role="button" class="btn btn-outline btn-secondary btn-xs">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                                     </a>
                                     <a href="{{ path('app_campaign_edit', {id: campaign.id}) }}" role="button" class="btn btn-outline btn-primary btn-xs">
