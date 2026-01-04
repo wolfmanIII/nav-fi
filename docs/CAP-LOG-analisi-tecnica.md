@@ -35,7 +35,7 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 
 ## Sicurezza e autorizzazioni
 - **Autenticazione:** form login (`/login`), CSRF abilitato, provider User (email). Access control: dashboard e rotte protette richiedono ruolo USER/ADMIN.
-- **Voter:** ShipVoter, CrewVoter, MortgageVoter, CostVoter, IncomeVoter, AnnualBudgetVoter vincolano l’accesso all’utente proprietario (`entity->getUser() === app.user`) e bloccano anonimi. Attenzione: entità legacy con `user` nullo verranno rifiutate. ShipVoter include permesso dedicato per il calendario sessione.
+- **Voter:** ShipVoter, CrewVoter, MortgageVoter, CostVoter, IncomeVoter, AnnualBudgetVoter vincolano l’accesso all’utente proprietario (`entity->getUser() === app.user`) e bloccano anonimi. Attenzione: entità legacy con `user` nullo verranno rifiutate. La gestione del calendario di sessione è ora su Campaign (non più sulla Ship).
 - **Subscriber:** `AssignUserSubscriber` (annotazione `AsDoctrineListener` su `prePersist`) assegna l’utente corrente se mancante. Se la sessione è anonima, non interviene.
 - **Filtro per ownership nei controller:** i controller protetti recuperano le entità tramite repository filtrando per `user` e restituiscono 404 se l’entità non appartiene all’utente loggato, come difesa in profondità rispetto ai voter.
 - **Localizzazione numerica:** `twig/intl-extra` formatta importi in liste e PDF secondo la locale richiesta, inclusi i PDF nave e mutuo.
