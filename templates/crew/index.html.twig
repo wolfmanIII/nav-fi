@@ -38,9 +38,9 @@
                         <th>Nickname</th>
                         <th>Surname</th>
                         <th>Ship</th>
-                        <th>Campaign</th>
                         <th>Roles</th>
                         <th>Mortgage Signed</th>
+                        <th>Campaign</th>
                         <th>Action</th>
                     </tr>
                     </thead>
@@ -53,16 +53,6 @@
                                 <td>{{ member.nickname }}</td>
                                 <td>{{ member.surname }}</td>
                                 <td>{% if member.ship %}{{ member.ship.name }}{% endif %}</td>
-                                <td>
-                                    {% if member.ship and member.ship.campaign %}
-                                        <div class="flex items-center gap-2">
-                                            {% include 'icons/campaign.html.twig' %}
-                                            <span>{{ member.ship.campaign.title }}</span>
-                                        </div>
-                                    {% else %}
-                                        <span class="opacity-60">—</span>
-                                    {% endif %}
-                                </td>
                                 <td>
                                     {% for role in member.shipRoles %}
                                         {{ role.name }}
@@ -88,6 +78,16 @@
                                             </svg>
                                         {% endif %}
                                     </div>
+                                </td>
+                                <td>
+                                    {% if member.ship and member.ship.campaign %}
+                                        <div class="flex items-center gap-2">
+                                            {% include 'icons/campaign.html.twig' %}
+                                            <span>{{ member.ship.campaign.title }}</span>
+                                        </div>
+                                    {% else %}
+                                        <span class="opacity-60">—</span>
+                                    {% endif %}
                                 </td>
                                 <td>
                                     <a href="{{ path('app_crew_edit', {id: member.id}) }}" role="button" class="btn btn-outline btn-primary btn-xs">
