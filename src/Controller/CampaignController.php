@@ -137,7 +137,7 @@ final class CampaignController extends BaseController
             return $this->redirectToRoute('app_campaign_details', ['id' => $campaign->getId()]);
         }
 
-        return $this->renderTurbo('campaign/ship_select.html.twig', [
+        return $this->renderTurbo('campaign/details.html.twig', [
             'campaign' => $campaign,
             'form' => $form,
             'controller_name' => self::CONTROLLER_NAME,
