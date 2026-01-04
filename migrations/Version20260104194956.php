@@ -19,6 +19,7 @@ final class Version20260104194956 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+        $this->addSql('PRAGMA foreign_keys = OFF');
         // SQLite: adjust income.ship to be nullable
         $this->addSql('CREATE TEMPORARY TABLE __temp__income AS SELECT id, income_category_id, ship_id, user_id, code, title, signing_day, signing_year, payment_day, payment_year, amount, note, cancel_day, cancel_year, expiration_day, expiration_year, company_id, local_law_id, signing_location FROM income');
         $this->addSql('DROP TABLE income');
@@ -121,6 +122,7 @@ final class Version20260104194956 extends AbstractMigration
         $this->addSql('DROP TABLE __temp__ship');
         $this->addSql('CREATE INDEX IDX_FA30EB24A76ED395 ON ship (user_id)');
         $this->addSql('CREATE INDEX IDX_FA30EB24F639F774 ON ship (campaign_id)');
+        $this->addSql('PRAGMA foreign_keys = ON');
     }
 
     public function down(Schema $schema): void
