@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: CampaignRepository::class)]
 class Campaign
@@ -18,6 +19,9 @@ class Campaign
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;
+
+    #[ORM\Column(type: 'uuid', unique: true)]
+    private ?Uuid $code = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
@@ -40,6 +44,7 @@ class Campaign
     public function __construct()
     {
         $this->ships = new ArrayCollection();
+        $this->code = Uuid::v7();
     }
 
     public function getId(): ?int
@@ -55,6 +60,18 @@ class Campaign
     public function setTitle(string $title): static
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getCode(): ?Uuid
+    {
+        return $this->code;
+    }
+
+    public function setCode(Uuid $code): static
+    {
+        $this->code = $code;
 
         return $this;
     }
