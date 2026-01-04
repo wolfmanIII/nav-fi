@@ -200,13 +200,15 @@ final class MortgageController extends BaseController
         ];
 
         $options = [
-            'margin-top' => '20mm',
-            'margin-bottom' => '15mm',
-            'margin-left' => '0mm',
-            'margin-right' => '0mm',
+            'margin-top' => '18mm',
+            'margin-bottom' => '20mm',
+            'margin-left' => '10mm',
+            'margin-right' => '10mm',
             'footer-right' => 'Page [page] / [toPage]',
-            'footer-font-size' => 9,
-            'footer-spacing' => 6,
+            'footer-font-size' => 8,
+            'footer-spacing' => 8,
+            'disable-smart-shrinking' => true,
+            'print-media-type' => true,
             'enable-local-file-access' => true,
         ];
 
