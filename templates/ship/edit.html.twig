@@ -101,6 +101,12 @@
             >
                 Save
             </button>
+            {% if ship.id %}
+                <a href="{{ path('app_ship_pdf', { id: ship.id }) }}" target="_blank"
+                   class="btn btn-outline btn-secondary mt-4 mb-4">
+                    PDF
+                </a>
+            {% endif %}
             <a href="{{ path('app_ship_index') }}" role="button" class="btn btn-outline btn-default mt-4 mb-4">Cancel</a>
         </div>
 

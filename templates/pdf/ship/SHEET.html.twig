@@ -1,0 +1,155 @@
+{% extends 'base_plain.html.twig' %}
+
+{% block title %}Ship Sheet{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', sans-serif; font-size: 10px; color: #e5e7eb; background: #0b1220; }
+        .page { padding: 12px; }
+        .grid { display: grid; }
+        .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+        .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+        .card { background: linear-gradient(135deg, #0f172a, #0b223c); border: 1px solid rgba(56,189,248,0.2); border-radius: 10px; padding: 10px; margin-bottom: 10px; position: relative; overflow: hidden; }
+        .card::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.10), transparent 40%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.12), transparent 35%); opacity: 0.8; pointer-events: none; }
+        .card > * { position: relative; z-index: 1; }
+        .title { font-size: 16px; font-weight: 700; margin: 0 0 2px 0; color: #67e8f9; letter-spacing: 0.02em; }
+        .subtitle { font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: #a5f3fc; margin: 0; }
+        .section-title { font-size: 12px; font-weight: 700; margin: 6px 0; color: #7dd3fc; }
+        .table { width: 100%; border-collapse: collapse; font-size: 9px; }
+        .table th, .table td { border: 1px solid rgba(148, 163, 184, 0.5); padding: 5px; vertical-align: top; }
+        .table th { background: rgba(30, 41, 59, 0.75); color: #e2e8f0; text-align: left; }
+        .pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 8px; background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.25); border-radius: 8px; }
+        .muted { color: #cbd5e1; font-size: 9px; }
+        .value { font-weight: 600; color: #e2e8f0; }
+        .summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
+        .summary .item { background: rgba(148,163,184,0.08); border: 1px solid rgba(148,163,184,0.2); border-radius: 8px; padding: 6px; }
+        .summary .label { text-transform: uppercase; letter-spacing: 0.14em; font-size: 8px; color: #cbd5e1; }
+        .summary .val { font-weight: 700; font-size: 11px; color: #e2e8f0; }
+    </style>
+{% endblock %}
+{% block javascripts %}{% endblock %}
+
+{% block pageContent %}
+    {% set details = ship.shipDetails ?? {} %}
+    {% set techLevel = details.techLevel ?? '—' %}
+    {% set singleItems = {
+        'Hull': details.hull ?? {},
+        'M-Drive': details.mDrive ?? {},
+        'J-Drive': details.jDrive ?? {},
+        'Power Plant': details.powerPlant ?? {},
+        'Fuel Tanks': details.fuel ?? {},
+        'Bridge': details.bridge ?? {},
+        'Computer': details.computer ?? {},
+        'Sensors': details.sensors ?? {},
+        'Common Areas': details.commonAreas ?? {},
+        'Cargo': details.cargo ?? {}
+    } %}
+
+    {% macro render_item(label, item) %}
+        {% set desc = item.description ?? '—' %}
+        {% set tons = item.tons is defined and item.tons is not null ? item.tons|number_format(2, '.', ',') : '—' %}
+        {% set cost = item.cost_mcr is defined and item.cost_mcr is not null ? item.cost_mcr|number_format(3, '.', ',') : '—' %}
+        <tr>
+            <th style="width: 28%;">{{ label }}</th>
+            <td style="width: 47%;">{{ desc ?: '—' }}</td>
+            <td style="width: 12%; text-align: right;">{{ tons }}</td>
+            <td style="width: 13%; text-align: right;">{{ cost }}</td>
+        </tr>
+    {% endmacro %}
+
+    {% macro render_collection(title, items) %}
+        {% set rows = items|filter(i => (i.description ?? '') is not empty or (i.tons ?? null) is not null or (i.cost_mcr ?? null) is not null) %}
+        {% set rows = rows|length == 0 ? items : rows %}
+        {% set rows = rows|length == 0 ? [ {} ] : rows %}
+        <div class="card">
+            <div class="section-title">{{ title }}</div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th style="width: 50%;">Description</th>
+                        <th style="width: 20%;">Tons</th>
+                        <th style="width: 30%;">Cost (MCr)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for row in rows %}
+                    {% set desc = row.description ?? '—' %}
+                    {% set tons = row.tons is defined and row.tons is not null ? row.tons|number_format(2, '.', ',') : '—' %}
+                    {% set cost = row.cost_mcr is defined and row.cost_mcr is not null ? row.cost_mcr|number_format(3, '.', ',') : '—' %}
+                    <tr>
+                        <td>{{ desc ?: '—' }}</td>
+                        <td style="text-align: right;">{{ tons }}</td>
+                        <td style="text-align: right;">{{ cost }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endmacro %}
+
+    <div class="page">
+        <div class="card" style="margin-bottom: 12px;">
+            <div class="subtitle">Ship sheet</div>
+            <div class="title">Captain Log — {{ ship.name }}</div>
+            <div class="summary">
+                <div class="item">
+                    <div class="label">Code</div>
+                    <div class="val">{{ ship.code }}</div>
+                </div>
+                <div class="item">
+                    <div class="label">Class / Type</div>
+                    <div class="val">{{ ship.class }} — {{ ship.type }}</div>
+                </div>
+                <div class="item">
+                    <div class="label">Campaign</div>
+                    <div class="val">{{ ship.campaign ? ship.campaign.title : '—' }}</div>
+                </div>
+                <div class="item">
+                    <div class="label">Price (Cr)</div>
+                    <div class="val">{{ ship.price is not null ? ship.price|number_format(2, '.', ',') : '—' }}</div>
+                </div>
+                <div class="item">
+                    <div class="label">Session</div>
+                    <div class="val">
+                        {% if ship.sessionDay or ship.sessionYear %}
+                            Day {{ ship.sessionDay ?: '—' }} / {{ ship.sessionYear ?: '—' }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="label">Tech level</div>
+                    <div class="val">{{ techLevel }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Core Systems & Layout</div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Description</th>
+                        <th style="text-align: right;">Tons</th>
+                        <th style="text-align: right;">Cost (MCr)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for label, item in singleItems %}
+                        {{ _self.render_item(label, item) }}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="grid grid-2">
+            {{ _self.render_collection('Weapons', details.weapons ?? []) }}
+            {{ _self.render_collection('Craft', details.craft ?? []) }}
+            {{ _self.render_collection('Systems', details.systems ?? []) }}
+            {{ _self.render_collection('Staterooms', details.staterooms ?? []) }}
+            {{ _self.render_collection('Software', details.software ?? []) }}
+        </div>
+    </div>
+{% endblock %}

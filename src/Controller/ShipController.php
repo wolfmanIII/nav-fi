@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Dto\CrewSelection;
 use App\Entity\Crew;
 use App\Entity\Ship;
+use App\Service\PdfGenerator;
 use App\Form\CrewSelectType;
 use App\Form\ShipType;
 use App\Security\Voter\ShipVoter;
@@ -97,6 +98,66 @@ final class ShipController extends BaseController
             'controller_name' => self::CONTROLLER_NAME,
             'ship' => $ship,
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/ship/{id}/pdf', name: 'app_ship_pdf', methods: ['GET'])]
+    public function pdf(
+        int $id,
+        EntityManagerInterface $em,
+        PdfGenerator $pdfGenerator
+    ): Response {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $ship = $em->getRepository(Ship::class)->findOneForUser($id, $user);
+        if (!$ship) {
+            throw new NotFoundHttpException();
+        }
+
+        $options = [
+            'margin-top' => '14mm',
+            'margin-bottom' => '14mm',
+            'margin-left' => '10mm',
+            'margin-right' => '10mm',
+            'footer-right' => 'Page [page] / [toPage]',
+            'footer-font-size' => 8,
+            'footer-spacing' => 8,
+            'disable-smart-shrinking' => true,
+            'enable-local-file-access' => true,
+        ];
+
+        $pdfContent = $pdfGenerator->render('pdf/ship/SHEET.html.twig', [
+            'ship' => $ship,
+            'user' => $user,
+        ], $options);
+
+        return new Response($pdfContent, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => sprintf('inline; filename=\"ship-%s.pdf\"', $ship->getCode()),
+        ]);
+    }
+
+    #[Route('/ship/{id}/pdf/preview', name: 'app_ship_pdf_preview', methods: ['GET'])]
+    public function pdfPreview(
+        int $id,
+        EntityManagerInterface $em
+    ): Response {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $ship = $em->getRepository(Ship::class)->findOneForUser($id, $user);
+        if (!$ship) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->render('pdf/ship/SHEET.html.twig', [
+            'ship' => $ship,
+            'user' => $user,
         ]);
     }
 
