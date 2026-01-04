@@ -14,6 +14,16 @@
             </li>
 
             <li>
+                <a href="{{ path('app_campaign_index') }}"
+                   class="{% if controller_name == constant('App\\Controller\\CampaignController::CONTROLLER_NAME') %}menu-active{% endif %}"
+                >
+                    <!-- icona ships -->
+                    {% include 'icons/far-trader.html.twig' %}
+                    <span>Campaign</span>
+                </a>
+            </li>
+
+            <li>
                 <a href="{{ path('app_ship_index') }}"
                    class="{% if controller_name == constant('App\\Controller\\ShipController::CONTROLLER_NAME') %}menu-active{% endif %}"
                 >
