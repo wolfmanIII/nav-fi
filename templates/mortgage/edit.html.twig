@@ -143,6 +143,7 @@
     <a
         href="{{ path('app_mortgage_pdf', {id: mortgage.id}) }}"
         role="button"
+        target="_blank"
         class="btn btn-outline btn-secondary mt-4 mb-4 mr-4"
         {% if not can_pdf %} disabled {% endif %}
     >PDF</a>
