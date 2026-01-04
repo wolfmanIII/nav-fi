@@ -1,7 +1,7 @@
 knp_snappy:
     pdf:
         enabled: true
-        binary: '/usr/local/bin/wkhtmltopdf'
+        binary: '%env(WKHTMLTOPDF_PATH)%'
         options:
             enable-local-file-access: true
             javascript-delay: 0
