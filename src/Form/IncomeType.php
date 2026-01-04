@@ -92,6 +92,7 @@ class IncomeType extends AbstractType
             ->add('ship', EntityType::class, [
                 'class' => Ship::class,
                 'placeholder' => '-- Select a Ship --',
+                'required' => false,
                 'choice_label' => fn (Ship $ship) => sprintf('%s - %s(%s)', $ship->getName(), $ship->getType(), $ship->getClass()),
                 'query_builder' => function (ShipRepository $repo) use ($user) {
                     $qb = $repo->createQueryBuilder('s')->orderBy('s.name', 'ASC');
