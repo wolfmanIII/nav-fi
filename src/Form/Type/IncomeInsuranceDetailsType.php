@@ -20,6 +20,7 @@ class IncomeInsuranceDetailsType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $campaignStartYear = $options['campaign_start_year'] ?? null;
         $builder
             ->add('incidentRef', TextType::class, [
                 'required' => false,
@@ -34,7 +35,7 @@ class IncomeInsuranceDetailsType extends AbstractType
             ->add('incidentYear', NumberType::class, [
                 'required' => false,
                 'label' => 'Incident Year',
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
             ])
             ->add('incidentLocation', TextType::class, [
                 'required' => false,
@@ -113,6 +114,7 @@ class IncomeInsuranceDetailsType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => IncomeInsuranceDetails::class,
+            'campaign_start_year' => null,
         ]);
     }
 }

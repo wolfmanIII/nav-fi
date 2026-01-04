@@ -82,7 +82,8 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
         }
 
         $this->ensureDetailInstance($income, $code);
-        $this->addDetailField($event->getForm(), $code);
+        $campaignStartYear = $income->getShip()?->getCampaign()?->getStartingYear();
+        $this->addDetailField($event->getForm(), $code, $campaignStartYear);
     }
 
     public function onPreSubmit(FormEvent $event): void
@@ -98,11 +99,13 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
         }
 
         $income = $event->getForm()->getData();
+        $campaignStartYear = null;
         if ($income instanceof Income) {
             $this->ensureDetailInstance($income, $code);
+            $campaignStartYear = $income->getShip()?->getCampaign()?->getStartingYear();
         }
 
-        $this->addDetailField($event->getForm(), $code);
+        $this->addDetailField($event->getForm(), $code, $campaignStartYear);
     }
 
     private function resolveCategoryCode(null|string|int $categoryId): ?string
@@ -147,7 +150,7 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
         }
     }
 
-    private function addDetailField(FormInterface $form, string $code): void
+    private function addDetailField(FormInterface $form, string $code, ?int $campaignStartYear): void
     {
         if (!isset(self::DETAIL_FORMS[$code])) {
             return;
@@ -161,6 +164,7 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
         $form->add($config['property'], $config['type'], [
             'required' => false,
             'label' => false,
+            'campaign_start_year' => $campaignStartYear,
         ]);
     }
 }

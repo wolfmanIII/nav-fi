@@ -26,6 +26,7 @@ class CrewType extends AbstractType
         $crew = $options['data'];
         $disabled = $crew->hasMortgageSigned();
         $user = $options['user'];
+        $campaignStartYear = $crew?->getShip()?->getCampaign()?->getStartingYear();
         $builder
             ->add('name', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
@@ -41,7 +42,7 @@ class CrewType extends AbstractType
                 'disabled' => $disabled,
             ])
             ->add('birthYear', NumberType::class, [
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
                 'required' => false,
                 'disabled' => $disabled,
             ])

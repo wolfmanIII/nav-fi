@@ -33,6 +33,7 @@ class MortgageType extends AbstractType
         $disabled = $mortgage->isSigned();
         $user = $options['user'];
         $currentShipId = $mortgage->getShip()?->getId();
+        $campaignStartYear = $mortgage->getShip()?->getCampaign()?->getStartingYear();
 
         $builder
             //->add('name', TextType::class, ['attr' => ['class' => 'input m-1 w-full'],])
@@ -41,7 +42,7 @@ class MortgageType extends AbstractType
                 'disabled' => $disabled,
                 ])
             ->add('startYear', NumberType::class, [
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
                 'disabled' => $disabled,
                 ])
             ->add('shipShares', IntegerType::class, [

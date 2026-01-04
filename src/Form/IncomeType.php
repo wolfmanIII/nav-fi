@@ -31,6 +31,9 @@ class IncomeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $user = $options['user'];
+        /** @var Income $income */
+        $income = $builder->getData();
+        $campaignStartYear = $income?->getShip()?->getCampaign()?->getStartingYear();
 
         $builder
             ->add('title', TextType::class, [
@@ -42,7 +45,7 @@ class IncomeType extends AbstractType
             ])
             ->add('signingYear', NumberType::class, [
                 'required' => true,
-                'attr' => $this->dayYearLimits->yearAttr(['class' => 'input m-1 w-full']),
+                'attr' => $this->dayYearLimits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
             ])
             ->add('signingLocation', TextType::class, [
                 'required' => true,
@@ -55,7 +58,7 @@ class IncomeType extends AbstractType
             ])
             ->add('paymentYear', NumberType::class, [
                 'required' => false,
-                'attr' => $this->dayYearLimits->yearAttr(['class' => 'input m-1 w-full']),
+                'attr' => $this->dayYearLimits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
             ])
             ->add('expirationDay', NumberType::class, [
                 'label' => 'Expiration Day',
@@ -65,7 +68,7 @@ class IncomeType extends AbstractType
             ->add('expirationYear', NumberType::class, [
                 'label' => 'Expiration Year',
                 'required' => false,
-                'attr' => $this->dayYearLimits->yearAttr(['class' => 'input m-1 w-full']),
+                'attr' => $this->dayYearLimits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
             ])
             ->add('cancelDay', NumberType::class, [
                 'required' => false,
@@ -73,7 +76,7 @@ class IncomeType extends AbstractType
             ])
             ->add('cancelYear', NumberType::class, [
                 'required' => false,
-                'attr' => $this->dayYearLimits->yearAttr(['class' => 'input m-1 w-full']),
+                'attr' => $this->dayYearLimits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
             ])
             ->add('amount', TravellerMoneyType::class, [
                 'label' => 'Amount (Cr)',

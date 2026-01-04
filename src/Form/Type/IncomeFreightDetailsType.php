@@ -19,6 +19,7 @@ class IncomeFreightDetailsType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $campaignStartYear = $options['campaign_start_year'] ?? null;
         $builder
             ->add('origin', TextType::class, [
                 'required' => false,
@@ -38,7 +39,7 @@ class IncomeFreightDetailsType extends AbstractType
             ->add('pickupYear', NumberType::class, [
                 'required' => false,
                 'label' => 'Pickup Year',
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
             ])
             ->add('deliveryDay', NumberType::class, [
                 'required' => false,
@@ -48,7 +49,7 @@ class IncomeFreightDetailsType extends AbstractType
             ->add('deliveryYear', NumberType::class, [
                 'required' => false,
                 'label' => 'Delivery Year',
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
             ])
             ->add('cargoDescription', TextareaType::class, [
                 'required' => false,
@@ -88,6 +89,7 @@ class IncomeFreightDetailsType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => IncomeFreightDetails::class,
+            'campaign_start_year' => null,
         ]);
     }
 }

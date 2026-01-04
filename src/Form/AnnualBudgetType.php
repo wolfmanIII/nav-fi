@@ -22,19 +22,22 @@ class AnnualBudgetType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $user = $options['user'];
+        /** @var AnnualBudget $budget */
+        $budget = $builder->getData();
+        $campaignStartYear = $budget?->getShip()?->getCampaign()?->getStartingYear();
 
         $builder
             ->add('startDay', NumberType::class, [
                 'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
             ])
             ->add('startYear', NumberType::class, [
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
             ])
             ->add('endDay', NumberType::class, [
                 'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
             ])
             ->add('endYear', NumberType::class, [
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
             ])
             ->add('ship', EntityType::class, [
                 'class' => Ship::class,

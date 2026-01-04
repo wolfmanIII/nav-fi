@@ -32,10 +32,15 @@ class DayYearLimits
      * @param array<string, mixed> $attr
      * @return array<string, mixed>
      */
-    public function yearAttr(array $attr = []): array
+    public function yearAttr(array $attr = [], ?int $campaignStartYear = null): array
     {
+        $min = $this->yearMin;
+        if ($campaignStartYear !== null) {
+            $min = max($this->yearMin, $campaignStartYear);
+        }
+
         return array_merge([
-            'min' => $this->yearMin,
+            'min' => $min,
             'max' => $this->yearMax,
         ], $attr);
     }

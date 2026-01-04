@@ -21,13 +21,14 @@ class MortgageInstallmentType extends AbstractType
         /** @var MortgageInstallment $installments */
         $installment = $options['data'];
         $summary = $installment->getMortgage()->calculate();
+        $campaignStartYear = $installment->getMortgage()?->getShip()?->getCampaign()?->getStartingYear();
 
         $builder
             ->add('paymentDay', NumberType::class, [
                 'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
             ])
             ->add('paymentYear', NumberType::class, [
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
             ])
             ->add('payment', TravellerMoneyType::class, [
                 'attr' => ['class' => 'input m-1 w-full', 'readonly' => 'readonly'],

@@ -20,6 +20,7 @@ class IncomeServicesDetailsType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $campaignStartYear = $options['campaign_start_year'] ?? null;
         $builder
             ->add('location', TextType::class, [
                 'required' => false,
@@ -57,7 +58,7 @@ class IncomeServicesDetailsType extends AbstractType
             ->add('startYear', NumberType::class, [
                 'required' => false,
                 'label' => 'Start Year',
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
             ])
             ->add('endDay', NumberType::class, [
                 'required' => false,
@@ -67,7 +68,7 @@ class IncomeServicesDetailsType extends AbstractType
             ->add('endYear', NumberType::class, [
                 'required' => false,
                 'label' => 'End Year',
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
             ])
             ->add('workSummary', TextareaType::class, [
                 'required' => false,
@@ -111,6 +112,7 @@ class IncomeServicesDetailsType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => IncomeServicesDetails::class,
+            'campaign_start_year' => null,
         ]);
     }
 }

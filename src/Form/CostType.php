@@ -28,6 +28,9 @@ class CostType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $user = $options['user'];
+        /** @var Cost $cost */
+        $cost = $builder->getData();
+        $campaignStartYear = $cost?->getShip()?->getCampaign()?->getStartingYear();
 
         $builder
             ->add('title', TextType::class, [
@@ -43,7 +46,7 @@ class CostType extends AbstractType
             ])
             ->add('paymentYear', NumberType::class, [
                 'required' => false,
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
             ])
             ->add('costCategory', EntityType::class, [
                 'class' => CostCategory::class,

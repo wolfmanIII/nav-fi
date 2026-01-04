@@ -19,6 +19,7 @@ class IncomePassengersDetailsType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $campaignStartYear = $options['campaign_start_year'] ?? null;
         $builder
             ->add('origin', TextType::class, [
                 'required' => false,
@@ -38,7 +39,7 @@ class IncomePassengersDetailsType extends AbstractType
             ->add('departureYear', NumberType::class, [
                 'required' => false,
                 'label' => 'Departure Year',
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
             ])
             ->add('arrivalDay', NumberType::class, [
                 'required' => false,
@@ -48,7 +49,7 @@ class IncomePassengersDetailsType extends AbstractType
             ->add('arrivalYear', NumberType::class, [
                 'required' => false,
                 'label' => 'Arrival Year',
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full']),
+                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
             ])
             ->add('classOrBerth', TextType::class, [
                 'required' => false,
@@ -96,6 +97,7 @@ class IncomePassengersDetailsType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => IncomePassengersDetails::class,
+            'campaign_start_year' => null,
         ]);
     }
 }
