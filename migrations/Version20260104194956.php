@@ -12,6 +12,12 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20260104194956 extends AbstractMigration
 {
+    public function isTransactional(): bool
+    {
+        // SQLite needs schema changes outside a transaction when toggling PRAGMA foreign_keys.
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'Set income.ship nullable';
