@@ -36,6 +36,7 @@
                         <th>Title</th>
                         <th>Category</th>
                         <th>Ship</th>
+                        <th>Campaign</th>
                         <th class="text-right">Amount</th>
                         <th class="text-right">Signing</th>
                         <th class="text-right">Payment</th>
@@ -52,6 +53,16 @@
                                 <td>{{ income.title }}</td>
                                 <td>{{ income.incomeCategory.description }}</td>
                                 <td>{{ income.ship.name }}</td>
+                                <td>
+                                    {% if income.ship.campaign %}
+                                        <div class="flex items-center gap-2">
+                                            {% include 'icons/campaign.html.twig' %}
+                                            <span>{{ income.ship.campaign.title }}</span>
+                                        </div>
+                                    {% else %}
+                                        <span class="opacity-60">—</span>
+                                    {% endif %}
+                                </td>
                                 <td class="text-right">{{ income.amount|number_format(2, ',', '.') }}</td>
                                 <td class="text-right">{{ income.signingLocation }} - {{ income.signingDay }}/{{ income.signingYear }}</td>
                                 <td class="text-right">
