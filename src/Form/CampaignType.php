@@ -17,14 +17,17 @@ class CampaignType extends AbstractType
         $builder
             ->add('title', TextType::class, [
                 'label' => 'Title',
+                'attr' => ['class' => 'input m-1 w-full'],
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
                 'required' => false,
+                'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 3],
             ])
             ->add('startingYear', IntegerType::class, [
                 'label' => 'Starting year',
                 'required' => false,
+                'attr' => ['class' => 'input m-1 w-full'],
             ]);
     }
 
