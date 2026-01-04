@@ -4,6 +4,8 @@
 
 {% block pageContent %}
 
+    {% set locale = app.request.locale ?? 'en' %}
+
     <div class="p-10">
 
         <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-6">
@@ -53,8 +55,8 @@
                                 <td>{% include 'components/code_with_copy.html.twig' with { code: mortgage.code } %}</td>
                                 <td>{{ mortgage.name }}</td>
                                 <td>{{ mortgage.ship.name }}</td>
-                                <td class="text-right">{{ mortgage.ship.price|number_format(2, ',', '.') }}</td>
-                                <td class="text-right">{{ mortgage.calculateShipCost|number_format(2, ',', '.') }}</td>
+                                <td class="text-right">{{ mortgage.ship.price|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
+                                <td class="text-right">{{ mortgage.calculateShipCost|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
                                 <td>
                                     <div class="flex justify-center">
                                         {% if mortgage.signed %}

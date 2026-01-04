@@ -4,6 +4,8 @@
 
 {% block pageContent %}
 
+    {% set locale = app.request.locale ?? 'en' %}
+
     <div class="p-10">
 
         <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-6">
@@ -53,7 +55,7 @@
                                 <td>{{ cost.title }}</td>
                                 <td>{{ cost.costCategory.description }}</td>
                                 <td>{{ cost.ship.name }}</td>
-                                <td class="text-right">{{ cost.amount|number_format(2, ',', '.') }}</td>
+                                <td class="text-right">{{ cost.amount|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
                                 <td class="text-right">
                                     {% if cost.paymentDay is not null and cost.paymentYear is not null %}
                                         {{ cost.paymentDay }}/{{ cost.paymentYear }}

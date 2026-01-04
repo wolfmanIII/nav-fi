@@ -4,6 +4,8 @@
 
 {% block pageContent %}
 
+    {% set locale = app.request.locale ?? 'en' %}
+
     <div class="p-10 space-y-6">
         <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
             <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
@@ -88,7 +90,7 @@
                         <td>{{ ship.name }}</td>
                         <td>{{ ship.type }}</td>
                         <td>{{ ship.class }}</td>
-                        <td class="text-right">{{ ship.price|number_format(2, ',', '.') }}</td>
+                        <td class="text-right">{{ ship.price|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
                         <td>
                             <a href="{{ path('app_campaign_ship_remove', {id: ship.id}) }}"
                                role="button"
@@ -148,7 +150,7 @@
                                         <td>{{ ship.name }}</td>
                                         <td>{{ ship.type }}</td>
                                         <td>{{ ship.class }}</td>
-                                        <td class="text-right">{{ ship.price|number_format(2, ',', '.') }}</td>
+                                        <td class="text-right">{{ ship.price|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
                                     </tr>
                                 {% endfor %}
                             {% else %}

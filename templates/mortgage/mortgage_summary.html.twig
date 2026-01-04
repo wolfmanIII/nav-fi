@@ -1,3 +1,5 @@
+{% set locale = app.request.locale ?? 'en' %}
+
 <div class="w-full">
     <label class="label">
         <span class="label-text">
@@ -17,10 +19,10 @@
             </thead>
             <tbody>
                 <tr>
-                    <td class="text-right">{{ summary.mortgage_monthly|number_format(2, ',', '.') }}</td>
-                    <td class="text-right">{{ summary.mortgage_annual|number_format(2, ',', '.') }}</td>
-                    <td class="text-right">{{ summary.insurance_monthly|number_format(2, ',', '.') }}</td>
-                    <td class="text-right">{{ summary.insurance_annual|number_format(2, ',', '.') }}</td>
+                    <td class="text-right">{{ summary.mortgage_monthly|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
+                    <td class="text-right">{{ summary.mortgage_annual|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
+                    <td class="text-right">{{ summary.insurance_monthly|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
+                    <td class="text-right">{{ summary.insurance_annual|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -42,17 +44,17 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="text-right">{{ summary.ship_cost|number_format(2, ',', '.') }}</td>
-                        <td class="text-right">{{ summary.total_mortgage|number_format(2, ',', '.') }}</td>
-                        <td class="text-right">{{ summary.total_monthly_payment|number_format(2, ',', '.') }}</td>
-                        <td class="text-right">{{ summary.total_annual_payment|number_format(2, ',', '.') }}</td>
+                        <td class="text-right">{{ summary.ship_cost|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
+                        <td class="text-right">{{ summary.total_mortgage|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
+                        <td class="text-right">{{ summary.total_monthly_payment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
+                        <td class="text-right">{{ summary.total_annual_payment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
                         <td class="text-right bg-primary/10">{{ summary.installments_paid }}</td>
                         <td class="text-right bg-primary/10">
                             {% if last_payment %}
                                 {{ last_payment.paymentDay }} / {{ last_payment.paymentYear }}
                             {% endif %}
                         </td>
-                        <td class="text-right bg-primary/10">{{ summary.total_mortgage_paid|number_format(2, ',', '.') }}</td>
+                        <td class="text-right bg-primary/10">{{ summary.total_mortgage_paid|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
                     </tr>
                 </tbody>
             </table>

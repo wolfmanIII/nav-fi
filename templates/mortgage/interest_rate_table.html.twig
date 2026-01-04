@@ -1,3 +1,5 @@
+{% set locale = app.request.locale ?? 'en' %}
+
 <div
     data-controller="single-select-table"
     class="w-full"
@@ -42,9 +44,9 @@
                         >
                     </td>
                     <td class="text-right">{{ rate.duration }}</td>
-                    <td class="text-right">{{ rate.priceMultiplier|number_format(2, ',', '.') }}</td>
+                    <td class="text-right">{{ rate.priceMultiplier|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
                     <td class="text-right">{{ rate.priceDivider }}</td>
-                    <td class="text-right">{{ rate.annualInterestRate|number_format(2, ',', '.') }}</td>
+                    <td class="text-right">{{ rate.annualInterestRate|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
                 </tr>
             {% endfor %}
             </tbody>

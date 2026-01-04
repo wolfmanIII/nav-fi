@@ -58,6 +58,7 @@
 {% block javascripts %}{% endblock %}
 
 {% block pageContent %}
+    {% set locale = locale ?? 'en' %}
     {% set summary = mortgage.calculate() %}
     {% set installments = mortgage.mortgageInstallments %}
     {% set crew = ship.crews %}
@@ -126,8 +127,8 @@
                         <td class="px-2">{{ mortgage.signed ? 'Signed' : 'Pending' }}</td>
                         <td class="px-2">{{ mortgage.startDay }}/{{ mortgage.startYear }}</td>
                         <td class="px-2">{{ mortgage.interestRate.duration }} years</td>
-                        <td class="text-right px-2">{{ summary.total_monthly_payment|number_format(2, ',', '.') }} Cr</td>
-                        <td class="text-right px-2">{{ summary.total_annual_payment|number_format(2, ',', '.') }} Cr</td>
+                        <td class="text-right px-2">{{ summary.total_monthly_payment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
+                        <td class="text-right px-2">{{ summary.total_annual_payment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
                         <td class="px-2">
                             {% if mortgage.company %}
                                 {{ mortgage.company.name }}
@@ -157,7 +158,7 @@
                         <tr>
                             <td class="px-2">{{ ship.name }}</td>
                             <td class="px-2">{{ ship.type }} / {{ ship.class }}</td>
-                            <td class="text-right px-2">{{ ship.price|number_format(2, ',', '.') }} Cr</td>
+                            <td class="text-right px-2">{{ ship.price|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
                         </tr>
                     </tbody>
                 </table>
@@ -209,7 +210,7 @@
                     <tr>
                         <td class="px-2">{{ mortgage.startDay }}/{{ mortgage.startYear }}</td>
                         <td class="px-2">{{ mortgage.shipShares ?? 0 }}</td>
-                        <td class="text-right px-2">{{ mortgage.advancePayment|number_format(2, ',', '.') }} Cr</td>
+                        <td class="text-right px-2">{{ mortgage.advancePayment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
                         <td class="px-2">{{ mortgage.discount ?? 0 }} %</td>
                         <td class="px-2">
                             {{ mortgage.interestRate.duration }} years,
@@ -244,10 +245,10 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="text-right px-2">{{ summary.ship_cost|number_format(2, ',', '.') }} Cr</td>
-                            <td class="text-right px-2">{{ summary.mortgage_monthly|number_format(2, ',', '.') }} Cr</td>
-                            <td class="text-right px-2">{{ summary.mortgage_annual|number_format(2, ',', '.') }} Cr</td>
-                            <td class="text-right px-2">{{ summary.total_mortgage|number_format(2, ',', '.') }} Cr</td>
+                            <td class="text-right px-2">{{ summary.ship_cost|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
+                            <td class="text-right px-2">{{ summary.mortgage_monthly|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
+                            <td class="text-right px-2">{{ summary.mortgage_annual|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
+                            <td class="text-right px-2">{{ summary.total_mortgage|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
                         </tr>
                     </tbody>
                 </table>
@@ -270,12 +271,12 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="text-right px-2">{{ summary.insurance_monthly|number_format(2, ',', '.') }} Cr</td>
-                            <td class="text-right px-2">{{ summary.insurance_annual|number_format(2, ',', '.') }} Cr</td>
-                            <td class="text-right px-2">{{ summary.total_monthly_payment|number_format(2, ',', '.') }} Cr</td>
-                            <td class="text-right px-2">{{ summary.total_annual_payment|number_format(2, ',', '.') }} Cr</td>
+                            <td class="text-right px-2">{{ summary.insurance_monthly|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
+                            <td class="text-right px-2">{{ summary.insurance_annual|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
+                            <td class="text-right px-2">{{ summary.total_monthly_payment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
+                            <td class="text-right px-2">{{ summary.total_annual_payment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
                             <td class="text-right px-2">{{ summary.installments_paid }}</td>
-                            <td class="text-right px-2">{{ summary.total_mortgage_paid|number_format(2, ',', '.') }} Cr</td>
+                            <td class="text-right px-2">{{ summary.total_mortgage_paid|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
                         </tr>
                     </tbody>
                 </table>
@@ -300,7 +301,7 @@
                             <tr>
                                 <td class="px-2">{{ inst.code }}</td>
                                 <td class="px-2">{{ inst.paymentDay }}/{{ inst.paymentYear }}</td>
-                                <td class="text-right px-2">{{ inst.payment|number_format(2, ',', '.') }} Cr</td>
+                                <td class="text-right px-2">{{ inst.payment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
                             </tr>
                         {% endfor %}
                     </tbody>

@@ -4,6 +4,8 @@
 
 {% block pageContent %}
 
+    {% set locale = app.request.locale ?? 'en' %}
+
     <div class="p-10">
 
         <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-6">
@@ -56,10 +58,10 @@
                                 <td>{{ budget.ship.name }}</td>
                                 <td class="text-right">{{ budget.startDay }}/{{ budget.startYear }}</td>
                                 <td class="text-right">{{ budget.endDay }}/{{ budget.endYear }}</td>
-                                <td class="text-right">{{ budget.totalIncomeAmount|number_format(2, ',', '.') }}</td>
-                                <td class="text-right">{{ budget.totalCostsAmount|number_format(2, ',', '.') }}</td>
-                                <td class="text-right">{{ budget.ship.mortgage.calculate.total_annual_payment|number_format(2, ',', '.') }}</td>
-                                <td class="text-right">{{ budget.actualBudget|number_format(2, ',', '.') }}</td>
+                                <td class="text-right">{{ budget.totalIncomeAmount|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
+                                <td class="text-right">{{ budget.totalCostsAmount|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
+                                <td class="text-right">{{ budget.ship.mortgage.calculate.total_annual_payment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
+                                <td class="text-right">{{ budget.actualBudget|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
                                 <td>
                                     <a href="{{ path('app_annual_budget_chart', {id: budget.id}) }}" role="button" class="btn btn-outline btn-primary btn-xs">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 8 14 12 20 6"></polyline><polyline points="14 6 20 6 20 12"></polyline></svg>

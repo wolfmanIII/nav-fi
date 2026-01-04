@@ -1,3 +1,5 @@
+{% set locale = app.request.locale ?? 'en' %}
+
 <div
     data-controller="single-select-table"
     class="w-full"
@@ -40,7 +42,7 @@
                         >
                     </td>
                     <td>{{ insurance.name }}</td>
-                    <td class="text-right">{{ insurance.annualCost|number_format(2, ',', '.') }}</td>
+                    <td class="text-right">{{ insurance.annualCost|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
                 </tr>
             {% endfor %}
             </tbody>

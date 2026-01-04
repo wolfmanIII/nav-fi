@@ -176,7 +176,8 @@ final class MortgageController extends BaseController
     public function pdf(
         int $id,
         EntityManagerInterface $em,
-        \App\Service\PdfGenerator $pdfGenerator
+        \App\Service\PdfGenerator $pdfGenerator,
+        Request $request
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
@@ -197,6 +198,7 @@ final class MortgageController extends BaseController
             'mortgage' => $mortgage,
             'ship' => $mortgage->getShip(),
             'user' => $user,
+            'locale' => $request->getLocale(),
         ];
 
         $options = [
@@ -223,7 +225,8 @@ final class MortgageController extends BaseController
     #[Route('/mortgage/{id}/pdf/preview', name: 'app_mortgage_pdf_preview', methods: ['GET'])]
     public function pdfPreview(
         int $id,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        Request $request
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
@@ -243,6 +246,7 @@ final class MortgageController extends BaseController
             'mortgage' => $mortgage,
             'ship' => $mortgage->getShip(),
             'user' => $user,
+            'locale' => $request->getLocale(),
         ]);
     }
 
