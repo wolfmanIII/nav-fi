@@ -70,7 +70,10 @@
             </div>
 
             <div>
-                {{ form_label(form.company) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.company) }}
+                    {% if form.company.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.company) }}
                 {{ form_errors(form.company) }}
             </div>
@@ -94,7 +97,10 @@
             </div>
 
             <div>
-                {{ form_label(form.localLaw) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.localLaw) }}
+                    {% if form.localLaw.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.localLaw) }}
                 {{ form_errors(form.localLaw) }}
             </div>

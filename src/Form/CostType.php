@@ -81,7 +81,7 @@ class CostType extends AbstractType
             ->add('company', EntityType::class, [
                 'class' => Company::class,
                 'placeholder' => '-- Select a Company --',
-                'required' => false,
+                'required' => true,
                 'choice_label' => fn (Company $c) => sprintf('%s - %s', $c->getName(), $c->getCode()),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.name', 'ASC');
@@ -95,7 +95,7 @@ class CostType extends AbstractType
             ->add('localLaw', EntityType::class, [
                 'class' => LocalLaw::class,
                 'placeholder' => '-- Select a Local Law --',
-                'required' => false,
+                'required' => true,
                 'choice_label' => function (LocalLaw $l): string {
                     $label = $l->getShortDescription() ?: $l->getDescription();
                     return sprintf('%s - %s', $l->getCode(), $label);
