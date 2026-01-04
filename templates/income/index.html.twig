@@ -55,7 +55,13 @@
                                 <td>{% include 'components/code_with_copy.html.twig' with { code: income.code } %}</td>
                                 <td>{{ income.title }}</td>
                                 <td>{{ income.incomeCategory.description }}</td>
-                                <td>{{ income.ship.name }}</td>
+                                <td>
+                                    {% if income.ship %}
+                                        <span>{{ income.ship.name }}</span>
+                                    {% else %}
+                                        <span class="opacity-60">—</span>
+                                    {% endif %}
+                                </td>
                                 <td class="text-right">{{ income.amount|number_format(2, ',', '.') }}</td>
                                 <td class="text-right">{{ income.signingLocation }} - {{ income.signingDay }}/{{ income.signingYear }}</td>
                                 <td class="text-right">
@@ -80,7 +86,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if income.ship.campaign %}
+                                    {% if income.ship and income.ship.campaign %}
                                         <div class="flex items-center gap-2">
                                             {% include 'icons/alien-structure-1.html.twig' %}
                                             <span>{{ income.ship.campaign.title }}</span>
