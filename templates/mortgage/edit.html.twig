@@ -70,17 +70,26 @@
 
                 <div class="grid grid-cols-3 gap-4">
                     <div>
-                        {{ form_label(form.ship) }}
+                        <div class="flex items-center gap-1">
+                            {{ form_label(form.ship) }}
+                            {% if form.ship.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                        </div>
                         {{ form_widget(form.ship) }}
                         {{ form_errors(form.ship) }}
                     </div>
                     <div>
-                        {{ form_label(form.startDay) }}
+                        <div class="flex items-center gap-1">
+                            {{ form_label(form.startDay) }}
+                            {% if form.startDay.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                        </div>
                         {{ form_widget(form.startDay) }}
                         {{ form_errors(form.startDay) }}
                     </div>
                     <div>
-                        {{ form_label(form.startYear) }}
+                        <div class="flex items-center gap-1">
+                            {{ form_label(form.startYear) }}
+                            {% if form.startYear.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                        </div>
                         {{ form_widget(form.startYear) }}
                         {{ form_errors(form.startYear) }}
                     </div>
@@ -102,17 +111,23 @@
 
                 <div class="grid grid-cols-3 gap-4">
                     <div>
-                        {{ form_label(form.discount) }}
+                        <div class="flex items-center gap-1">
+                            {{ form_label(form.discount) }}
+                        </div>
                         {{ form_widget(form.discount) }}
                         {{ form_errors(form.discount) }}
                     </div>
                     <div>
-                        {{ form_label(form.shipShares) }}
+                        <div class="flex items-center gap-1">
+                            {{ form_label(form.shipShares) }}
+                        </div>
                         {{ form_widget(form.shipShares) }}
                         {{ form_errors(form.shipShares) }}
                     </div>
                     <div>
-                        {{ form_label(form.advancePayment) }}
+                        <div class="flex items-center gap-1">
+                            {{ form_label(form.advancePayment) }}
+                        </div>
                         {{ form_widget(form.advancePayment) }}
                         {{ form_errors(form.advancePayment) }}
                     </div>

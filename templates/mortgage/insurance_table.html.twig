@@ -3,8 +3,9 @@
     class="w-full"
 >
     <label class="label">
-        <span class="label-text">
+        <span class="label-text flex items-center gap-1">
             {{ form.insurance.vars.label ?? 'Insurance' }}
+            {% if form.insurance.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
             <button type="button" class="btn badge badge-sm badge-outline badge-info ml-2" onclick="coverage_modal.showModal()">?</button>
         </span>
     </label>

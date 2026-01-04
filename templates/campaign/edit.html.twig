@@ -38,7 +38,10 @@
             {% endif %}
 
             <div>
-                {{ form_label(form.title) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.title) }}
+                    {% if form.title.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.title) }}
                 {{ form_errors(form.title) }}
             </div>

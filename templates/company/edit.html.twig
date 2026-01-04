@@ -38,13 +38,19 @@
             {% endif %}
 
             <div>
-                {{ form_label(form.name) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.name) }}
+                    {% if form.name.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.name) }}
                 {{ form_errors(form.name) }}
             </div>
 
             <div>
-                {{ form_label(form.companyRole) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.companyRole) }}
+                    {% if form.companyRole.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.companyRole) }}
                 {{ form_errors(form.companyRole) }}
             </div>

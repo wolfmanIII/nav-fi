@@ -40,31 +40,46 @@
             </div>
 
             <div>
-                {{ form_label(form.startDay) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.startDay) }}
+                    {% if form.startDay.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.startDay) }}
                 {{ form_errors(form.startDay) }}
             </div>
 
             <div>
-                {{ form_label(form.startYear) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.startYear) }}
+                    {% if form.startYear.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.startYear) }}
                 {{ form_errors(form.startYear) }}
             </div>
 
             <div>
-                {{ form_label(form.endDay) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.endDay) }}
+                    {% if form.endDay.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.endDay) }}
                 {{ form_errors(form.endDay) }}
             </div>
 
             <div>
-                {{ form_label(form.endYear) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.endYear) }}
+                    {% if form.endYear.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.endYear) }}
                 {{ form_errors(form.endYear) }}
             </div>
 
             <div>
-                {{ form_label(form.ship) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.ship) }}
+                    {% if form.ship.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.ship) }}
                 {{ form_errors(form.ship) }}
             </div>

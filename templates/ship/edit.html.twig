@@ -51,19 +51,28 @@
             {% endif %}
 
             <div>
-                {{ form_label(form.name) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.name) }}
+                    {% if form.name.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.name) }}
                 {{ form_errors(form.name) }}
             </div>
 
             <div>
-                {{ form_label(form.type) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.type) }}
+                    {% if form.type.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.type) }}
                 {{ form_errors(form.type) }}
             </div>
 
             <div>
-                {{ form_label(form.class) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.class) }}
+                    {% if form.class.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.class) }}
                 {{ form_errors(form.class) }}
             </div>
@@ -76,6 +85,7 @@
 
             <div>
                 {{ form_label(form.price) }}
+                {% if form.price.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
                 {{ form_widget(form.price) }}
                 {{ form_errors(form.price) }}
             </div>

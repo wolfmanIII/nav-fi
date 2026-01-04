@@ -39,79 +39,111 @@
             {% endif %}
 
             <div class="col-span-2">
-                {{ form_label(form.title) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.title) }}
+                    {% if form.title.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.title) }}
                 {{ form_errors(form.title) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.localLaw) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.localLaw) }}
+                </div>
                 {{ form_widget(form.localLaw) }}
                 {{ form_errors(form.localLaw) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.company) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.company) }}
+                </div>
                 {{ form_widget(form.company) }}
                 {{ form_errors(form.company) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.incomeCategory) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.incomeCategory) }}
+                    {% if form.incomeCategory.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.incomeCategory) }}
                 {{ form_errors(form.incomeCategory) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.ship) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.ship) }}
+                </div>
                 {{ form_widget(form.ship) }}
                 {{ form_errors(form.ship) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.signingLocation) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.signingLocation) }}
+                    {% if form.signingLocation.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.signingLocation) }}
                 {{ form_errors(form.signingLocation) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.signingDay) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.signingDay) }}
+                    {% if form.signingDay.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.signingDay) }}
                 {{ form_errors(form.signingDay) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.signingYear) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.signingYear) }}
+                    {% if form.signingYear.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.signingYear) }}
                 {{ form_errors(form.signingYear) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.amount) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.amount) }}
+                    {% if form.amount.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                </div>
                 {{ form_widget(form.amount) }}
                 {{ form_errors(form.amount) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.paymentDay) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.paymentDay) }}
+                </div>
                 {{ form_widget(form.paymentDay) }}
                 {{ form_errors(form.paymentDay) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.paymentYear) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.paymentYear) }}
+                </div>
                 {{ form_widget(form.paymentYear) }}
                 {{ form_errors(form.paymentYear) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.expirationDay) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.expirationDay) }}
+                </div>
                 {{ form_widget(form.expirationDay) }}
                 {{ form_errors(form.expirationDay) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.expirationYear) }}
+                <div class="flex items-center gap-1">
+                    {{ form_label(form.expirationYear) }}
+                </div>
                 {{ form_widget(form.expirationYear) }}
                 {{ form_errors(form.expirationYear) }}
             </div>
