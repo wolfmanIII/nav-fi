@@ -8,6 +8,7 @@ use App\Dto\ShipSelection;
 use App\Form\CampaignType;
 use App\Form\ShipSelectType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -117,14 +118,27 @@ final class CampaignController extends BaseController
             $rows[] = $dto;
         }
 
-        $form = $this->createForm(ShipSelectType::class, [
+        $shipForm = $this->createForm(ShipSelectType::class, [
             'shipSelections' => $rows,
         ]);
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        $calendarForm = $this->createFormBuilder($campaign)
+            ->add('sessionDay', NumberType::class, [
+                'label' => 'Session Day',
+                'required' => true,
+                'attr' => ['class' => 'input input-bordered w-full'],
+            ])
+            ->add('sessionYear', NumberType::class, [
+                'label' => 'Session Year',
+                'required' => true,
+                'attr' => ['class' => 'input input-bordered w-full'],
+            ])
+            ->getForm();
+
+        $shipForm->handleRequest($request);
+        if ($shipForm->isSubmitted() && $shipForm->isValid()) {
             /** @var ShipSelection[] $selections */
-            $selections = $form->get('shipSelections')->getData();
+            $selections = $shipForm->get('shipSelections')->getData();
 
             foreach ($selections as $selection) {
                 if ($selection->isSelected()) {
@@ -137,9 +151,18 @@ final class CampaignController extends BaseController
             return $this->redirectToRoute('app_campaign_details', ['id' => $campaign->getId()]);
         }
 
+        $calendarForm->handleRequest($request);
+        if ($calendarForm->isSubmitted() && $calendarForm->isValid()) {
+            $em->flush();
+            $this->addFlash('success', 'Session updated');
+
+            return $this->redirectToRoute('app_campaign_details', ['id' => $campaign->getId()]);
+        }
+
         return $this->renderTurbo('campaign/details.html.twig', [
             'campaign' => $campaign,
-            'form' => $form,
+            'form' => $shipForm,
+            'calendar_form' => $calendarForm,
             'controller_name' => self::CONTROLLER_NAME,
         ]);
     }
