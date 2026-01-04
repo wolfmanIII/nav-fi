@@ -18,15 +18,23 @@
         {{ form_widget(detail_form.transferCondition) }}
         {{ form_errors(detail_form.transferCondition) }}
     </div>
-    <div>
-        {{ form_label(detail_form.qty) }}
-        {{ form_widget(detail_form.qty) }}
-        {{ form_errors(detail_form.qty) }}
-    </div>
-    <div>
-        {{ form_label(detail_form.grade) }}
-        {{ form_widget(detail_form.grade) }}
-        {{ form_errors(detail_form.grade) }}
+
+    <div class="col-span-3 grid grid-cols-3 gap-4">
+        <div>
+            {{ form_label(detail_form.qty) }}
+            {{ form_widget(detail_form.qty) }}
+            {{ form_errors(detail_form.qty) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.grade) }}
+            {{ form_widget(detail_form.grade) }}
+            {{ form_errors(detail_form.grade) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.unitPrice) }}
+            {{ form_widget(detail_form.unitPrice) }}
+            {{ form_errors(detail_form.unitPrice) }}
+        </div>
     </div>
 
     <div class="col-span-3 grid grid-cols-2 gap-4">
@@ -40,12 +48,6 @@
             {{ form_widget(detail_form.batchIds) }}
             {{ form_errors(detail_form.batchIds) }}
         </div>
-    </div>
-
-    <div>
-        {{ form_label(detail_form.unitPrice) }}
-        {{ form_widget(detail_form.unitPrice) }}
-        {{ form_errors(detail_form.unitPrice) }}
     </div>
 
     <div class="col-span-3 grid grid-cols-2 gap-4">
