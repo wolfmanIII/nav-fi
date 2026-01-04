@@ -16,36 +16,44 @@ final class Version20260111100000 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $platform = $this->connection->getDatabasePlatform()->getName();
+        // Tabella campaign
+        $campaign = $schema->createTable('campaign');
+        $campaign->addColumn('id', 'integer', ['autoincrement' => true]);
+        $campaign->addColumn('code', 'guid');
+        $campaign->addColumn('title', 'string', ['length' => 255]);
+        $campaign->addColumn('description', 'text', ['notnull' => false]);
+        $campaign->addColumn('starting_year', 'integer', ['notnull' => false]);
+        $campaign->addColumn('session_day', 'integer', ['notnull' => false]);
+        $campaign->addColumn('session_year', 'integer', ['notnull' => false]);
+        $campaign->setPrimaryKey(['id']);
+        $campaign->addUniqueIndex(['code'], 'UNIQ_F639F77477153098');
 
-        if ($platform === 'sqlite') {
-            $this->addSql('CREATE TABLE campaign (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, code BLOB NOT NULL, title VARCHAR(255) NOT NULL, description CLOB DEFAULT NULL, starting_year INTEGER DEFAULT NULL, session_day INTEGER DEFAULT NULL, session_year INTEGER DEFAULT NULL)');
-            $this->addSql('CREATE UNIQUE INDEX UNIQ_F639F77477153098 ON campaign (code)');
-            $this->addSql('ALTER TABLE ship ADD COLUMN campaign_id INTEGER DEFAULT NULL');
-            $this->addSql('CREATE INDEX IDX_EF4E8F97F639F774 ON ship (campaign_id)');
-            // SQLite non supporta ALTER TABLE ... ADD CONSTRAINT; FK non applicata qui.
-        } else {
-            $this->addSql('CREATE TABLE campaign (id INT AUTO_INCREMENT NOT NULL, code UUID NOT NULL, title VARCHAR(255) NOT NULL, description LONGTEXT DEFAULT NULL, starting_year INT DEFAULT NULL, session_day INT DEFAULT NULL, session_year INT DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-            $this->addSql('CREATE UNIQUE INDEX UNIQ_F639F77477153098 ON campaign (code)');
-            $this->addSql('ALTER TABLE ship ADD campaign_id INT DEFAULT NULL');
-            $this->addSql('ALTER TABLE ship ADD CONSTRAINT FK_EF4E8F97F639F774 FOREIGN KEY (campaign_id) REFERENCES campaign (id)');
-            $this->addSql('CREATE INDEX IDX_EF4E8F97F639F774 ON ship (campaign_id)');
+        // Relazione su ship
+        $ship = $schema->getTable('ship');
+        if (!$ship->hasColumn('campaign_id')) {
+            $ship->addColumn('campaign_id', 'integer', ['notnull' => false]);
+            $ship->addIndex(['campaign_id'], 'IDX_EF4E8F97F639F774');
+            $ship->addForeignKeyConstraint('campaign', ['campaign_id'], ['id'], [], 'FK_EF4E8F97F639F774');
         }
     }
 
     public function down(Schema $schema): void
     {
-        $platform = $this->connection->getDatabasePlatform()->getName();
+        if ($schema->hasTable('campaign')) {
+            $schema->dropTable('campaign');
+        }
 
-        if ($platform === 'sqlite') {
-            $this->addSql('DROP TABLE campaign');
-            $this->addSql('DROP INDEX IDX_EF4E8F97F639F774 ON ship');
-            // Nota: rimozione della colonna campaign_id in SQLite richiederebbe rebuild della tabella; omessa nel down.
-        } else {
-            $this->addSql('ALTER TABLE ship DROP FOREIGN KEY FK_EF4E8F97F639F774');
-            $this->addSql('DROP TABLE campaign');
-            $this->addSql('DROP INDEX IDX_EF4E8F97F639F774 ON ship');
-            $this->addSql('ALTER TABLE ship DROP campaign_id');
+        if ($schema->hasTable('ship')) {
+            $ship = $schema->getTable('ship');
+            if ($ship->hasForeignKey('FK_EF4E8F97F639F774')) {
+                $ship->removeForeignKey('FK_EF4E8F97F639F774');
+            }
+            if ($ship->hasIndex('IDX_EF4E8F97F639F774')) {
+                $ship->dropIndex('IDX_EF4E8F97F639F774');
+            }
+            if ($ship->hasColumn('campaign_id')) {
+                $ship->dropColumn('campaign_id');
+            }
         }
     }
 }
