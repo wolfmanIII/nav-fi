@@ -50,6 +50,7 @@
             <div class="col-span-1">
                 <div class="flex items-center gap-1">
                     {{ form_label(form.localLaw) }}
+                    {% if form.localLaw.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
                 </div>
                 {{ form_widget(form.localLaw) }}
                 {{ form_errors(form.localLaw) }}
@@ -58,6 +59,7 @@
             <div class="col-span-1">
                 <div class="flex items-center gap-1">
                     {{ form_label(form.company) }}
+                    {% if form.company.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
                 </div>
                 {{ form_widget(form.company) }}
                 {{ form_errors(form.company) }}
