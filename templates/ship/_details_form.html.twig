@@ -2,7 +2,9 @@
 
 {% macro render_item(child) %}
     <div class="grid grid-cols-3 gap-2 border border-base-300 rounded p-3 relative collection-item bg-base-100">
-        <button type="button" class="btn btn-ghost btn-xs absolute right-1 top-1" data-collection-remove>&times;</button>
+        <button type="button"
+                class="btn btn-ghost btn-xs absolute right-1 top-1"
+                data-action="ship-details#removeItem">&times;</button>
         <div>
             {{ form_label(child.description) }}
             {{ form_widget(child.description) }}
@@ -22,23 +24,25 @@
 {% endmacro %}
 
 {% macro render_collection(collection, title) %}
-    <div class="space-y-2" data-collection>
+    <div class="space-y-2" data-ship-details-target="collection">
         <div class="flex items-center justify-between">
             <h4 class="font-semibold text-cyan-100">{{ title }}</h4>
-            <button type="button" class="btn btn-outline btn-xs" data-collection-add>+ Add</button>
+            <button type="button" class="btn btn-outline btn-xs"
+                    data-action="ship-details#addItem">+ Add</button>
         </div>
-        <div class="space-y-2" data-collection-list>
+        <div class="space-y-2" data-ship-details-target="list">
             {% for child in collection %}
                 {{ _self.render_item(child) }}
             {% endfor %}
         </div>
-        <template data-collection-prototype>
+        <template data-ship-details-target="prototype">
             {{ _self.render_item(collection.vars.prototype) }}
         </template>
     </div>
 {% endmacro %}
 
-<fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-250">
+<fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-250"
+         data-controller="ship-details">
     <legend class="fieldset-legend">Ship Details</legend>
     <div class="col-span-2">
         <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-4">
@@ -78,11 +82,11 @@
             {{ form_label(detailsForm.totalCost) }}
             <input type="text"
                    class="input m-1 w-full bg-base-200 text-base-content"
-                   data-total-cost-display
+                   data-ship-details-target="totalDisplay"
                    readonly
                    value="—">
             {{ form_errors(detailsForm.totalCost) }}
-            {{ form_widget(detailsForm.totalCost, { attr: { class: 'hidden' } }) }}
+            {{ form_widget(detailsForm.totalCost, { attr: { class: 'hidden', 'data-ship-details-target': 'totalInput' } }) }}
         </div>
     </div>
 
@@ -148,93 +152,3 @@
         {{ detailsMacros.render_collection(detailsForm.software, 'Software') }}
     </div>
 </fieldset>
-
-<script>
-(function() {
-    const initCollections = () => {
-        document.querySelectorAll('[data-collection]').forEach(section => {
-            const list = section.querySelector('[data-collection-list]');
-            const templateEl = section.querySelector('template[data-collection-prototype]');
-            const addBtn = section.querySelector('[data-collection-add]');
-            if (!templateEl || !list) {
-                return;
-            }
-            const addItem = () => {
-                const index = list.children.length;
-                const html = templateEl.innerHTML.replace(/__name__/g, index);
-                const wrapper = document.createElement('div');
-                wrapper.innerHTML = html.trim();
-                const newItem = wrapper.firstElementChild;
-                list.appendChild(newItem);
-                // bind cost listeners on new inputs
-                newItem.querySelectorAll('[data-cost-mcr]').forEach((input) => {
-                    input.addEventListener('input', recalcTotalCost);
-                    input.addEventListener('change', recalcTotalCost);
-                });
-                recalcTotalCost();
-            };
-            if (addBtn) {
-                addBtn.addEventListener('click', addItem);
-            }
-            list.addEventListener('click', (event) => {
-                const btn = event.target.closest('[data-collection-remove]');
-                if (btn) {
-                    const item = btn.closest('.collection-item');
-                    if (item) {
-                        item.remove();
-                        recalcTotalCost();
-                    }
-                }
-            });
-        });
-    };
-    const recalcTotalCost = () => {
-        const totalInput = document.querySelector('input[name$="[totalCost]"]');
-        const totalDisplay = document.querySelector('[data-total-cost-display]');
-        if (!totalInput) {
-            return;
-        }
-        const costFields = document.querySelectorAll('[data-cost-mcr]');
-        let sum = 0;
-        costFields.forEach((input) => {
-            const raw = (input.value || '').trim();
-            if (!raw) {
-                return;
-            }
-            // support both dot and comma decimals
-            const val = parseFloat(raw.replace(',', '.'));
-            if (!Number.isNaN(val)) {
-                sum += val;
-            }
-        });
-        totalInput.value = sum ? sum.toFixed(2) : '';
-        if (totalDisplay) {
-            if (sum) {
-                const locale = document.documentElement.lang || navigator.language || 'en';
-                totalDisplay.value = sum.toLocaleString(locale, {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                });
-            } else {
-                totalDisplay.value = '—';
-            }
-        }
-    };
-    const initCostListeners = () => {
-        const bindCostListeners = (input) => {
-            input.addEventListener('input', recalcTotalCost);
-            input.addEventListener('change', recalcTotalCost);
-        };
-        document.querySelectorAll('[data-cost-mcr]').forEach((input) => {
-            bindCostListeners(input);
-        });
-        recalcTotalCost();
-    };
-    const initAll = () => {
-        initCollections();
-        initCostListeners();
-    };
-    document.addEventListener('DOMContentLoaded', initAll);
-    document.addEventListener('turbo:load', initAll);
-})();
-</script>
