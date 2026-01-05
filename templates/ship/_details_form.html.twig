@@ -64,6 +64,11 @@
             {{ form_widget(detailsForm.techLevel) }}
             {{ form_errors(detailsForm.techLevel) }}
         </div>
+        <div>
+            {{ form_label(detailsForm.totalCost) }}
+            {{ form_widget(detailsForm.totalCost) }}
+            {{ form_errors(detailsForm.totalCost) }}
+        </div>
     </div>
 
     {% set single_items = [
@@ -90,7 +95,21 @@
                     {{ form_widget(item.child.description) }}
                     {{ form_errors(item.child.description) }}
                 </div>
-                <div class="grid grid-cols-2 gap-2 mt-2">
+                {% set has_drive_extra = item.child.thrust is defined or item.child.jump is defined %}
+                <div class="grid gap-2 mt-2 {{ has_drive_extra ? 'grid-cols-3' : 'grid-cols-2' }}">
+                    {% if item.child.thrust is defined %}
+                        <div>
+                            {{ form_label(item.child.thrust) }}
+                            {{ form_widget(item.child.thrust) }}
+                            {{ form_errors(item.child.thrust) }}
+                        </div>
+                    {% elseif item.child.jump is defined %}
+                        <div>
+                            {{ form_label(item.child.jump) }}
+                            {{ form_widget(item.child.jump) }}
+                            {{ form_errors(item.child.jump) }}
+                        </div>
+                    {% endif %}
                     <div>
                         {{ form_label(item.child.tons) }}
                         {{ form_widget(item.child.tons) }}
@@ -102,20 +121,6 @@
                         {{ form_errors(item.child.costMcr) }}
                     </div>
                 </div>
-                {% if item.child.thrust is defined %}
-                    <div class="mt-2">
-                        {{ form_label(item.child.thrust) }}
-                        {{ form_widget(item.child.thrust) }}
-                        {{ form_errors(item.child.thrust) }}
-                    </div>
-                {% endif %}
-                {% if item.child.jump is defined %}
-                    <div class="mt-2">
-                        {{ form_label(item.child.jump) }}
-                        {{ form_widget(item.child.jump) }}
-                        {{ form_errors(item.child.jump) }}
-                    </div>
-                {% endif %}
             </div>
         {% endfor %}
     </div>
@@ -146,6 +151,7 @@
                 wrapper.innerHTML = html.trim();
                 const newItem = wrapper.firstElementChild;
                 list.appendChild(newItem);
+                recalcTotalCost();
             };
             if (addBtn) {
                 addBtn.addEventListener('click', addItem);
@@ -156,12 +162,39 @@
                     const item = btn.closest('.collection-item');
                     if (item) {
                         item.remove();
+                        recalcTotalCost();
                     }
                 }
             });
         });
     };
-    document.addEventListener('DOMContentLoaded', initCollections);
-    document.addEventListener('turbo:load', initCollections);
+    const recalcTotalCost = () => {
+        const totalInput = document.querySelector('input[name$="[totalCost]"]');
+        if (!totalInput) {
+            return;
+        }
+        const costFields = document.querySelectorAll('[data-cost-mcr]');
+        let sum = 0;
+        costFields.forEach((input) => {
+            const val = parseFloat(input.value);
+            if (!Number.isNaN(val)) {
+                sum += val;
+            }
+        });
+        totalInput.value = sum ? sum.toFixed(2) : '';
+    };
+    const initCostListeners = () => {
+        document.querySelectorAll('[data-cost-mcr]').forEach((input) => {
+            input.addEventListener('input', recalcTotalCost);
+            input.addEventListener('change', recalcTotalCost);
+        });
+        recalcTotalCost();
+    };
+    const initAll = () => {
+        initCollections();
+        initCostListeners();
+    };
+    document.addEventListener('DOMContentLoaded', initAll);
+    document.addEventListener('turbo:load', initAll);
 })();
 </script>

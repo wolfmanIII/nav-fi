@@ -5,6 +5,7 @@ namespace App\Dto;
 class ShipDetailsData
 {
     public ?string $techLevel = null;
+    public ?float $totalCost = null;
 
     public ShipDetailItem $hull;
     public MDriveDetailItem $mDrive;
@@ -53,6 +54,7 @@ class ShipDetailsData
     {
         $dto = new self();
         $dto->techLevel = $data['techLevel'] ?? null;
+        $dto->totalCost = isset($data['totalCost']) ? (float) $data['totalCost'] : null;
 
         $dto->hull = ShipDetailItem::fromArray($data['hull'] ?? []);
         $dto->mDrive = MDriveDetailItem::fromArray($data['mDrive'] ?? []);
@@ -95,6 +97,7 @@ class ShipDetailsData
     {
         return [
             'techLevel' => $this->techLevel,
+            'totalCost' => $this->totalCost,
             'hull' => $this->hull->toArray(),
             'mDrive' => $this->mDrive->toArray(),
             'jDrive' => $this->jDrive->toArray(),

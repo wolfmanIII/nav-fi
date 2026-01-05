@@ -26,7 +26,7 @@ class ShipDetailItemType extends AbstractType
             ->add('costMcr', NumberType::class, [
                 'required' => false,
                 'label' => 'Cost (MCr)',
-                'attr' => ['class' => 'input m-1 w-full', 'step' => 'any'],
+                'attr' => ['class' => 'input m-1 w-full', 'step' => 'any', 'data-cost-mcr' => '1'],
             ]);
     }
 

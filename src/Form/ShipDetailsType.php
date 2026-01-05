@@ -22,6 +22,11 @@ class ShipDetailsType extends AbstractType
                 'label' => 'Tech Level',
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
+            ->add('totalCost', NumberType::class, [
+                'required' => false,
+                'label' => 'Total Cost (MCr)',
+                'attr' => ['class' => 'input m-1 w-full', 'step' => 'any', 'readonly' => true],
+            ])
             ->add('hull', ShipDetailItemType::class, ['label' => 'Hull'])
             ->add('mDrive', MDriveDetailItemType::class, ['label' => 'M-Drive'])
             ->add('jDrive', JDriveDetailItemType::class, ['label' => 'J-Drive'])
