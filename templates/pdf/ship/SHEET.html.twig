@@ -57,11 +57,11 @@
             ? costRaw|format_number({ min_fraction_digit: 3, max_fraction_digit: 3, grouping_used: true }, 'decimal', 'default', locale ?? 'en')
             : '—' %}
         <tr>
-            <th style="width: 28%;">{{ label }}</th>
-            <td style="width: 40%;">{{ desc ?: '—' }}</td>
-            <td style="width: 15%; text-align: right;">{{ tons }}</td>
-            <td style="width: 15%; text-align: right;">{{ cost }}</td>
-            <td style="width: 15%;">{{ spec is not null ? (specLabel is not null ? specLabel : label) ~ ' ' ~ spec : '—' }}</td>
+            <th>{{ label }}</th>
+            <td>{{ desc ?: '—' }}</td>
+            <td style="text-align: right;">{{ tons }}</td>
+            <td style="text-align: right;">{{ cost }}</td>
+            <td>{{ spec is not null ? (specLabel is not null ? specLabel : label) ~ ' ' ~ spec : '—' }}</td>
         </tr>
     {% endmacro %}
 
@@ -74,9 +74,9 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th style="width: 50%;">Description</th>
-                        <th style="width: 20%;">Tons</th>
-                        <th style="width: 30%;">Cost (MCr)</th>
+                        <th>Description</th>
+                        <th>Tons</th>
+                        <th>Cost (MCr)</th>
                     </tr>
                 </thead>
                 <tbody>
