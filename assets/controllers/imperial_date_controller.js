@@ -91,8 +91,8 @@ export default class extends Controller {
 
         const prev = document.createElement('button');
         prev.type = 'button';
-        prev.className = 'btn btn-xs btn-outline btn-primary';
-        prev.textContent = '◀';
+        prev.className = 'btn btn-outline btn-primary flex items-center justify-center text-base h-8 min-h-8';
+        prev.innerHTML = this.decodeIcon(this.displayTarget.dataset.imperialDatePrevIcon) || '«';
         prev.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -105,8 +105,8 @@ export default class extends Controller {
 
         const next = document.createElement('button');
         next.type = 'button';
-        next.className = 'btn btn-xs btn-outline btn-primary';
-        next.textContent = '▶';
+        next.className = 'btn btn-outline btn-primary flex items-center justify-center text-base h-8 min-h-8';
+        next.innerHTML = this.decodeIcon(this.displayTarget.dataset.imperialDateNextIcon) || '»';
         next.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -248,5 +248,9 @@ export default class extends Controller {
                 this.currentMonth = month;
             }
         }
+    }
+
+    decodeIcon(ref) {
+        return ref || null;
     }
 }
