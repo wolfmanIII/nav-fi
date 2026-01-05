@@ -18,23 +18,14 @@
         {{ form_widget(detail_form.siteLocation) }}
         {{ form_errors(detail_form.siteLocation) }}
     </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.recoveredItemsSummary) }}
-        {{ form_widget(detail_form.recoveredItemsSummary) }}
-        {{ form_errors(detail_form.recoveredItemsSummary) }}
-    </div>
     <div>
         {{ form_label(detail_form.qtyValue) }}
         {{ form_widget(detail_form.qtyValue) }}
         {{ form_errors(detail_form.qtyValue) }}
     </div>
+
     <div class="col-span-3">
-        {{ form_label(detail_form.hazards) }}
-        {{ form_widget(detail_form.hazards) }}
-        {{ form_errors(detail_form.hazards) }}
-    </div>
-    {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
-    <div class="col-span-3">
+        {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
         <div class="flex items-center gap-2">
             {{ form_label(detail_form.paymentTerms) }}
             <label for="{{ pay_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
@@ -52,24 +43,40 @@
             </div>
         </div>
     </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.splitTerms) }}
-        {{ form_widget(detail_form.splitTerms) }}
-        {{ form_errors(detail_form.splitTerms) }}
+
+    <div class="col-span-3 grid grid-cols-3 gap-4">
+        <div>
+            {{ form_label(detail_form.recoveredItemsSummary) }}
+            {{ form_widget(detail_form.recoveredItemsSummary) }}
+            {{ form_errors(detail_form.recoveredItemsSummary) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.hazards) }}
+            {{ form_widget(detail_form.hazards) }}
+            {{ form_errors(detail_form.hazards) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.splitTerms) }}
+            {{ form_widget(detail_form.splitTerms) }}
+            {{ form_errors(detail_form.splitTerms) }}
+        </div> 
     </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.rightsBasis) }}
-        {{ form_widget(detail_form.rightsBasis) }}
-        {{ form_errors(detail_form.rightsBasis) }}
-    </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.awardTrigger) }}
-        {{ form_widget(detail_form.awardTrigger) }}
-        {{ form_errors(detail_form.awardTrigger) }}
-    </div>
-    <div class="col-span-3">
-        {{ form_label(detail_form.disputeProcess) }}
-        {{ form_widget(detail_form.disputeProcess) }}
-        {{ form_errors(detail_form.disputeProcess) }}
+    
+    <div class="col-span-3 grid grid-cols-3 gap-4">
+        <div>
+            {{ form_label(detail_form.rightsBasis) }}
+            {{ form_widget(detail_form.rightsBasis) }}
+            {{ form_errors(detail_form.rightsBasis) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.awardTrigger) }}
+            {{ form_widget(detail_form.awardTrigger) }}
+            {{ form_errors(detail_form.awardTrigger) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.disputeProcess) }}
+            {{ form_widget(detail_form.disputeProcess) }}
+            {{ form_errors(detail_form.disputeProcess) }}
+        </div>
     </div>
 </fieldset>

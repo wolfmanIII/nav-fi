@@ -114,6 +114,7 @@ class IncomePrizeDetailsType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => IncomePrizeDetails::class,
+            'campaign_start_year' => null,
         ]);
     }
 }
