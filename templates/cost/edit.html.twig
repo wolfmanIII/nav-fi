@@ -57,9 +57,9 @@
                 {{ form_errors(form.amount) }}
             </div>
 
-            <div>
+            <div data-controller="imperial-date">
                 {{ form_label(form.paymentDate) }}
-                {{ form_widget(form.paymentDate.display) }}
+                {{ form_widget(form.paymentDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
                 {{ form_widget(form.paymentDate.year) }}
                 {{ form_widget(form.paymentDate.day) }}
                 {{ form_errors(form.paymentDate) }}

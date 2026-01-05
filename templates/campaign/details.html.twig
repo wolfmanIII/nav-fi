@@ -182,7 +182,7 @@
 
                 {{ form_start(calendar_form) }}
                 <div class="grid grid-cols-1 gap-4">
-                    <div>
+                    <div data-controller="imperial-date">
                         {{ form_label(calendar_form.display) }}
                         {{ form_widget(calendar_form.display, {
                             attr: {
