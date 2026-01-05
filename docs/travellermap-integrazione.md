@@ -6,8 +6,8 @@ Obiettivo: tracciare e visualizzare rotte Traveller dentro Captain Log, sfruttan
 - **Route** (nuova entità)
   - `id` (int/uuid), `code` (uuid v7 per coerenza con altre entità visibili in UI)
   - `name` (string), `description` (text, opzionale)
-  - `campaign` (ManyToOne Campaign, required)
-  - `ship` (ManyToOne Ship, opzionale ma consigliata)
+  - `campaign` (ManyToOne Campaign, opzionale ma se ship ha campaign dovrebbe ereditare quella)
+  - `ship` (ManyToOne Ship, **required**: una ship può avere molte route)
   - `plannedAt` (datetime immutable, default now)
   - `notes` (text, opzionale)
   - `startHex` (string, opzionale: es. "1234"), `destHex` (string, opzionale)
@@ -68,8 +68,8 @@ Obiettivo: tracciare e visualizzare rotte Traveller dentro Captain Log, sfruttan
   - year-limit non necessario sulle rotte, ma mantenere coerenza di gradient/badge.
 
 ## Sicurezza e ownership
-- Rotte e waypoint legati a Campaign e/o Ship: filtrare per utente corrente in repository come le altre entità; voter Route opzionale (seguire pattern ShipVoter).
-- Se Route è figlia di Campaign, basta controllo Campaign->user.
+- Rotte e waypoint legati a Ship (1–N); filtrare per utente corrente in repository come le altre entità; voter Route opzionale (seguire pattern ShipVoter).
+- La Campaign è derivata dalla Ship (se presente) per coerenza con year-limit e calendario; validare che route.ship.campaign == route.campaign se la si imposta.
 
 ## Migrazioni e seed
 - Migrazione Doctrine per Route + RouteWaypoint (FK a Campaign e Ship, cascade on delete su waypoint).
