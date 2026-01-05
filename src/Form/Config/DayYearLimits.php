@@ -50,4 +50,9 @@ class DayYearLimits
     {
         return $this->yearMin;
     }
+
+    public function getYearMax(): int
+    {
+        return $this->yearMax;
+    }
 }

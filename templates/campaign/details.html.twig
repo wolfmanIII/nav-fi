@@ -183,14 +183,24 @@
                 {{ form_start(calendar_form) }}
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        {{ form_label(calendar_form.sessionDay) }}
-                        {{ form_widget(calendar_form.sessionDay) }}
-                        {{ form_errors(calendar_form.sessionDay) }}
+                        {{ form_label(calendar_form.year) }}
+                        {{ form_widget(calendar_form.year) }}
+                        {{ form_errors(calendar_form.year) }}
                     </div>
                     <div>
-                        {{ form_label(calendar_form.sessionYear) }}
-                        {{ form_widget(calendar_form.sessionYear) }}
-                        {{ form_errors(calendar_form.sessionYear) }}
+                        {{ form_label(calendar_form.month) }}
+                        {{ form_widget(calendar_form.month) }}
+                        {{ form_errors(calendar_form.month) }}
+                    </div>
+                    <div>
+                        {{ form_label(calendar_form.dayInMonth) }}
+                        {{ form_widget(calendar_form.dayInMonth) }}
+                        {{ form_errors(calendar_form.dayInMonth) }}
+                    </div>
+                    <div>
+                        {{ form_label(calendar_form.day) }}
+                        {{ form_widget(calendar_form.day) }}
+                        {{ form_errors(calendar_form.day) }}
                     </div>
                 </div>
                 <div class="modal-action">

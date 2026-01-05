@@ -8,8 +8,9 @@ use App\Entity\Ship;
 use App\Form\Config\DayYearLimits;
 use App\Form\CampaignType;
 use App\Form\ShipSelectType;
+use App\Form\Type\ImperialDateType;
+use App\Model\ImperialDate;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -124,18 +125,11 @@ final class CampaignController extends BaseController
             'shipSelections' => $rows,
         ]);
 
-        $calendarForm = $this->createFormBuilder($campaign)
-            ->add('sessionDay', IntegerType::class, [
-                'label' => 'Session Day',
-                'required' => true,
-                'attr' => $limits->dayAttr(['class' => 'input m-1 w-full']),
-            ])
-            ->add('sessionYear', IntegerType::class, [
-                'label' => 'Session Year',
-                'required' => true,
-                'attr' => $limits->yearAttr(['class' => 'input m-1 w-full'], $campaign->getStartingYear()),
-            ])
-            ->getForm();
+        $sessionDate = new ImperialDate($campaign->getSessionYear(), $campaign->getSessionDay());
+        $calendarForm = $this->createForm(ImperialDateType::class, $sessionDate, [
+            'min_year' => max($limits->getYearMin(), $campaign->getStartingYear() ?? $limits->getYearMin()),
+            'max_year' => $limits->getYearMax(),
+        ]);
 
         $shipForm->handleRequest($request);
         if ($shipForm->isSubmitted() && $shipForm->isValid()) {
@@ -155,6 +149,12 @@ final class CampaignController extends BaseController
 
         $calendarForm->handleRequest($request);
         if ($calendarForm->isSubmitted() && $calendarForm->isValid()) {
+            /** @var ImperialDate $session */
+            $session = $calendarForm->getData();
+
+            $campaign->setSessionDay($session->getDay());
+            $campaign->setSessionYear($session->getYear());
+
             $em->flush();
             $this->addFlash('success', 'Session updated');
 
