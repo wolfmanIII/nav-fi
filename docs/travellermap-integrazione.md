@@ -7,7 +7,7 @@ Obiettivo: tracciare e visualizzare rotte Traveller dentro Captain Log, sfruttan
   - `id` (int/uuid), `code` (uuid v7 per coerenza con altre entità visibili in UI)
   - `name` (string), `description` (text, opzionale)
   - `campaign` (ManyToOne Campaign, opzionale ma se ship ha campaign dovrebbe ereditare quella)
-  - `ship` (ManyToOne Ship, **required**: una ship può avere molte route)
+  - `ship` (ManyToOne Ship, **required**: una Ship può avere molte Route)
   - `plannedAt` (datetime immutable, default now)
   - `notes` (text, opzionale)
   - `startHex` (string, opzionale: es. "1234"), `destHex` (string, opzionale)
@@ -22,7 +22,7 @@ Obiettivo: tracciare e visualizzare rotte Traveller dentro Captain Log, sfruttan
   - `uwp` (string, opzionale – da lookup API)
   - `jumpDistance` (float/int, opzionale: parse da differenza esadecimale tra hex contigui)
   - `notes` (text, opzionale)
-  - ManyToOne Route (cascade persist, orphan removal)
+  - ManyToOne Route (una Route ha molti Waypoint; cascade persist, orphan removal)
 
 - **Ship jump data**
   - Opzione A: aggiungere `jumpRating` e `fuelCapacity` su Ship (o in `shipDetails` JSON) per calcolo fuel.
@@ -68,7 +68,7 @@ Obiettivo: tracciare e visualizzare rotte Traveller dentro Captain Log, sfruttan
   - year-limit non necessario sulle rotte, ma mantenere coerenza di gradient/badge.
 
 ## Sicurezza e ownership
-- Rotte e waypoint legati a Ship (1–N); filtrare per utente corrente in repository come le altre entità; voter Route opzionale (seguire pattern ShipVoter).
+- Rotte e waypoint legati a Ship (Ship 1→N Route; Route 1→N Waypoint); filtrare per utente corrente in repository come le altre entità; voter Route opzionale (seguire pattern ShipVoter).
 - La Campaign è derivata dalla Ship (se presente) per coerenza con year-limit e calendario; validare che route.ship.campaign == route.campaign se la si imposta.
 
 ## Migrazioni e seed
