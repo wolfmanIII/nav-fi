@@ -10,31 +10,29 @@
                 "fetch": "eager"
             }
         },
-        "app": {
-            "ai-console": {
-                "enabled": true,
-                "fetch": "eager"
-            },
-            "bulk-select": {
-                "enabled": true,
-                "fetch": "eager"
-            },
-            "income-details": {
-                "enabled": true,
-                "fetch": "eager"
-            },
-            "ship-details": {
-                "enabled": true,
-                "fetch": "eager"
-            },
-            "single-select-table": {
-                "enabled": true,
-                "fetch": "eager"
-            },
-            "year-limit": {
-                "enabled": true,
-                "fetch": "eager"
-            }
+        "./controllers/ai_console_controller.js": {
+            "enabled": true,
+            "fetch": "eager"
+        },
+        "./controllers/bulk_select_controller.js": {
+            "enabled": true,
+            "fetch": "eager"
+        },
+        "./controllers/income_details_controller.js": {
+            "enabled": true,
+            "fetch": "eager"
+        },
+        "./controllers/ship_details_controller.js": {
+            "enabled": true,
+            "fetch": "eager"
+        },
+        "./controllers/single_select_table_controller.js": {
+            "enabled": true,
+            "fetch": "eager"
+        },
+        "./controllers/year_limit_controller.js": {
+            "enabled": true,
+            "fetch": "eager"
         }
     },
     "entrypoints": []
