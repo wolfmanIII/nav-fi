@@ -30,7 +30,7 @@ class Ship
     private ?string $class = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2)]
-    private ?float $price = null;
+    private ?string $price = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
@@ -131,12 +131,12 @@ class Ship
         return $this;
     }
 
-    public function getPrice(): ?float
+    public function getPrice(): ?string
     {
         return $this->price;
     }
 
-    public function setPrice(float $price): static
+    public function setPrice(string $price): static
     {
         $this->price = $price;
 

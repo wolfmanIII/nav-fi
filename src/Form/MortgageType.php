@@ -67,7 +67,7 @@ class MortgageType extends AbstractType
                     sprintf('%s - %s - %s',
                         $ship->getName(),
                         $ship->getType(),
-                        number_format($ship->getPrice(), 2, ',', '.') . " Cr"
+                        number_format((float) $ship->getPrice(), 2, ',', '.') . " Cr"
                     ),
                 'choice_attr' => function (Ship $ship): array {
                     $start = $ship->getCampaign()?->getStartingYear();
