@@ -95,6 +95,15 @@ class ShipDetailsData
 
     public function toArray(): array
     {
+        $mapCollection = function (array $items): array {
+            $filtered = array_filter($items, fn ($i) => $i instanceof ShipDetailItem);
+
+            return array_values(array_map(
+                fn (ShipDetailItem $i) => $i->toArray(),
+                $filtered
+            ));
+        };
+
         return [
             'techLevel' => $this->techLevel,
             'totalCost' => $this->totalCost,
@@ -108,11 +117,11 @@ class ShipDetailsData
             'sensors' => $this->sensors->toArray(),
             'commonAreas' => $this->commonAreas->toArray(),
             'cargo' => $this->cargo->toArray(),
-            'weapons' => array_map(fn (ShipDetailItem $i) => $i->toArray(), $this->weapons),
-            'craft' => array_map(fn (ShipDetailItem $i) => $i->toArray(), $this->craft),
-            'systems' => array_map(fn (ShipDetailItem $i) => $i->toArray(), $this->systems),
-            'staterooms' => array_map(fn (ShipDetailItem $i) => $i->toArray(), $this->staterooms),
-            'software' => array_map(fn (ShipDetailItem $i) => $i->toArray(), $this->software),
+            'weapons' => $mapCollection($this->weapons),
+            'craft' => $mapCollection($this->craft),
+            'systems' => $mapCollection($this->systems),
+            'staterooms' => $mapCollection($this->staterooms),
+            'software' => $mapCollection($this->software),
         ];
     }
 }
