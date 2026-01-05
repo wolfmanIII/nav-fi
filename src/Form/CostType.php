@@ -8,15 +8,18 @@ use App\Entity\Ship;
 use App\Entity\Company;
 use App\Entity\LocalLaw;
 use App\Form\Config\DayYearLimits;
+use App\Form\Type\ImperialDateType;
 use App\Form\Type\TravellerMoneyType;
+use App\Model\ImperialDate;
 use App\Repository\ShipRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CostType extends AbstractType
@@ -31,6 +34,8 @@ class CostType extends AbstractType
         /** @var Cost $cost */
         $cost = $builder->getData();
         $campaignStartYear = $cost?->getShip()?->getCampaign()?->getStartingYear();
+        $paymentDate = new ImperialDate($cost?->getPaymentYear(), $cost?->getPaymentDay());
+        $minYear = max($this->limits->getYearMin(), $campaignStartYear ?? $this->limits->getYearMin());
 
         $builder
             ->add('title', TextType::class, [
@@ -40,13 +45,14 @@ class CostType extends AbstractType
                 'label' => 'Amount (Cr)',
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('paymentDay', IntegerType::class, [
+            ->add('paymentDate', ImperialDateType::class, [
+                'mapped' => false,
                 'required' => false,
-                'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
-            ])
-            ->add('paymentYear', IntegerType::class, [
+                'label' => 'Payment date',
+                'data' => $paymentDate,
                 'required' => false,
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
+                'min_year' => $minYear,
+                'max_year' => $this->limits->getYearMax(),
             ])
             ->add('costCategory', EntityType::class, [
                 'class' => CostCategory::class,
@@ -107,6 +113,19 @@ class CostType extends AbstractType
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 3],
             ])
         ;
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
+            /** @var Cost $cost */
+            $cost = $event->getData();
+            $form = $event->getForm();
+
+            /** @var ImperialDate|null $payment */
+            $payment = $form->get('paymentDate')->getData();
+            if ($payment instanceof ImperialDate) {
+                $cost->setPaymentDay($payment->getDay());
+                $cost->setPaymentYear($payment->getYear());
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
