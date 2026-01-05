@@ -35,19 +35,19 @@
     {% set details = ship.shipDetails ?? {} %}
     {% set techLevel = details.techLevel ?? '—' %}
     {% set singleItems = [
-        { label: 'Hull', item: details.hull ?? {}, spec: null },
-        { label: 'M-Drive', item: details.mDrive ?? {}, spec: details.mDrive.thrust ?? details.mDrive.thrust ?? null },
-        { label: 'J-Drive', item: details.jDrive ?? {}, spec: details.jDrive.jump ?? details.jDrive.jump ?? null },
-        { label: 'Power Plant', item: details.powerPlant ?? {}, spec: null },
-        { label: 'Fuel Tanks', item: details.fuel ?? {}, spec: null },
-        { label: 'Bridge', item: details.bridge ?? {}, spec: null },
-        { label: 'Computer', item: details.computer ?? {}, spec: null },
-        { label: 'Sensors', item: details.sensors ?? {}, spec: null },
-        { label: 'Common Areas', item: details.commonAreas ?? {}, spec: null },
-        { label: 'Cargo', item: details.cargo ?? {}, spec: null },
+        { label: 'Hull', item: details.hull ?? {}, spec: null, specLabel: null },
+        { label: 'M-Drive', item: details.mDrive ?? {}, spec: details.mDrive.thrust ?? null, specLabel: 'Thrust' },
+        { label: 'J-Drive', item: details.jDrive ?? {}, spec: details.jDrive.jump ?? null, specLabel: 'Jump' },
+        { label: 'Power Plant', item: details.powerPlant ?? {}, spec: null, specLabel: null },
+        { label: 'Fuel Tanks', item: details.fuel ?? {}, spec: null, specLabel: null },
+        { label: 'Bridge', item: details.bridge ?? {}, spec: null, specLabel: null },
+        { label: 'Computer', item: details.computer ?? {}, spec: null, specLabel: null },
+        { label: 'Sensors', item: details.sensors ?? {}, spec: null, specLabel: null },
+        { label: 'Common Areas', item: details.commonAreas ?? {}, spec: null, specLabel: null },
+        { label: 'Cargo', item: details.cargo ?? {}, spec: null, specLabel: null },
     ] %}
 
-    {% macro render_item(label, item, locale, spec) %}
+    {% macro render_item(label, item, locale, spec, specLabel) %}
         {% set desc = item.description ?? '—' %}
         {% set costRaw = item.cost_mcr is defined ? item.cost_mcr : (item.costMcr is defined ? item.costMcr : null) %}
         {% set tons = item.tons is defined and item.tons is not null
@@ -61,7 +61,7 @@
             <td style="width: 40%;">{{ desc ?: '—' }}</td>
             <td style="width: 15%; text-align: right;">{{ tons }}</td>
             <td style="width: 15%; text-align: right;">{{ cost }}</td>
-            <td style="width: 15%;">{{ spec is not null ? label ~ ' ' ~ spec : '—' }}</td>
+            <td style="width: 15%;">{{ spec is not null ? (specLabel is not null ? specLabel : label) ~ ' ' ~ spec : '—' }}</td>
         </tr>
     {% endmacro %}
 
@@ -204,7 +204,7 @@
                 </thead>
                 <tbody>
                     {% for entry in singleItems %}
-                        {{ _self.render_item(entry.label, entry.item, locale, entry.spec) }}
+                        {{ _self.render_item(entry.label, entry.item, locale, entry.spec, entry.specLabel) }}
                     {% endfor %}
                 </tbody>
             </table>
