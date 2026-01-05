@@ -166,6 +166,11 @@
                 wrapper.innerHTML = html.trim();
                 const newItem = wrapper.firstElementChild;
                 list.appendChild(newItem);
+                // bind cost listeners on new inputs
+                newItem.querySelectorAll('[data-cost-mcr]').forEach((input) => {
+                    input.addEventListener('input', recalcTotalCost);
+                    input.addEventListener('change', recalcTotalCost);
+                });
                 recalcTotalCost();
             };
             if (addBtn) {
@@ -216,9 +221,12 @@
         }
     };
     const initCostListeners = () => {
-        document.querySelectorAll('[data-cost-mcr]').forEach((input) => {
+        const bindCostListeners = (input) => {
             input.addEventListener('input', recalcTotalCost);
             input.addEventListener('change', recalcTotalCost);
+        };
+        document.querySelectorAll('[data-cost-mcr]').forEach((input) => {
+            bindCostListeners(input);
         });
         recalcTotalCost();
     };
