@@ -91,22 +91,15 @@
                 {{ form_errors(form.signingLocation) }}
             </div>
 
-            <div class="col-span-1">
+            <div class="col-span-1" data-controller="imperial-date">
                 <div class="flex items-center gap-1">
-                    {{ form_label(form.signingDay) }}
-                    {% if form.signingDay.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                    {{ form_label(form.signingDate) }}
+                    {% if form.signingDate.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
                 </div>
-                {{ form_widget(form.signingDay) }}
-                {{ form_errors(form.signingDay) }}
-            </div>
-
-            <div class="col-span-1">
-                <div class="flex items-center gap-1">
-                    {{ form_label(form.signingYear) }}
-                    {% if form.signingYear.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                </div>
-                {{ form_widget(form.signingYear) }}
-                {{ form_errors(form.signingYear) }}
+                {{ form_widget(form.signingDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                {{ form_widget(form.signingDate.year) }}
+                {{ form_widget(form.signingDate.day) }}
+                {{ form_errors(form.signingDate) }}
             </div>
 
             <div class="col-span-1">
@@ -118,36 +111,24 @@
                 {{ form_errors(form.amount) }}
             </div>
 
-            <div class="col-span-1">
+            <div class="col-span-1" data-controller="imperial-date">
                 <div class="flex items-center gap-1">
-                    {{ form_label(form.paymentDay) }}
+                    {{ form_label(form.paymentDate) }}
                 </div>
-                {{ form_widget(form.paymentDay) }}
-                {{ form_errors(form.paymentDay) }}
+                {{ form_widget(form.paymentDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                {{ form_widget(form.paymentDate.year) }}
+                {{ form_widget(form.paymentDate.day) }}
+                {{ form_errors(form.paymentDate) }}
             </div>
 
-            <div class="col-span-1">
+            <div class="col-span-1" data-controller="imperial-date">
                 <div class="flex items-center gap-1">
-                    {{ form_label(form.paymentYear) }}
+                    {{ form_label(form.expirationDate) }}
                 </div>
-                {{ form_widget(form.paymentYear) }}
-                {{ form_errors(form.paymentYear) }}
-            </div>
-
-            <div class="col-span-1">
-                <div class="flex items-center gap-1">
-                    {{ form_label(form.expirationDay) }}
-                </div>
-                {{ form_widget(form.expirationDay) }}
-                {{ form_errors(form.expirationDay) }}
-            </div>
-
-            <div class="col-span-1">
-                <div class="flex items-center gap-1">
-                    {{ form_label(form.expirationYear) }}
-                </div>
-                {{ form_widget(form.expirationYear) }}
-                {{ form_errors(form.expirationYear) }}
+                {{ form_widget(form.expirationDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                {{ form_widget(form.expirationDate.year) }}
+                {{ form_widget(form.expirationDate.day) }}
+                {{ form_errors(form.expirationDate) }}
             </div>
         </fieldset>
 
@@ -202,15 +183,12 @@
                 <legend class="fieldset-legend">{% include 'icons/income.html.twig' %} Cancellation</legend>
                 <div class="col-span-3">
                     <div class="grid grid-cols-3 gap-4 items-end">
-                        <div>
-                            {{ form_label(form.cancelDay) }}
-                            {{ form_widget(form.cancelDay) }}
-                            {{ form_errors(form.cancelDay) }}
-                        </div>
-                        <div>
-                            {{ form_label(form.cancelYear) }}
-                            {{ form_widget(form.cancelYear) }}
-                            {{ form_errors(form.cancelYear) }}
+                        <div class="col-span-2" data-controller="imperial-date">
+                            {{ form_label(form.cancelDate) }}
+                            {{ form_widget(form.cancelDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                            {{ form_widget(form.cancelDate.year) }}
+                            {{ form_widget(form.cancelDate.day) }}
+                            {{ form_errors(form.cancelDate) }}
                         </div>
                         <div class="alert alert-warning alert-outline">
                             Fill only if the contract was canceled: this date closes its validity window

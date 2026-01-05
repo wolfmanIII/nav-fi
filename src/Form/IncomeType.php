@@ -9,15 +9,18 @@ use App\Entity\Company;
 use App\Entity\LocalLaw;
 use App\Form\EventSubscriber\IncomeDetailsSubscriber;
 use App\Form\Config\DayYearLimits;
+use App\Form\Type\ImperialDateType;
 use App\Form\Type\TravellerMoneyType;
+use App\Model\ImperialDate;
 use App\Repository\ShipRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IncomeType extends AbstractType
@@ -34,49 +37,53 @@ class IncomeType extends AbstractType
         /** @var Income $income */
         $income = $builder->getData();
         $campaignStartYear = $income?->getShip()?->getCampaign()?->getStartingYear();
+        $minYear = max($this->dayYearLimits->getYearMin(), $campaignStartYear ?? $this->dayYearLimits->getYearMin());
+
+        $signingDate = new ImperialDate($income?->getSigningYear(), $income?->getSigningDay());
+        $paymentDate = new ImperialDate($income?->getPaymentYear(), $income?->getPaymentDay());
+        $expirationDate = new ImperialDate($income?->getExpirationYear(), $income?->getExpirationDay());
+        $cancelDate = new ImperialDate($income?->getCancelYear(), $income?->getCancelDay());
 
         $builder
             ->add('title', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('signingDay', IntegerType::class, [
+            ->add('signingDate', ImperialDateType::class, [
+                'mapped' => false,
                 'required' => true,
-                'attr' => $this->dayYearLimits->dayAttr(['class' => 'input m-1 w-full']),
-            ])
-            ->add('signingYear', IntegerType::class, [
-                'required' => true,
-                'attr' => $this->dayYearLimits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
+                'label' => 'Signing date',
+                'data' => $signingDate,
+                'min_year' => $minYear,
+                'max_year' => $this->dayYearLimits->getYearMax(),
             ])
             ->add('signingLocation', TextType::class, [
                 'required' => true,
                 'label' => 'Signing Location',
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('paymentDay', IntegerType::class, [
+            ->add('paymentDate', ImperialDateType::class, [
+                'mapped' => false,
                 'required' => false,
-                'attr' => $this->dayYearLimits->dayAttr(['class' => 'input m-1 w-full']),
+                'label' => 'Payment date',
+                'data' => $paymentDate,
+                'min_year' => $minYear,
+                'max_year' => $this->dayYearLimits->getYearMax(),
             ])
-            ->add('paymentYear', IntegerType::class, [
+            ->add('expirationDate', ImperialDateType::class, [
+                'mapped' => false,
                 'required' => false,
-                'attr' => $this->dayYearLimits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
+                'label' => 'Expiration date',
+                'data' => $expirationDate,
+                'min_year' => $minYear,
+                'max_year' => $this->dayYearLimits->getYearMax(),
             ])
-            ->add('expirationDay', IntegerType::class, [
-                'label' => 'Expiration Day',
+            ->add('cancelDate', ImperialDateType::class, [
+                'mapped' => false,
                 'required' => false,
-                'attr' => $this->dayYearLimits->dayAttr(['class' => 'input m-1 w-full']),
-            ])
-            ->add('expirationYear', IntegerType::class, [
-                'label' => 'Expiration Year',
-                'required' => false,
-                'attr' => $this->dayYearLimits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
-            ])
-            ->add('cancelDay', IntegerType::class, [
-                'required' => false,
-                'attr' => $this->dayYearLimits->dayAttr(['class' => 'input m-1 w-full']),
-            ])
-            ->add('cancelYear', IntegerType::class, [
-                'required' => false,
-                'attr' => $this->dayYearLimits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
+                'label' => 'Cancel date',
+                'data' => $cancelDate,
+                'min_year' => $minYear,
+                'max_year' => $this->dayYearLimits->getYearMax(),
             ])
             ->add('amount', TravellerMoneyType::class, [
                 'label' => 'Amount (Cr)',
@@ -147,6 +154,40 @@ class IncomeType extends AbstractType
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 3],
             ])
         ;
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
+            /** @var Income $income */
+            $income = $event->getData();
+            $form = $event->getForm();
+
+            /** @var ImperialDate|null $signing */
+            $signing = $form->get('signingDate')->getData();
+            if ($signing instanceof ImperialDate) {
+                $income->setSigningDay($signing->getDay());
+                $income->setSigningYear($signing->getYear());
+            }
+
+            /** @var ImperialDate|null $payment */
+            $payment = $form->get('paymentDate')->getData();
+            if ($payment instanceof ImperialDate) {
+                $income->setPaymentDay($payment->getDay());
+                $income->setPaymentYear($payment->getYear());
+            }
+
+            /** @var ImperialDate|null $expiration */
+            $expiration = $form->get('expirationDate')->getData();
+            if ($expiration instanceof ImperialDate) {
+                $income->setExpirationDay($expiration->getDay());
+                $income->setExpirationYear($expiration->getYear());
+            }
+
+            /** @var ImperialDate|null $cancel */
+            $cancel = $form->get('cancelDate')->getData();
+            if ($cancel instanceof ImperialDate) {
+                $income->setCancelDay($cancel->getDay());
+                $income->setCancelYear($cancel->getYear());
+            }
+        });
 
         $builder->addEventSubscriber($this->incomeDetailsSubscriber);
     }
