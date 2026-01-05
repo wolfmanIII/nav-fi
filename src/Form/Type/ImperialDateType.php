@@ -26,7 +26,7 @@ class ImperialDateType extends AbstractType
                 'required' => false,
                 'label' => false,
                 'attr' => [
-                    'class' => 'input input-bordered w-full',
+                    'class' => 'input m-1 w-full datepicker',
                     'readonly' => true,
                     'data-imperial-date-target' => 'display',
                     'data-action' => 'click->imperial-date#toggle',

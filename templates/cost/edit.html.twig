@@ -58,15 +58,11 @@
             </div>
 
             <div>
-                {{ form_label(form.paymentDay) }}
-                {{ form_widget(form.paymentDay) }}
-                {{ form_errors(form.paymentDay) }}
-            </div>
-
-            <div>
-                {{ form_label(form.paymentYear) }}
-                {{ form_widget(form.paymentYear) }}
-                {{ form_errors(form.paymentYear) }}
+                {{ form_label(form.paymentDate) }}
+                {{ form_widget(form.paymentDate.display) }}
+                {{ form_widget(form.paymentDate.year) }}
+                {{ form_widget(form.paymentDate.day) }}
+                {{ form_errors(form.paymentDate) }}
             </div>
 
             <div>

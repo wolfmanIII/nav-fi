@@ -190,10 +190,10 @@
                                 'data-imperial-date-next-icon': '»',
                             }
                         }) }}
+                        {{ form_widget(calendar_form.year) }}
+                        {{ form_widget(calendar_form.day) }}
                         {{ form_errors(calendar_form.display) }}
                     </div>
-                    {{ form_widget(calendar_form.year) }}
-                    {{ form_widget(calendar_form.day) }}
                 </div>
                 <div class="modal-action">
                     <button type="submit" class="btn btn-outline btn-primary">Save</button>
