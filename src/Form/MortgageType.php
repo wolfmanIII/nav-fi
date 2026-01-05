@@ -9,14 +9,17 @@ use App\Entity\Ship;
 use App\Entity\Company;
 use App\Entity\LocalLaw;
 use App\Form\Config\DayYearLimits;
+use App\Form\Type\ImperialDateType;
 use App\Form\Type\TravellerMoneyType;
+use App\Model\ImperialDate;
 use App\Repository\ShipRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MortgageType extends AbstractType
@@ -33,17 +36,20 @@ class MortgageType extends AbstractType
         $user = $options['user'];
         $currentShipId = $mortgage->getShip()?->getId();
         $campaignStartYear = $mortgage->getShip()?->getCampaign()?->getStartingYear();
+        $minYear = max($this->limits->getYearMin(), $campaignStartYear ?? $this->limits->getYearMin());
+        $startDate = new ImperialDate($mortgage?->getStartYear(), $mortgage?->getStartDay());
 
         $builder
             //->add('name', TextType::class, ['attr' => ['class' => 'input m-1 w-full'],])
-            ->add('startDay', IntegerType::class, [
-                'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
-                'disabled' => $disabled,
-                ])
-            ->add('startYear', IntegerType::class, [
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
-                'disabled' => $disabled,
-                ])
+            ->add('startDate', ImperialDateType::class, [
+                'mapped' => false,
+                'label' => 'Start date',
+                'required' => true,
+                'data' => $startDate,
+                'min_year' => $minYear,
+                'max_year' => $this->limits->getYearMax(),
+                'attr' => ['class' => $disabled ? 'pointer-events-none opacity-60' : ''],
+            ])
             ->add('shipShares', IntegerType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
                 'disabled' => $disabled,
@@ -147,6 +153,19 @@ class MortgageType extends AbstractType
                 'disabled' => $disabled,
             ])
         ;
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+            /** @var Mortgage $mortgage */
+            $mortgage = $event->getData();
+            $form = $event->getForm();
+
+            /** @var ImperialDate|null $start */
+            $start = $form->get('startDate')->getData();
+            if ($start instanceof ImperialDate) {
+                $mortgage->setStartDay($start->getDay());
+                $mortgage->setStartYear($start->getYear());
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

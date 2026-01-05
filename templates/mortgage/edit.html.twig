@@ -77,21 +77,15 @@
                         {{ form_widget(form.ship) }}
                         {{ form_errors(form.ship) }}
                     </div>
-                    <div>
+                    <div class="col-span-2" data-controller="imperial-date">
                         <div class="flex items-center gap-1">
-                            {{ form_label(form.startDay) }}
-                            {% if form.startDay.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                            {{ form_label(form.startDate) }}
+                            {% if form.startDate.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
                         </div>
-                        {{ form_widget(form.startDay) }}
-                        {{ form_errors(form.startDay) }}
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-1">
-                            {{ form_label(form.startYear) }}
-                            {% if form.startYear.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                        </div>
-                        {{ form_widget(form.startYear) }}
-                        {{ form_errors(form.startYear) }}
+                        {{ form_widget(form.startDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                        {{ form_widget(form.startDate.year) }}
+                        {{ form_widget(form.startDate.day) }}
+                        {{ form_errors(form.startDate) }}
                     </div>
                 </div>
 
