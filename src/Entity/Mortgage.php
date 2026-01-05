@@ -384,8 +384,8 @@ class Mortgage
         return bcadd((string)$value, '0', $scale);
     }
 
-    private function roundAmount(string $value, int $precision = 2, int $mode = PHP_ROUND_HALF_DOWN): float
+    private function roundAmount(string $value, int $precision = 2, int $mode = PHP_ROUND_HALF_DOWN): string
     {
-        return round((float)$value, $precision, $mode);
+        return number_format((float)$value, $precision, '.', '');
     }
 }
