@@ -48,13 +48,13 @@
                         <td class="text-right">{{ summary.total_mortgage|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
                         <td class="text-right">{{ summary.total_monthly_payment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
                         <td class="text-right">{{ summary.total_annual_payment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
-                        <td class="text-right bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-700 text-emerald-50">{{ summary.installments_paid }}</td>
-                        <td class="text-right bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-700 text-emerald-50">
+                        <td class="text-right">{{ summary.installments_paid }}</td>
+                        <td class="text-right">
                             {% if last_payment %}
                                 {{ last_payment.paymentDay }} / {{ last_payment.paymentYear }}
                             {% endif %}
                         </td>
-                        <td class="text-right bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-700 text-emerald-50">{{ summary.total_mortgage_paid|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
+                        <td class="text-right">{{ summary.total_mortgage_paid|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
                     </tr>
                 </tbody>
             </table>
