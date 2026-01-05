@@ -24,7 +24,7 @@ class ShipDetailsType extends AbstractType
             ])
             ->add('totalCost', NumberType::class, [
                 'required' => false,
-                'label' => 'Total Cost (MCr)',
+                'label' => 'Costo totale (MCr)',
                 'attr' => ['class' => 'input m-1 w-full', 'step' => 'any', 'readonly' => true],
             ])
             ->add('hull', ShipDetailItemType::class, ['label' => 'Hull'])
