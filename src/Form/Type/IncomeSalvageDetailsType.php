@@ -78,6 +78,7 @@ class IncomeSalvageDetailsType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => IncomeSalvageDetails::class,
+            'campaign_start_year' => null,
         ]);
     }
 }
