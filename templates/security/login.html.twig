@@ -1,80 +1,87 @@
 {% extends 'base_plain.html.twig' %}
 
-{% block title %}Accedi - Captain Log{% endblock %}
+{% block title %}Login - Captain Log{% endblock %}
 
 {% block pageContent %}
 <div class="flex items-center justify-center min-h-[60vh] py-6">
-    <div class="card w-full max-w-5xl bg-base-100 border border-base-300 shadow-lg">
-        <div class="grid grid-cols-1 md:grid-cols-2 h-full">
-            <div class="card-body space-y-6">
-                <div class="flex items-center gap-3">
-                    <img src="{{ asset('img/captain-log-logo.png') }}" alt="Captain Log" class="w-14 h-14">
+    <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Panel: Login -->
+        <div class="card bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 border border-cyan-500/20 shadow-2xl overflow-hidden h-full">
+            <div class="relative flex flex-col gap-4 p-6 h-full">
+                <div class="absolute inset-0 opacity-20 pointer-events-none"
+                     style="background: radial-gradient(circle at 20% 20%, rgba(34,211,238,0.15), transparent 40%), radial-gradient(circle at 80% 30%, rgba(94,234,212,0.12), transparent 35%);">
+                </div>
+                <div class="relative flex items-center gap-3">
+                    <img src="{{ asset('img/captain-log-logo.png') }}" alt="Captain Log" class="w-16 h-16">
                     <div>
-                    <p class="text-lg font-semibold">Captain Log</p>
-                    <p class="text-sm opacity-70">Autenticazione richiesta</p>
+                        <p class="text-lg font-semibold text-cyan-100">Captain Log</p>
+                        <p class="text-sm text-cyan-200/80 uppercase tracking-[0.25em]">Docking access</p>
+                    </div>
+                </div>
+
+                <p class="relative text-sm text-slate-200/90">
+                    Sign in to sync ships, crew, mortgages, and credits before you clear the next jump.
+                </p>
+
+                {% if error %}
+                    <div class="alert alert-error text-sm relative">
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </div>
+                {% endif %}
+
+                <form method="post" class="relative flex flex-col gap-3">
+                    <div class="form-control w-full">
+                        <input
+                            type="email"
+                            name="email"
+                            value="{{ last_username }}"
+                            class="input input-bordered w-full"
+                            placeholder="Email (captain@imperial.mail)"
+                            required
+                            autofocus
+                        >
+                    </div>
+
+                    <div class="form-control w-full">
+                        <input
+                            type="password"
+                            name="password"
+                            class="input input-bordered w-full"
+                            placeholder="Access code"
+                            required
+                        >
+                    </div>
+
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    <button class="btn btn-primary w-full" type="submit">
+                        Sign in
+                    </button>
+                </form>
+
+                <a href="{{ path('app_home') }}" class="relative btn btn-outline w-full mt-auto">
+                    Return to bridge
+                </a>
+            </div>
+        </div>
+
+        <!-- Panel: Brief -->
+        <div class="card bg-gradient-to-br from-slate-900 via-slate-800 to-cyan-900 p-6 shadow-2xl border border-cyan-500/20 flex flex-col justify-between text-sm">
+            <div class="space-y-3">
+                <h2 class="font-semibold text-cyan-100 text-base uppercase tracking-[0.2em]">Traveller brief</h2>
+                <p class="text-slate-200/90">
+                    This console is keyed to your crew and hulls. Secure your jump data: log off before leaving the bridge or sharing the terminal.
+                </p>
+                <div class="flex justify-center">
+                    <img src="{{ asset('img/iris-airlock.png') }}"
+                         alt="Iris airlock"
+                         class="max-w-[380px] object-contain">
                 </div>
             </div>
-
-            <p class="text-sm opacity-80">
-                Accedi per utilizzare le funzioni interne.
-            </p>
-
-            {% if error %}
-                <div class="alert alert-error text-sm">
-                    {{ error.messageKey|trans(error.messageData, 'security') }}
-                </div>
-            {% endif %}
-
-            <form method="post" class="space-y-4">
-                <div class="form-control w-full">
-                    <input
-                        type="email"
-                        name="email"
-                        value="{{ last_username }}"
-                        class="input input-bordered w-full"
-                        placeholder="Email"
-                        required
-                        autofocus
-                    >
-                </div>
-
-                <div class="form-control w-full">
-                    <input
-                        type="password"
-                        name="password"
-                        class="input input-bordered w-full"
-                        placeholder="Password"
-                        required
-                    >
-                </div>
-
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-                <button class="btn btn-primary w-full mt-2" type="submit">
-                    Entra
-                </button>
-            </form>
-
-            <a href="{{ path('app_home') }}" class="btn btn-outline w-full">
-                Torna alla homepage
-            </a>
-            </div>
-
-            <div class="bg-base-200/60 p-6 rounded-r-2xl flex flex-col justify-between text-sm">
-                <div>
-                    <h2 class="font-semibold mb-2 text-base">Area riservata</h2>
-                    <p class="opacity-80">
-                        Le credenziali sono personali. I dati vengono trattati in modo confidenziale
-                        e protetti con adeguate misure di sicurezza. Effettua sempre il logout su 
-                        dispositivi condivisi.
-                    </p>
-                </div>
-                <div class="mt-6 opacity-70">
-                    <p class="text-xs">
-                        Accedendo confermi di utilizzare credenziali personali e di mantenere riservate 
-                        le informazioni visualizzate.
-                    </p>
-                </div>
+            <div class="mt-6 text-slate-300/80">
+                <p class="text-xs">
+                    By signing in, you confirm command over your credentials and agree to keep all ship, crew, and contract intel confidential.
+                </p>
             </div>
         </div>
     </div>
