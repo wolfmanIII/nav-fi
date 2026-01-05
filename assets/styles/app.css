@@ -33,47 +33,49 @@
     @apply border-b-0;
 }
 
-/* Gradient alerts per tipo, usando i colori base DaisyUI */
-.alert.alert-info {
-    background: linear-gradient(
-        to right,
-        hsl(var(--info) / 0.9),
-        hsl(var(--info) / 0.75),
-        hsl(var(--info) / 0.6)
-    );
-    color: hsl(var(--info-content));
-    border: 1px solid hsl(var(--info) / 0.35);
-}
 
-.alert.alert-warning {
-    background: linear-gradient(
-        to right,
-        hsl(var(--warning) / 0.9),
-        hsl(var(--warning) / 0.75),
-        hsl(var(--warning) / 0.6)
-    );
-    color: hsl(var(--warning-content));
-    border: 1px solid hsl(var(--warning) / 0.35);
-}
+@layer components {
+    .alert.alert-info {
+        background: linear-gradient(
+            to right,
+            #0f172a, /* slate-900 */
+            #1f2937, /* slate-800 */
+            #0e7490  /* cyan-900 */
+        ) !important;
+        color: #cffafe !important; /* cyan-100 */
+        border: 1px solid rgba(6, 182, 212, 0.3) !important; /* cyan-500/30 */
+    }
 
-.alert.alert-error {
-    background: linear-gradient(
-        to right,
-        hsl(var(--error) / 0.9),
-        hsl(var(--error) / 0.75),
-        hsl(var(--error) / 0.6)
-    );
-    color: hsl(var(--error-content));
-    border: 1px solid hsl(var(--error) / 0.35);
-}
+    .alert.alert-success {
+        background: linear-gradient(
+            to right,
+            #022c22, /* emerald-950 */
+            #064e3b, /* emerald-900 */
+            #047857  /* emerald-700 */
+        ) !important;
+        color: #ecfdf3 !important; /* emerald-50 */
+        border: 1px solid rgba(16, 185, 129, 0.35) !important; /* emerald-500/35 */
+    }
 
-.alert.alert-success {
-    background: linear-gradient(
-        to right,
-        hsl(var(--success) / 0.9),
-        hsl(var(--success) / 0.75),
-        hsl(var(--success) / 0.6)
-    );
-    color: hsl(var(--success-content));
-    border: 1px solid hsl(var(--success) / 0.35);
+    .alert.alert-warning {
+        background: linear-gradient(
+            to right,
+            #451a03, /* amber-950 più scuro */
+            #92400e, /* amber-900 */
+            #f59e0b  /* amber-500 più chiaro a destra */
+        ) !important;
+        color: #fffbeb !important; /* amber-50 */
+        border: 1px solid rgba(217, 119, 6, 0.35) !important; /* amber-500/35 */
+    }
+
+    .alert.alert-error {
+        background: linear-gradient(
+            to right,
+            #450a0a, /* red-950 più scuro a sinistra */
+            #991b1b, /* red-800/900 mix */
+            #dc2626  /* red-600 più intenso a destra */
+        ) !important;
+        color: #fee2e2 !important; /* red-100 */
+        border: 1px solid rgba(248, 113, 113, 0.35) !important; /* red-400/35 */
+    }
 }
