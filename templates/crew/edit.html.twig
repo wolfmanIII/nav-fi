@@ -76,16 +76,12 @@
             </div>
             <div></div>
 
-            <div>
-                {{ form_label(form.birthDay) }}
-                {{ form_widget(form.birthDay) }}
-                {{ form_errors(form.birthDay) }}
-            </div>
-
-            <div>
-                {{ form_label(form.birthYear) }}
-                {{ form_widget(form.birthYear) }}
-                {{ form_errors(form.birthYear) }}
+            <div class="col-span-2" data-controller="imperial-date">
+                {{ form_label(form.birthDate) }}
+                {{ form_widget(form.birthDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                {{ form_widget(form.birthDate.year) }}
+                {{ form_widget(form.birthDate.day) }}
+                {{ form_errors(form.birthDate) }}
             </div>
 
             <div>

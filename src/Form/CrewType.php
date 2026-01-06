@@ -6,12 +6,16 @@ use App\Entity\Crew;
 use App\Entity\Ship;
 use App\Entity\ShipRole;
 use App\Form\Config\DayYearLimits;
+use App\Form\Type\ImperialDateType;
+use App\Model\ImperialDate;
 use App\Repository\ShipRepository;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CrewType extends AbstractType
@@ -27,6 +31,8 @@ class CrewType extends AbstractType
         $disabled = $crew->hasMortgageSigned();
         $user = $options['user'];
         $campaignStartYear = $crew?->getShip()?->getCampaign()?->getStartingYear();
+        $minYear = max($this->limits->getYearMin(), $campaignStartYear ?? $this->limits->getYearMin());
+        $birthDate = new ImperialDate($crew?->getBirthYear(), $crew?->getBirthDay());
         $builder
             ->add('name', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
@@ -41,15 +47,14 @@ class CrewType extends AbstractType
                 'required' => false,
                 'disabled' => $disabled,
             ])
-            ->add('birthYear', IntegerType::class, [
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
+            ->add('birthDate', ImperialDateType::class, [
+                'mapped' => false,
                 'required' => false,
-                'disabled' => $disabled,
-            ])
-            ->add('birthDay', IntegerType::class, [
-                'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
-                'required' => false,
-                'disabled' => $disabled,
+                'label' => 'Birth date',
+                'data' => $birthDate,
+                'min_year' => $minYear,
+                'max_year' => $this->limits->getYearMax(),
+                'attr' => ['class' => $disabled ? 'pointer-events-none opacity-60' : ''],
             ])
             ->add('birthWorld', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
@@ -90,6 +95,19 @@ class CrewType extends AbstractType
                 'disabled' => $disabled,
             ])
         ;
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
+            /** @var Crew $crew */
+            $crew = $event->getData();
+            $form = $event->getForm();
+
+            /** @var ImperialDate|null $birth */
+            $birth = $form->get('birthDate')->getData();
+            if ($birth instanceof ImperialDate) {
+                $crew->setBirthDay($birth->getDay());
+                $crew->setBirthYear($birth->getYear());
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
