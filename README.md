@@ -4,10 +4,10 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, 
 
 ## Caratteristiche principali
 - Navi, equipaggi, ruoli di bordo e mutui (rate, tassi, assicurazioni) con vincolo uno-a-uno nave↔mutuo; stampa PDF della scheda nave.
-- Campagne con calendario di sessione (giorno/anno) e relazione 1–N con Ship: le date di sessione sono centralizzate su Campaign e usate ovunque (liste e PDF).
+- Campagne con calendario di sessione (giorno/anno) e relazione 1–N con Ship: le date di sessione sono centralizzate su Campaign e usate ovunque (liste e PDF) tramite l’Imperial datepicker `DDD/YYYY`.
 - Tipologie di spesa equipaggio (`CostCategory`) e anagrafiche di contesto (InterestRate, Insurance, ShipRole, CompanyRole, LocalLaw, IncomeCategory).
 - Company e CompanyRole come controparti contrattuali; LocalLaw per giurisdizione e disclaimer.
-- Entrate e costi legati alla nave con dettagli per categoria (es. Freight, Contract): form dinamiche e PDF contrattuali generati con wkhtmltopdf.
+- Entrate e costi legati alla nave con dettagli per categoria (es. Freight, Contract): form dinamiche e PDF contrattuali generati con wkhtmltopdf, con date rese via ImperialDateType + controller Stimulus `imperial-date`.
 - Scheda dettagli nave salvata come JSON (`shipDetails`) con campi base e collezioni (weapons, craft, systems, staterooms, software) editabili da form dedicata.
 - Tracciamento dell’utente proprietario su Ship, Crew, Mortgage, MortgageInstallment, Cost, Income e budget; i voter bloccano l’accesso se l’utente non coincide.
 - Annual Budget per nave: calcolo riepilogativo di ricavi, costi e rate annuali del mutuo, più grafico temporale Income/Cost.
@@ -16,7 +16,7 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, 
 - Console AI per inoltrare domande a un backend esterno (Elara) tramite HttpClient.
 - I controller e i repository filtrano le entità sull’utente proprietario restituendo 404 se non corrispondono, per difesa in profondità oltre ai voter.
 - I calcoli del mutuo usano BCMath e importi normalizzati a stringa per evitare drift tipici dei float; la formattazione numerica nelle liste/PDF è localizzata tramite `twig/intl-extra`.
-- I campi anno/giorno usano input interi con limiti min/max: l’anno minimo è derivato dallo `startingYear` della Campaign selezionata (fallback `APP_YEAR_MIN`), applicato anche via Stimulus (`year-limit`).
+- I campi giorno/anno usano `ImperialDateType` (picker Stimulus `imperial-date` con formato `DDD/YYYY`) e limiti min/max: l’anno minimo è derivato dallo `startingYear` della Campaign selezionata (fallback `APP_YEAR_MIN`), applicato dinamicamente dal controller.
 
 ## Requisiti
 - PHP 8.2+

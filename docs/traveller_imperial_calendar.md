@@ -31,6 +31,30 @@ Questi range presuppongono un anno da 365 giorni con una festività interstizial
 - **Uso nel form**: `->add('paymentDate', ImperialDateType::class, [...])` con mapping manuale in `FormEvents::SUBMIT` per scrivere `paymentDay`/`paymentYear` sull’entità. Esempi concreti:
   - `src/Form/CostType.php` → mappa `paymentDate` su `paymentDay/paymentYear`; in Twig (`templates/cost/edit.html.twig`) rendere manualmente `display`, `year`, `day` dentro un wrapper `data-controller="imperial-date"` per evitare markup extra.
   - `CampaignController` modale “Update Session” (`templates/campaign/details.html.twig`) usa lo stesso widget e wrapper.
-  - Dettagli Income (es. Charter, Subsidy) applicano lo stesso pattern e pre-valorizzano display + data-* per far emergere i dati già presenti.
+  - Dettagli Income (Charter, Subsidy, Freight, Passengers, Services, Mail, Interest, Trade, Insurance, Contract, Prize, Salvage) applicano lo stesso pattern e pre-valorizzano display + data-* per far emergere i dati già presenti.
+  - Mortgage (startDate), MortgageInstallment (paymentDate), Cost (paymentDate), AnnualBudget (start/end) e Crew (birthDate) usano ImperialDateType; il calendario Ship non viene più usato, perché le sessioni derivano da Campaign.
 - **Range mapping**: i range qui sopra sono codificati nel controller JS; il server non ricostruisce il mese, ma accetta il day-of-year normalizzato (1–365) rispettando i limiti min/max anno.  
 - **Debug rapidi**: se il popover non si vede sopra una modale, verificare `position` e `overflow` del contenitore (`.modal-box`), e che gli asset siano ricompilati (`php bin/console asset-map:compile`).
+
+## Come integrare una nuova data (day/year) con il calendario imperiale
+1) **Entity**: mantieni i campi `xxxDay` (int) e `xxxYear` (int).  
+2) **Form Type**: aggiungi il campo con `ImperialDateType` (mapped=false) e un listener `FormEvents::SUBMIT` per copiare day/year da `ImperialDate` ai campi dell’entità. Rispetta `min_year`/`max_year` (min derivato da `campaign_start_year` se disponibile, altrimenti `APP_YEAR_MIN`).  
+3) **Twig**: non usare `form_row`. Renderizza manualmente:
+   ```twig
+   <div data-controller="imperial-date">
+     {{ form_label(form.fooDate) }}
+     {{ form_widget(form.fooDate.display, { attr: {
+       'data-imperial-date-prev-icon': '«',
+       'data-imperial-date-next-icon': '»',
+       'data-imperial-date-initial-day': existing_day ?? '',
+       'data-imperial-date-initial-year': existing_year ?? '',
+       'value': existing_value ~ ''
+     }}) }}
+     {{ form_widget(form.fooDate.year) }}
+     {{ form_widget(form.fooDate.day) }}
+     {{ form_errors(form.fooDate) }}
+   </div>
+   ```
+   Precompila `value="DDD/YYYY"` e i data-attr usando i valori già salvati, così il picker è coerente al load.  
+4) **Popover su modale**: assicurati che il contenitore abbia `overflow: visible` o usa `.modal-box` come contesto posizionato.  
+5) **Asset**: se il comportamento non cambia, basta `php bin/console asset-map:compile` (o equivalente vite/encore) per rigenerare il JS.
