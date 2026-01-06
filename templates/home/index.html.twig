@@ -32,11 +32,26 @@
                     </p>
                     <div class="flex flex-wrap gap-3">
                         {% set drawer_btn = 'btn text-emerald-50 border-[4px] border-emerald-400/90 bg-gradient-to-r from-emerald-950 via-emerald-800 to-emerald-500 hover:from-emerald-900 hover:via-emerald-700 hover:to-emerald-400 hover:border-emerald-300 shadow-lg shadow-emerald-900/50' %}
-                        <a href="{{ path('app_campaign_index') }}" class="{{ drawer_btn }}">Create Campaign</a>
-                        <a href="{{ path('app_ship_index') }}" class="{{ drawer_btn }}">Go to Shipyard</a>
-                        <a href="{{ path('app_mortgage_index') }}" class="{{ drawer_btn }}">Manage Mortgages</a>
-                        <a href="{{ path('app_annual_budget_index') }}" class="{{ drawer_btn }}">Annual Budgets</a>
-                        <a href="{{ path('app_cost_index') }}" class="{{ drawer_btn }}">Track Costs</a>
+                        <a href="{{ path('app_campaign_index') }}" class="{{ drawer_btn }} flex items-center gap-2">
+                            {% include 'icons/alien-structure-1.html.twig' %}
+                            <span>Create Campaign</span>
+                        </a>
+                        <a href="{{ path('app_ship_index') }}" class="{{ drawer_btn }} flex items-center gap-2">
+                            {% include 'icons/far-trader.html.twig' %}
+                            <span>Go to Shipyard</span>
+                        </a>
+                        <a href="{{ path('app_mortgage_index') }}" class="{{ drawer_btn }} flex items-center gap-2">
+                            {% include 'icons/handbook.html.twig' %}
+                            <span>Manage Mortgages</span>
+                        </a>
+                        <a href="{{ path('app_annual_budget_index') }}" class="{{ drawer_btn }} flex items-center gap-2">
+                            {% include 'icons/annual-budget.html.twig' %}
+                            <span>Annual Budgets</span>
+                        </a>
+                        <a href="{{ path('app_cost_index') }}" class="{{ drawer_btn }} flex items-center gap-2">
+                            {% include 'icons/cost.html.twig' %}
+                            <span>Track Costs</span>
+                        </a>
                     </div>
                     <div class="flex flex-wrap gap-4 pt-4 text-xs uppercase tracking-[0.25em] text-cyan-200/70">
                         <span class="badge badge-outline badge-sm">Jump Ready</span>
