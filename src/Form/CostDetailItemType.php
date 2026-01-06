@@ -18,7 +18,7 @@ class CostDetailItemType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('quantity', NumberType::class, [
+            ->add('quantity', IntegerType::class, [
                 'required' => false,
                 'label' => 'Quantity',
                 'attr' => ['class' => 'input m-1 w-full', 'min' => 1],
