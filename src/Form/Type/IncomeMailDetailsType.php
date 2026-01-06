@@ -4,13 +4,16 @@ namespace App\Form\Type;
 
 use App\Entity\IncomeMailDetails;
 use App\Form\Config\DayYearLimits;
+use App\Form\Type\ImperialDateType;
+use App\Model\ImperialDate;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IncomeMailDetailsType extends AbstractType
@@ -22,6 +25,11 @@ class IncomeMailDetailsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $campaignStartYear = $options['campaign_start_year'] ?? null;
+        $minYear = $campaignStartYear ?? $this->limits->getYearMin();
+        /** @var IncomeMailDetails|null $data */
+        $data = $builder->getData();
+        $dispatchDate = new ImperialDate($data?->getDispatchYear(), $data?->getDispatchDay());
+        $deliveryDate = new ImperialDate($data?->getDeliveryYear(), $data?->getDeliveryDay());
         $builder
             ->add('origin', TextType::class, [
                 'required' => false,
@@ -33,25 +41,21 @@ class IncomeMailDetailsType extends AbstractType
                 'label' => 'Destination',
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('dispatchDay', IntegerType::class, [
+            ->add('dispatchDate', ImperialDateType::class, [
+                'mapped' => false,
                 'required' => false,
-                'label' => 'Dispatch Day',
-                'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
+                'label' => 'Dispatch date',
+                'data' => $dispatchDate,
+                'min_year' => $minYear,
+                'max_year' => $this->limits->getYearMax(),
             ])
-            ->add('dispatchYear', IntegerType::class, [
+            ->add('deliveryDate', ImperialDateType::class, [
+                'mapped' => false,
                 'required' => false,
-                'label' => 'Dispatch Year',
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
-            ])
-            ->add('deliveryDay', IntegerType::class, [
-                'required' => false,
-                'label' => 'Delivery Day',
-                'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
-            ])
-            ->add('deliveryYear', IntegerType::class, [
-                'required' => false,
-                'label' => 'Delivery Year',
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
+                'label' => 'Delivery date',
+                'data' => $deliveryDate,
+                'min_year' => $minYear,
+                'max_year' => $this->limits->getYearMax(),
             ])
             ->add('mailType', ChoiceType::class, [
                 'required' => false,
@@ -132,6 +136,26 @@ class IncomeMailDetailsType extends AbstractType
                 'scale' => 2,
                 'attr' => ['class' => 'input m-1 w-full'],
             ]);
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
+            /** @var IncomeMailDetails $details */
+            $details = $event->getData();
+            $form = $event->getForm();
+
+            /** @var ImperialDate|null $dispatch */
+            $dispatch = $form->get('dispatchDate')->getData();
+            if ($dispatch instanceof ImperialDate) {
+                $details->setDispatchDay($dispatch->getDay());
+                $details->setDispatchYear($dispatch->getYear());
+            }
+
+            /** @var ImperialDate|null $delivery */
+            $delivery = $form->get('deliveryDate')->getData();
+            if ($delivery instanceof ImperialDate) {
+                $details->setDeliveryDay($delivery->getDay());
+                $details->setDeliveryYear($delivery->getYear());
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
