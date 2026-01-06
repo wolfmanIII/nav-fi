@@ -11,20 +11,14 @@
 
     <div class="flex flex-col items-center gap-4">
 
-        {% if crew.mortgageSigned %}
-            <div class="alert alert-info alert-outline w-315">
-                The Crew Member is in a Ship that has Mortgage signed! It can not be updated.
-            </div>
-        {% endif %}
-
         {{ form_start(form) }}
 
         {{ form_widget(form._token) }}
 
-        <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-250">
-            <legend class="fieldset-legend">Ship</legend>
+        <fieldset class="fieldset grid grid-cols-3 bg-base-200 border-base-300 gap-4 p-4 border rounded w-250">
+            <legend class="fieldset-legend">Crew</legend>
 
-            <div class="col-span-2">
+            <div class="col-span-3">
                 <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
                     <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
                          style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
@@ -42,13 +36,11 @@
                 </div>
             </div>
 
-
             {% if crew.id %}
-                <div>
+                <div class="col-span-1">
                     <label class="label">Code</label>
                     <div><b>{{ crew.code }}</b></div>
                 </div>
-                <div></div>
             {% endif %}
 
             <div>
@@ -74,14 +66,20 @@
                 {{ form_widget(form.nickname) }}
                 {{ form_errors(form.nickname) }}
             </div>
-            <div></div>
 
-            <div class="col-span-2" data-controller="imperial-date">
-                {{ form_label(form.birthDate) }}
-                {{ form_widget(form.birthDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
-                {{ form_widget(form.birthDate.year) }}
-                {{ form_widget(form.birthDate.day) }}
-                {{ form_errors(form.birthDate) }}
+            <div class="col-span-3 grid grid-cols-3 gap-4" data-controller="imperial-date">
+                <div class="col-span-1">
+                    {{ form_label(form.birthDate) }}
+                    {{ form_widget(form.birthDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                    {{ form_widget(form.birthDate.year) }}
+                    {{ form_widget(form.birthDate.day) }}
+                    {{ form_errors(form.birthDate) }}
+                </div>
+                <div>
+                    {{ form_label(form.birthWorld) }}
+                    {{ form_widget(form.birthWorld) }}
+                    {{ form_errors(form.birthWorld) }}
+                </div>
             </div>
 
             <div>
@@ -90,7 +88,7 @@
                 {{ form_errors(form.ship) }}
             </div>
 
-            <div class="row-span-3">
+            <div class="col-span-2">
                 <div class="flex items-center gap-1">
                     {{ form_label(form.shipRoles) }}
                     {% if form.shipRoles.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
@@ -98,7 +96,6 @@
                 {{ form_widget(form.shipRoles) }}
                 {{ form_errors(form.shipRoles) }}
             </div>
-
         </fieldset>
 
         <button type="submit"
