@@ -76,10 +76,7 @@
                 <thead>
                 <tr>
                     <th>Code</th>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Class</th>
-                    <th class="text-right">Price(Cr)</th>
+                    <th>Ship</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -87,11 +84,13 @@
                 {% for ship in campaign.ships %}
                     <tr>
                         <td>{% include 'components/code_with_copy.html.twig' with { code: ship.code } %}</td>
-                        <td>{{ ship.name }}</td>
-                        <td>{{ ship.type }}</td>
-                        <td>{{ ship.class }}</td>
-                        <td class="text-right">{{ ship.price|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
+                        <td>{{ ship.name }} — {{ ship.type }} — {{ ship.class }}</td>
                         <td>
+                            <button type="button"
+                                    class="btn btn-outline btn-info btn-xs mr-1"
+                                    onclick="document.getElementById('crew_{{ ship.id }}').showModal()">
+                                Crew
+                            </button>
                             <a href="{{ path('app_campaign_ship_remove', {id: ship.id}) }}"
                                role="button"
                                class="btn btn-outline btn-error btn-xs">
@@ -107,6 +106,51 @@
                 </tbody>
             </table>
         </div>
+
+        {# Crew modals per ship #}
+        {% for ship in campaign.ships %}
+            <dialog id="crew_{{ ship.id }}" class="modal">
+                <div class="modal-box w-full max-w-3xl">
+                    <h3 class="text-lg font-bold mb-4">Crew — {{ ship.name }}</h3>
+                    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+                        <table class="table border-separate border-spacing-0 inner-bordered-table">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Roles</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if ship.crews is defined and ship.crews|length > 0 %}
+                                {% for crew in ship.crews %}
+                                    <tr>
+                                        <td>{{ crew.name }} {{ crew.surname }}</td>
+                                        <td>
+                                            {% if crew.shipRoles is defined and crew.shipRoles|length > 0 %}
+                                                {{ crew.shipRoles|map(r => r.name)|join(', ') }}
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="2">No crew members assigned.</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-action">
+                        <button type="button" class="btn btn-outline btn-default" onclick="document.getElementById('crew_{{ ship.id }}').close()">Close</button>
+                    </div>
+                </div>
+                <form method="dialog" class="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
+        {% endfor %}
 
         <dialog id="m_ship_select" class="modal">
             <div class="modal-box w-full max-w-5xl">
@@ -126,9 +170,7 @@
                                 >
                             </th>
                             <th>Code</th>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Class</th>
+                            <th>Ship</th>
                             <th class="text-right">Price(Cr)</th>
                         </tr>
                         </thead>
@@ -147,9 +189,7 @@
                                             }) }}
                                         </td>
                                         <td>{% include 'components/code_with_copy.html.twig' with { code: ship.code } %}</td>
-                                        <td>{{ ship.name }}</td>
-                                        <td>{{ ship.type }}</td>
-                                        <td>{{ ship.class }}</td>
+                                        <td>{{ ship.name }} — {{ ship.type }} — {{ ship.class }}</td>
                                         <td class="text-right">{{ ship.price|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
                                     </tr>
                                 {% endfor %}
