@@ -64,16 +64,18 @@
 
         {% if cost.localLaw %}
             <div class="card">
-                <div class="section-title">Local Law{% if cost.localLaw.shortDescription %} - {{ cost.localLaw.shortDescription }}{% endif %}</div>
+                <div class="section-title">Local Law</div>
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>Description</th>
-                        <th>Disclaimer</th>
+                        <th>Short Reference</th>
+                        <th>Legal Basis / Article</th>
+                        <th>Mandatory Disclaimer</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
+                        <td>{{ cost.localLaw.shortDescription ?? '—' }}</td>
                         <td>{{ cost.localLaw.description ?? '—' }}</td>
                         <td>{{ cost.localLaw.disclaimer ?? '—' }}</td>
                     </tr>
