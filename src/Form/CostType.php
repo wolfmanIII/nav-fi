@@ -143,6 +143,16 @@ class CostType extends AbstractType
                 $cost->setPaymentDay($payment->getDay());
                 $cost->setPaymentYear($payment->getYear());
             }
+
+            // Calcolo server-side dell'importo totale dai detailItems per evitare valori null.
+            $details = $cost->getDetailItems() ?? [];
+            $total = 0.0;
+            foreach ($details as $item) {
+                $qty = isset($item['quantity']) && is_numeric($item['quantity']) ? (float) $item['quantity'] : 0.0;
+                $lineCost = isset($item['cost']) && is_numeric($item['cost']) ? (float) $item['cost'] : 0.0;
+                $total += $qty * $lineCost;
+            }
+            $cost->setAmount(number_format($total, 2, '.', ''));
         });
     }
 
