@@ -28,6 +28,16 @@
          data-cost-details-amount-selector="[name='cost[amount]']">
     <legend class="fieldset-legend">Cost detail items</legend>
 
+    {% if form.detailItems.vars.errors|length > 0 %}
+        <div class="col-span-2 alert alert-error alert-outline shadow-sm mb-2">
+            <ul class="list-disc list-inside text-sm">
+                {% for error in form.detailItems.vars.errors %}
+                    <li>{{ error.message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
     <div class="col-span-2">
         <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
             <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
