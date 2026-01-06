@@ -10,6 +10,7 @@ use App\Form\Type\ImperialDateType;
 use App\Model\ImperialDate;
 use App\Repository\ShipRepository;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -85,6 +86,10 @@ class CrewType extends AbstractType
                 },
                 'multiple' => true,
                 'attr' => ['class' => 'select m-1 h-72 w-full'],
+            ])
+            ->add('background', TextareaType::class, [
+                'required' => false,
+                'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 4],
             ])
         ;
 

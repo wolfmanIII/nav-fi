@@ -41,6 +41,8 @@
                     <label class="label">Code</label>
                     <div><b>{{ crew.code }}</b></div>
                 </div>
+                <div class="col-span-1">
+                </div>
             {% endif %}
 
             <div>
@@ -67,6 +69,12 @@
                 {{ form_errors(form.nickname) }}
             </div>
 
+            <div>
+                {{ form_label(form.ship) }}
+                {{ form_widget(form.ship) }}
+                {{ form_errors(form.ship) }}
+            </div>
+
             <div class="col-span-2 grid grid-cols-2 gap-4" data-controller="imperial-date">
                 <div>
                     {{ form_label(form.birthDate) }}
@@ -82,19 +90,19 @@
                 </div>
             </div>
 
-            <div>
-                {{ form_label(form.ship) }}
-                {{ form_widget(form.ship) }}
-                {{ form_errors(form.ship) }}
-            </div>
-
-            <div class="col-span-2">
+            <div class="col-span-1">
                 <div class="flex items-center gap-1">
                     {{ form_label(form.shipRoles) }}
                     {% if form.shipRoles.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
                 </div>
                 {{ form_widget(form.shipRoles) }}
                 {{ form_errors(form.shipRoles) }}
+            </div>
+
+            <div class="col-span-1">
+                {{ form_label(form.background) }}
+                {{ form_widget(form.background) }}
+                {{ form_errors(form.background) }}
             </div>
         </fieldset>
 

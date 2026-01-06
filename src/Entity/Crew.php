@@ -52,6 +52,9 @@ class Crew
     #[ORM\ManyToMany(targetEntity: ShipRole::class, inversedBy: 'crews')]
     private Collection $shipRoles;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $background = null;
+
     public function __construct()
     {
         $this->setCode(Uuid::v7());
@@ -211,5 +214,17 @@ class Crew
             return $this->getShip()->hasMortgageSigned();
         }
         return false;
+    }
+
+    public function getBackground(): ?string
+    {
+        return $this->background;
+    }
+
+    public function setBackground(?string $background): static
+    {
+        $this->background = $background;
+
+        return $this;
     }
 }
