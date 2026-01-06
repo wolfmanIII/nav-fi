@@ -149,53 +149,58 @@
 
         </fieldset>
 
-        <button
-            type="submit"
-            name="action" value="save"
-            class="btn btn-outline btn-primary mt-4 mb-4 mr-4"
-            {% if not (mortgage.id ? can_edit : can_create) %} disabled {% endif %}
-        >Save</button>
+        <div class="flex flex-wrap items-center gap-3 mt-4 mb-4">
+            <button
+                type="submit"
+                name="action" value="save"
+                class="btn btn-outline btn-primary"
+                {% if not (mortgage.id ? can_edit : can_create) %} disabled {% endif %}
+            >Save</button>
 
-        <button
-            type="submit"
-            name="action" value="sign"
-            class="btn btn-outline btn-warning mt-4 mb-4 mr-4"
-            {% if not can_sign %} disabled {% endif %}
-        >Sign</button>
-
-        {% if mortgage.id and is_granted('ROLE_ADMIN') %}
-            <form method="post" action="{{ path('app_mortgage_unsigned', {id: mortgage.id}) }}" class="inline-block">
-                <input type="hidden" name="_token" value="{{ csrf_token('mortgage_unsigned_' ~ mortgage.id) }}">
-                <button
-                    type="submit"
-                    class="btn btn-outline btn-error mt-4 mb-4 mr-4"
-                    {% if not mortgage.signed %}disabled{% endif %}
-                >
-                    Unsign
-                </button>
-            </form>
-        {% endif %}
-
-        {% if mortgage.id %}
-            <a
-                href="{{ path('app_mortgage_pdf', {id: mortgage.id}) }}"
-                role="button"
-                target="_blank"
-                class="btn btn-outline btn-secondary mt-4 mb-4 mr-4"
-                {% if not can_pdf %} disabled {% endif %}
-            >PDF</a>
-        {% else %}
-            <a
-                href="#"
-                role="button"
-                target="_blank"
-                class="btn btn-outline btn-secondary mt-4 mb-4 mr-4"
-                disabled
-            >PDF</a>
-        {% endif %}
-        <a href="{{ path('app_mortgage_index') }}" role="button" class="btn btn-outline btn-default mt-4 mb-4 mr-4">Cancel</a>
+            <button
+                type="submit"
+                name="action" value="sign"
+                class="btn btn-outline btn-warning"
+                {% if not can_sign %} disabled {% endif %}
+            >Sign</button>
+        </div>
 
         {{ form_end(form) }}
+
+        <div class="flex flex-wrap items-center gap-3 mt-2 mb-4">
+            {% if mortgage.id and is_granted('ROLE_ADMIN') %}
+                <form method="post" action="{{ path('app_mortgage_unsigned', {id: mortgage.id}) }}" class="inline-flex">
+                    <input type="hidden" name="_token" value="{{ csrf_token('mortgage_unsigned_' ~ mortgage.id) }}">
+                    <button
+                        type="submit"
+                        class="btn btn-outline btn-error"
+                        {% if not mortgage.signed %}disabled{% endif %}
+                    >
+                        Unsign
+                    </button>
+                </form>
+            {% endif %}
+
+            {% if mortgage.id %}
+                <a
+                    href="{{ path('app_mortgage_pdf', {id: mortgage.id}) }}"
+                    role="button"
+                    target="_blank"
+                    class="btn btn-outline btn-secondary"
+                    {% if not can_pdf %} disabled {% endif %}
+                >PDF</a>
+            {% else %}
+                <a
+                    href="#"
+                    role="button"
+                    target="_blank"
+                    class="btn btn-outline btn-secondary"
+                    disabled
+                >PDF</a>
+            {% endif %}
+
+            <a href="{{ path('app_mortgage_index') }}" role="button" class="btn btn-outline btn-default">Cancel</a>
+        </div>
 
         <dialog id="coverage_modal" class="modal">
             <div class="modal-box">
