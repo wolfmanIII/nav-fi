@@ -28,7 +28,6 @@ class CrewType extends AbstractType
     {
         /** @var Crew $crew */
         $crew = $options['data'];
-        $disabled = $crew->hasMortgageSigned();
         $user = $options['user'];
         $campaignStartYear = $crew?->getShip()?->getCampaign()?->getStartingYear();
         $minYear = 0;
@@ -36,16 +35,13 @@ class CrewType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
-                'disabled' => $disabled,
             ])
             ->add('surname', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
-                'disabled' => $disabled,
             ])
             ->add('nickname', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
                 'required' => false,
-                'disabled' => $disabled,
             ])
             ->add('birthDate', ImperialDateType::class, [
                 'mapped' => false,
@@ -54,12 +50,10 @@ class CrewType extends AbstractType
                 'data' => $birthDate,
                 'min_year' => $minYear,
                 'max_year' => $this->limits->getYearMax(),
-                'attr' => ['class' => $disabled ? 'pointer-events-none opacity-60' : ''],
             ])
             ->add('birthWorld', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
                 'required' => false,
-                'disabled' => $disabled,
             ])
             ->add('ship', EntityType::class, [
                 'class' => Ship::class,
@@ -83,7 +77,6 @@ class CrewType extends AbstractType
                     'data-year-limit-default-value' => $this->limits->getYearMin(),
                     'data-action' => 'change->year-limit#onShipChange',
                 ],
-                'disabled' => $disabled,
             ])
             ->add('shipRoles', EntityType::class, [
                 'class' => ShipRole::class,
@@ -92,7 +85,6 @@ class CrewType extends AbstractType
                 },
                 'multiple' => true,
                 'attr' => ['class' => 'select m-1 h-72 w-full'],
-                'disabled' => $disabled,
             ])
         ;
 
