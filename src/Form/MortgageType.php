@@ -50,6 +50,7 @@ class MortgageType extends AbstractType
                 'min_year' => $minYear,
                 'max_year' => $this->limits->getYearMax(),
                 'attr' => ['class' => $disabled ? 'pointer-events-none opacity-60' : ''],
+                'disabled' => $disabled,
             ])
             ->add('shipShares', IntegerType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
