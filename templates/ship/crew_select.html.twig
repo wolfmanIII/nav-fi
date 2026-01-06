@@ -25,12 +25,13 @@
                         <p class="text-sm text-cyan-100/80">{{ ship.type }} — {{ ship.class }}</p>
                     </div>
                 </div>
+                <div class="flex gap-2">
+                    <button class="btn btn-outline btn-primary btn-sm" onclick="m_crew_select.showModal()" title="Add crew">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </button>
+                </div>
             </div>
         </div>
-
-        <header class="prose">
-            <h2>Crew Members</h2>
-        </header>
 
         {% if ship.mortgageSigned %}
             <div class="alert alert-info alert-outline w-full">
@@ -43,63 +44,61 @@
             </div>
         {% endif %}
 
-        <button class="btn btn-outline btn-primary btn-xs mt-5 mb-5" onclick="m_crew_select.showModal()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        </button>
-
-        <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100" data-controller="bulk-select">
-            <table class="table border-separate border-spacing-0 inner-bordered-table">
-                <!-- head -->
-                <thead>
-                <tr>
-                    <th>Code</th>
-                    <th>Name</th>
-                    <th>Nickname</th>
-                    <th>Surname</th>
-                    <th>Roles</th>
-                    <th>Captain</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for member in ship.crews %}
+        <div class="flow-root">
+            <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100" data-controller="bulk-select">
+                <table class="table border-separate border-spacing-0 inner-bordered-table">
+                    <!-- head -->
+                    <thead>
                     <tr>
-                        <td>{{ member.code }}</td>
-                        <td>{{ member.name }}</td>
-                        <td>"{{ member.nickname }}"</td>
-                        <td>{{ member.surname }}</td>
-                        <td>
-                            {% for role in member.shipRoles %}
-                                {{ role.name }}
-                                {% if loop.index != loop.last %}
-                                    -
-                                {% endif %}
-                            {% endfor %}
-                        </td>
-                        <td>
-                            {% if member.captain %}
-                                <div class="flex justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                    </svg>
-                                </div>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{{ path('app_ship_crew_remove', {id: member.id}) }}"
-                               role="button"
-                               class="btn btn-outline btn-error btn-xs"
-                               {% if not can_remove_crew %}disabled{% endif %}
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                            </a>
-                        </td>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Nickname</th>
+                        <th>Surname</th>
+                        <th>Roles</th>
+                        <th>Captain</th>
+                        <th>Action</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {% for member in ship.crews %}
+                        <tr>
+                            <td>{{ member.code }}</td>
+                            <td>{{ member.name }}</td>
+                            <td>"{{ member.nickname }}"</td>
+                            <td>{{ member.surname }}</td>
+                            <td>
+                                {% for role in member.shipRoles %}
+                                    {{ role.name }}
+                                    {% if loop.index != loop.last %}
+                                        -
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% if member.captain %}
+                                    <div class="flex justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                        </svg>
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ path('app_ship_crew_remove', {id: member.id}) }}"
+                                   role="button"
+                                   class="btn btn-outline btn-error btn-xs"
+                                   {% if not can_remove_crew %}disabled{% endif %}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <dialog id="m_crew_select" class="modal">
