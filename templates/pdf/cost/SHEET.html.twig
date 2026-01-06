@@ -11,12 +11,12 @@
         .title { text-align: right; }
         .title h1 { margin: 0; font-size: 18px; font-weight: 700; }
         .title p { margin: 2px 0 0 0; color: #475569; letter-spacing: 0.08em; text-transform: uppercase; font-size: 10px; }
-        .card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; margin-bottom: 10px; page-break-inside: avoid; break-inside: avoid; }
         .section-title { font-size: 12px; font-weight: 700; margin: 0 0 6px 0; color: #0f172a; }
         .grid { display: grid; gap: 6px; }
         .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .block { page-break-inside: avoid; break-inside: avoid; margin-bottom: 10px; }
         .table { width: 100%; border-collapse: collapse; font-size: 10px; }
-        .table th, .table td { border: 1px solid #d1d5db; padding: 6px; }
+        .table th, .table td { border: 1px solid #94a3b8; padding: 6px; }
         .table th { background: #e2e8f0; text-align: left; }
         .muted { color: #475569; font-size: 10px; }
     </style>
@@ -35,7 +35,7 @@
             </div>
         </div>
 
-        <div class="card grid grid-2">
+        <div class="block grid grid-2">
             <div>
                 <div class="muted">Code</div>
                 <div>{{ cost.code }}</div>
@@ -70,7 +70,7 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="block">
             <div class="section-title">Detail Items</div>
             <table class="table">
                 <thead>
@@ -102,7 +102,7 @@
         </div>
 
         {% if cost.note %}
-            <div class="card">
+            <div class="block">
                 <div class="section-title">Notes</div>
                 <div class="muted" style="white-space: pre-line;">{{ cost.note }}</div>
             </div>
