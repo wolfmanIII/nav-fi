@@ -4,6 +4,8 @@ namespace App\Form\Type;
 
 use App\Entity\IncomeTradeDetails;
 use App\Form\Config\DayYearLimits;
+use App\Form\Type\ImperialDateType;
+use App\Model\ImperialDate;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -11,6 +13,8 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IncomeTradeDetailsType extends AbstractType
@@ -22,6 +26,10 @@ class IncomeTradeDetailsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $campaignStartYear = $options['campaign_start_year'] ?? null;
+        $minYear = $campaignStartYear ?? $this->limits->getYearMin();
+        /** @var IncomeTradeDetails|null $data */
+        $data = $builder->getData();
+        $deliveryDate = new ImperialDate($data?->getDeliveryYear(), $data?->getDeliveryDay());
         $builder
             ->add('location', TextType::class, [
                 'required' => false,
@@ -88,15 +96,13 @@ class IncomeTradeDetailsType extends AbstractType
                 'label' => 'Delivery method',
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 2],
             ])
-            ->add('deliveryDay', IntegerType::class, [
+            ->add('deliveryDate', ImperialDateType::class, [
+                'mapped' => false,
                 'required' => false,
-                'label' => 'Delivery Day',
-                'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
-            ])
-            ->add('deliveryYear', IntegerType::class, [
-                'required' => false,
-                'label' => 'Delivery Year',
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
+                'label' => 'Delivery date',
+                'data' => $deliveryDate,
+                'min_year' => $minYear,
+                'max_year' => $this->limits->getYearMax(),
             ])
             ->add('asIsOrWarranty', TextType::class, [
                 'required' => false,
@@ -119,6 +125,19 @@ class IncomeTradeDetailsType extends AbstractType
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 2],
             ])
         ;
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
+            /** @var IncomeTradeDetails $details */
+            $details = $event->getData();
+            $form = $event->getForm();
+
+            /** @var ImperialDate|null $delivery */
+            $delivery = $form->get('deliveryDate')->getData();
+            if ($delivery instanceof ImperialDate) {
+                $details->setDeliveryDay($delivery->getDay());
+                $details->setDeliveryYear($delivery->getYear());
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

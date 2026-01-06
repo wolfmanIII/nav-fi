@@ -23,25 +23,44 @@
         {{ form_widget(detail_form.interestRate) }}
         {{ form_errors(detail_form.interestRate) }}
     </div>
-    <div>
-        {{ form_label(detail_form.startDay) }}
-        {{ form_widget(detail_form.startDay) }}
-        {{ form_errors(detail_form.startDay) }}
-    </div>
-    <div>
-        {{ form_label(detail_form.startYear) }}
-        {{ form_widget(detail_form.startYear) }}
-        {{ form_errors(detail_form.startYear) }}
-    </div>
-    <div>
-        {{ form_label(detail_form.endDay) }}
-        {{ form_widget(detail_form.endDay) }}
-        {{ form_errors(detail_form.endDay) }}
-    </div>
-    <div>
-        {{ form_label(detail_form.endYear) }}
-        {{ form_widget(detail_form.endYear) }}
-        {{ form_errors(detail_form.endYear) }}
+    {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
+    {% set start_day = data ? data.startDay : null %}
+    {% set start_year = data ? data.startYear : null %}
+    {% set start_value = start_day is not null and start_year is not null ? start_day|format('%03d') ~ '/' ~ start_year : '' %}
+    {% set end_day = data ? data.endDay : null %}
+    {% set end_year = data ? data.endYear : null %}
+    {% set end_value = end_day is not null and end_year is not null ? end_day|format('%03d') ~ '/' ~ end_year : '' %}
+    <div class="col-span-3 grid grid-cols-2 gap-4">
+        <div data-controller="imperial-date">
+            {{ form_label(detail_form.startDate) }}
+            {{ form_widget(detail_form.startDate.display, {
+                attr: {
+                    'data-imperial-date-prev-icon': '«',
+                    'data-imperial-date-next-icon': '»',
+                    'data-imperial-date-initial-day': start_day ?? '',
+                    'data-imperial-date-initial-year': start_year ?? '',
+                    'value': start_value,
+                }
+            }) }}
+            {{ form_widget(detail_form.startDate.year) }}
+            {{ form_widget(detail_form.startDate.day) }}
+            {{ form_errors(detail_form.startDate) }}
+        </div>
+        <div data-controller="imperial-date">
+            {{ form_label(detail_form.endDate) }}
+            {{ form_widget(detail_form.endDate.display, {
+                attr: {
+                    'data-imperial-date-prev-icon': '«',
+                    'data-imperial-date-next-icon': '»',
+                    'data-imperial-date-initial-day': end_day ?? '',
+                    'data-imperial-date-initial-year': end_year ?? '',
+                    'value': end_value,
+                }
+            }) }}
+            {{ form_widget(detail_form.endDate.year) }}
+            {{ form_widget(detail_form.endDate.day) }}
+            {{ form_errors(detail_form.endDate) }}
+        </div>
     </div>
     <div>
         {{ form_label(detail_form.calcMethod) }}

@@ -4,12 +4,15 @@ namespace App\Form\Type;
 
 use App\Entity\IncomeContractDetails;
 use App\Form\Config\DayYearLimits;
+use App\Form\Type\ImperialDateType;
+use App\Model\ImperialDate;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IncomeContractDetailsType extends AbstractType
@@ -21,6 +24,11 @@ class IncomeContractDetailsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $campaignStartYear = $options['campaign_start_year'] ?? null;
+        $minYear = $campaignStartYear ?? $this->limits->getYearMin();
+        /** @var IncomeContractDetails|null $data */
+        $data = $builder->getData();
+        $startDate = new ImperialDate($data?->getStartYear(), $data?->getStartDay());
+        $deadlineDate = new ImperialDate($data?->getDeadlineYear(), $data?->getDeadlineDay());
         $builder
             ->add('jobType', TextType::class, [
                 'required' => false,
@@ -42,25 +50,21 @@ class IncomeContractDetailsType extends AbstractType
                 'label' => 'Success condition',
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 2],
             ])
-            ->add('startDay', IntegerType::class, [
+            ->add('startDate', ImperialDateType::class, [
+                'mapped' => false,
                 'required' => false,
-                'label' => 'Start Day',
-                'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
+                'label' => 'Start date',
+                'data' => $startDate,
+                'min_year' => $minYear,
+                'max_year' => $this->limits->getYearMax(),
             ])
-            ->add('startYear', IntegerType::class, [
+            ->add('deadlineDate', ImperialDateType::class, [
+                'mapped' => false,
                 'required' => false,
-                'label' => 'Start Year',
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
-            ])
-            ->add('deadlineDay', IntegerType::class, [
-                'required' => false,
-                'label' => 'Deadline Day',
-                'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
-            ])
-            ->add('deadlineYear', IntegerType::class, [
-                'required' => false,
-                'label' => 'Deadline Year',
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
+                'label' => 'Deadline date',
+                'data' => $deadlineDate,
+                'min_year' => $minYear,
+                'max_year' => $this->limits->getYearMax(),
             ])
             ->add('bonus', NumberType::class, [
                 'required' => false,
@@ -100,6 +104,26 @@ class IncomeContractDetailsType extends AbstractType
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 2],
             ])
         ;
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
+            /** @var IncomeContractDetails $details */
+            $details = $event->getData();
+            $form = $event->getForm();
+
+            /** @var ImperialDate|null $start */
+            $start = $form->get('startDate')->getData();
+            if ($start instanceof ImperialDate) {
+                $details->setStartDay($start->getDay());
+                $details->setStartYear($start->getYear());
+            }
+
+            /** @var ImperialDate|null $deadline */
+            $deadline = $form->get('deadlineDate')->getData();
+            if ($deadline instanceof ImperialDate) {
+                $details->setDeadlineDay($deadline->getDay());
+                $details->setDeadlineYear($deadline->getYear());
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

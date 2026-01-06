@@ -71,18 +71,27 @@
                     </div>
                 </div>
             </div>    
-            <div>
-                {{ form_label(detail_form.deliveryDay) }}
-                {{ form_widget(detail_form.deliveryDay) }}
-                {{ form_errors(detail_form.deliveryDay) }}
+            {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
+            {% set delivery_day = data ? data.deliveryDay : null %}
+            {% set delivery_year = data ? data.deliveryYear : null %}
+            {% set delivery_value = delivery_day is not null and delivery_year is not null ? delivery_day|format('%03d') ~ '/' ~ delivery_year : '' %}
+            <div data-controller="imperial-date">
+                {{ form_label(detail_form.deliveryDate) }}
+                {{ form_widget(detail_form.deliveryDate.display, {
+                    attr: {
+                        'data-imperial-date-prev-icon': '«',
+                        'data-imperial-date-next-icon': '»',
+                        'data-imperial-date-initial-day': delivery_day ?? '',
+                        'data-imperial-date-initial-year': delivery_year ?? '',
+                        'value': delivery_value,
+                    }
+                }) }}
+                {{ form_widget(detail_form.deliveryDate.year) }}
+                {{ form_widget(detail_form.deliveryDate.day) }}
+                {{ form_errors(detail_form.deliveryDate) }}
             </div>
         </div>
         <div class="col-span-1 grid grid-cols-2 gap-4">
-            <div>
-                {{ form_label(detail_form.deliveryYear) }}
-                {{ form_widget(detail_form.deliveryYear) }}
-                {{ form_errors(detail_form.deliveryYear) }}
-            </div>
             <div>
                 {{ form_label(detail_form.asIsOrWarranty) }}
                 {{ form_widget(detail_form.asIsOrWarranty) }}

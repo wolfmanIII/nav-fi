@@ -27,30 +27,43 @@
         </div>
     </div>
 
+    {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
+    {% set start_day = data ? data.startDay : null %}
+    {% set start_year = data ? data.startYear : null %}
+    {% set start_value = start_day is not null and start_year is not null ? start_day|format('%03d') ~ '/' ~ start_year : '' %}
+    {% set deadline_day = data ? data.deadlineDay : null %}
+    {% set deadline_year = data ? data.deadlineYear : null %}
+    {% set deadline_value = deadline_day is not null and deadline_year is not null ? deadline_day|format('%03d') ~ '/' ~ deadline_year : '' %}
     <div class="col-span-3 grid grid-cols-2 gap-4">
-        <div class="col-span-1 grid grid-cols-2 gap-4">
-            <div>
-                {{ form_label(detail_form.startDay) }}
-                {{ form_widget(detail_form.startDay) }}
-                {{ form_errors(detail_form.startDay) }}
-            </div>
-            <div>
-                {{ form_label(detail_form.startYear) }}
-                {{ form_widget(detail_form.startYear) }}
-                {{ form_errors(detail_form.startYear) }}
-            </div>
+        <div class="col-span-1" data-controller="imperial-date">
+            {{ form_label(detail_form.startDate) }}
+            {{ form_widget(detail_form.startDate.display, {
+                attr: {
+                    'data-imperial-date-prev-icon': '«',
+                    'data-imperial-date-next-icon': '»',
+                    'data-imperial-date-initial-day': start_day ?? '',
+                    'data-imperial-date-initial-year': start_year ?? '',
+                    'value': start_value,
+                }
+            }) }}
+            {{ form_widget(detail_form.startDate.year) }}
+            {{ form_widget(detail_form.startDate.day) }}
+            {{ form_errors(detail_form.startDate) }}
         </div>
-        <div class="col-span-1 grid grid-cols-2 gap-4">
-            <div>
-                {{ form_label(detail_form.deadlineDay) }}
-                {{ form_widget(detail_form.deadlineDay) }}
-                {{ form_errors(detail_form.deadlineDay) }}
-            </div>
-            <div>
-                {{ form_label(detail_form.deadlineYear) }}
-                {{ form_widget(detail_form.deadlineYear) }}
-                {{ form_errors(detail_form.deadlineYear) }}
-            </div>
+        <div class="col-span-1" data-controller="imperial-date">
+            {{ form_label(detail_form.deadlineDate) }}
+            {{ form_widget(detail_form.deadlineDate.display, {
+                attr: {
+                    'data-imperial-date-prev-icon': '«',
+                    'data-imperial-date-next-icon': '»',
+                    'data-imperial-date-initial-day': deadline_day ?? '',
+                    'data-imperial-date-initial-year': deadline_year ?? '',
+                    'value': deadline_value,
+                }
+            }) }}
+            {{ form_widget(detail_form.deadlineDate.year) }}
+            {{ form_widget(detail_form.deadlineDate.day) }}
+            {{ form_errors(detail_form.deadlineDate) }}
         </div>
     </div>
     

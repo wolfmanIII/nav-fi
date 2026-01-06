@@ -4,13 +4,16 @@ namespace App\Form\Type;
 
 use App\Entity\IncomeInsuranceDetails;
 use App\Form\Config\DayYearLimits;
+use App\Form\Type\ImperialDateType;
+use App\Model\ImperialDate;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IncomeInsuranceDetailsType extends AbstractType
@@ -22,21 +25,23 @@ class IncomeInsuranceDetailsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $campaignStartYear = $options['campaign_start_year'] ?? null;
+        $minYear = $campaignStartYear ?? $this->limits->getYearMin();
+        /** @var IncomeInsuranceDetails|null $data */
+        $data = $builder->getData();
+        $incidentDate = new ImperialDate($data?->getIncidentYear(), $data?->getIncidentDay());
         $builder
             ->add('incidentRef', TextType::class, [
                 'required' => false,
                 'label' => 'Incident ref',
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('incidentDay', IntegerType::class, [
+            ->add('incidentDate', ImperialDateType::class, [
+                'mapped' => false,
                 'required' => false,
-                'label' => 'Incident Day',
-                'attr' => $this->limits->dayAttr(['class' => 'input m-1 w-full']),
-            ])
-            ->add('incidentYear', IntegerType::class, [
-                'required' => false,
-                'label' => 'Incident Year',
-                'attr' => $this->limits->yearAttr(['class' => 'input m-1 w-full'], $campaignStartYear),
+                'label' => 'Incident date',
+                'data' => $incidentDate,
+                'min_year' => $minYear,
+                'max_year' => $this->limits->getYearMax(),
             ])
             ->add('incidentLocation', TextType::class, [
                 'required' => false,
@@ -109,6 +114,19 @@ class IncomeInsuranceDetailsType extends AbstractType
                 'label' => 'Coverage notes',
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 2],
             ]);
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
+            /** @var IncomeInsuranceDetails $details */
+            $details = $event->getData();
+            $form = $event->getForm();
+
+            /** @var ImperialDate|null $incident */
+            $incident = $form->get('incidentDate')->getData();
+            if ($incident instanceof ImperialDate) {
+                $details->setIncidentDay($incident->getDay());
+                $details->setIncidentYear($incident->getYear());
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

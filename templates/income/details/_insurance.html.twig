@@ -8,15 +8,24 @@
         {{ form_widget(detail_form.incidentRef) }}
         {{ form_errors(detail_form.incidentRef) }}
     </div>
-    <div>
-        {{ form_label(detail_form.incidentDay) }}
-        {{ form_widget(detail_form.incidentDay) }}
-        {{ form_errors(detail_form.incidentDay) }}
-    </div>
-    <div>
-        {{ form_label(detail_form.incidentYear) }}
-        {{ form_widget(detail_form.incidentYear) }}
-        {{ form_errors(detail_form.incidentYear) }}
+    {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
+    {% set incident_day = data ? data.incidentDay : null %}
+    {% set incident_year = data ? data.incidentYear : null %}
+    {% set incident_value = incident_day is not null and incident_year is not null ? incident_day|format('%03d') ~ '/' ~ incident_year : '' %}
+    <div data-controller="imperial-date">
+        {{ form_label(detail_form.incidentDate) }}
+        {{ form_widget(detail_form.incidentDate.display, {
+            attr: {
+                'data-imperial-date-prev-icon': '«',
+                'data-imperial-date-next-icon': '»',
+                'data-imperial-date-initial-day': incident_day ?? '',
+                'data-imperial-date-initial-year': incident_year ?? '',
+                'value': incident_value,
+            }
+        }) }}
+        {{ form_widget(detail_form.incidentDate.year) }}
+        {{ form_widget(detail_form.incidentDate.day) }}
+        {{ form_errors(detail_form.incidentDate) }}
     </div>
     <div>
         {{ form_label(detail_form.incidentLocation) }}
