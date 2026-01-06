@@ -55,7 +55,7 @@ class Cost
     private ?LocalLaw $localLaw = null;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $costItems = null;
+    private ?array $detailItems = null;
 
     public function __construct()
     {
@@ -202,14 +202,14 @@ class Cost
     /**
      * Collection of purchased/provided items with keys like description, quantity and cost.
      */
-    public function getCostItems(): array
+    public function getDetailItems(): array
     {
-        return $this->costItems ?? [];
+        return $this->detailItems ?? [];
     }
 
-    public function setCostItems(?array $costItems): static
+    public function setDetailItems(?array $detailItems): static
     {
-        $this->costItems = $costItems;
+        $this->detailItems = $detailItems;
 
         return $this;
     }
