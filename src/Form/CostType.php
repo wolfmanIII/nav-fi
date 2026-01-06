@@ -148,15 +148,33 @@ class CostType extends AbstractType
 
             // Calcolo server-side dell'importo totale dai detailItems per evitare valori null.
             $details = $cost->getDetailItems() ?? [];
-            if (count($details) < 1) {
-                $form->get('detailItems')->addError(new FormError('Add at least one cost detail'));
-            }
+            $validDetails = [];
             $total = 0.0;
-            foreach ($details as $item) {
-                $qty = isset($item['quantity']) && is_numeric($item['quantity']) ? (float) $item['quantity'] : 0.0;
-                $lineCost = isset($item['cost']) && is_numeric($item['cost']) ? (float) $item['cost'] : 0.0;
+            foreach ($details as $idx => $item) {
+                $description = isset($item['description']) ? trim((string) $item['description']) : '';
+                $qtyRaw = $item['quantity'] ?? null;
+                $costRaw = $item['cost'] ?? null;
+                $hasAny = $description !== '' || $qtyRaw !== null && $qtyRaw !== '' || $costRaw !== null && $costRaw !== '';
+                if (!$hasAny) {
+                    continue; // riga vuota: ignorata
+                }
+                $qty = is_numeric($qtyRaw) ? (float) $qtyRaw : null;
+                $lineCost = is_numeric($costRaw) ? (float) $costRaw : null;
+                if ($description === '' || $qty === null || $lineCost === null) {
+                    $form->get('detailItems')->addError(new FormError('Each detail needs description, quantity and cost.'));
+                    continue;
+                }
+                $validDetails[] = [
+                    'description' => $description,
+                    'quantity' => $qty,
+                    'cost' => $lineCost,
+                ];
                 $total += $qty * $lineCost;
             }
+            if (count($validDetails) < 1) {
+                $form->get('detailItems')->addError(new FormError('Add at least one cost detail'));
+            }
+            $cost->setDetailItems($validDetails);
             $cost->setAmount(sprintf('%.2f', $total));
         });
     }
