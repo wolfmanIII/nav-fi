@@ -21,17 +21,31 @@ export default class extends Controller {
     }
 
     _findStartingField() {
-        if (!this.hasStartingSelectorValue) {
-            return null;
+        // Preferisce il selettore esplicito se fornito
+        if (this.hasStartingSelectorValue) {
+            try {
+                const found = document.querySelector(this.startingSelectorValue);
+                if (found) {
+                    return found;
+                }
+            } catch (e) {
+                // ignore
+            }
         }
-        try {
-            return document.querySelector(this.startingSelectorValue) ?? null;
-        } catch (e) {
-            return null;
+
+        // Fallback: cerca un input startingYear nello stesso form
+        const form = this.element.closest('form');
+        if (form) {
+            const candidate = form.querySelector("input[name$='[startingYear]']");
+            if (candidate) {
+                return candidate;
+            }
         }
+        return null;
     }
 
     _toggle = () => {
+        // Abilita/disabilita il datepicker in base allo startingYear valorizzato
         const enabled = this.startingField && this.startingField.value !== '';
 
         this.dateDisplayTargets.forEach((el) => {
