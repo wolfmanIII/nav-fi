@@ -35,15 +35,15 @@
                 <td style="text-align: right;">
                     <p class="subtitle">Disbursement docket</p>
                     <p class="title">Payable statement</p>
+                    <p class="muted" style="margin: 4px 0 0 0;">
+                        Docket ref: {{ cost.code }} |
+                        Settlement date: {{ cost.paymentDay and cost.paymentYear ? cost.paymentDay|format('%03d') ~ '/' ~ cost.paymentYear : '—' }}
+                    </p>
                 </td>
             </tr>
         </table>
 
         <div class="card grid grid-2">
-            <div>
-                <div class="muted">Code</div>
-                <div class="val">{{ cost.code }}</div>
-            </div>
             <div>
                 <div class="muted">Title</div>
                 <div class="val">{{ cost.title }}</div>
@@ -59,10 +59,6 @@
             <div>
                 <div class="muted">Ship</div>
                 <div class="val">{{ cost.ship ? cost.ship.name ~ ' — ' ~ cost.ship.type ~ ' — ' ~ cost.ship.class : '—' }}</div>
-            </div>
-            <div>
-                <div class="muted">Payment date</div>
-                <div class="val">{{ cost.paymentDay and cost.paymentYear ? cost.paymentDay|format('%03d') ~ '/' ~ cost.paymentYear : '—' }}</div>
             </div>
         </div>
 
