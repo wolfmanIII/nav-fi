@@ -124,7 +124,10 @@
                             {% if ship.crews is defined and ship.crews|length > 0 %}
                                 {% for crew in ship.crews %}
                                     <tr>
-                                        <td>{{ crew.name }} {{ crew.surname }}</td>
+                                        <td>
+                                            {% if crew.isCaptain() %}★ {% endif %}
+                                            {{ crew.name }} {{ crew.surname }}
+                                        </td>
                                         <td>
                                             {% if crew.shipRoles is defined and crew.shipRoles|length > 0 %}
                                                 {{ crew.shipRoles|map(r => r.name)|join(', ') }}
