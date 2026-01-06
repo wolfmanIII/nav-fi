@@ -50,7 +50,7 @@ class IncomeType extends AbstractType
             ])
             ->add('signingDate', ImperialDateType::class, [
                 'mapped' => false,
-                'required' => true,
+                'required' => false,
                 'label' => 'Signing date',
                 'data' => $signingDate,
                 'min_year' => $minYear,
