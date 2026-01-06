@@ -23,6 +23,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Count;
 
 class CostType extends AbstractType
 {
@@ -58,6 +59,9 @@ class CostType extends AbstractType
                 'required' => false,
                 'label' => false,
                 'prototype' => true,
+                'constraints' => [
+                    new Count(min: 1, minMessage: 'Add at least one cost detail'),
+                ],
             ])
             ->add('paymentDate', ImperialDateType::class, [
                 'mapped' => false,
