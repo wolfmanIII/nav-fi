@@ -169,18 +169,22 @@
         </div>
     </div>
 
-    <table class="signature-table text-sm">
-        <thead>
-            <tr>
-                <th>Charterer</th>
-                <th>Owner / Operator</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><em>{{ '{{CHARTERER_SIGN}}' }}</em></td>
-                <td><em>{{ '{{CARRIER_SIGN}}' }}</em></td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <table class="signature-table text-sm">
+                <thead>
+                    <tr>
+                        <th>Charterer</th>
+                        <th>Owner / Operator</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><em>{{ '{{CHARTERER_SIGN}}' }}</em></td>
+                        <td><em>{{ '{{CARRIER_SIGN}}' }}</em></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}

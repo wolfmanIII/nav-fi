@@ -213,18 +213,22 @@
         </div>
     </div>
 
-    <table class="signature-table text-sm">
-        <thead>
-            <tr>
-                <th>Carrier</th>
-                <th>Delivery Confirmation</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><em>{{ '{{CARRIER_SIGN}}' }}</em></td>
-                <td>{{ '{{PROOF_OF_DELIVERY}}' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <table class="signature-table text-sm">
+                <thead>
+                    <tr>
+                        <th>Carrier</th>
+                        <th>Delivery Confirmation</th>
+                    </tr>
+                </thead>
+            <tbody>
+                <tr>
+                    <td><em>{{ '{{CARRIER_SIGN}}' }}</em></td>
+                    <td>{{ '{{PROOF_OF_DELIVERY}}' }}</td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}
