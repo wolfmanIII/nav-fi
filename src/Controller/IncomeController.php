@@ -271,6 +271,11 @@ final class IncomeController extends BaseController
 
         $map = $common;
 
+        $localLaw = $income->getLocalLaw();
+        $map['{{LOCAL_LAW_SHORT_DESCRIPTION}}'] = $this->fallback($localLaw?->getShortDescription());
+        $map['{{LOCAL_LAW_DESCRIPTION}}'] = $this->fallback($localLaw?->getDescription());
+        $map['{{LOCAL_LAW_DISCLAIMER}}'] = $this->fallback($localLaw?->getDisclaimer());
+
         switch ($detailCode) {
             case 'CHARTER':
                 $d = $income->getCharterDetails();
