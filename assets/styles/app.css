@@ -40,6 +40,12 @@
 }
 
 @layer components {
+    /* Assicura che le label restino leggibili con i gradienti e i temi custom */
+    .label,
+    .label-text {
+        @apply text-base-content;
+    }
+
     .alert.alert-info {
         background: linear-gradient(
             to right,
