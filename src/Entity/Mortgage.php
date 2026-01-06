@@ -56,6 +56,12 @@ class Mortgage
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private ?bool $signed = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $signingDay = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $signingYear = null;
+
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
@@ -207,6 +213,30 @@ class Mortgage
     public function setInsurance(?Insurance $insurance): static
     {
         $this->insurance = $insurance;
+
+        return $this;
+    }
+
+    public function getSigningDay(): ?int
+    {
+        return $this->signingDay;
+    }
+
+    public function setSigningDay(?int $signingDay): static
+    {
+        $this->signingDay = $signingDay;
+
+        return $this;
+    }
+
+    public function getSigningYear(): ?int
+    {
+        return $this->signingYear;
+    }
+
+    public function setSigningYear(?int $signingYear): static
+    {
+        $this->signingYear = $signingYear;
 
         return $this;
     }
