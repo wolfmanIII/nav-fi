@@ -20,29 +20,19 @@
     </div>
 
     <div class="col-span-3 grid grid-cols-2 gap-4">
-        <div class="col-span-1 grid grid-cols-2 gap-4">
-            <div>
-                {{ form_label(detail_form.startDay) }}
-                {{ form_widget(detail_form.startDay) }}
-                {{ form_errors(detail_form.startDay) }}
-            </div>
-            <div>
-                {{ form_label(detail_form.startYear) }}
-                {{ form_widget(detail_form.startYear) }}
-                {{ form_errors(detail_form.startYear) }}
-            </div>
+        <div class="col-span-1" data-controller="imperial-date">
+            {{ form_label(detail_form.startDate) }}
+            {{ form_widget(detail_form.startDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+            {{ form_widget(detail_form.startDate.year) }}
+            {{ form_widget(detail_form.startDate.day) }}
+            {{ form_errors(detail_form.startDate) }}
         </div>
-        <div class="col-span-1 grid grid-cols-2 gap-4">
-            <div>
-                {{ form_label(detail_form.endDay) }}
-                {{ form_widget(detail_form.endDay) }}
-                {{ form_errors(detail_form.endDay) }}
-            </div>
-            <div>
-                {{ form_label(detail_form.endYear) }}
-                {{ form_widget(detail_form.endYear) }}
-                {{ form_errors(detail_form.endYear) }}
-            </div>
+        <div class="col-span-1" data-controller="imperial-date">
+            {{ form_label(detail_form.endDate) }}
+            {{ form_widget(detail_form.endDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+            {{ form_widget(detail_form.endDate.year) }}
+            {{ form_widget(detail_form.endDate.day) }}
+            {{ form_errors(detail_form.endDate) }}
         </div>
     </div>
 
