@@ -96,15 +96,6 @@
 
         {% include 'ship/_details_form.html.twig' with { detailsForm: form.shipDetails } %}
 
-        <fieldset class="fieldset grid grid-cols-1 bg-base-200 border-base-300 gap-4 p-4 border rounded w-250">
-            <legend class="fieldset-legend">Notes</legend>
-            <div>
-                {{ form_label(form.note) }}
-                {{ form_widget(form.note) }}
-                {{ form_errors(form.note) }}
-            </div>
-        </fieldset>
-
         <div class="flex gap-4">
             <button type="submit"
                     class="btn btn-outline btn-primary mt-4 mb-4"
