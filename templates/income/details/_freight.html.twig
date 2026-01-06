@@ -15,29 +15,43 @@
     </div>
 
     <div class="col-span-3 grid grid-cols-2 gap-4">
-        <div class="col-span-1 grid grid-cols-2 gap-4">
-            <div>
-                {{ form_label(detail_form.pickupDay) }}
-                {{ form_widget(detail_form.pickupDay) }}
-                {{ form_errors(detail_form.pickupDay) }}
-            </div>
-            <div>
-                {{ form_label(detail_form.pickupYear) }}
-                {{ form_widget(detail_form.pickupYear) }}
-                {{ form_errors(detail_form.pickupYear) }}
-            </div>
+        {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
+        {% set pickup_day = data ? data.pickupDay : null %}
+        {% set pickup_year = data ? data.pickupYear : null %}
+        {% set pickup_value = pickup_day is not null and pickup_year is not null ? pickup_day|format('%03d') ~ '/' ~ pickup_year : '' %}
+        <div class="col-span-1" data-controller="imperial-date">
+            {{ form_label(detail_form.pickupDate) }}
+            {{ form_widget(detail_form.pickupDate.display, {
+                attr: {
+                    'data-imperial-date-prev-icon': '«',
+                    'data-imperial-date-next-icon': '»',
+                    'data-imperial-date-initial-day': pickup_day ?? '',
+                    'data-imperial-date-initial-year': pickup_year ?? '',
+                    'value': pickup_value,
+                }
+            }) }}
+            {{ form_widget(detail_form.pickupDate.year) }}
+            {{ form_widget(detail_form.pickupDate.day) }}
+            {{ form_errors(detail_form.pickupDate) }}
         </div>
-        <div class="col-span-1 grid grid-cols-2 gap-4">
-            <div>
-                {{ form_label(detail_form.deliveryDay) }}
-                {{ form_widget(detail_form.deliveryDay) }}
-                {{ form_errors(detail_form.deliveryDay) }}
-            </div>
-            <div>
-                {{ form_label(detail_form.deliveryYear) }}
-                {{ form_widget(detail_form.deliveryYear) }}
-                {{ form_errors(detail_form.deliveryYear) }}
-            </div>
+
+        {% set delivery_day = data ? data.deliveryDay : null %}
+        {% set delivery_year = data ? data.deliveryYear : null %}
+        {% set delivery_value = delivery_day is not null and delivery_year is not null ? delivery_day|format('%03d') ~ '/' ~ delivery_year : '' %}
+        <div class="col-span-1" data-controller="imperial-date">
+            {{ form_label(detail_form.deliveryDate) }}
+            {{ form_widget(detail_form.deliveryDate.display, {
+                attr: {
+                    'data-imperial-date-prev-icon': '«',
+                    'data-imperial-date-next-icon': '»',
+                    'data-imperial-date-initial-day': delivery_day ?? '',
+                    'data-imperial-date-initial-year': delivery_year ?? '',
+                    'value': delivery_value,
+                }
+            }) }}
+            {{ form_widget(detail_form.deliveryDate.year) }}
+            {{ form_widget(detail_form.deliveryDate.day) }}
+            {{ form_errors(detail_form.deliveryDate) }}
         </div>
     </div>
 
