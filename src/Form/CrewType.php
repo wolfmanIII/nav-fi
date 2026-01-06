@@ -31,7 +31,7 @@ class CrewType extends AbstractType
         $disabled = $crew->hasMortgageSigned();
         $user = $options['user'];
         $campaignStartYear = $crew?->getShip()?->getCampaign()?->getStartingYear();
-        $minYear = max($this->limits->getYearMin(), $campaignStartYear ?? $this->limits->getYearMin());
+        $minYear = 0;
         $birthDate = new ImperialDate($crew?->getBirthYear(), $crew?->getBirthDay());
         $builder
             ->add('name', TextType::class, [
