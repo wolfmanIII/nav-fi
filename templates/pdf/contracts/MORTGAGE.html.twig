@@ -80,7 +80,8 @@
                     <div class="text-sm font-bold">Code: {{ mortgage.code }}{% if mortgage.signed %} • Signed{% endif %}</div>
                     {% set sessionDay = ship.campaign ? ship.campaign.sessionDay : ship.sessionDay %}
                     {% set sessionYear = ship.campaign ? ship.campaign.sessionYear : ship.sessionYear %}
-                    <div class="text-sm">Generated on: Day {{ sessionDay ?? '—' }} / Year {{ sessionYear ?? '—' }}</div>
+                    {% set sessionValue = (sessionDay is not null and sessionYear is not null) ? sessionDay|format('%03d') ~ '/' ~ sessionYear : '—' %}
+                    <div class="text-sm">Generated on: {{ sessionValue }}</div>
                 </td>
             </tr>
         </table>
@@ -125,7 +126,8 @@
                 <tbody>
                     <tr>
                         <td class="px-2">{{ mortgage.signed ? 'Signed' : 'Pending' }}</td>
-                        <td class="px-2">{{ mortgage.startDay }}/{{ mortgage.startYear }}</td>
+                        {% set startValue = (mortgage.startDay is not null and mortgage.startYear is not null) ? mortgage.startDay|format('%03d') ~ '/' ~ mortgage.startYear : '—' %}
+                        <td class="px-2">{{ startValue }}</td>
                         <td class="px-2">{{ mortgage.interestRate.duration }} years</td>
                         <td class="text-right px-2">{{ summary.total_monthly_payment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
                         <td class="text-right px-2">{{ summary.total_annual_payment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
@@ -208,7 +210,8 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="px-2">{{ mortgage.startDay }}/{{ mortgage.startYear }}</td>
+                        {% set startValue3 = (mortgage.startDay is not null and mortgage.startYear is not null) ? mortgage.startDay|format('%03d') ~ '/' ~ mortgage.startYear : '—' %}
+                        <td class="px-2">{{ startValue3 }}</td>
                         <td class="px-2">{{ mortgage.shipShares ?? 0 }}</td>
                         <td class="text-right px-2">{{ mortgage.advancePayment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
                         <td class="px-2">{{ mortgage.discount ?? 0 }} %</td>
@@ -300,7 +303,8 @@
                         {% for inst in installments %}
                             <tr>
                                 <td class="px-2">{{ inst.code }}</td>
-                                <td class="px-2">{{ inst.paymentDay }}/{{ inst.paymentYear }}</td>
+                                {% set payVal = (inst.paymentDay is not null and inst.paymentYear is not null) ? inst.paymentDay|format('%03d') ~ '/' ~ inst.paymentYear : '—' %}
+                                <td class="px-2">{{ payVal }}</td>
                                 <td class="text-right px-2">{{ inst.payment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
                             </tr>
                         {% endfor %}
