@@ -28,16 +28,15 @@
          data-cost-details-amount-selector="[name='cost[amount]']">
     <legend class="fieldset-legend">Cost detail items</legend>
 
-    {% if form.detailItems.vars.errors|length > 0 %}
+    {% set detailErrors = form_errors(form.detailItems) %}
+    {% if detailErrors is not empty %}
         <div class="col-span-2 alert alert-error alert-outline shadow-sm mb-2 flex gap-2 items-start">
             <div class="pt-0.5 animate-spin-slow">
                 {% include 'icons/radar.html.twig' %}
             </div>
-            <ul class="list-disc list-inside text-sm">
-                {% for error in form.detailItems.vars.errors %}
-                    <li>{{ error.message }}</li>
-                {% endfor %}
-            </ul>
+            <div class="text-sm space-y-1">
+                {{ detailErrors|raw }}
+            </div>
         </div>
     {% endif %}
 
