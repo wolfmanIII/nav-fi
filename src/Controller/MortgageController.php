@@ -95,6 +95,12 @@ final class MortgageController extends BaseController
 
             if ($action === 'sign') {
                 $mortgage->setSigned(true);
+
+                $campaign = $mortgage->getShip()?->getCampaign();
+                if ($campaign) {
+                    $mortgage->setSigningDay($campaign->getSessionDay());
+                    $mortgage->setSigningYear($campaign->getSessionYear());
+                }
             }
 
             $em->persist($mortgage);
