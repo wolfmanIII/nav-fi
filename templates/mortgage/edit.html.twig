@@ -52,7 +52,7 @@
                             <span class="animate-spin-slow">
                                 {% include 'icons/radar.html.twig' %}
                             </span>
-                            <label class="label mt-1 mb-1">Signed on <b>{{ mortgage.signingDay }}/{{ mortgage.signingYear }}</b></label>
+                            <label class="label mt-1 mb-1">Signed on <b>{{ mortgage.signingLocation }} - {{ mortgage.signingDay }}/{{ mortgage.signingYear }}</b></label>
                         {% else %}
                             <span class="animate-spin-slow">
                                 {% include 'icons/radar.html.twig' %}
@@ -228,17 +228,19 @@
                     <h3>Confirm signing</h3>
                     <p class="text-sm opacity-80">Session date: <b>{{ sessionValue }}</b></p>
                 </header>
-                <div class="form-control mb-4">
-                    <label class="label text-base-content">Signing location</label>
-                    <input
-                        type="text"
-                        name="signing_location"
-                        form="mortgage_form"
-                        class="input input-bordered w-full"
-                        placeholder="Enter signing location"
-                        required
-                    >
-                </div>
+                <fieldset class="fieldset bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
+                    <div class="form control gap-1">
+                        <label class="block">Signing location</label>
+                        <input
+                            type="text"
+                            name="signing_location"
+                            form="mortgage_form"
+                            class="input m-1 w-full"
+                            placeholder="Enter signing location"
+                            required
+                        >
+                    </div>
+                </fieldset>
                 <div class="modal-action">
                     <button type="button" class="btn" onclick="document.getElementById('sign_modal').close();">Cancel</button>
                     <button

@@ -363,9 +363,9 @@
                         </div>
                     </td>
                     <td style="text-align: center;">
-                        <div><b>Signing Date</b></div>
+                        <div><b>Signing location &amp; Date</b></div>
                         {% if mortgage.signed %}
-                            {{ mortgage.signingDay }}/{{ mortgage.signingYear }}
+                            {{ mortgage.signingLocation }} - {{ mortgage.signingDay }}/{{ mortgage.signingYear }}
                         {% endif %}
                     </td>
                     <td style="text-align: right;">
