@@ -117,6 +117,11 @@
         <button type="submit" class="btn btn-outline btn-primary mt-4 mb-4 mr-4">
             Save
         </button>
+        {% if cost.id %}
+            <a href="{{ path('app_cost_pdf', { id: cost.id }) }}" target="_blank" class="btn btn-outline btn-secondary mt-4 mb-4 mr-4">
+                PDF
+            </a>
+        {% endif %}
         <a href="{{ path('app_cost_index') }}" role="button" class="btn btn-outline btn-default mt-4 mb-4 mr-4">Cancel</a>
 
         {{ form_end(form, { render_rest: false }) }}

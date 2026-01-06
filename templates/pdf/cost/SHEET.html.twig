@@ -1,0 +1,111 @@
+{% extends 'base_plain.html.twig' %}
+
+{% block title %}Cost Sheet{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', sans-serif; font-size: 11px; color: #0f172a; background: #ffffff; }
+        .page { padding: 12px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .logo { height: 54px; }
+        .title { text-align: right; }
+        .title h1 { margin: 0; font-size: 18px; font-weight: 700; }
+        .title p { margin: 2px 0 0 0; color: #475569; letter-spacing: 0.08em; text-transform: uppercase; font-size: 10px; }
+        .card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; margin-bottom: 10px; page-break-inside: avoid; break-inside: avoid; }
+        .section-title { font-size: 12px; font-weight: 700; margin: 0 0 6px 0; color: #0f172a; }
+        .grid { display: grid; gap: 6px; }
+        .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .table { width: 100%; border-collapse: collapse; font-size: 10px; }
+        .table th, .table td { border: 1px solid #d1d5db; padding: 6px; }
+        .table th { background: #e2e8f0; text-align: left; }
+        .muted { color: #475569; font-size: 10px; }
+    </style>
+{% endblock %}
+{% block javascripts %}{% endblock %}
+
+{% block pageContent %}
+    <div class="page">
+        <div class="header">
+            <div>
+                <img src="{{ asset('img/captain-log-logo.png') }}" alt="Captain Log" class="logo">
+            </div>
+            <div class="title">
+                <p>Mission outflows</p>
+                <h1>Cost Sheet</h1>
+            </div>
+        </div>
+
+        <div class="card grid grid-2">
+            <div>
+                <div class="muted">Code</div>
+                <div>{{ cost.code }}</div>
+            </div>
+            <div>
+                <div class="muted">Title</div>
+                <div>{{ cost.title }}</div>
+            </div>
+            <div>
+                <div class="muted">Category</div>
+                <div>{{ cost.costCategory ? cost.costCategory.description : '—' }}</div>
+            </div>
+            <div>
+                <div class="muted">Company</div>
+                <div>{{ cost.company ? cost.company.name ~ ' — ' ~ cost.company.code : '—' }}</div>
+            </div>
+            <div>
+                <div class="muted">Ship</div>
+                <div>{{ cost.ship ? cost.ship.name ~ ' — ' ~ cost.ship.type ~ ' — ' ~ cost.ship.class : '—' }}</div>
+            </div>
+            <div>
+                <div class="muted">Payment date</div>
+                <div>{{ cost.paymentDay and cost.paymentYear ? cost.paymentDay|format('%03d') ~ '/' ~ cost.paymentYear : '—' }}</div>
+            </div>
+            <div>
+                <div class="muted">Amount (Cr)</div>
+                <div>{{ cost.amount is not null ? cost.amount|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale ?? 'en') : '—' }}</div>
+            </div>
+            <div>
+                <div class="muted">Local law</div>
+                <div>{{ cost.localLaw ? cost.localLaw.code ~ ' — ' ~ (cost.localLaw.shortDescription ?? cost.localLaw.description) : '—' }}</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Detail Items</div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Description</th>
+                    <th style="text-align: right;">Quantity</th>
+                    <th style="text-align: right;">Unit Cost (Cr)</th>
+                    <th style="text-align: right;">Line Total (Cr)</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% set items = cost.detailItems ?? [] %}
+                {% if items|length == 0 %}
+                    {% set items = [ { description: '—', quantity: null, cost: null } ] %}
+                {% endif %}
+                {% for item in items %}
+                    {% set qty = item.quantity ?? null %}
+                    {% set unit = item.cost ?? null %}
+                    {% set lineTotal = (qty is not null and unit is not null) ? qty * unit : null %}
+                    <tr>
+                        <td>{{ item.description ?? '—' }}</td>
+                        <td style="text-align: right;">{{ qty is not null ? qty|format_number({ min_fraction_digit: 0, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale ?? 'en') : '—' }}</td>
+                        <td style="text-align: right;">{{ unit is not null ? unit|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale ?? 'en') : '—' }}</td>
+                        <td style="text-align: right;">{{ lineTotal is not null ? lineTotal|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale ?? 'en') : '—' }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if cost.note %}
+            <div class="card">
+                <div class="section-title">Notes</div>
+                <div class="muted" style="white-space: pre-line;">{{ cost.note }}</div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

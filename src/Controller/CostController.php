@@ -6,6 +6,7 @@ use App\Entity\Cost;
 use App\Form\CostType;
 use App\Security\Voter\CostVoter;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\PdfGenerator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -110,5 +111,45 @@ final class CostController extends BaseController
         $em->flush();
 
         return $this->redirectToRoute('app_cost_index');
+    }
+
+    #[Route('/cost/{id}/pdf', name: 'app_cost_pdf', methods: ['GET'])]
+    public function pdf(
+        int $id,
+        EntityManagerInterface $em,
+        PdfGenerator $pdfGenerator,
+        Request $request
+    ): Response {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $cost = $em->getRepository(Cost::class)->findOneForUser($id, $user);
+        if (!$cost) {
+            throw new NotFoundHttpException();
+        }
+
+        $this->denyAccessUnlessGranted(CostVoter::EDIT, $cost);
+
+        $pdf = $pdfGenerator->render('pdf/cost/SHEET.html.twig', [
+            'cost' => $cost,
+            'locale' => $request->getLocale(),
+        ], [
+            'margin-top' => '14mm',
+            'margin-bottom' => '14mm',
+            'margin-left' => '10mm',
+            'margin-right' => '10mm',
+            'footer-right' => 'Page [page] / [toPage]',
+            'footer-font-size' => 8,
+            'footer-spacing' => 8,
+            'disable-smart-shrinking' => true,
+            'enable-local-file-access' => true,
+        ]);
+
+        return new Response($pdf, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => sprintf('inline; filename="cost-%s.pdf"', $cost->getCode()),
+        ]);
     }
 }
