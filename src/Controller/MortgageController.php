@@ -250,4 +250,27 @@ final class MortgageController extends BaseController
         ]);
     }
 
+    #[Route('/mortgage/{id}/unsigned', name: 'app_mortgage_unsigned', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function unsigned(
+        int $id,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        $mortgage = $em->getRepository(Mortgage::class)->find($id);
+        if (!$mortgage) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$this->isCsrfTokenValid('mortgage_unsigned_' . $mortgage->getId(), $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token');
+        }
+
+        $mortgage->setSigned(false);
+        $em->flush();
+
+        $this->addFlash('info', 'Mortgage signature cleared.');
+
+        return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
+    }
 }

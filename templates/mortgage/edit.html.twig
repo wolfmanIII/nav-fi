@@ -163,6 +163,19 @@
             {% if not can_sign %} disabled {% endif %}
         >Sign</button>
 
+        {% if mortgage.id and is_granted('ROLE_ADMIN') %}
+            <form method="post" action="{{ path('app_mortgage_unsigned', {id: mortgage.id}) }}" class="inline-block">
+                <input type="hidden" name="_token" value="{{ csrf_token('mortgage_unsigned_' ~ mortgage.id) }}">
+                <button
+                    type="submit"
+                    class="btn btn-outline btn-error mt-4 mb-4 mr-4"
+                    {% if not mortgage.signed %}disabled{% endif %}
+                >
+                    Unsign
+                </button>
+            </form>
+        {% endif %}
+
         {% if mortgage.id %}
             <a
                 href="{{ path('app_mortgage_pdf', {id: mortgage.id}) }}"
