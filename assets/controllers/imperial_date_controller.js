@@ -273,10 +273,6 @@ export default class extends Controller {
 
     clearDate() {
         this.dayTarget.value = '';
-        this.yearTarget.value = '';
-        if (this.yearInputEl) {
-            this.yearInputEl.value = '';
-        }
         this.updateDisplay();
         this.closePopover();
     }
