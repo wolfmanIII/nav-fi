@@ -1,0 +1,63 @@
+{% import _self as costDetails %}
+
+{% macro render_item(child) %}
+    <div class="grid grid-cols-3 gap-2 border border-base-300 rounded p-3 relative collection-item bg-base-100">
+        <button type="button"
+                class="btn btn-ghost btn-xs absolute right-1 top-1"
+                data-action="ship-details#removeItem">&times;</button>
+        <div>
+            {{ form_label(child.description) }}
+            {{ form_widget(child.description) }}
+            {{ form_errors(child.description) }}
+        </div>
+        <div>
+            {{ form_label(child.quantity) }}
+            {{ form_widget(child.quantity) }}
+            {{ form_errors(child.quantity) }}
+        </div>
+        <div>
+            {{ form_label(child.cost) }}
+            {{ form_widget(child.cost) }}
+            {{ form_errors(child.cost) }}
+        </div>
+    </div>
+{% endmacro %}
+
+<fieldset class="fieldset bg-base-200 border-base-300 gap-4 p-4 border rounded w-250"
+         data-controller="ship-details">
+    <legend class="fieldset-legend">Cost detail items</legend>
+
+    <div class="col-span-2">
+        <div class="relative overflow-hidden rounded-xl border border-emerald-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-900 shadow-lg mb-4">
+            <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
+                 style="background: radial-gradient(circle at 20% 20%, rgba(16,185,129,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(59,130,246,0.25), transparent 35%);">
+            </div>
+            <div class="relative p-4 flex items-start gap-3">
+                <div class="p-3 rounded-lg bg-emerald-500/10 border border-emerald-400/40">
+                    {% include 'icons/cost.html.twig' %}
+                </div>
+                <div>
+                    <p class="uppercase text-xs tracking-[0.25em] text-emerald-300/70">Cost breakdown</p>
+                    <h3 class="font-semibold text-emerald-100 text-xl leading-tight">Line items</h3>
+                    <p class="text-sm text-emerald-100/80">Track each material, service or product with quantity and cost. Values are saved as JSON detail items.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="space-y-2" data-ship-details-target="collection">
+        <div class="flex items-center justify-between">
+            <h4 class="font-semibold text-emerald-100">Items</h4>
+            <button type="button" class="btn btn-outline btn-xs"
+                    data-action="ship-details#addItem">+ Add</button>
+        </div>
+        <div class="space-y-2" data-ship-details-target="list">
+            {% for child in form.detailItems %}
+                {{ costDetails.render_item(child) }}
+            {% endfor %}
+        </div>
+        <template data-ship-details-target="prototype">
+            {{ costDetails.render_item(form.detailItems.vars.prototype) }}
+        </template>
+    </div>
+</fieldset>

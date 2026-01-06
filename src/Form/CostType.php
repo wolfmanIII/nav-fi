@@ -8,6 +8,7 @@ use App\Entity\Ship;
 use App\Entity\Company;
 use App\Entity\LocalLaw;
 use App\Form\Config\DayYearLimits;
+use App\Form\CostDetailItemType;
 use App\Form\Type\ImperialDateType;
 use App\Form\Type\TravellerMoneyType;
 use App\Model\ImperialDate;
@@ -15,6 +16,7 @@ use App\Repository\ShipRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -44,6 +46,18 @@ class CostType extends AbstractType
             ->add('amount', TravellerMoneyType::class, [
                 'label' => 'Amount (Cr)',
                 'attr' => ['class' => 'input m-1 w-full'],
+            ])
+            ->add('detailItems', CollectionType::class, [
+                'entry_type' => CostDetailItemType::class,
+                'entry_options' => [
+                    'label' => false,
+                ],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'required' => false,
+                'label' => false,
+                'prototype' => true,
             ])
             ->add('paymentDate', ImperialDateType::class, [
                 'mapped' => false,
