@@ -17,7 +17,7 @@
 
     <div class="flex flex-col items-center gap-4">
     
-        {{ form_start(form) }}
+        {{ form_start(form, { attr: { id: 'mortgage_form' } }) }}
 
         <fieldset class="fieldset bg-base-200 border-base-300 gap-4 p-4 border rounded w-315">
             <legend class="fieldset-legend">Mortgage</legend>
@@ -149,9 +149,12 @@
 
         </fieldset>
 
+        {{ form_end(form) }}
+
         <div class="flex flex-wrap items-center gap-3 mt-4 mb-4">
             <button
                 type="submit"
+                form="mortgage_form"
                 name="action" value="save"
                 class="btn btn-outline btn-primary"
                 {% if not (mortgage.id ? can_edit : can_create) %} disabled {% endif %}
@@ -159,15 +162,12 @@
 
             <button
                 type="submit"
+                form="mortgage_form"
                 name="action" value="sign"
                 class="btn btn-outline btn-warning"
                 {% if not can_sign %} disabled {% endif %}
             >Sign</button>
-        </div>
 
-        {{ form_end(form) }}
-
-        <div class="flex flex-wrap items-center gap-3 mt-2 mb-4">
             {% if mortgage.id and is_granted('ROLE_ADMIN') %}
                 <form method="post" action="{{ path('app_mortgage_unsigned', {id: mortgage.id}) }}" class="inline-flex">
                     <input type="hidden" name="_token" value="{{ csrf_token('mortgage_unsigned_' ~ mortgage.id) }}">
