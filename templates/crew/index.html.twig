@@ -29,6 +29,44 @@
             </div>
         </div>
 
+        <form method="get" action="{{ path('app_crew_index') }}" class="mb-6">
+            <fieldset class="rounded-xl border border-cyan-500/30 bg-slate-900/60 p-4">
+                <legend class="px-2 text-xs uppercase tracking-[0.2em] text-cyan-300/70">Crew search</legend>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div>
+                        <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Name</label>
+                        <input type="text" name="name" value="{{ filters.name }}" class="input m-1 w-full">
+                    </div>
+                    <div>
+                        <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Surname</label>
+                        <input type="text" name="surname" value="{{ filters.surname }}" class="input m-1 w-full">
+                    </div>
+                    <div>
+                        <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Ship</label>
+                        <select name="ship" class="select m-1 w-full">
+                            <option value="">All ships</option>
+                            {% for ship in ships %}
+                                <option value="{{ ship.id }}" {% if filters.ship == ship.id %}selected{% endif %}>{{ ship.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Campaign</label>
+                        <select name="campaign" class="select m-1 w-full">
+                            <option value="">All campaigns</option>
+                            {% for campaign in campaigns %}
+                                <option value="{{ campaign.id }}" {% if filters.campaign == campaign.id %}selected{% endif %}>{{ campaign.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-4 flex flex-wrap gap-2">
+                    <button type="submit" class="btn btn-outline btn-primary btn-sm">Search</button>
+                    <a href="{{ path('app_crew_index') }}" class="btn btn-ghost btn-sm">Reset</a>
+                </div>
+            </fieldset>
+        </form>
+
         <div class="flow-root">
 
             <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
@@ -117,6 +155,31 @@
                     </tbody>
                 </table>
             </div>
+
+            {% if pagination.total_pages > 1 %}
+                <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div class="text-xs uppercase tracking-[0.2em] text-slate-400">
+                        Showing {{ pagination.from }}-{{ pagination.to }} of {{ pagination.total }}
+                    </div>
+                    <div class="join">
+                        {% set query = app.request.query.all %}
+                        {% set prevPage = pagination.current > 1 ? pagination.current - 1 : 1 %}
+                        {% set nextPage = pagination.current < pagination.total_pages ? pagination.current + 1 : pagination.total_pages %}
+                        <a class="join-item btn btn-sm btn-outline" href="{{ path('app_crew_index', query|merge({'page': prevPage})) }}">&laquo;</a>
+                        {% for page in pagination.pages %}
+                            {% if page %}
+                                <a class="join-item btn btn-sm {% if page == pagination.current %}btn-active{% else %}btn-outline{% endif %}"
+                                   href="{{ path('app_crew_index', query|merge({'page': page})) }}">
+                                    {{ page }}
+                                </a>
+                            {% else %}
+                                <span class="join-item btn btn-sm btn-ghost">…</span>
+                            {% endif %}
+                        {% endfor %}
+                        <a class="join-item btn btn-sm btn-outline" href="{{ path('app_crew_index', query|merge({'page': nextPage})) }}">&raquo;</a>
+                    </div>
+                </div>
+            {% endif %}
 
         </div>
 

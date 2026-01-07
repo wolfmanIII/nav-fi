@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Crew;
+use App\Entity\Campaign;
+use App\Entity\Ship;
 use App\Form\CrewType;
 use App\Security\Voter\CrewVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,14 +19,61 @@ final class CrewController extends BaseController
     public const CONTROLLER_NAME = 'CrewController';
 
     #[Route('/crew/index', name: 'app_crew_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $em): Response
+    public function index(Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        $crew = $user ? $em->getRepository(Crew::class)->findAllForUser($user) : [];
+        $shipFilter = trim((string) $request->query->get('ship', ''));
+        $campaignFilter = trim((string) $request->query->get('campaign', ''));
+        $filters = [
+            'name' => trim((string) $request->query->get('name', '')),
+            'surname' => trim((string) $request->query->get('surname', '')),
+            'ship' => $shipFilter !== '' && ctype_digit($shipFilter) ? (int) $shipFilter : null,
+            'campaign' => $campaignFilter !== '' && ctype_digit($campaignFilter) ? (int) $campaignFilter : null,
+        ];
+        $page = max(1, (int) $request->query->get('page', 1));
+        $perPage = 10;
+
+        $crew = [];
+        $total = 0;
+        $totalPages = 1;
+        $ships = [];
+        $campaigns = [];
+
+        if ($user instanceof \App\Entity\User) {
+            $result = $em->getRepository(Crew::class)->findForUserWithFilters($user, $filters, $page, $perPage);
+            $crew = $result['items'];
+            $total = $result['total'];
+
+            $totalPages = max(1, (int) ceil($total / $perPage));
+            if ($page > $totalPages) {
+                $page = $totalPages;
+                $result = $em->getRepository(Crew::class)->findForUserWithFilters($user, $filters, $page, $perPage);
+                $crew = $result['items'];
+            }
+
+            $ships = $em->getRepository(Ship::class)->findAllForUser($user);
+            $campaigns = $em->getRepository(Campaign::class)->findAllForUser($user);
+        }
+
+        $pages = $this->buildPagination($page, $totalPages);
+        $from = $total > 0 ? (($page - 1) * $perPage) + 1 : 0;
+        $to = $total > 0 ? min($page * $perPage, $total) : 0;
 
         return $this->render('crew/index.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'crew'            => $crew,
+            'filters'         => $filters,
+            'ships'           => $ships,
+            'campaigns'       => $campaigns,
+            'pagination'      => [
+                'current' => $page,
+                'total' => $total,
+                'per_page' => $perPage,
+                'total_pages' => $totalPages,
+                'pages' => $pages,
+                'from' => $from,
+                'to' => $to,
+            ],
         ]);
     }
 
@@ -111,5 +160,39 @@ final class CrewController extends BaseController
         $em->flush();
 
         return $this->redirectToRoute('app_crew_index');
+    }
+
+    /**
+     * @return array<int, int|null>
+     */
+    private function buildPagination(int $current, int $totalPages): array
+    {
+        if ($totalPages <= 1) {
+            return [1];
+        }
+
+        if ($totalPages <= 7) {
+            return range(1, $totalPages);
+        }
+
+        $pages = [1];
+        $windowStart = max(2, $current - 2);
+        $windowEnd = min($totalPages - 1, $current + 2);
+
+        if ($windowStart > 2) {
+            $pages[] = null;
+        }
+
+        for ($i = $windowStart; $i <= $windowEnd; $i++) {
+            $pages[] = $i;
+        }
+
+        if ($windowEnd < $totalPages - 1) {
+            $pages[] = null;
+        }
+
+        $pages[] = $totalPages;
+
+        return $pages;
     }
 }
