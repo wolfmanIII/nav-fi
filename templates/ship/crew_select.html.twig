@@ -85,14 +85,34 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="{{ path('app_ship_crew_remove', {id: member.id}) }}"
-                                   role="button"
-                                   class="btn btn-outline btn-error btn-xs"
-                                   {% if not can_remove_crew %}disabled{% endif %}
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                </a>
-                                </td>
+                                <div class="flex gap-2">
+                                    <button type="button"
+                                            class="btn btn-outline btn-info btn-xs"
+                                            onclick="document.getElementById('crew_roles_{{ member.id }}').showModal()">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                             stroke-linejoin="round">
+                                            <path d="M12 4v16"></path>
+                                            <path d="M6 10h12"></path>
+                                            <path d="M6 14h12"></path>
+                                        </svg>
+                                    </button>
+                                    <a href="{{ path('app_ship_crew_remove', {id: member.id}) }}"
+                                       role="button"
+                                       class="btn btn-outline btn-error btn-xs"
+                                       {% if not can_remove_crew %}disabled{% endif %}
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                             stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
                             </tr>
                         {% endfor %}
                     {% else %}
@@ -104,6 +124,33 @@
                 </table>
             </div>
         </div>
+
+        {% for member in ship.crews %}
+            {% set roleForm = roleForms[member.id] ?? null %}
+            {% if roleForm %}
+                <dialog id="crew_roles_{{ member.id }}" class="modal">
+                    <div class="modal-box w-full max-w-3xl">
+                        <h3 class="font-semibold text-cyan-100 text-lg mb-2">Assign Roles — {{ member.name }} {{ member.surname }}</h3>
+                        {{ form_start(roleForm, {
+                            action: path('app_ship_crew_assign_roles', {shipId: ship.id, crewId: member.id}),
+                            method: 'POST'
+                        }) }}
+                        <div class="alert alert-info alert-outline mb-4 flex items-center gap-2">
+                            <span class="flex items-center justify-center animate-spin-slow">
+                                {% include 'icons/radar.html.twig' %}
+                            </span>
+                            <div class="text-xs">Select one or more bridge roles and confirm to update the crew profile.</div>
+                        </div>
+                        {{ form_widget(roleForm.shipRoles) }}
+                        <div class="modal-action">
+                            <button type="submit" class="btn btn-outline btn-primary btn-sm">Save</button>
+                            <button type="button" class="btn btn-outline btn-default btn-sm" onclick="document.getElementById('crew_roles_{{ member.id }}').close()">Close</button>
+                        </div>
+                        {{ form_end(roleForm) }}
+                    </div>
+                </dialog>
+            {% endif %}
+        {% endfor %}
 
     </div>
 

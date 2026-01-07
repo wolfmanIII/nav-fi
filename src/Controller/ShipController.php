@@ -9,6 +9,7 @@ use App\Entity\Campaign;
 use App\Service\PdfGenerator;
 use App\Form\CrewSelectType;
 use App\Form\ShipType;
+use App\Form\ShipRoleAssignmentType;
 use App\Security\Voter\ShipVoter;
 use App\Dto\ShipDetailsData;
 use Doctrine\ORM\EntityManagerInterface;
@@ -296,11 +297,65 @@ final class ShipController extends BaseController
             return $this->redirectToRoute('app_ship_crew', ['id' => $ship->getId()]);
         }
 
+        $roleForms = [];
+        foreach ($ship->getCrews() as $crewMember) {
+            $assignmentForm = $this->createForm(ShipRoleAssignmentType::class, null, [
+                'ship' => $ship,
+                'user' => $user,
+            ]);
+            $assignmentForm->get('shipRoles')->setData($crewMember->getShipRoles()->toArray());
+            $roleForms[$crewMember->getId()] = $assignmentForm->createView();
+        }
+
         return $this->renderTurbo('ship/crew_select.html.twig', [
             'ship' => $ship,
             'form' => $form,
+            'roleForms' => $roleForms,
             'controller_name' => self::CONTROLLER_NAME,
         ]);
+    }
+
+    #[Route('/ship/{shipId}/crew/{crewId}/roles', name: 'app_ship_crew_assign_roles', methods: ['POST'])]
+    public function assignCrewRoles(
+        int $shipId,
+        int $crewId,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $ship = $em->getRepository(Ship::class)->findOneForUser($shipId, $user);
+        if (!$ship) {
+            throw new NotFoundHttpException();
+        }
+
+        $crew = $em->getRepository(Crew::class)->findOneForUser($crewId, $user);
+        if (!$crew || $crew->getShip()?->getId() !== $ship->getId()) {
+            throw new NotFoundHttpException();
+        }
+
+        $form = $this->createForm(ShipRoleAssignmentType::class, null, [
+            'ship' => $ship,
+            'user' => $user,
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $selectedRoles = $form->get('shipRoles')->getData();
+            $crew->getShipRoles()->clear();
+            foreach ($selectedRoles as $role) {
+                $crew->addShipRole($role);
+            }
+
+            $em->persist($crew);
+            $em->flush();
+            $this->addFlash('success', 'Crew roles updated.');
+        }
+
+        return $this->redirectToRoute('app_ship_crew', ['id' => $ship->getId()]);
     }
 
     #[Route('/ship/crew/{id}/remove', name: 'app_ship_crew_remove', methods: ['GET', 'POST'])]
