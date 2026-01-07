@@ -48,7 +48,18 @@
                 {{ form_errors(form.title) }}
             </div>
 
-            <div class="grid grid-cols-2 gap-4" data-controller="campaign-ship">
+            <div class="col-span-3 grid grid-cols-1 gap-4">
+                <div class="alert alert-info alert-outline shadow-sm mt-2">
+                    <span class="flex items-center justify-center animate-spin-slow">
+                        {% include 'icons/radar.html.twig' %}
+                    </span>
+                    <div class="text-xs text-slate-200">
+                        Select a campaign to unlock the ship list for this cost.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-span-3 grid grid-cols-2 gap-4" data-controller="campaign-ship">
                 <div>
                     <div class="flex items-center gap-1">
                         {{ form_label(form.campaign) }}

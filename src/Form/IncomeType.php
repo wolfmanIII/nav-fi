@@ -22,6 +22,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Entity\Campaign;
 
 class IncomeType extends AbstractType
 {
@@ -99,6 +100,26 @@ class IncomeType extends AbstractType
                     'data-action' => 'change->income-details#change',
                 ],
             ])
+            ->add('campaign', EntityType::class, [
+                'class' => Campaign::class,
+                'mapped' => false,
+                'required' => true,
+                'placeholder' => '-- Select a Campaign --',
+                'choice_label' => fn (Campaign $campaign) => $campaign->getTitle(),
+                'data' => $income->getShip()?->getCampaign(),
+                'query_builder' => function (EntityRepository $er) use ($user) {
+                    $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
+                    if ($user) {
+                        $qb->andWhere('c.user = :user')->setParameter('user', $user);
+                    }
+                    return $qb;
+                },
+                'attr' => [
+                    'class' => 'select m-1 w-full',
+                    'data-campaign-ship-target' => 'campaign',
+                    'data-action' => 'change->campaign-ship#onCampaignChange',
+                ],
+            ])
             ->add('ship', EntityType::class, [
                 'class' => Ship::class,
                 'placeholder' => '-- Select a Ship --',
@@ -123,6 +144,7 @@ class IncomeType extends AbstractType
                     'data-controller' => 'income-details year-limit',
                     'data-year-limit-default-value' => $this->dayYearLimits->getYearMin(),
                     'data-action' => 'change->year-limit#onShipChange',
+                    'data-campaign-ship-target' => 'ship',
                 ],
             ])
             ->add('company', EntityType::class, [

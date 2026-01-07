@@ -105,11 +105,16 @@ class CostType extends AbstractType
             ])
             ->add('ship', EntityType::class, [
                 'class' => Ship::class,
+                'disabled' => $cost->getShip() === null,
                 'placeholder' => '-- Select a Ship --',
                 'choice_label' => fn (Ship $ship) => sprintf('%s - %s(%s)', $ship->getName(), $ship->getType(), $ship->getClass()),
                 'choice_attr' => function (Ship $ship): array {
                     $start = $ship->getCampaign()?->getStartingYear();
-                    return ['data-start-year' => $start ?? ''];
+                    $campaignId = $ship->getCampaign()?->getId();
+                    return [
+                        'data-start-year' => $start ?? '',
+                        'data-campaign' => $campaignId ? (string) $campaignId : '',
+                    ];
                 },
                 'query_builder' => function (ShipRepository $repo) use ($user) {
                     $qb = $repo->createQueryBuilder('s')->orderBy('s.name', 'ASC');
@@ -124,6 +129,7 @@ class CostType extends AbstractType
                     'data-controller' => 'year-limit',
                     'data-year-limit-default-value' => $this->limits->getYearMin(),
                     'data-action' => 'change->year-limit#onShipChange',
+                    'data-campaign-ship-target' => 'ship',
                 ],
             ])
             ->add('company', EntityType::class, [
