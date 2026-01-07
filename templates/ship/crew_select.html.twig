@@ -130,7 +130,7 @@
                         <div>
                             <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Name / Surname</label>
                             <input type="text"
-                                   name="crew_search"
+                               name="crew_search"
                                    value="{{ crewFilters.search }}"
                                    class="input m-1 w-full"
                                    placeholder="Enter name or surname">
@@ -143,10 +143,12 @@
                                    class="input m-1 w-full"
                                    placeholder="Enter nickname">
                         </div>
-                        <div class="flex flex-wrap items-end gap-2">
+                        <div class="flex flex-col items-start justify-end gap-2">
                             <input type="hidden" name="crew_page" value="1">
-                            <button type="submit" class="btn btn-outline btn-primary btn-sm">Search crew</button>
-                            <a href="{{ path('app_ship_crew', {id: ship.id}) }}" class="btn btn-ghost btn-sm">Reset</a>
+                            <div class="flex gap-2">
+                                <button type="submit" class="btn btn-outline btn-primary btn-sm">Search crew</button>
+                                <a href="{{ path('app_ship_crew', {id: ship.id}) }}" class="btn btn-ghost btn-sm">Reset</a>
+                            </div>
                         </div>
                     </div>
                 </form>
