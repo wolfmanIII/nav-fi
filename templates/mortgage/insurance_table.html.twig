@@ -19,6 +19,7 @@
                     <th class="w-10"></th>
                     <th>Name</th>
                     <th>Annual Cost(% Ship Price)</th>
+                    <th>Loss Refund(% Ship Cost)</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,6 +44,7 @@
                     </td>
                     <td>{{ insurance.name }}</td>
                     <td class="text-right">{{ insurance.annualCost|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
+                    <td class="text-right">{{ insurance.lossRefund|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
                 </tr>
             {% endfor %}
             </tbody>
