@@ -4,14 +4,56 @@ export default class extends Controller {
     static targets = ['select', 'chips'];
 
     connect() {
-        if (!this.selectTarget || !this.chipsTarget) {
+        if (!this.hasSelectTarget || !this.hasChipsTarget) {
             return;
         }
 
+        this.boundReset = this.resetSelection.bind(this);
+        this.boundOnShow = this.prepareSelection.bind(this);
+        this.prepareSelection();
+        this.renderChips();
+
+        this.element?.addEventListener('close', this.boundReset);
+        this.element?.addEventListener('cancel', this.boundReset);
+        this.element?.addEventListener('show', this.boundOnShow);
+    }
+
+    disconnect() {
+        this.element?.removeEventListener('close', this.boundReset);
+        this.element?.removeEventListener('cancel', this.boundReset);
+        this.element?.removeEventListener('show', this.boundOnShow);
+    }
+
+    prepareSelection() {
+        this.saveInitialSelection();
+        this.renderChips();
+    }
+
+    saveInitialSelection() {
+        if (!this.hasSelectTarget) {
+            this.initialSelection = [];
+            return;
+        }
+
+        this.initialSelection = Array.from(this.selectTarget.selectedOptions).map(option => option.value);
+    }
+
+    resetSelection() {
+        if (!this.hasSelectTarget || !this.initialSelection) {
+            return;
+        }
+
+        Array.from(this.selectTarget.options).forEach(option => {
+            option.selected = this.initialSelection.includes(option.value);
+        });
         this.renderChips();
     }
 
     renderChips() {
+        if (!this.hasSelectTarget || !this.hasChipsTarget) {
+            return;
+        }
+
         this.chipsTarget.innerHTML = '';
         Array.from(this.selectTarget.options).forEach(option => {
             if (!option.value) {

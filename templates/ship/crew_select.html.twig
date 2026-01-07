@@ -252,7 +252,7 @@
         {% for member in ship.crews %}
             {% set roleForm = roleForms[member.id] ?? null %}
             {% if roleForm %}
-                <dialog id="crew_roles_{{ member.id }}" class="modal">
+                <dialog id="crew_roles_{{ member.id }}" class="modal" data-controller="role-selector">
                     <div class="modal-box w-full max-w-3xl">
                         <h3 class="font-semibold text-cyan-100 text-lg mb-2">Assign Roles — {{ member.name }} {{ member.surname }}</h3>
                         {{ form_start(roleForm, {
@@ -266,13 +266,13 @@
                             <div class="text-xs">Select one or more bridge roles and confirm to update the crew profile.</div>
                         </div>
                         <div data-controller="role-selector" data-role-selector-target="wrapper">
-                            {{ form_widget(roleForm.shipRoles, {
-                                attr: {
-                                    class: 'hidden',
-                                    'data-role-selector-target': 'select'
-                                }
-                            }) }}
-                            <div class="flex flex-wrap gap-2" data-role-selector-target="chips"></div>
+                        {{ form_widget(roleForm.shipRoles, {
+                            attr: {
+                                class: 'hidden',
+                                'data-role-selector-target': 'select'
+                            }
+                        }) }}
+                        <div class="flex flex-wrap gap-2" data-role-selector-target="chips"></div>
                         </div>
                         <div class="modal-action">
                             <button type="submit" class="btn btn-outline btn-primary btn-sm">Save</button>
