@@ -8,12 +8,12 @@
 
         {{ form_start(form) }}
 
-        <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
+        <fieldset class="fieldset grid grid-cols-4 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
             <legend class="fieldset-legend">Annual Budget</legend>
 
             {{ form_widget(form._token) }}
 
-            <div class="col-span-2">
+            <div class="col-span-4">
                 <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
                     <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
                          style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
@@ -32,47 +32,61 @@
             </div>
 
             {% if form_errors(form) %}
-                <div class="col-span-2 alert alert-error alert-outline flex items-center gap-2">
-                    <span class="animate-spin-slow">
-                        {% include 'icons/radar.html.twig' %}
-                    </span>
-                    <div>
-                        {{ form_errors(form) }}
+                <div class="col-span-4">
+                    <div class="alert alert-error alert-outline flex items-center gap-2">
+                        <span class="animate-spin-slow">
+                            {% include 'icons/radar.html.twig' %}
+                        </span>
+                        <div>
+                            {{ form_errors(form) }}
+                        </div>
                     </div>
                 </div>
             {% endif %}
 
             {% if budget.id %}
-                <div>
+                <div class="col-span-4">
                     <label class="label">Code</label>
                     <div><b>{{ budget.code }}</b></div>
                 </div>
-                <div></div>
             {% endif %}
 
-            <div class="col-span-1" data-controller="imperial-date">
-                <div class="flex items-center gap-1">
-                    {{ form_label(form.startDate) }}
-                    {% if form.startDate.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+            <div class="col-span-4 grid grid-cols-2 gap-4">
+                <div data-controller="imperial-date">
+                    <div class="flex items-center gap-1">
+                        {{ form_label(form.startDate) }}
+                        {% if form.startDate.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                    </div>
+                    {{ form_widget(form.startDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                    {{ form_widget(form.startDate.year) }}
+                    {{ form_widget(form.startDate.day) }}
+                    {{ form_errors(form.startDate) }}
                 </div>
-                {{ form_widget(form.startDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
-                {{ form_widget(form.startDate.year) }}
-                {{ form_widget(form.startDate.day) }}
-                {{ form_errors(form.startDate) }}
+
+                <div data-controller="imperial-date">
+                    <div class="flex items-center gap-1">
+                        {{ form_label(form.endDate) }}
+                        {% if form.endDate.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                    </div>
+                    {{ form_widget(form.endDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                    {{ form_widget(form.endDate.year) }}
+                    {{ form_widget(form.endDate.day) }}
+                    {{ form_errors(form.endDate) }}
+                </div>
             </div>
 
-            <div class="col-span-1" data-controller="imperial-date">
-                <div class="flex items-center gap-1">
-                    {{ form_label(form.endDate) }}
-                    {% if form.endDate.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+            <div class="col-span-4 grid grid-cols-1 gap-4">
+                <div class="alert alert-info alert-outline shadow-sm mt-2">
+                    <span class="flex items-center justify-center animate-spin-slow">
+                        {% include 'icons/radar.html.twig' %}
+                    </span>
+                    <div class="text-xs text-slate-200">
+                        Select a campaign to unlock the ship list for this budget.
+                    </div>
                 </div>
-                {{ form_widget(form.endDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
-                {{ form_widget(form.endDate.year) }}
-                {{ form_widget(form.endDate.day) }}
-                {{ form_errors(form.endDate) }}
             </div>
 
-            <div class="col-span-2 grid grid-cols-2 gap-4" data-controller="campaign-ship">
+            <div class="col-span-4 grid grid-cols-2 gap-4" data-controller="campaign-ship">
                 <div>
                     <div class="flex items-center gap-1">
                         {{ form_label(form.campaign) }}
@@ -87,19 +101,11 @@
                         {% if form.ship.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
                     </div>
                     {{ form_widget(form.ship) }}
-                    <div class="alert alert-info alert-outline shadow-sm mt-2">
-                        <span class="flex items-center justify-center animate-spin-slow">
-                            {% include 'icons/radar.html.twig' %}
-                        </span>
-                        <div class="text-xs">
-                            Choose a campaign first, then the ship list will populate.
-                        </div>
-                    </div>
                     {{ form_errors(form.ship) }}
                 </div>
             </div>
 
-            <div class="col-span-2">
+            <div class="col-span-4">
                 {{ form_label(form.note) }}
                 {{ form_widget(form.note) }}
                 {{ form_errors(form.note) }}

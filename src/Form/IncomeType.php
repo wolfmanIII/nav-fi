@@ -127,8 +127,10 @@ class IncomeType extends AbstractType
                 'choice_label' => fn (Ship $ship) => sprintf('%s - %s(%s)', $ship->getName(), $ship->getType(), $ship->getClass()),
                 'choice_attr' => function (Ship $ship): array {
                     $start = $ship->getCampaign()?->getStartingYear();
+                    $campaignId = $ship->getCampaign()?->getId();
                     return [
                         'data-start-year' => $start ?? '',
+                        'data-campaign' => $campaignId ? (string) $campaignId : '',
                     ];
                 },
                 'query_builder' => function (ShipRepository $repo) use ($user) {
