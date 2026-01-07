@@ -61,9 +61,10 @@ class ExportContextCommand extends Command
             'insurance' => array_map(
                 static function ($insurance): array {
                     return [
-                        'name'        => $insurance->getName(),
-                        'annual_cost' => $insurance->getAnnualCost(),
-                        'coverage'    => $insurance->getCoverage(),
+                        'name'         => $insurance->getName(),
+                        'annual_cost'  => $insurance->getAnnualCost(),
+                        'loss_refund'  => $insurance->getLossRefund(),
+                        'coverage'     => $insurance->getCoverage(),
                     ];
                 },
                 $this->insuranceRepository->findAll()
