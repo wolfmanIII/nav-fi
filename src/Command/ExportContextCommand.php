@@ -8,6 +8,7 @@ use App\Repository\IncomeCategoryRepository;
 use App\Repository\InterestRateRepository;
 use App\Repository\LocalLawRepository;
 use App\Repository\ShipRoleRepository;
+use App\Repository\CompanyRoleRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,7 +20,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 #[AsCommand(
     name: 'app:context:export',
-    description: 'Esporta i dati di Insurance, InterestRate e ShipRole su file JSON'
+    description: 'Esporta i dati di contesto su file JSON'
 )]
 class ExportContextCommand extends Command
 {
@@ -29,6 +30,7 @@ class ExportContextCommand extends Command
         private readonly IncomeCategoryRepository $incomeCategoryRepository,
         private readonly InterestRateRepository $interestRateRepository,
         private readonly ShipRoleRepository $shipRoleRepository,
+        private readonly CompanyRoleRepository $companyRoleRepository,
         private readonly LocalLawRepository $localLawRepository,
         #[Autowire('%kernel.project_dir%')] private readonly string $projectDir,
     ) {
@@ -89,6 +91,16 @@ class ExportContextCommand extends Command
                     ];
                 },
                 $this->shipRoleRepository->findAll()
+            ),
+            'company_roles' => array_map(
+                static function ($role): array {
+                    return [
+                        'code'        => $role->getCode(),
+                        'short_description' => $role->getShortDescription(),
+                        'description' => $role->getDescription(),
+                    ];
+                },
+                $this->companyRoleRepository->findAll()
             ),
             'cost_categories' => array_map(
                 static function ($category): array {
