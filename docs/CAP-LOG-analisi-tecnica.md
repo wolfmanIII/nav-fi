@@ -14,33 +14,34 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 - **Stimulus form helpers:** controller `year-limit` applica il min anno derivato dallo `startingYear` della Campaign sulla Ship selezionata, con fallback ai limiti env.
 
 ## Dominio applicativo
-- **Campagne e sessioni:** `Campaign` con calendario di sessione (giorno/anno) e relazione 1–N con Ship; le date sessione mostrate nelle liste/PDF derivano dalla Campaign di appartenenza.
-- **Navi e mutui:** `Ship`, `Mortgage`, `MortgageInstallment`, `InterestRate`, `Insurance`, `ShipRole`; la scheda nave esporta un PDF dedicato. Il mutuo conserva `signingDay/Year` derivati dalla sessione della Campaign della nave e `signingLocation` raccolta via modale al momento della firma; il PDF del mutuo può essere generato anche in draft (non firmato) con etichetta “Pro forma draft”. I piani di pagamento usano il calendario Traveller a 13 periodi/anno (esempio: 5 anni ⇒ 65 rate totali, non 60).
-- **Dettagli nave strutturati:** campo JSON `shipDetails` su Ship con DTO/form (`ShipDetailsData`, `ShipDetailItemType`) per drive/hull/bridge e collezioni (weapons, craft, systems, staterooms, software); usato anche nel PDF nave.
-- **Annual Budget per nave:** ogni budget è legato a una singola nave e aggrega ricavi (`Income`), costi (`Cost`) e rate del mutuo pagate nel periodo impostato (start/end giorno/anno). Dashboard e grafico mostrano l’andamento temporale Income/Cost.
-- **Equipaggio:** `Crew` con ruoli multipli (`ShipRole`, es. CAP). Metodi helper `hasCaptain()`, `hasMortgageSigned()`.
-- **CostCategory / IncomeCategory:** tabelle di contesto per tipologie di spesa/entrata (code, description) con seeds JSON.
-- **Company e CompanyRole:** controparti contrattuali con `signLabel`; usate da Cost/Income/Mortgage.
+- **Campagne e sessioni:** `Campaign` con calendario di sessione (giorno/anno) e relazione 1–N con Ship; le date sessione mostrate nelle liste/PDF derivano dalla Campaign della nave.
+- **Navi e mutui:** `Ship`, `Mortgage`, `MortgageInstallment`, `InterestRate`, `Insurance`; il mutuo conserva `signingDay/Year` derivati dalla sessione della Campaign e `signingLocation` raccolta via modale al momento della firma. Il PDF del mutuo è generato da template dedicato; i piani usano 13 periodi/anno (esempio: 5 anni ⇒ 65 rate).
+- **Dettagli nave strutturati:** `Ship.shipDetails` (JSON) con DTO/form (`ShipDetailsData`, `ShipDetailItemType`, `MDriveDetailItemType`, `JDriveDetailItemType`) per hull/drive/bridge e collezioni (weapons, craft, systems, staterooms, software). Il “Total Cost” dei componenti è calcolato lato client e salvato nel JSON, ma **non** modifica `Ship.price`.
+- **Annual Budget per nave:** ogni budget è legato a una singola nave e aggrega ricavi (`Income`), costi (`Cost`) e rate del mutuo pagate nel periodo (start/end giorno/anno). Dashboard e grafico mostrano la timeline per nave.
+- **Equipaggio:** `Crew` con ruoli (`ShipRole`); la presenza di capitano è validata da validator dedicato.
+- **CostCategory / IncomeCategory:** tabelle di contesto per tipologie di spesa/entrata (code, description), con seeds JSON.
+- **Company e CompanyRole:** controparti contrattuali usate da `Cost`, `Income` e `Mortgage`.
 - **LocalLaw:** codice, descrizione breve e disclaimer giurisdizionale; referenziato da Cost, Income, Mortgage.
-- **Income dettagliato per categoria:** relazioni 1–1 (Freight, Passengers, Contract, Trade, Subsidy, Services, Insurance, Interest, Mail, Prize, Salvage, Charter, ecc.) con campi specifici; i form aggiungono le sottoform in base a `IncomeCategory.code`.
-- **Tracciamento utente:** `user` (FK nullable) su Ship, Crew, Mortgage, MortgageInstallment, Cost, Income, AnnualBudget. Un listener Doctrine (`AssignUserSubscriber`) assegna l’utente loggato in `prePersist`.
+- **Income dettagliato per categoria:** relazioni 1–1 (Freight, Passengers, Contract, Trade, Subsidy, Services, Insurance, Interest, Mail, Prize, Salvage, Charter, ecc.) con campi specifici; le sottoform sono attivate in base a `IncomeCategory.code`.
+- **Tracciamento utente:** FK `user` (nullable) su Ship, Crew, Mortgage, MortgageInstallment, Cost, Income, AnnualBudget e Company. Un listener Doctrine (`AssignUserSubscriber`) assegna l’utente loggato in `prePersist`.
 
 ### Relazioni principali
+- Campaign 1–N Ship (calendario di sessione condiviso).
 - Ship 1–1 Mortgage (vincolo univoco: una nave ha al massimo un mutuo).
-- Ship 1–N Crew, 1–N Cost, 1–N Income.
-- Mortgage 1–N MortgageInstallment; ManyToOne InterestRate/Insurance.
+- Ship 1–N Crew, 1–N Cost, 1–N Income, 1–N AnnualBudget.
+- Mortgage 1–N MortgageInstallment; ManyToOne InterestRate/Insurance; ManyToOne Company/LocalLaw.
 - Crew N–M ShipRole.
-- AnnualBudget ManyToOne Ship (uno per finestra temporale/nave).
-- CompanyRole 1–N Company; Company/LocalLaw ManyToOne su Cost/Income/Mortgage.
-- Income 1–1 con ciascuna tabella di dettaglio categoria.
+- Cost ManyToOne CostCategory, Company, LocalLaw.
+- Income ManyToOne IncomeCategory, Company, LocalLaw + 1–1 con tabella dettaglio categoria.
+- CompanyRole 1–N Company.
 
 ## Sicurezza e autorizzazioni
-- **Autenticazione:** form login (`/login`), CSRF abilitato, provider User (email). Access control: dashboard e rotte protette richiedono ruolo USER/ADMIN.
-- **Voter:** ShipVoter, CrewVoter, MortgageVoter, CostVoter, IncomeVoter, AnnualBudgetVoter vincolano l’accesso all’utente proprietario (`entity->getUser() === app.user`) e bloccano anonimi. Attenzione: entità legacy con `user` nullo verranno rifiutate. La gestione del calendario di sessione è ora su Campaign (non più sulla Ship).
-- **Subscriber:** `AssignUserSubscriber` (annotazione `AsDoctrineListener` su `prePersist`) assegna l’utente corrente se mancante. Se la sessione è anonima, non interviene.
-- **Filtro per ownership nei controller:** i controller protetti recuperano le entità tramite repository filtrando per `user` e restituiscono 404 se l’entità non appartiene all’utente loggato, come difesa in profondità rispetto ai voter.
-- **Localizzazione numerica:** `twig/intl-extra` formatta importi in liste e PDF secondo la locale richiesta, inclusi i PDF nave e mutuo.
-- **Validazione day/year:** i form usano `IntegerType` e `DayYearLimits`; il min anno è calcolato dallo startingYear della Campaign collegata alla Ship scelta (fallback `APP_YEAR_MIN`) e propagato lato client via Stimulus.
+- **Autenticazione:** form login (`/login`), CSRF abilitato, provider User (email). Access control su rotte principali con ruolo USER/ADMIN.
+- **Voter:** Ship/Crew/Mortgage/Cost/Income/AnnualBudget/Company vincolano l’accesso all’owner (`entity->getUser() === app.user`) e bloccano anonimi. Entità legacy senza `user` vengono rifiutate.
+- **Subscriber:** `AssignUserSubscriber` (Doctrine `prePersist`) assegna l’utente corrente se mancante.
+- **Filtro per ownership nei controller:** accesso alle entità tramite repository `findOneForUser`/`findAllForUser`, con 404 se l’utente non coincide (difesa in profondità oltre ai voter).
+- **Localizzazione numerica:** `twig/intl-extra` formatta importi in liste e PDF secondo la locale richiesta.
+- **Validazione day/year:** i form usano `IntegerType` e `DayYearLimits`; il min anno deriva dallo `startingYear` della Campaign della Ship selezionata (fallback `APP_YEAR_MIN`) ed è propagato lato client via Stimulus.
 
 ## EasyAdmin
 - Dashboard personalizzata (`templates/admin/dashboard.html.twig`) con card di link rapidi per le entità di contesto (InterestRate, Insurance, ShipRole, CostCategory, IncomeCategory, CompanyRole, LocalLaw, Company).
