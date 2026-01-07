@@ -143,13 +143,12 @@
                                    class="input m-1 w-full"
                                    placeholder="Enter nickname">
                         </div>
-                        <div class="flex flex-col items-start justify-end gap-2">
-                            <input type="hidden" name="crew_page" value="1">
-                            <div class="flex gap-2">
-                                <button type="submit" class="btn btn-outline btn-primary btn-sm">Search crew</button>
-                                <a href="{{ path('app_ship_crew', {id: ship.id}) }}" class="btn btn-ghost btn-sm">Reset</a>
-                            </div>
-                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <input type="hidden" name="crew_page" value="1">
+                        <button type="submit" class="btn btn-outline btn-primary btn-sm">Search crew</button>
+                        <a href="{{ path('app_ship_crew', {id: ship.id}) }}" class="btn btn-ghost btn-sm">Reset</a>
+                    </div>
                     </div>
                 </form>
             </div>
