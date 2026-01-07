@@ -50,7 +50,7 @@ class CrewRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param array{name?: string, surname?: string, ship?: int, campaign?: int} $filters
+     * @param array{search?: string, ship?: int, campaign?: int} $filters
      *
      * @return array{items: Crew[], total: int}
      */
@@ -63,16 +63,10 @@ class CrewRepository extends ServiceEntityRepository
             ->andWhere('c.user = :user')
             ->setParameter('user', $user);
 
-        if (!empty($filters['name'])) {
-            $name = '%'.strtolower($filters['name']).'%';
-            $qb->andWhere('LOWER(c.name) LIKE :name OR LOWER(c.surname) LIKE :name OR LOWER(CONCAT(c.name, \' \', c.surname)) LIKE :name')
-                ->setParameter('name', $name);
-        }
-
-        if (!empty($filters['surname'])) {
-            $surname = '%'.strtolower($filters['surname']).'%';
-            $qb->andWhere('LOWER(c.surname) LIKE :surname OR LOWER(CONCAT(c.name, \' \', c.surname)) LIKE :surname')
-                ->setParameter('surname', $surname);
+        if (!empty($filters['search'])) {
+            $search = '%'.strtolower($filters['search']).'%';
+            $qb->andWhere('LOWER(c.name) LIKE :search OR LOWER(c.surname) LIKE :search OR LOWER(CONCAT(c.name, \' \', c.surname)) LIKE :search')
+                ->setParameter('search', $search);
         }
 
         if ($filters['ship'] !== null) {

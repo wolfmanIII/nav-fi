@@ -11,7 +11,7 @@
             <a class="join-item btn btn-sm btn-outline" href="{{ path(route, query|merge({'page': prevPage})) }}">&laquo;</a>
             {% for page in pagination.pages %}
                 {% if page %}
-                    <a class="join-item btn btn-sm {% if page == pagination.current %}btn-active{% else %}btn-outline{% endif %}"
+                    <a class="join-item btn btn-sm {% if page == pagination.current %}btn-primary{% else %}btn-outline{% endif %}"
                        href="{{ path(route, query|merge({'page': page})) }}">
                         {{ page }}
                     </a>

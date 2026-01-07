@@ -25,8 +25,7 @@ final class CrewController extends BaseController
         $shipFilter = trim((string) $request->query->get('ship', ''));
         $campaignFilter = trim((string) $request->query->get('campaign', ''));
         $filters = [
-            'name' => trim((string) $request->query->get('name', '')),
-            'surname' => trim((string) $request->query->get('surname', '')),
+            'search' => trim((string) $request->query->get('search', '')),
             'ship' => $shipFilter !== '' && ctype_digit($shipFilter) ? (int) $shipFilter : null,
             'campaign' => $campaignFilter !== '' && ctype_digit($campaignFilter) ? (int) $campaignFilter : null,
         ];
