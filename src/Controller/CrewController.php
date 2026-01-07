@@ -85,7 +85,10 @@ final class CrewController extends BaseController
         }
 
         $crew = new Crew();
-        $form = $this->createForm(CrewType::class, $crew, ['user' => $user]);
+        $form = $this->createForm(CrewType::class, $crew, [
+            'user' => $user,
+            'is_admin' => $this->isGranted('ROLE_ADMIN'),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -120,7 +123,10 @@ final class CrewController extends BaseController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        $form = $this->createForm(CrewType::class, $crew, ['user' => $user]);
+        $form = $this->createForm(CrewType::class, $crew, [
+            'user' => $user,
+            'is_admin' => $this->isGranted('ROLE_ADMIN'),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

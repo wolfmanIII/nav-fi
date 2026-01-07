@@ -89,6 +89,17 @@
                 {{ form_widget(form.background) }}
                 {{ form_errors(form.background) }}
             </div>
+
+            {% if form.shipRoles is defined %}
+                <div class="col-span-2">
+                    <div class="flex items-center gap-1">
+                        {{ form_label(form.shipRoles) }}
+                        {% if form.shipRoles.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
+                    </div>
+                    {{ form_widget(form.shipRoles) }}
+                    {{ form_errors(form.shipRoles) }}
+                </div>
+            {% endif %}
         </fieldset>
 
         <button type="submit"

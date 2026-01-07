@@ -3,9 +3,11 @@
 namespace App\Form;
 
 use App\Entity\Crew;
+use App\Entity\ShipRole;
 use App\Form\Config\DayYearLimits;
 use App\Form\Type\ImperialDateType;
 use App\Model\ImperialDate;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\AbstractType;
@@ -53,9 +55,21 @@ class CrewType extends AbstractType
             ])
             ->add('background', TextareaType::class, [
                 'required' => false,
-                'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 10],
+                'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 13],
             ])
         ;
+
+        if ($options['is_admin']) {
+            $builder->add('shipRoles', EntityType::class, [
+                'class' => ShipRole::class,
+                'choice_label' => function (ShipRole $role) {
+                    return $role->getCode() . ' - ' . $role->getName();
+                },
+                'multiple' => true,
+                'required' => false,
+                'attr' => ['class' => 'select m-1 h-72 w-full'],
+            ]);
+        }
 
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
             /** @var Crew $crew */
@@ -76,6 +90,7 @@ class CrewType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Crew::class,
             'user' => null,
+            'is_admin' => false,
         ]);
     }
 }
