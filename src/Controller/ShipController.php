@@ -382,6 +382,28 @@ final class ShipController extends BaseController
                 $crew->addShipRole($role);
             }
 
+            $capSelected = false;
+            foreach ($selectedRoles as $role) {
+                if ($role->getCode() === 'CAP') {
+                    $capSelected = true;
+                    break;
+                }
+            }
+
+            if ($capSelected) {
+                foreach ($ship->getCrews() as $otherCrew) {
+                    if ($otherCrew === $crew) {
+                        continue;
+                    }
+
+                    foreach ($otherCrew->getShipRoles()->toArray() as $otherRole) {
+                        if ($otherRole->getCode() === 'CAP') {
+                            $otherCrew->removeShipRole($otherRole);
+                        }
+                    }
+                }
+            }
+
             $em->persist($crew);
             $em->flush();
             $this->addFlash('success', 'Crew roles updated.');
