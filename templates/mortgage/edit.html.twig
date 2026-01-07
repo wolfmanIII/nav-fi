@@ -71,8 +71,13 @@
                             {% if form.campaign.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
                         </div>
                         {{ form_widget(form.campaign) }}
-                        <div class="text-xs text-slate-400 mt-1">
-                            Select a campaign to unlock the ship list for this mortgage.
+                        <div class="alert alert-info alert-outline shadow-sm mt-2">
+                            <span class="flex items-center justify-center animate-spin-slow">
+                                {% include 'icons/radar.html.twig' %}
+                            </span>
+                            <div class="text-xs text-slate-200">
+                                Select a campaign to unlock the ship list for this mortgage.
+                            </div>
                         </div>
                         {{ form_errors(form.campaign) }}
                     </div>
