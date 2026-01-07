@@ -25,6 +25,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
+use App\Entity\Campaign;
 
 class CostType extends AbstractType
 {
@@ -81,6 +82,26 @@ class CostType extends AbstractType
                 'choice_label' => fn (CostCategory $cat) =>
                     sprintf('%s - %s', $cat->getCode(), $cat->getDescription()),
                 'attr' => ['class' => 'select m-1 w-full'],
+            ])
+            ->add('campaign', EntityType::class, [
+                'class' => Campaign::class,
+                'mapped' => false,
+                'required' => true,
+                'placeholder' => '-- Select a Campaign --',
+                'choice_label' => fn (Campaign $campaign) => $campaign->getTitle(),
+                'data' => $cost->getShip()?->getCampaign(),
+                'query_builder' => function (EntityRepository $er) use ($user) {
+                    $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
+                    if ($user) {
+                        $qb->andWhere('c.user = :user')->setParameter('user', $user);
+                    }
+                    return $qb;
+                },
+                'attr' => [
+                    'class' => 'select m-1 w-full',
+                    'data-campaign-ship-target' => 'campaign',
+                    'data-action' => 'change->campaign-ship#onCampaignChange',
+                ],
             ])
             ->add('ship', EntityType::class, [
                 'class' => Ship::class,
