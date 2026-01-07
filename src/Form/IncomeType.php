@@ -129,7 +129,7 @@ class IncomeType extends AbstractType
                 'class' => Company::class,
                 'placeholder' => '-- Select a Company --',
                 'required' => true,
-                'choice_label' => fn (Company $c) => sprintf('%s - %s', $c->getName(), $c->getCode()),
+                'choice_label' => fn (Company $c) => sprintf('%s - %s', $c->getName(), $c->getCompanyRole()->getShortDescription()),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.name', 'ASC');
                     if ($user) {
