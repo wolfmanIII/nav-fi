@@ -156,30 +156,11 @@
                 </table>
             </div>
 
-            {% if pagination.total_pages > 1 %}
-                <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div class="text-xs uppercase tracking-[0.2em] text-slate-400">
-                        Showing {{ pagination.from }}-{{ pagination.to }} of {{ pagination.total }}
-                    </div>
-                    <div class="join">
-                        {% set query = app.request.query.all %}
-                        {% set prevPage = pagination.current > 1 ? pagination.current - 1 : 1 %}
-                        {% set nextPage = pagination.current < pagination.total_pages ? pagination.current + 1 : pagination.total_pages %}
-                        <a class="join-item btn btn-sm btn-outline" href="{{ path('app_crew_index', query|merge({'page': prevPage})) }}">&laquo;</a>
-                        {% for page in pagination.pages %}
-                            {% if page %}
-                                <a class="join-item btn btn-sm {% if page == pagination.current %}btn-active{% else %}btn-outline{% endif %}"
-                                   href="{{ path('app_crew_index', query|merge({'page': page})) }}">
-                                    {{ page }}
-                                </a>
-                            {% else %}
-                                <span class="join-item btn btn-sm btn-ghost">…</span>
-                            {% endif %}
-                        {% endfor %}
-                        <a class="join-item btn btn-sm btn-outline" href="{{ path('app_crew_index', query|merge({'page': nextPage})) }}">&raquo;</a>
-                    </div>
-                </div>
-            {% endif %}
+            {% include 'components/pagination.html.twig' with {
+                pagination: pagination,
+                route: 'app_crew_index',
+                query: app.request.query.all
+            } %}
 
         </div>
 
