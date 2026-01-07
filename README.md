@@ -13,7 +13,6 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, 
 - Annual Budget per nave: calcolo riepilogativo di ricavi, costi e rate annuali del mutuo (su 13 periodi), più grafico temporale Income/Cost. Esempio: un mutuo di 100.000 Cr con duration 5 anni e multiplier 1.10 genera 13 rate/anno per 5 anni, non 12.
 - Dashboard EasyAdmin personalizzata e CRUD dedicati alle entità di contesto.
 - Comandi di export/import JSON per ripristinare rapidamente i dati di contesto.
-- Console AI per inoltrare domande a un backend esterno (Elara) tramite HttpClient.
 - I controller e i repository filtrano le entità sull’utente proprietario restituendo 404 se non corrispondono, per difesa in profondità oltre ai voter.
 - I calcoli del mutuo usano BCMath e importi normalizzati a stringa per evitare drift tipici dei float; la formattazione numerica nelle liste/PDF è localizzata tramite `twig/intl-extra`.
 - I campi giorno/anno usano `ImperialDateType` (picker Stimulus `imperial-date` con formato `DDD/YYYY`) e limiti min/max: l’anno minimo è derivato dallo `startingYear` della Campaign selezionata (fallback `APP_YEAR_MIN`), applicato dinamicamente dal controller.
@@ -57,9 +56,6 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, 
    APP_YEAR_MIN=0
    APP_YEAR_MAX=6000
 
-   # Backend AI esterno (Elara)
-   ELARA_BASE_URL="https://127.0.0.1:8080"
-   ELARA_API_TOKEN="inserisci-il-token"
 
    # wkhtmltopdf
    WKHTMLTOPDF_PATH="/usr/local/bin/wkhtmltopdf"
@@ -91,7 +87,6 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, 
   ```
 - Area admin: `https://127.0.0.1:8000/admin`
 - Login: `https://127.0.0.1:8000/login`
-- Console AI: `https://127.0.0.1:8000/ai/console`
 
 ## Note
 - Il calendario di sessione (giorno/anno) è centralizzato sulla Campaign; le Ship ne ereditano la visualizzazione nelle liste e nei PDF.

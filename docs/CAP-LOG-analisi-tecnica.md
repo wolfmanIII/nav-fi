@@ -8,9 +8,8 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 - **Framework:** Symfony 7.3 (PHP ≥ 8.2), asset mapper, Stimulus, Twig, Tailwind + DaisyUI per la UI.
 - **Persistenza:** Doctrine ORM con PostgreSQL/MySQL/SQLite.
 - **Admin:** EasyAdmin per le entità di contesto.
-- **AI:** integrazione esterna “Elara” via HttpClient (chat e status).
-- **PDF:** wkhtmltopdf via KnpSnappy (binario da `WKHTMLTOPDF_PATH`), template contratti in `templates/contracts` e scheda nave in `templates/pdf/ship/SHEET.html.twig`.
-- **Parametri day/year:** limiti configurabili via env (`APP_DAY_MIN/MAX`, `APP_YEAR_MIN/MAX`) e iniettati nei form NumberType dedicati ai campi giorno/anno.
+- **PDF:** wkhtmltopdf via KnpSnappy (binario da `WKHTMLTOPDF_PATH`), template contratti in `templates/pdf/contracts` e scheda nave in `templates/pdf/ship/SHEET.html.twig`.
+- **Parametri day/year:** limiti configurabili via env (`APP_DAY_MIN/MAX`, `APP_YEAR_MIN/MAX`) e iniettati nei form IntegerType/ImperialDateType dedicati ai campi giorno/anno.
 - **Stimulus form helpers:** controller `year-limit` applica il min anno derivato dallo `startingYear` della Campaign sulla Ship selezionata, con fallback ai limiti env.
 
 ## Dominio applicativo
@@ -52,9 +51,6 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 - **Import:** `php bin/console app:context:import --file=config/seed/context_seed.json`
   - Trunca e ricarica le tabelle di contesto (ship_role, insurance, interest_rate, cost_category, income_category, company_role, local_law).
 
-## Integrazione AI/Elara
-- Controller `ChatController`: chiama Elara via HttpClient (`/status/engine`, `/api/chat`, `/api/chat/stream`) con token/URL in env (`ELARA_API_TOKEN`, `ELARA_BASE_URL`). `max_redirects` impostato a 5 per gestire 302.
-- Console AI (`/ai/console`) con stream SSE lato frontend (Stimulus).
 
 ## Contratti e PDF
 - Template HTML Twig in `templates/contracts` per le principali categorie di Income; i placeholder sono documentati in `docs/contract-placeholders.md`.
@@ -63,13 +59,12 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 
 ## Persistenza e migrazioni
 - Migrazioni versionate in `migrations/` (inclusa quella per `cost_category`).
-- Campi monetari: `Ship.price` è `DECIMAL` a DB ma tipizzato `float` in PHP (potenziale drift). La logica di calcolo mutuo ora usa BCMath e normalizza gli importi a stringa per evitare errori di accumulo; resta consigliato migrare gli importi a tipo esatto (string + `bc*` o integer di “crediti” con fattore 100) per coerenza end-to-end.
+- Campi monetari: `Ship.price` è `DECIMAL` a DB e tipizzato `string` in PHP. La logica di calcolo mutuo usa BCMath e normalizza gli importi a stringa per evitare errori di accumulo; resta consigliato mantenere importi a tipo esatto (string + `bc*` o integer di “crediti” con fattore 100) per coerenza end-to-end.
 
 ## Note operative e punti di attenzione
 - **User null:** dati preesistenti senza `user` non supereranno i voter; valutare una migrazione di popolamento o un comportamento di fallback.
 - **Filtri per utente:** liste e recuperi puntuali delle entità protette passano sempre da repository che filtrano per `user` e i controller restituiscono 404 se l’entità non appartiene all’utente corrente, riducendo il rischio di ID enumeration.
 - **CSRF login:** configurato via form_login con CSRF abilitato; la configurazione CSRF stateless per `authenticate` è stata rimossa.
-- **AI token/URL:** ora in `.env.local`; evitare hardcode. Verificare che la base URL punti al servizio corretto.
 - **Dashboard:** card a sfondo scuro coerenti con tema EasyAdmin dark; testo “Apri” in azzurro.
 - **PDF/wkhtmltopdf:** assicurarsi che il binario sia disponibile e che l’opzione `enable-local-file-access` resti abilitata per caricare asset locali nei PDF.
 - **Form giorno/anno:** limiti validativi configurati via env; aggiornare `.env.local` in base al calendario imperiale usato al tavolo. Il datepicker imperiale ha pulsanti mese e un tasto Clear che svuota il giorno mantenendo l’anno.
@@ -77,7 +72,7 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 - **Ship details JSON:** il form salva blocchi strutturati; se si altera la struttura, valutare migrazioni o normalizzazioni per non perdere dati.
 
 ## Checklist rapida di setup
-1. Variabili env: `DATABASE_URL`, `ELARA_BASE_URL`, `ELARA_API_TOKEN`, `APP_SECRET`, `APP_DAY_MIN/MAX`, `APP_YEAR_MIN/MAX`.
+1. Variabili env: `DATABASE_URL`, `APP_SECRET`, `APP_DAY_MIN/MAX`, `APP_YEAR_MIN/MAX`.
 2. Dipendenze: `composer install`, frontend già con asset mapper/Stimulus.
 3. Migrazioni: `php bin/console doctrine:migrations:migrate`.
 4. Import seeds di contesto: `php bin/console app:context:import` (facoltativo).
