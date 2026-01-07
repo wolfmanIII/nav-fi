@@ -4,12 +4,8 @@ Documento di analisi tecnica con aree di miglioramento e funzionalità potenzial
 
 ## Priorità alte (impatto su sicurezza e coerenza)
 
-1) **Ownership Campaign**
-   - Stato: la lista Campaign non è filtrata per utente, mentre le altre entità principali sì.
-   - Rischio: esposizione di dati cross‑utente in ambienti multi‑utente.
-   - Opzioni:
-     - Aggiungere `Campaign.user` e filtrare ovunque con `findAllForUser`.
-     - Oppure definire ownership indiretta (es. owner tramite Ship) e applicare filtro coerente.
+1) **Ownership Campaign** ✅ Risolto
+   - Stato: aggiunto `Campaign.user`, filtro per user in repository e controller.
 
 2) **Validazione AnnualBudget (start/end)**
    - Stato: non c’è un vincolo esplicito `start <= end`.
@@ -78,4 +74,3 @@ Documento di analisi tecnica con aree di miglioramento e funzionalità potenzial
 13) **Export operativo per sessione**
    - Generare un “session pack” (CSV/JSON) con crew, costs, incomes e budget di una singola ship.
    - Utile per logistica in sessione.
-
