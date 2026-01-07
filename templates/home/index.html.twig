@@ -32,6 +32,10 @@
                     </p>
                     <div class="flex flex-wrap gap-3">
                         {% set drawer_btn = 'btn btn_success text-emerald-50 border-[2px] bg-gradient-to-r from-emerald-1000 via-emerald-900 to-emerald-700 hover:from-emerald-900 hover:via-emerald-800 hover:to-emerald-600 hover:border-emerald-300 shadow-lg shadow-emerald-950/60' %}
+                        <a href="{{ path('app_operation_guide') }}" class="{{ drawer_btn }} flex items-center gap-2">
+                            {% include 'icons/operations.html.twig' %}
+                            <span>Operations Checklist</span>
+                        </a>
                         <a href="{{ path('app_campaign_index') }}" class="{{ drawer_btn }} flex items-center gap-2">
                             {% include 'icons/alien-structure-1.html.twig' %}
                             <span>Create Campaign</span>
@@ -51,12 +55,6 @@
                         <a href="{{ path('app_cost_index') }}" class="{{ drawer_btn }} flex items-center gap-2">
                             {% include 'icons/cost.html.twig' %}
                             <span>Track Costs</span>
-                        </a>
-                        <a href="{{ path('app_operation_guide') }}" class="{{ drawer_btn }} flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m-4-8a6 6 0 100 12 6 6 0 000-12z" />
-                            </svg>
-                            <span>Operations Guide</span>
                         </a>
                     </div>
                     <div class="flex flex-wrap gap-4 pt-4 text-xs uppercase tracking-[0.25em] text-cyan-200/70">
