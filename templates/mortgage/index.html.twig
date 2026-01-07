@@ -8,8 +8,8 @@
 
     <div class="p-10">
 
-        <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-6">
-            <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
+        <div class="relative rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-6">
+            <div class="absolute inset-0 rounded-xl opacity-30 mix-blend-screen pointer-events-none"
                  style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
             </div>
             <div class="relative p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -24,16 +24,52 @@
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <a href="{{ path('app_mortgage_new') }}" role="button" class="btn btn-outline btn-primary btn-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    </a>
+                    <div class="tooltip tooltip-bottom" data-tip="Add mortgage">
+                        <a href="{{ path('app_mortgage_new') }}" role="button" class="btn btn-outline btn-primary btn-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
 
+        <form method="get" action="{{ path('app_mortgage_index') }}" class="mb-6">
+            <fieldset class="rounded-xl border border-cyan-500/30 bg-slate-900/60 p-4">
+                <legend class="px-2 text-xs uppercase tracking-[0.2em] text-cyan-300/70">Mortgage search</legend>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Name</label>
+                        <input type="text" name="name" value="{{ filters.name }}" class="input m-1 w-full">
+                    </div>
+                    <div>
+                        <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Ship</label>
+                        <select name="ship" class="select m-1 w-full">
+                            <option value="">All ships</option>
+                            {% for ship in ships %}
+                                <option value="{{ ship.id }}" {% if filters.ship == ship.id %}selected{% endif %}>{{ ship.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Campaign</label>
+                        <select name="campaign" class="select m-1 w-full">
+                            <option value="">All campaigns</option>
+                            {% for campaign in campaigns %}
+                                <option value="{{ campaign.id }}" {% if filters.campaign == campaign.id %}selected{% endif %}>{{ campaign.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-4 flex flex-wrap gap-2">
+                    <button type="submit" class="btn btn-outline btn-primary btn-sm">Search</button>
+                    <a href="{{ path('app_mortgage_index') }}" class="btn btn-ghost btn-sm">Reset</a>
+                </div>
+            </fieldset>
+        </form>
+
         <div class="flow-root">
 
-            <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+            <div class="overflow-x-auto overflow-y-visible rounded-box border border-base-content/5 bg-base-100">
                 <table class="table border-separate border-spacing-0 inner-bordered-table">
                     <!-- head -->
                     <thead>
@@ -86,20 +122,24 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href="{{ path('app_mortgage_edit', {id: mortgage.id}) }}" role="button" class="btn btn-outline btn-primary btn-xs">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></svg>
-                                    </a>
+                                    <div class="tooltip tooltip-left" data-tip="Edit mortgage">
+                                        <a href="{{ path('app_mortgage_edit', {id: mortgage.id}) }}" role="button" class="btn btn-outline btn-primary btn-xs">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></svg>
+                                        </a>
+                                    </div>
 
                                     {% set CAN_DELETE = constant('App\\Security\\Voter\\MortgageVoter::DELETE') %}
                                     {% set can_delete = is_granted(CAN_DELETE, mortgage) %}
 
-                                    <a href="{{ path('app_mortgage_delete', {id: mortgage.id}) }}"
-                                        role="button"
-                                        class="btn btn-outline btn-error btn-xs"
-                                        {% if not can_delete %} disabled {% endif %}
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                    </a>
+                                    <div class="tooltip tooltip-left" data-tip="Delete mortgage">
+                                        <a href="{{ path('app_mortgage_delete', {id: mortgage.id}) }}"
+                                            role="button"
+                                            class="btn btn-outline btn-error btn-xs"
+                                            {% if not can_delete %} disabled {% endif %}
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -111,6 +151,12 @@
                     </tbody>
                 </table>
             </div>
+
+            {% include 'components/pagination.html.twig' with {
+                pagination: pagination,
+                route: 'app_mortgage_index',
+                query: app.request.query.all
+            } %}
 
         </div>
 

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Mortgage;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -38,5 +39,49 @@ class MortgageRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @param array{name?: string, ship?: int, campaign?: int} $filters
+     *
+     * @return array{items: Mortgage[], total: int}
+     */
+    public function findForUserWithFilters(User $user, array $filters, int $page, int $limit): array
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->leftJoin('m.ship', 's')
+            ->leftJoin('s.campaign', 'c')
+            ->addSelect('s', 'c')
+            ->andWhere('m.user = :user')
+            ->setParameter('user', $user);
+
+        if (!empty($filters['name'])) {
+            $name = '%'.strtolower($filters['name']).'%';
+            $qb->andWhere('LOWER(m.name) LIKE :name')
+                ->setParameter('name', $name);
+        }
+
+        if ($filters['ship'] !== null) {
+            $qb->andWhere('s.id = :ship')
+                ->setParameter('ship', (int) $filters['ship']);
+        }
+
+        if ($filters['campaign'] !== null) {
+            $qb->andWhere('c.id = :campaign')
+                ->setParameter('campaign', (int) $filters['campaign']);
+        }
+
+        $qb->orderBy('m.name', 'ASC');
+
+        $query = $qb->getQuery()
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+
+        $paginator = new Paginator($query);
+
+        return [
+            'items' => iterator_to_array($paginator),
+            'total' => $paginator->count(),
+        ];
     }
 }

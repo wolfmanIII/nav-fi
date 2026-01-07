@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Mortgage;
 use App\Entity\MortgageInstallment;
+use App\Entity\Campaign;
+use App\Entity\Ship;
 use App\Form\MortgageInstallmentType;
 use App\Form\MortgageType;
 use App\Security\Voter\MortgageVoter;
@@ -19,14 +21,60 @@ final class MortgageController extends BaseController
     const CONTROLLER_NAME = "MortgageController";
 
     #[Route('/mortgage/index', name: 'app_mortgage_index')]
-    public function index(EntityManagerInterface $em): Response
+    public function index(Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        $mortgages = $user ? $em->getRepository(Mortgage::class)->findAllForUser($user) : [];
+        $shipFilter = trim((string) $request->query->get('ship', ''));
+        $campaignFilter = trim((string) $request->query->get('campaign', ''));
+        $filters = [
+            'name' => trim((string) $request->query->get('name', '')),
+            'ship' => $shipFilter !== '' && ctype_digit($shipFilter) ? (int) $shipFilter : null,
+            'campaign' => $campaignFilter !== '' && ctype_digit($campaignFilter) ? (int) $campaignFilter : null,
+        ];
+        $page = max(1, (int) $request->query->get('page', 1));
+        $perPage = 10;
+
+        $mortgages = [];
+        $total = 0;
+        $totalPages = 1;
+        $ships = [];
+        $campaigns = [];
+
+        if ($user instanceof \App\Entity\User) {
+            $result = $em->getRepository(Mortgage::class)->findForUserWithFilters($user, $filters, $page, $perPage);
+            $mortgages = $result['items'];
+            $total = $result['total'];
+
+            $totalPages = max(1, (int) ceil($total / $perPage));
+            if ($page > $totalPages) {
+                $page = $totalPages;
+                $result = $em->getRepository(Mortgage::class)->findForUserWithFilters($user, $filters, $page, $perPage);
+                $mortgages = $result['items'];
+            }
+
+            $ships = $em->getRepository(Ship::class)->findAllForUser($user);
+            $campaigns = $em->getRepository(Campaign::class)->findAllForUser($user);
+        }
+
+        $pages = $this->buildPagination($page, $totalPages);
+        $from = $total > 0 ? (($page - 1) * $perPage) + 1 : 0;
+        $to = $total > 0 ? min($page * $perPage, $total) : 0;
 
         return $this->render('mortgage/index.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'mortgages' => $mortgages,
+            'filters' => $filters,
+            'ships' => $ships,
+            'campaigns' => $campaigns,
+            'pagination' => [
+                'current' => $page,
+                'total' => $total,
+                'per_page' => $perPage,
+                'total_pages' => $totalPages,
+                'pages' => $pages,
+                'from' => $from,
+                'to' => $to,
+            ],
         ]);
     }
 
@@ -281,5 +329,39 @@ final class MortgageController extends BaseController
         $this->addFlash('info', 'Mortgage signature cleared.');
 
         return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
+    }
+
+    /**
+     * @return array<int, int|null>
+     */
+    private function buildPagination(int $current, int $totalPages): array
+    {
+        if ($totalPages <= 1) {
+            return [1];
+        }
+
+        if ($totalPages <= 7) {
+            return range(1, $totalPages);
+        }
+
+        $pages = [1];
+        $windowStart = max(2, $current - 2);
+        $windowEnd = min($totalPages - 1, $current + 2);
+
+        if ($windowStart > 2) {
+            $pages[] = null;
+        }
+
+        for ($i = $windowStart; $i <= $windowEnd; $i++) {
+            $pages[] = $i;
+        }
+
+        if ($windowEnd < $totalPages - 1) {
+            $pages[] = null;
+        }
+
+        $pages[] = $totalPages;
+
+        return $pages;
     }
 }
