@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Company;
+use App\Entity\CompanyRole;
 use App\Form\CompanyType;
 use App\Security\Voter\CompanyVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,14 +16,56 @@ final class CompanyController extends BaseController
     public const CONTROLLER_NAME = 'CompanyController';
 
     #[Route('/company/index', name: 'app_company_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $em): Response
+    public function index(Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        $companies = $user ? $em->getRepository(Company::class)->findAllForUser($user) : [];
+        $roleFilter = trim((string) $request->query->get('role', ''));
+        $filters = [
+            'name' => trim((string) $request->query->get('name', '')),
+            'contact' => trim((string) $request->query->get('contact', '')),
+            'role' => $roleFilter !== '' && ctype_digit($roleFilter) ? (int) $roleFilter : null,
+        ];
+        $page = max(1, (int) $request->query->get('page', 1));
+        $perPage = 10;
+
+        $companies = [];
+        $total = 0;
+        $totalPages = 1;
+        $roles = [];
+
+        if ($user instanceof \App\Entity\User) {
+            $result = $em->getRepository(Company::class)->findForUserWithFilters($user, $filters, $page, $perPage);
+            $companies = $result['items'];
+            $total = $result['total'];
+
+            $totalPages = max(1, (int) ceil($total / $perPage));
+            if ($page > $totalPages) {
+                $page = $totalPages;
+                $result = $em->getRepository(Company::class)->findForUserWithFilters($user, $filters, $page, $perPage);
+                $companies = $result['items'];
+            }
+
+            $roles = $em->getRepository(CompanyRole::class)->findBy([], ['code' => 'ASC']);
+        }
+
+        $pages = $this->buildPagination($page, $totalPages);
+        $from = $total > 0 ? (($page - 1) * $perPage) + 1 : 0;
+        $to = $total > 0 ? min($page * $perPage, $total) : 0;
 
         return $this->render('company/index.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'companies' => $companies,
+            'filters' => $filters,
+            'roles' => $roles,
+            'pagination' => [
+                'current' => $page,
+                'total' => $total,
+                'per_page' => $perPage,
+                'total_pages' => $totalPages,
+                'pages' => $pages,
+                'from' => $from,
+                'to' => $to,
+            ],
         ]);
     }
 
@@ -101,5 +144,39 @@ final class CompanyController extends BaseController
         $em->flush();
 
         return $this->redirectToRoute('app_company_index');
+    }
+
+    /**
+     * @return array<int, int|null>
+     */
+    private function buildPagination(int $current, int $totalPages): array
+    {
+        if ($totalPages <= 1) {
+            return [1];
+        }
+
+        if ($totalPages <= 7) {
+            return range(1, $totalPages);
+        }
+
+        $pages = [1];
+        $windowStart = max(2, $current - 2);
+        $windowEnd = min($totalPages - 1, $current + 2);
+
+        if ($windowStart > 2) {
+            $pages[] = null;
+        }
+
+        for ($i = $windowStart; $i <= $windowEnd; $i++) {
+            $pages[] = $i;
+        }
+
+        if ($windowEnd < $totalPages - 1) {
+            $pages[] = null;
+        }
+
+        $pages[] = $totalPages;
+
+        return $pages;
     }
 }
