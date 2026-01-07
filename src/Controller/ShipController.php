@@ -396,9 +396,10 @@ final class ShipController extends BaseController
                         continue;
                     }
 
-                    foreach ($otherCrew->getShipRoles()->toArray() as $otherRole) {
+                    foreach ($otherCrew->getShipRoles() as $otherRole) {
                         if ($otherRole->getCode() === 'CAP') {
-                            $otherCrew->removeShipRole($otherRole);
+                            $this->addFlash('error', 'Another crew member already holds the captain role. Remove that role first.');
+                            return $this->redirectToRoute('app_ship_crew', ['id' => $ship->getId()]);
                         }
                     }
                 }
