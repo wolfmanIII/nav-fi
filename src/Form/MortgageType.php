@@ -54,7 +54,7 @@ class MortgageType extends AbstractType
                 'required' => false,
             ])
             ->add('advancePayment', TravellerMoneyType::class, [
-                'label' => 'Advance Payment(Cr)',
+                'label' => 'Deposit(Cr)',
                 'attr' => ['class' => 'input m-1 w-full'],
                 'required' => false,
             ])

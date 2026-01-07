@@ -219,7 +219,7 @@
                                         {{ ins.annualCost|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', app.request.locale ?? 'en') }}
                                     </td>
                                     <td class="text-right">
-                                        {{ ins.lossRefund is not null ? ins.lossRefund|format_number({ min_fraction_digit: 2, max_fraction_digit: 2 }, 'decimal', 'default', app.request.locale ?? 'en') ~ ' %' : '—' }}
+                                        {{ ins.lossRefund is not null ? ins.lossRefund|format_number({ min_fraction_digit: 2, max_fraction_digit: 2 }, 'decimal', 'default', app.request.locale ?? 'en') }}
                                     </td>
                                     <td>
                                         {% if ins.coverage %}

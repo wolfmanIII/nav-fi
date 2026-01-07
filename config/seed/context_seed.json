@@ -3,6 +3,7 @@
         {
             "name": "No Insurance",
             "annual_cost": "0",
+            "loss_refund": "0",
             "coverage": [
                 "No Coverage"
             ]
@@ -10,6 +11,7 @@
         {
             "name": "Base",
             "annual_cost": "0.5",
+            "loss_refund": "25",
             "coverage": [
                 "Collision damage",
                 "Ship theft (not negligence)",
@@ -19,6 +21,7 @@
         {
             "name": "Extended",
             "annual_cost": "1",
+            "loss_refund": "50",
             "coverage": [
                 "Everything included in Base",
                 "Piracy",
@@ -29,6 +32,7 @@
         {
             "name": "Premium",
             "annual_cost": "2",
+            "loss_refund": "100",
             "coverage": [
                 "Everything included in Extended",
                 "War zones",

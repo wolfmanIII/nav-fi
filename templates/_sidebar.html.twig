@@ -113,12 +113,14 @@
                 <span class="text-cyan-200/70 text-xs uppercase tracking-[0.2em]">— // —</span>
             </li>
 
-            <li>
-                <a href="{{ path('admin') }}">
-                    {% include 'icons/admin.html.twig' %}
-                    <span>Admin</span>
-                </a>
-            </li>
+            {% if is_granted('ROLE_ADMIN') %}
+                <li>
+                    <a href="{{ path('admin') }}">
+                        {% include 'icons/admin.html.twig' %}
+                        <span>Admin</span>
+                    </a>
+                </li>
+            {% endif %}
 
         </ul>
     </div>
