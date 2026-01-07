@@ -263,17 +263,22 @@ final class ShipController extends BaseController
         }
 
         $needCaptain = !$ship->hasCaptain();
-        // Tutti i crew che non hanno una nave
-        $crewToSelect = $em->getRepository(Crew::class)->getCrewNotInAnyShip($needCaptain, $user);
+        $crewSearch = trim((string) $request->query->get('crew_search', ''));
+        $crewNickname = trim((string) $request->query->get('crew_nickname', ''));
+        $crewPage = max(1, (int) $request->query->get('crew_page', 1));
 
-        // Costruisci le DTO
+        $crewFilters = [
+            'search' => $crewSearch,
+            'nickname' => $crewNickname,
+        ];
+
+        $perPage = 10;
+        $crewResult = $em->getRepository(Crew::class)
+            ->findUnassignedForShip($user, $crewFilters, $crewPage, $perPage, $needCaptain);
+
         $rows = [];
-        foreach ($crewToSelect as $crew) {
-            $dto = (new CrewSelection())
-                ->setCrew($crew)
-                ->setSelected(false);
-
-            $rows[] = $dto;
+        foreach ($crewResult['items'] as $crew) {
+            $rows[] = (new CrewSelection())->setCrew($crew)->setSelected(false);
         }
 
         $form = $this->createForm(CrewSelectType::class, [
@@ -282,7 +287,6 @@ final class ShipController extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             /** @var CrewSelection[] $selections */
             $selections = $form->get('crewSelections')->getData();
 
@@ -294,8 +298,34 @@ final class ShipController extends BaseController
 
             $em->flush();
 
-            return $this->redirectToRoute('app_ship_crew', ['id' => $ship->getId()]);
+            $redirectParams = ['id' => $ship->getId()];
+            $submittedSearch = trim((string) $request->request->get('crew_search', ''));
+            $submittedNickname = trim((string) $request->request->get('crew_nickname', ''));
+            $submittedPage = max(1, (int) $request->request->get('crew_page', 1));
+            if ($submittedSearch !== '') {
+                $redirectParams['crew_search'] = $submittedSearch;
+            }
+            if ($submittedNickname !== '') {
+                $redirectParams['crew_nickname'] = $submittedNickname;
+            }
+            if ($submittedPage > 1) {
+                $redirectParams['crew_page'] = $submittedPage;
+            }
+
+            return $this->redirectToRoute('app_ship_crew', $redirectParams);
         }
+
+        $crewTotal = $crewResult['total'];
+        $crewTotalPages = $crewTotal > 0 ? (int) ceil($crewTotal / $perPage) : 1;
+        $crewPagination = [
+            'current' => $crewPage,
+            'total' => $crewTotal,
+            'per_page' => $perPage,
+            'total_pages' => max(1, $crewTotalPages),
+            'pages' => $this->buildPagination($crewPage, max(1, $crewTotalPages)),
+            'from' => $crewTotal > 0 ? (($crewPage - 1) * $perPage) + 1 : 0,
+            'to' => $crewTotal > 0 ? min($crewPage * $perPage, $crewTotal) : 0,
+        ];
 
         $roleForms = [];
         foreach ($ship->getCrews() as $crewMember) {
@@ -312,6 +342,8 @@ final class ShipController extends BaseController
             'form' => $form,
             'roleForms' => $roleForms,
             'controller_name' => self::CONTROLLER_NAME,
+            'crewFilters' => $crewFilters,
+            'crewPagination' => $crewPagination,
         ]);
     }
 

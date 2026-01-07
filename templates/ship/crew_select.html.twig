@@ -119,8 +119,134 @@
                     {% endif %}
                     </tbody>
                 </table>
-            </div>
         </div>
+    </div>
+
+        <section class="mt-10 space-y-4">
+            <div class="rounded-xl border border-base-content/10 bg-slate-900/40 p-4 shadow-inner">
+                <form method="get" action="{{ path('app_ship_crew', {id: ship.id}) }}" class="space-y-3">
+                    <p class="uppercase text-xs tracking-[0.3em] text-cyan-300/70">Unassigned crew</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Name / Surname</label>
+                            <input type="text"
+                                   name="crew_search"
+                                   value="{{ crewFilters.search }}"
+                                   class="input m-1 w-full"
+                                   placeholder="Enter name or surname">
+                        </div>
+                        <div>
+                            <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Nickname</label>
+                            <input type="text"
+                                   name="crew_nickname"
+                                   value="{{ crewFilters.nickname }}"
+                                   class="input m-1 w-full"
+                                   placeholder="Enter nickname">
+                        </div>
+                        <div class="flex flex-wrap items-end gap-2">
+                            <input type="hidden" name="crew_page" value="1">
+                            <button type="submit" class="btn btn-outline btn-primary btn-sm">Search crew</button>
+                            <a href="{{ path('app_ship_crew', {id: ship.id}) }}" class="btn btn-ghost btn-sm">Reset</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="rounded-xl border border-base-content/10 bg-base-100 p-4 shadow-inner">
+                {{ form_start(form, {
+                    attr: {
+                        'action': path('app_ship_crew', {id: ship.id}),
+                        'class': 'space-y-4'
+                    }
+                }) }}
+                {{ form_widget(form._token) }}
+                <input type="hidden" name="crew_search" value="{{ crewFilters.search }}">
+                <input type="hidden" name="crew_nickname" value="{{ crewFilters.nickname }}">
+                <input type="hidden" name="crew_page" value="{{ crewPagination.current }}">
+                {{ form_errors(form) }}
+
+                <div class="flex items-center justify-between text-sm text-slate-500">
+                    <span>Showing {{ crewPagination.from }}–{{ crewPagination.to }} of {{ crewPagination.total }} available crew</span>
+                </div>
+
+                <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100" data-controller="bulk-select">
+                    <table class="table border-separate border-spacing-0 inner-bordered-table">
+                        <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox"
+                                       class="checkbox"
+                                       data-bulk-select-target="selectAll"
+                                       data-action="change->bulk-select#toggleAll">
+                            </th>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Nickname</th>
+                            <th>Roles</th>
+                            <th>Captain</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if form.crewSelections|length > 0 %}
+                            {% for row in form.crewSelections %}
+                                {% set selection = row.vars.data %}
+                                {% set crew = selection.crew %}
+                                <tr class="align-top">
+                                    <td>
+                                        {{ form_widget(row.selected, {
+                                            attr: {
+                                                class: 'checkbox crew-checkbox',
+                                                'data-bulk-select-target': 'item'
+                                            }
+                                        }) }}
+                                    </td>
+                                    <td>{{ crew.code }}</td>
+                                    <td>{{ crew.name }} {{ crew.surname }}</td>
+                                    <td>{{ crew.nickname ?: '—' }}</td>
+                                    <td>
+                                        {% if crew.shipRoles|length > 0 %}
+                                            {{ crew.shipRoles|map(r => r.name)|join(', ') }}
+                                        {% else %}
+                                            <span class="opacity-60">No roles yet</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if crew.isCaptain() %}
+                                            <div class="flex justify-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                                </svg>
+                                            </div>
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center text-sm text-slate-500">No crew match the current filters.</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% include 'components/pagination.html.twig' with {
+                    pagination: crewPagination,
+                    route: 'app_ship_crew',
+                    query: app.request.query.all
+                } %}
+
+                <div class="flex justify-end">
+                    <button type="submit" class="btn btn-outline btn-primary">Add selected crew</button>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </section>
 
         {% for member in ship.crews %}
             {% set roleForm = roleForms[member.id] ?? null %}

@@ -95,30 +95,48 @@ class CrewRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param bool $needCaptain
-     * @return array
+     * @param array{search?: string, nickname?: string} $filters
+     *
+     * @return array{items: Crew[], total: int}
      */
-    public function getCrewNotInAnyShip(bool $needCaptain, ?User $user = null): array
+    public function findUnassignedForShip(User $user, array $filters, int $page, int $limit, bool $needCaptain): array
     {
-        $crew = $this->createQueryBuilder('c')
-            ->join('c.shipRoles', 'r')
-            ->where('c.ship IS NULL')
-            ->andWhere($user ? 'c.user = :user' : '1 = 1')
-            ->setParameter('user', $user)
-            ->getQuery()->getResult();
+        $qb = $this->createQueryBuilder('c')
+            ->andWhere('c.user = :user')
+            ->andWhere('c.ship IS NULL')
+            ->setParameter('user', $user);
 
-        $result = [];
-        /** @var Crew $c */
-        foreach($crew as $c) {
-            if (!$needCaptain) {
-                if ($c->isCaptain()) {
-                    continue;
-                }
-            }
-            $result[] = $c;
+        if (!empty($filters['search'])) {
+            $term = '%'.strtolower($filters['search']).'%';
+            $qb->andWhere('LOWER(c.name) LIKE :search OR LOWER(c.surname) LIKE :search OR LOWER(CONCAT(c.name, \' \', c.surname)) LIKE :search')
+                ->setParameter('search', $term);
         }
 
-        return $result;
+        if (!empty($filters['nickname'])) {
+            $nickname = '%'.strtolower($filters['nickname']).'%';
+            $qb->andWhere('LOWER(c.nickname) LIKE :nickname')
+                ->setParameter('nickname', $nickname);
+        }
+
+        if (!$needCaptain) {
+            $qb->leftJoin('c.shipRoles', 'capRole', 'WITH', 'capRole.code = :cap')
+                ->andWhere('capRole.id IS NULL')
+                ->setParameter('cap', 'CAP');
+        }
+
+        $qb->orderBy('c.surname', 'ASC')
+            ->addOrderBy('c.name', 'ASC');
+
+        $query = $qb->getQuery()
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+
+        $paginator = new Paginator($query);
+
+        return [
+            'items' => iterator_to_array($paginator),
+            'total' => $paginator->count(),
+        ];
     }
 
     public function findOneForUser(int $id, User $user): ?Crew
