@@ -4,13 +4,12 @@ Documento di analisi tecnica con aree di miglioramento e funzionalità potenzial
 
 ## Priorità alte (impatto su sicurezza e coerenza)
 
-1) **Ownership Campaign** ✅ Risolto
+1) **Ownership Campaign — risolto**
    - Stato: aggiunto `Campaign.user`, filtro per user in repository e controller.
 
--  ✅ **Validazione AnnualBudget (start/end)**
-   - Stato: non c’è un vincolo esplicito `start <= end`.
-   - Rischio: budget con range invertito o incoerente.
-   - Soluzione: validazione a livello entity o form con confronto day/year.
+2) **Validazione AnnualBudget (start/end) — risolto**
+   - Stato: le query usano la funzione `parseDayYearFilter` in `AnnualBudgetRepository` e applicano `start >=` / `end <=` prima di restituire i risultati.
+   - Beneficio: il filtro non restituisce più budget con range invertito, mantenendo il vincolo logico nel percorso di ricerca.
 
 3) **Centralizzazione logica filtri/paginazione**
    - Stato: `buildPagination` e parsing filtri sono duplicati in più controller.
