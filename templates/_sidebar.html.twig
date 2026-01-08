@@ -63,7 +63,7 @@
                    class="{% if controller_name == constant('App\\Controller\\CrewController::CONTROLLER_NAME') %}menu-active{% endif %}"
                 >
                     <!-- icona crew -->
-                    {% include 'icons/crew.html.twig' %}
+                    {% include 'icons/crew.html.twig' with {'dim': '24'} %}
                     <span>Crew</span>
                 </a>
             </li>
