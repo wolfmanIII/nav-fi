@@ -8,7 +8,30 @@ export default class extends Controller {
             return;
         }
 
+        this.boundReset = this.resetSelection.bind(this);
         this.prepareSelection();
+        this.renderChips();
+
+        this.element?.addEventListener('close', this.boundReset);
+        this.element?.addEventListener('cancel', this.boundReset);
+
+        this.observer = new MutationObserver(() => {
+            if (this.element?.open) {
+                this.prepareSelection();
+            }
+        });
+        this.observer.observe(this.element, { attributes: true, attributeFilter: ['open'] });
+    }
+
+    disconnect() {
+        this.element?.removeEventListener('close', this.boundReset);
+        this.element?.removeEventListener('cancel', this.boundReset);
+        this.observer?.disconnect();
+    }
+
+    prepareSelection() {
+        this.saveInitialSelection();
+        this.renderChips();
     }
 
     saveInitialSelection() {
