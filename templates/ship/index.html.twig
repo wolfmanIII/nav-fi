@@ -2,6 +2,8 @@
 
 {% block title %}Captain Log - Ships{% endblock %}
 
+{% import '_tooltip.html.twig' as tooltip %}
+
 {% block pageContent %}
 
     {% set locale = app.request.locale ?? 'en' %}
@@ -24,11 +26,11 @@
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <div class="tooltip tooltip-bottom" data-tip="Add ship">
-                        <a href="{{ path('app_ship_new') }}" role="button" class="btn btn-outline btn-primary btn-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                        </a>
-                    </div>
+                    {{ tooltip.link('Launch a new hull',
+                                    'Add ship',
+                                    'icons/far-trader.html.twig',
+                                    path('app_ship_new'),
+                                    { dim: 18, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
                 </div>
             </div>
         </div>

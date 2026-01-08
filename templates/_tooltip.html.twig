@@ -1,0 +1,32 @@
+{% macro button(tip, label, icon, options = {}) %}
+{% set dim = options.dim|default(20) %}
+{% set tooltipPos = options.position|default('tooltip-bottom') %}
+{% set buttonClass = options.buttonClass|default('btn btn-xs btn-ghost') %}
+<div class="tooltip {{ tooltipPos }}" data-tip="{{ tip }}">
+    <button type="button"
+            class="{{ buttonClass }}"
+            aria-label="{{ label }}"
+            {% for name, value in options.attrs|default({}) %}
+                {{ name }}="{{ value }}"
+            {% endfor %}>
+        {{ include(icon, { dim: dim }) }}
+    </button>
+</div>
+{% endmacro %}
+
+{% macro link(tip, label, icon, href, options = {}) %}
+{% set dim = options.dim|default(20) %}
+{% set tooltipPos = options.position|default('tooltip-bottom') %}
+{% set linkClass = options.linkClass|default('btn btn-outline btn-primary btn-sm') %}
+<div class="tooltip {{ tooltipPos }}" data-tip="{{ tip }}">
+    <a href="{{ href }}"
+       role="{{ options.role|default('button') }}"
+       class="{{ linkClass }}"
+       aria-label="{{ label }}"
+       {% for name, value in options.attrs|default({}) %}
+           {{ name }}="{{ value }}"
+       {% endfor %}>
+        {{ include(icon, { dim: dim }) }}
+    </a>
+</div>
+{% endmacro %}
