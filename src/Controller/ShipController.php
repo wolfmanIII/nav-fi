@@ -12,6 +12,7 @@ use App\Form\ShipType;
 use App\Form\ShipRoleAssignmentType;
 use App\Security\Voter\ShipVoter;
 use App\Dto\ShipDetailsData;
+use App\Service\ListViewHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,16 +24,15 @@ final class ShipController extends BaseController
 {
     const CONTROLLER_NAME = "ShipController";
     #[Route('/ship/index', name: 'app_ship_index', methods: ['GET'])]
-    public function index(Request $request, EntityManagerInterface $em): Response
+    public function index(Request $request, EntityManagerInterface $em, ListViewHelper $listViewHelper): Response
     {
         $user = $this->getUser();
-        $campaignFilter = trim((string) $request->query->get('campaign', ''));
-        $filters = [
-            'name' => trim((string) $request->query->get('name', '')),
-            'type_class' => trim((string) $request->query->get('type_class', '')),
-            'campaign' => $campaignFilter !== '' && ctype_digit($campaignFilter) ? (int) $campaignFilter : null,
-        ];
-        $page = max(1, (int) $request->query->get('page', 1));
+        $filters = $listViewHelper->collectFilters($request, [
+            'name',
+            'type_class',
+            'campaign' => ['type' => 'int'],
+        ]);
+        $page = $listViewHelper->getPage($request);
         $perPage = 10;
 
         $ships = [];
@@ -46,8 +46,9 @@ final class ShipController extends BaseController
             $total = $result['total'];
 
             $totalPages = max(1, (int) ceil($total / $perPage));
-            if ($page > $totalPages) {
-                $page = $totalPages;
+            $clampedPage = $listViewHelper->clampPage($page, $totalPages);
+            if ($clampedPage !== $page) {
+                $page = $clampedPage;
                 $result = $em->getRepository(Ship::class)->findForUserWithFilters($user, $filters, $page, $perPage);
                 $ships = $result['items'];
             }
@@ -55,23 +56,14 @@ final class ShipController extends BaseController
             $campaigns = $em->getRepository(Campaign::class)->findAllForUser($user);
         }
 
-        $pages = $this->buildPagination($page, $totalPages);
-        $from = $total > 0 ? (($page - 1) * $perPage) + 1 : 0;
-        $to = $total > 0 ? min($page * $perPage, $total) : 0;
+        $pagination = $listViewHelper->buildPaginationPayload($page, $perPage, $total);
+
         return $this->render('ship/index.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'ships' => $ships,
             'filters' => $filters,
             'campaigns' => $campaigns,
-            'pagination' => [
-                'current' => $page,
-                'total' => $total,
-                'per_page' => $perPage,
-                'total_pages' => $totalPages,
-                'pages' => $pages,
-                'from' => $from,
-                'to' => $to,
-            ],
+            'pagination' => $pagination,
         ]);
     }
 
@@ -250,7 +242,8 @@ final class ShipController extends BaseController
     public function crew(
         int $id,
         Request $request,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        ListViewHelper $listViewHelper
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
@@ -263,14 +256,11 @@ final class ShipController extends BaseController
         }
 
         $needCaptain = !$ship->hasCaptain();
-        $crewSearch = trim((string) $request->query->get('crew_search', ''));
-        $crewNickname = trim((string) $request->query->get('crew_nickname', ''));
-        $crewPage = max(1, (int) $request->query->get('crew_page', 1));
-
-        $crewFilters = [
-            'search' => $crewSearch,
-            'nickname' => $crewNickname,
-        ];
+        $crewFilters = $listViewHelper->collectFilters($request, [
+            'search' => ['param' => 'crew_search'],
+            'nickname' => ['param' => 'crew_nickname'],
+        ]);
+        $crewPage = $listViewHelper->getPage($request, 'crew_page');
 
         $perPage = 10;
         $crewResult = $em->getRepository(Crew::class)
@@ -316,16 +306,7 @@ final class ShipController extends BaseController
         }
 
         $crewTotal = $crewResult['total'];
-        $crewTotalPages = $crewTotal > 0 ? (int) ceil($crewTotal / $perPage) : 1;
-        $crewPagination = [
-            'current' => $crewPage,
-            'total' => $crewTotal,
-            'per_page' => $perPage,
-            'total_pages' => max(1, $crewTotalPages),
-            'pages' => $this->buildPagination($crewPage, max(1, $crewTotalPages)),
-            'from' => $crewTotal > 0 ? (($crewPage - 1) * $perPage) + 1 : 0,
-            'to' => $crewTotal > 0 ? min($crewPage * $perPage, $crewTotal) : 0,
-        ];
+        $crewPagination = $listViewHelper->buildPaginationPayload($crewPage, $perPage, $crewTotal);
 
         $roleForms = [];
         foreach ($ship->getCrews() as $crewMember) {
@@ -443,40 +424,6 @@ final class ShipController extends BaseController
         $em->persist($ship);
         $em->flush();
         return $this->redirectToRoute('app_ship_crew', ['id' => $ship->getId()]);
-    }
-
-    /**
-     * @return array<int, int|null>
-     */
-    private function buildPagination(int $current, int $totalPages): array
-    {
-        if ($totalPages <= 1) {
-            return [1];
-        }
-
-        if ($totalPages <= 7) {
-            return range(1, $totalPages);
-        }
-
-        $pages = [1];
-        $windowStart = max(2, $current - 2);
-        $windowEnd = min($totalPages - 1, $current + 2);
-
-        if ($windowStart > 2) {
-            $pages[] = null;
-        }
-
-        for ($i = $windowStart; $i <= $windowEnd; $i++) {
-            $pages[] = $i;
-        }
-
-        if ($windowEnd < $totalPages - 1) {
-            $pages[] = null;
-        }
-
-        $pages[] = $totalPages;
-
-        return $pages;
     }
 
 }

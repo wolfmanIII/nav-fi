@@ -7,7 +7,7 @@ use App\Entity\Campaign;
 use App\Entity\Ship;
 use App\Form\CrewType;
 use App\Security\Voter\CrewVoter;
-use App\Controller\Helper\PaginationTrait;
+use App\Service\ListViewHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,21 +17,18 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class CrewController extends BaseController
 {
-    use PaginationTrait;
     public const CONTROLLER_NAME = 'CrewController';
 
     #[Route('/crew/index', name: 'app_crew_index', methods: ['GET'])]
-    public function index(Request $request, EntityManagerInterface $em): Response
+    public function index(Request $request, EntityManagerInterface $em, ListViewHelper $listViewHelper): Response
     {
         $user = $this->getUser();
-        $shipFilter = trim((string) $request->query->get('ship', ''));
-        $campaignFilter = trim((string) $request->query->get('campaign', ''));
-        $filters = [
-            'search' => trim((string) $request->query->get('search', '')),
-            'ship' => $shipFilter !== '' && ctype_digit($shipFilter) ? (int) $shipFilter : null,
-            'campaign' => $campaignFilter !== '' && ctype_digit($campaignFilter) ? (int) $campaignFilter : null,
-        ];
-        $page = max(1, (int) $request->query->get('page', 1));
+        $filters = $listViewHelper->collectFilters($request, [
+            'search',
+            'ship' => ['type' => 'int'],
+            'campaign' => ['type' => 'int'],
+        ]);
+        $page = $listViewHelper->getPage($request);
         $perPage = 10;
 
         $crew = [];
@@ -46,8 +43,9 @@ final class CrewController extends BaseController
             $total = $result['total'];
 
             $totalPages = max(1, (int) ceil($total / $perPage));
-            if ($page > $totalPages) {
-                $page = $totalPages;
+            $clampedPage = $listViewHelper->clampPage($page, $totalPages);
+            if ($clampedPage !== $page) {
+                $page = $clampedPage;
                 $result = $em->getRepository(Crew::class)->findForUserWithFilters($user, $filters, $page, $perPage);
                 $crew = $result['items'];
             }
@@ -56,9 +54,7 @@ final class CrewController extends BaseController
             $campaigns = $em->getRepository(Campaign::class)->findAllForUser($user);
         }
 
-        $pages = $this->buildPagination($page, $totalPages);
-        $from = $total > 0 ? (($page - 1) * $perPage) + 1 : 0;
-        $to = $total > 0 ? min($page * $perPage, $total) : 0;
+        $pagination = $listViewHelper->buildPaginationPayload($page, $perPage, $total);
 
         return $this->render('crew/index.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
@@ -66,15 +62,7 @@ final class CrewController extends BaseController
             'filters'         => $filters,
             'ships'           => $ships,
             'campaigns'       => $campaigns,
-            'pagination'      => [
-                'current' => $page,
-                'total' => $total,
-                'per_page' => $perPage,
-                'total_pages' => $totalPages,
-                'pages' => $pages,
-                'from' => $from,
-                'to' => $to,
-            ],
+            'pagination'      => $pagination,
         ]);
     }
 

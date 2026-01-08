@@ -10,6 +10,7 @@ use App\Entity\MortgageInstallment;
 use App\Entity\Ship;
 use App\Form\AnnualBudgetType;
 use App\Security\Voter\AnnualBudgetVoter;
+use App\Service\ListViewHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,18 +22,16 @@ final class AnnualBudgetController extends BaseController
     public const CONTROLLER_NAME = 'AnnualBudgetController';
 
     #[Route('/annual-budget/index', name: 'app_annual_budget_index', methods: ['GET'])]
-    public function index(Request $request, EntityManagerInterface $em): Response
+    public function index(Request $request, EntityManagerInterface $em, ListViewHelper $listViewHelper): Response
     {
         $user = $this->getUser();
-        $shipFilter = trim((string) $request->query->get('ship', ''));
-        $campaignFilter = trim((string) $request->query->get('campaign', ''));
-        $filters = [
-            'ship' => $shipFilter !== '' && ctype_digit($shipFilter) ? (int) $shipFilter : null,
-            'start' => trim((string) $request->query->get('start', '')),
-            'end' => trim((string) $request->query->get('end', '')),
-            'campaign' => $campaignFilter !== '' && ctype_digit($campaignFilter) ? (int) $campaignFilter : null,
-        ];
-        $page = max(1, (int) $request->query->get('page', 1));
+        $filters = $listViewHelper->collectFilters($request, [
+            'ship' => ['type' => 'int'],
+            'start',
+            'end',
+            'campaign' => ['type' => 'int'],
+        ]);
+        $page = $listViewHelper->getPage($request);
         $perPage = 10;
 
         $budgets = [];
@@ -47,8 +46,9 @@ final class AnnualBudgetController extends BaseController
             $total = $result['total'];
 
             $totalPages = max(1, (int) ceil($total / $perPage));
-            if ($page > $totalPages) {
-                $page = $totalPages;
+            $clampedPage = $listViewHelper->clampPage($page, $totalPages);
+            if ($clampedPage !== $page) {
+                $page = $clampedPage;
                 $result = $em->getRepository(AnnualBudget::class)->findForUserWithFilters($user, $filters, $page, $perPage);
                 $budgets = $result['items'];
             }
@@ -57,9 +57,7 @@ final class AnnualBudgetController extends BaseController
             $campaigns = $em->getRepository(Campaign::class)->findAllForUser($user);
         }
 
-        $pages = $this->buildPagination($page, $totalPages);
-        $from = $total > 0 ? (($page - 1) * $perPage) + 1 : 0;
-        $to = $total > 0 ? min($page * $perPage, $total) : 0;
+        $pagination = $listViewHelper->buildPaginationPayload($page, $perPage, $total);
 
         return $this->render('annual_budget/index.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
@@ -67,15 +65,7 @@ final class AnnualBudgetController extends BaseController
             'filters' => $filters,
             'ships' => $ships,
             'campaigns' => $campaigns,
-            'pagination' => [
-                'current' => $page,
-                'total' => $total,
-                'per_page' => $perPage,
-                'total_pages' => $totalPages,
-                'pages' => $pages,
-                'from' => $from,
-                'to' => $to,
-            ],
+            'pagination' => $pagination,
         ]);
     }
 
@@ -257,40 +247,6 @@ final class AnnualBudgetController extends BaseController
         }
 
         return [$orderedLabels, $incomeSeries, $costSeries];
-    }
-
-    /**
-     * @return array<int, int|null>
-     */
-    private function buildPagination(int $current, int $totalPages): array
-    {
-        if ($totalPages <= 1) {
-            return [1];
-        }
-
-        if ($totalPages <= 7) {
-            return range(1, $totalPages);
-        }
-
-        $pages = [1];
-        $windowStart = max(2, $current - 2);
-        $windowEnd = min($totalPages - 1, $current + 2);
-
-        if ($windowStart > 2) {
-            $pages[] = null;
-        }
-
-        for ($i = $windowStart; $i <= $windowEnd; $i++) {
-            $pages[] = $i;
-        }
-
-        if ($windowEnd < $totalPages - 1) {
-            $pages[] = null;
-        }
-
-        $pages[] = $totalPages;
-
-        return $pages;
     }
 
     private function keyFromDayYear(?int $day, ?int $year): ?int

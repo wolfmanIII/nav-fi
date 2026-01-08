@@ -12,6 +12,7 @@ use App\Form\Type\ImperialDateType;
 use App\Model\ImperialDate;
 use App\Security\Voter\CampaignVoter;
 use App\Security\Voter\ShipVoter;
+use App\Service\ListViewHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,21 +24,18 @@ final class CampaignController extends BaseController
     public const CONTROLLER_NAME = 'CampaignController';
 
     #[Route('/campaign/index', name: 'app_campaign_index', methods: ['GET'])]
-    public function index(Request $request, EntityManagerInterface $em): Response
+    public function index(Request $request, EntityManagerInterface $em, ListViewHelper $listViewHelper): Response
     {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
         }
 
-        $startingYearFilter = trim((string) $request->query->get('starting_year', ''));
-        $filters = [
-            'title' => trim((string) $request->query->get('title', '')),
-            'starting_year' => $startingYearFilter !== '' && ctype_digit($startingYearFilter)
-                ? (int) $startingYearFilter
-                : null,
-        ];
-        $page = max(1, (int) $request->query->get('page', 1));
+        $filters = $listViewHelper->collectFilters($request, [
+            'title',
+            'starting_year' => ['type' => 'int'],
+        ]);
+        $page = $listViewHelper->getPage($request);
         $perPage = 10;
 
         $result = $em->getRepository(Campaign::class)->findWithFilters($filters, $page, $perPage, $user);
@@ -45,29 +43,20 @@ final class CampaignController extends BaseController
         $total = $result['total'];
 
         $totalPages = max(1, (int) ceil($total / $perPage));
-        if ($page > $totalPages) {
-            $page = $totalPages;
+        $clampedPage = $listViewHelper->clampPage($page, $totalPages);
+        if ($clampedPage !== $page) {
+            $page = $clampedPage;
             $result = $em->getRepository(Campaign::class)->findWithFilters($filters, $page, $perPage, $user);
             $campaigns = $result['items'];
         }
 
-        $pages = $this->buildPagination($page, $totalPages);
-        $from = $total > 0 ? (($page - 1) * $perPage) + 1 : 0;
-        $to = $total > 0 ? min($page * $perPage, $total) : 0;
+        $pagination = $listViewHelper->buildPaginationPayload($page, $perPage, $total);
 
         return $this->render('campaign/index.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'campaigns' => $campaigns,
             'filters' => $filters,
-            'pagination' => [
-                'current' => $page,
-                'total' => $total,
-                'per_page' => $perPage,
-                'total_pages' => $totalPages,
-                'pages' => $pages,
-                'from' => $from,
-                'to' => $to,
-            ],
+            'pagination' => $pagination,
         ]);
     }
 
@@ -253,39 +242,5 @@ final class CampaignController extends BaseController
         $em->flush();
 
         return $this->redirectToRoute('app_campaign_details', ['id' => $campaign->getId()]);
-    }
-
-    /**
-     * @return array<int, int|null>
-     */
-    private function buildPagination(int $current, int $totalPages): array
-    {
-        if ($totalPages <= 1) {
-            return [1];
-        }
-
-        if ($totalPages <= 7) {
-            return range(1, $totalPages);
-        }
-
-        $pages = [1];
-        $windowStart = max(2, $current - 2);
-        $windowEnd = min($totalPages - 1, $current + 2);
-
-        if ($windowStart > 2) {
-            $pages[] = null;
-        }
-
-        for ($i = $windowStart; $i <= $windowEnd; $i++) {
-            $pages[] = $i;
-        }
-
-        if ($windowEnd < $totalPages - 1) {
-            $pages[] = null;
-        }
-
-        $pages[] = $totalPages;
-
-        return $pages;
     }
 }
