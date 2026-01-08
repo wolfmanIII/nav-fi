@@ -7,6 +7,7 @@ use App\Entity\Campaign;
 use App\Entity\Ship;
 use App\Form\CrewType;
 use App\Security\Voter\CrewVoter;
+use App\Controller\Helper\PaginationTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class CrewController extends BaseController
 {
+    use PaginationTrait;
     public const CONTROLLER_NAME = 'CrewController';
 
     #[Route('/crew/index', name: 'app_crew_index', methods: ['GET'])]
@@ -167,37 +169,4 @@ final class CrewController extends BaseController
         return $this->redirectToRoute('app_crew_index');
     }
 
-    /**
-     * @return array<int, int|null>
-     */
-    private function buildPagination(int $current, int $totalPages): array
-    {
-        if ($totalPages <= 1) {
-            return [1];
-        }
-
-        if ($totalPages <= 7) {
-            return range(1, $totalPages);
-        }
-
-        $pages = [1];
-        $windowStart = max(2, $current - 2);
-        $windowEnd = min($totalPages - 1, $current + 2);
-
-        if ($windowStart > 2) {
-            $pages[] = null;
-        }
-
-        for ($i = $windowStart; $i <= $windowEnd; $i++) {
-            $pages[] = $i;
-        }
-
-        if ($windowEnd < $totalPages - 1) {
-            $pages[] = null;
-        }
-
-        $pages[] = $totalPages;
-
-        return $pages;
-    }
 }
