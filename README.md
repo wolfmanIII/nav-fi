@@ -96,3 +96,4 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, 
 - Le entità di contesto (InterestRate, Insurance, ShipRole, CostCategory, IncomeCategory, CompanyRole, LocalLaw) sono gestite via EasyAdmin o via comandi di import/export.
 - I contratti Income sono tipizzati per categoria con dettagli dedicati e possono essere stampati in PDF tramite i template in `templates/pdf/contracts`.
 - I campi anno usano `IntegerType` con min derivato dalla Campaign associata alla Ship selezionata; il controller Stimulus `year-limit` aggiorna dinamicamente il limite min per i dropdown nave.
+- Per un’analisi tecnica di alto livello (tech stack, entità, flussi e prossimi passi) consulta `docs/CAP-LOG-analisi-tecnica.md`.

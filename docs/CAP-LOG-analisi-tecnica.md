@@ -24,6 +24,7 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 - **LocalLaw:** codice, descrizione breve e disclaimer giurisdizionale; referenziato da Cost, Income, Mortgage.
 - **Income dettagliato per categoria:** relazioni 1–1 (Freight, Passengers, Contract, Trade, Subsidy, Services, Insurance, Interest, Mail, Prize, Salvage, Charter, ecc.) con campi specifici; le sottoform sono attivate da `IncomeDetailsSubscriber` in base a `IncomeCategory.code` (mappa opzionale consultabile in `ContractFieldConfig`).
 - **Tracciamento utente:** FK `user` (nullable) su Ship, Crew, Mortgage, MortgageInstallment, Cost, Income, AnnualBudget e Company. Un listener Doctrine (`AssignUserSubscriber`) assegna l’utente loggato in `prePersist`.
+- **Company cross-campaign:** le controparti (`Company`, `CompanyRole`, `LocalLaw`) vengono definite una volta e riutilizzate su più campagne; questo garantisce consistenza nei costi/entrate e nei PDF, tenendo separati contesto e sessione.
 
 ### Relazioni principali
 - Campaign 1–N Ship (calendario di sessione condiviso).
@@ -72,6 +73,28 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 - **Form giorno/anno:** limiti validativi configurati via env; aggiornare `.env.local` in base al calendario imperiale usato al tavolo. Il datepicker imperiale ha pulsanti mese e un tasto Clear che svuota il giorno mantenendo l’anno.
 - **Sessione campagne:** sessionDay/sessionYear vive su Campaign; le Ship mostrano i valori ereditati. Migrazioni legacy potrebbero aver popolato le Ship: mantenerle allineate se si rimuovono i campi.
 - **Ship details JSON:** il form salva blocchi strutturati; se si altera la struttura, valutare migrazioni o normalizzazioni per non perdere dati.
+
+## Flussi operativi principali
+
+1. **Setup campagna e contesto:** definire cataloghi (InterestRate, Insurance, ShipRole, CostCategory, IncomeCategory, CompanyRole, LocalLaw), creare la Campaign con calendario imperiale e registrare le ships (incluso `shipDetails` JSON).
+2. **Gestione equipaggio:** associare crew alle ship, assegnare ruoli e capitano via modal Stimulus (`role-selector`), supportare filtri per crew non assegnati e paginazione unificata.
+3. **Mutui, costi e income:** la firma del mutuo avviene con `signingDay/Year` dalla Campaign; costi e entrate hanno `Company`/`LocalLaw` cross-campaign e utilizzano `ImperialDateType` + PDF builder per stampare contratti e schede bianche.
+4. **Annual budget per nave:** aggregare income, cost e rate in 13 periodi annui, validare `start <= end`, formattare le date con `ImperialDate` e rappresentare il bilancio sulla UI e nei PDF.
+5. **UX e riferimenti:** tooltip e badge uniformati (vedi `docs/tooltip-guidelines.md`), sidebar e checklist enfatizzano il flusso "Campaign first → Ships/Crew → Companies → Cost/Income/Mortgage/Budget".
+
+## UX e documentazione
+
+- Sidebar e homepage enfatizzano le fasi chiave (campagna, shipyard, mortgage, budget) con badge, tooltip e icone scalabili (`icons/crew.html.twig` con `dim`).
+- Le guide `docs/*` coprono calendari imperiali (`traveller_imperial_calendar.md`), snippet contratti (`contract-placeholders.md`) e la documentazione operativa (`CAP-LOG-miglioramenti.md`).
+- Il documento `docs/tooltip-guidelines.md` definisce come standardizzare tooltip/badge e preparare un macro `templates/_tooltip.html.twig`.
+- Ogni documento viene aggiornato contestualmente al codice (setup calcoli mutuo, PDF, Stimulus `imperial-date`, macros per `year-limit`).
+
+## Rischi aperti e prossimi passi
+
+1. **Tooltip & icone riutilizzabili:** implementare un macro Twig (es. `_tooltip.html.twig`) per uniformare i tooltip e ridurre la duplicazione di HTML e copy.
+2. **Test funzionali:** automatizzare i flussi critici (filtri/paginazione, ownership, PDF, login) per coprire i casi di uso del tavolo di gioco.
+3. **Documentazione vivente:** mantenere aggiornati README e doc `CAP-LOG-*` con i nuovi workflow (calendar, cross-campaign, ImperialDateType, tooltip macro).
+4. **Contesto multi-utente:** verificare l’impatto del filtro `Campaign.user` su eventuali scenari condivisi e considerare un sistema di Ownership più granulare o un’associazione esplicita per le ship condivise.
 
 ## Checklist rapida di setup
 1. Variabili env: `DATABASE_URL`, `APP_SECRET`, `APP_DAY_MIN/MAX`, `APP_YEAR_MIN/MAX`.
