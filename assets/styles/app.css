@@ -37,13 +37,38 @@
     .animate-spin-slow {
         animation: spin 2.5s linear infinite;
     }
+
+    /* Required marker: deve vincere su tutto */
+    label.required::after {
+        content: " *" !important;
+        font-weight: 700;
+        color: rgb(220 38 38);
+        margin-left: 0.25rem;
+    }
 }
 
 @layer components {
-    /* Assicura che le label restino leggibili con i gradienti e i temi custom */
-    .label,
-    .label-text {
+    /* DaisyUI: il colore lo decide la label, il testo deve ereditare */
+    .label {
         @apply text-base-content;
+    }
+
+    .label-text {
+        color: inherit;
+    }
+
+    /* Required: label "plain" (senza DaisyUI) */
+    label.required:not(.label)::after {
+        content: " *";
+        font-weight: 700;
+        color: inherit;
+    }
+
+    /* Required: label DaisyUI (con .label-text) */
+    label.label.required .label-text::after {
+        content: " *";
+        font-weight: 700;
+        color: inherit;
     }
 
     .alert.alert-info {
