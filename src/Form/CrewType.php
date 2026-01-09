@@ -79,7 +79,7 @@ class CrewType extends AbstractType
             ])
             ->add('ship', EntityType::class, [
                 'class' => Ship::class,
-                'disabled' => $crew->getShip() === null,
+                'required' => false,
                 'placeholder' => '-- Select a Ship --',
                 'choice_label' => fn (Ship $ship) => sprintf('%s - %s(%s)', $ship->getName(), $ship->getType(), $ship->getClass()),
                 'choice_attr' => function (Ship $ship): array {

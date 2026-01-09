@@ -108,6 +108,7 @@ final class CrewController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
+        /** @var Crew $crew */
         $crew = $em->getRepository(Crew::class)->findOneForUser($id, $user);
         if (!$crew) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -120,6 +121,13 @@ final class CrewController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if (!$crew->getShip()) {
+                foreach($crew->getShipRoles() as $role) {
+                    $crew->removeShipRole($role);
+                }
+            }
+
             $em->flush();
 
             return $this->redirectToRoute('app_crew_index');

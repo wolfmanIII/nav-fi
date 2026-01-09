@@ -84,9 +84,8 @@
                 </div>
             </div>
 
-            {#<div class="col-span-2 grid grid-cols-2 gap-4" data-controller="campaign-ship">#}
             <div id="crew_roles_{{ crew.id }}" class="col-span-2 grid grid-cols-2 gap-4"
-                data-controller="role-selector campaign-ship ship-roles-toggle"
+                data-controller="campaign-ship role-selector ship-roles-toggle"
                 data-action="show->role-selector#prepareSelection close->role-selector#resetSelection cancel->role-selector#resetSelection">
                 <div>
                     <div class="flex items-center gap-1">
