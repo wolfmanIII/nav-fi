@@ -106,23 +106,25 @@ class CrewType extends AbstractType
                     'data-campaign-ship-target' => 'ship',
                 ],
             ])
+            ->add('shipRoles', EntityType::class, [
+                'class' => ShipRole::class,
+                'label' => 'Roles',
+                'choice_label' => fn (ShipRole $role) => sprintf('%s – %s', $role->getCode(), $role->getName()),
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('r')->orderBy('r.code', 'ASC');
+                },
+                'attr' => [
+                    'class' => 'select m-1 w-full h-48',
+                ],
+            ])
             ->add('background', TextareaType::class, [
                 'required' => false,
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 13],
             ])
         ;
-
-        if ($options['is_admin']) {
-            $builder->add('shipRoles', EntityType::class, [
-                'class' => ShipRole::class,
-                'choice_label' => function (ShipRole $role) {
-                    return $role->getCode() . ' - ' . $role->getName();
-                },
-                'multiple' => true,
-                'required' => false,
-                'attr' => ['class' => 'select m-1 h-72 w-full'],
-            ]);
-        }
 
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
             /** @var Crew $crew */

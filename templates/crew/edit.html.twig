@@ -84,7 +84,10 @@
                 </div>
             </div>
 
-            <div class="col-span-2 grid grid-cols-2 gap-4" data-controller="campaign-ship">
+            {#<div class="col-span-2 grid grid-cols-2 gap-4" data-controller="campaign-ship">#}
+            <div id="crew_roles_{{ crew.id }}" class="col-span-2 grid grid-cols-2 gap-4"
+                data-controller="role-selector campaign-ship ship-roles-toggle"
+                data-action="show->role-selector#prepareSelection close->role-selector#resetSelection cancel->role-selector#resetSelection">
                 <div>
                     <div class="flex items-center gap-1">
                         {{ form_label(form.campaign) }}
@@ -98,8 +101,26 @@
                         {{ form_label(form.ship) }}
                         {% if form.ship.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
                     </div>
-                    {{ form_widget(form.ship) }}
+                    {{ form_widget(form.ship, { attr: {
+                        'data-ship-roles-toggle-target': 'shipSelect',
+                        'data-action': 'change->ship-roles-toggle#refresh'
+                    }}) }}
                     {{ form_errors(form.ship) }}
+                </div>
+                <div id="ship-roles-wrapper"
+                    data-ship-roles-toggle-target="wrapper"
+                    class="col-span-2 hidden alert alert-success rounded">
+                    
+                    {{ form_widget(form.shipRoles, {
+                        attr: {
+                            class: 'hidden',
+                            'data-role-selector-target': 'select',
+                            autocomplete: 'off'
+                        }
+                    }) }}
+                    {{ form_label(form.shipRoles) }}
+                    <div class="flex flex-wrap gap-2" data-role-selector-target="chips"></div>
+                    {{ form_errors(form.shipRoles) }}
                 </div>
             </div>
 
@@ -109,16 +130,6 @@
                 {{ form_errors(form.background) }}
             </div>
 
-            {% if form.shipRoles is defined %}
-                <div class="col-span-2">
-                    <div class="flex items-center gap-1">
-                        {{ form_label(form.shipRoles) }}
-                        {% if form.shipRoles.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                    </div>
-                    {{ form_widget(form.shipRoles) }}
-                    {{ form_errors(form.shipRoles) }}
-                </div>
-            {% endif %}
         </fieldset>
 
         <button type="submit"
