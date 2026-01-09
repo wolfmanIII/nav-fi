@@ -84,6 +84,19 @@
                 </div>
             </div>
 
+            <div class="col-span-2">
+                <div class="alert alert-info alert-outline shadow-sm mt-2">
+                    <span class="flex items-center justify-center animate-spin-slow">
+                        {% include 'icons/radar.html.twig' %}
+                    </span>
+                    <div class="text-sm text-slate-200">
+                        <span class="block">Select a campaign to establish a secure link to the fleet registry and reveal available ships.</span>
+                        <span class="block opacity-80">This is a navigation filter only—if no ship is selected, the campaign choice is ignored and no assignment will be recorded.</span>
+                        <span class="block opacity-80">The crew record will still be saved, ready for a future assignment.</span>
+                    </div>
+                </div>
+            </div>
+
             <div id="crew_roles_{{ crew.id }}" class="col-span-2 grid grid-cols-2 gap-4"
                 data-controller="campaign-ship role-selector ship-roles-toggle"
                 data-action="show->role-selector#prepareSelection close->role-selector#resetSelection cancel->role-selector#resetSelection">
