@@ -84,6 +84,13 @@ final class CrewController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $em->persist($crew);
+
+            if (!$crew->getShip()) {
+                foreach($crew->getShipRoles() as $role) {
+                    $crew->removeShipRole($role);
+                }
+            }
+
             $em->flush();
 
             return $this->redirectToRoute('app_crew_index');
