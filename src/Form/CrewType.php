@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -34,7 +35,13 @@ class CrewType extends AbstractType
         $user = $options['user'];
         $campaignStartYear = $crew?->getShip()?->getCampaign()?->getStartingYear();
         $minYear = 0;
+        $eventMinYear = $this->limits->getYearMin();
         $birthDate = new ImperialDate($crew?->getBirthYear(), $crew?->getBirthDay());
+        $activeDate = new ImperialDate($crew?->getActiveYear(), $crew?->getActiveDay());
+        $onLeaveDate = new ImperialDate($crew?->getOnLeaveYear(), $crew?->getOnLeaveDay());
+        $retiredDate = new ImperialDate($crew?->getRetiredYear(), $crew?->getRetiredDay());
+        $miaDate = new ImperialDate($crew?->getMiaYear(), $crew?->getMiaDay());
+        $deceasedDate = new ImperialDate($crew?->getDeceasedYear(), $crew?->getDeceasedDay());
         $builder
             ->add('name', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
@@ -60,6 +67,7 @@ class CrewType extends AbstractType
             ])
             ->add('status', ChoiceType::class, [
                 'required' => false,
+                'placeholder' => '-- Select a Status --',
                 'choices' => [
                     'Active' => 'Active',
                     'On Leave' => 'On Leave',
@@ -68,6 +76,46 @@ class CrewType extends AbstractType
                     'Deceased' => 'Deceased',
                 ],
                 'attr' => ['class' => 'select m-1 w-full'],
+            ])
+            ->add('activeDate', ImperialDateType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Active date',
+                'data' => $activeDate,
+                'min_year' => $eventMinYear,
+                'max_year' => $this->limits->getYearMax(),
+            ])
+            ->add('onLeaveDate', ImperialDateType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'On leave date',
+                'data' => $onLeaveDate,
+                'min_year' => $eventMinYear,
+                'max_year' => $this->limits->getYearMax(),
+            ])
+            ->add('retiredDate', ImperialDateType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Retired date',
+                'data' => $retiredDate,
+                'min_year' => $eventMinYear,
+                'max_year' => $this->limits->getYearMax(),
+            ])
+            ->add('miaDate', ImperialDateType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'MIA date',
+                'data' => $miaDate,
+                'min_year' => $eventMinYear,
+                'max_year' => $this->limits->getYearMax(),
+            ])
+            ->add('deceasedDate', ImperialDateType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Deceased date',
+                'data' => $deceasedDate,
+                'min_year' => $eventMinYear,
+                'max_year' => $this->limits->getYearMax(),
             ])
             ->add('campaign', EntityType::class, [
                 'class' => Campaign::class,
@@ -143,11 +191,76 @@ class CrewType extends AbstractType
             $crew = $event->getData();
             $form = $event->getForm();
 
+            $ship = $form->get('ship')->getData();
+
             /** @var ImperialDate|null $birth */
             $birth = $form->get('birthDate')->getData();
             if ($birth instanceof ImperialDate) {
                 $crew->setBirthDay($birth->getDay());
                 $crew->setBirthYear($birth->getYear());
+            }
+
+            /** @var ImperialDate|null $active */
+            $active = $form->get('activeDate')->getData();
+            if ($active instanceof ImperialDate) {
+                $crew->setActiveDay($active->getDay());
+                $crew->setActiveYear($active->getYear());
+            }
+
+            /** @var ImperialDate|null $onLeave */
+            $onLeave = $form->get('onLeaveDate')->getData();
+            if ($onLeave instanceof ImperialDate) {
+                $crew->setOnLeaveDay($onLeave->getDay());
+                $crew->setOnLeaveYear($onLeave->getYear());
+            }
+
+            /** @var ImperialDate|null $retired */
+            $retired = $form->get('retiredDate')->getData();
+            if ($retired instanceof ImperialDate) {
+                $crew->setRetiredDay($retired->getDay());
+                $crew->setRetiredYear($retired->getYear());
+            }
+
+            /** @var ImperialDate|null $mia */
+            $mia = $form->get('miaDate')->getData();
+            if ($mia instanceof ImperialDate) {
+                $crew->setMiaDay($mia->getDay());
+                $crew->setMiaYear($mia->getYear());
+            }
+
+            /** @var ImperialDate|null $deceased */
+            $deceased = $form->get('deceasedDate')->getData();
+            if ($deceased instanceof ImperialDate) {
+                $crew->setDeceasedDay($deceased->getDay());
+                $crew->setDeceasedYear($deceased->getYear());
+            }
+
+            if ($ship !== null) {
+                if (!$crew->getStatus()) {
+                    $form->get('status')->addError(new FormError('Status is required when a ship is assigned.'));
+                }
+
+                if ($crew->getShipRoles()->count() === 0) {
+                    $form->get('shipRoles')->addError(new FormError('At least one role is required when a ship is assigned.'));
+                }
+
+                $status = $crew->getStatus() ?? '';
+                $dateField = match ($status) {
+                    'Active' => 'activeDate',
+                    'On Leave' => 'onLeaveDate',
+                    'Retired' => 'retiredDate',
+                    'Missing (MIA)' => 'miaDate',
+                    'Deceased' => 'deceasedDate',
+                    default => '',
+                };
+
+                if ($dateField !== '') {
+                    /** @var ImperialDate|null $date */
+                    $date = $form->get($dateField)->getData();
+                    if (!$date instanceof ImperialDate || $date->getDay() === null || $date->getYear() === null) {
+                        $form->get($dateField)->addError(new FormError('Status date is required for the selected status.'));
+                    }
+                }
             }
         });
     }

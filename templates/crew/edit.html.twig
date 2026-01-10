@@ -128,6 +128,7 @@
                                     attr: {
                                         class: 'hidden',
                                         'data-role-selector-target': 'select',
+                                        'data-ship-roles-toggle-target': 'shipRolesSelect',
                                         autocomplete: 'off'
                                     }
                                 }) }}
@@ -141,12 +142,67 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-span-2">
-                {{ form_label(form.status) }}
-                {{ form_widget(form.status) }}
-                {{ form_errors(form.status) }}
+                <div class="col-span-2">
+                    <div class="alert alert-info alert-outline shadow-sm mt-2" data-ship-roles-toggle-target="statusHelper">
+                        <span class="flex items-center justify-center animate-spin-slow">
+                            {% include 'icons/radar.html.twig' %}
+                        </span>
+                        <div class="text-xs text-slate-200">
+                            Select a ship to unlock status tracking and ship roles for this crew member.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-span-2 grid grid-cols-2 gap-4 items-start" data-controller="crew-status-date" data-ship-roles-toggle-target="statusWrapper">
+                    <div>
+                        {{ form_label(form.status) }}
+                        {{ form_widget(form.status, { attr: {
+                            'data-crew-status-date-target': 'status',
+                            'data-ship-roles-toggle-target': 'statusSelect',
+                            'data-action': 'change->crew-status-date#toggle'
+                        } }) }}
+                        {{ form_errors(form.status) }}
+                    </div>
+
+                    <div>
+                        <div data-controller="imperial-date" data-crew-status-date-target="active" class="hidden">
+                            {{ form_label(form.activeDate) }}
+                            {{ form_widget(form.activeDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                            {{ form_widget(form.activeDate.year) }}
+                            {{ form_widget(form.activeDate.day) }}
+                            {{ form_errors(form.activeDate) }}
+                        </div>
+                        <div data-controller="imperial-date" data-crew-status-date-target="onLeave" class="hidden">
+                            {{ form_label(form.onLeaveDate) }}
+                            {{ form_widget(form.onLeaveDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                            {{ form_widget(form.onLeaveDate.year) }}
+                            {{ form_widget(form.onLeaveDate.day) }}
+                            {{ form_errors(form.onLeaveDate) }}
+                        </div>
+                        <div data-controller="imperial-date" data-crew-status-date-target="retired" class="hidden">
+                            {{ form_label(form.retiredDate) }}
+                            {{ form_widget(form.retiredDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                            {{ form_widget(form.retiredDate.year) }}
+                            {{ form_widget(form.retiredDate.day) }}
+                            {{ form_errors(form.retiredDate) }}
+                        </div>
+                        <div data-controller="imperial-date" data-crew-status-date-target="mia" class="hidden">
+                            {{ form_label(form.miaDate) }}
+                            {{ form_widget(form.miaDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                            {{ form_widget(form.miaDate.year) }}
+                            {{ form_widget(form.miaDate.day) }}
+                            {{ form_errors(form.miaDate) }}
+                        </div>
+                        <div data-controller="imperial-date" data-crew-status-date-target="deceased" class="hidden">
+                            {{ form_label(form.deceasedDate) }}
+                            {{ form_widget(form.deceasedDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                            {{ form_widget(form.deceasedDate.year) }}
+                            {{ form_widget(form.deceasedDate.day) }}
+                            {{ form_errors(form.deceasedDate) }}
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="col-span-2">

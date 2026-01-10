@@ -58,6 +58,36 @@ class Crew
     #[ORM\Column(length: 30, nullable: true)]
     private ?string $status = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $activeDay = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $activeYear = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $onLeaveDay = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $onLeaveYear = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $retiredDay = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $retiredYear = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $miaDay = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $miaYear = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $deceasedDay = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $deceasedYear = null;
+
     public function __construct()
     {
         $this->setCode(Uuid::v7());
@@ -240,6 +270,126 @@ class Crew
     public function setStatus(?string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getActiveDay(): ?int
+    {
+        return $this->activeDay;
+    }
+
+    public function setActiveDay(?int $activeDay): static
+    {
+        $this->activeDay = $activeDay;
+
+        return $this;
+    }
+
+    public function getActiveYear(): ?int
+    {
+        return $this->activeYear;
+    }
+
+    public function setActiveYear(?int $activeYear): static
+    {
+        $this->activeYear = $activeYear;
+
+        return $this;
+    }
+
+    public function getOnLeaveDay(): ?int
+    {
+        return $this->onLeaveDay;
+    }
+
+    public function setOnLeaveDay(?int $onLeaveDay): static
+    {
+        $this->onLeaveDay = $onLeaveDay;
+
+        return $this;
+    }
+
+    public function getOnLeaveYear(): ?int
+    {
+        return $this->onLeaveYear;
+    }
+
+    public function setOnLeaveYear(?int $onLeaveYear): static
+    {
+        $this->onLeaveYear = $onLeaveYear;
+
+        return $this;
+    }
+
+    public function getRetiredDay(): ?int
+    {
+        return $this->retiredDay;
+    }
+
+    public function setRetiredDay(?int $retiredDay): static
+    {
+        $this->retiredDay = $retiredDay;
+
+        return $this;
+    }
+
+    public function getRetiredYear(): ?int
+    {
+        return $this->retiredYear;
+    }
+
+    public function setRetiredYear(?int $retiredYear): static
+    {
+        $this->retiredYear = $retiredYear;
+
+        return $this;
+    }
+
+    public function getMiaDay(): ?int
+    {
+        return $this->miaDay;
+    }
+
+    public function setMiaDay(?int $miaDay): static
+    {
+        $this->miaDay = $miaDay;
+
+        return $this;
+    }
+
+    public function getMiaYear(): ?int
+    {
+        return $this->miaYear;
+    }
+
+    public function setMiaYear(?int $miaYear): static
+    {
+        $this->miaYear = $miaYear;
+
+        return $this;
+    }
+
+    public function getDeceasedDay(): ?int
+    {
+        return $this->deceasedDay;
+    }
+
+    public function setDeceasedDay(?int $deceasedDay): static
+    {
+        $this->deceasedDay = $deceasedDay;
+
+        return $this;
+    }
+
+    public function getDeceasedYear(): ?int
+    {
+        return $this->deceasedYear;
+    }
+
+    public function setDeceasedYear(?int $deceasedYear): static
+    {
+        $this->deceasedYear = $deceasedYear;
 
         return $this;
     }
