@@ -120,6 +120,14 @@ final class CostController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if (
+                !$this->isGranted(CostVoter::EDIT, $cost)
+            ) {
+                $this->addFlash('error', 'Cost payed, Action Denied!');
+                return $this->redirectToRoute('app_cost_edit', ['id' => $cost->getId()]);
+            }
+
             $em->flush();
 
             return $this->redirectToRoute('app_cost_index');

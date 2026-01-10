@@ -155,6 +155,14 @@ final class IncomeController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if (
+                !$this->isGranted(IncomeVoter::EDIT, $income)
+            ) {
+                $this->addFlash('error', 'Income payed, Action Denied!');
+                return $this->redirectToRoute('app_income_edit', ['id' => $income->getId()]);
+            }
+
             $this->clearUnusedDetails($income, $em);
             $em->flush();
 
