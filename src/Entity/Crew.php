@@ -55,10 +55,14 @@ class Crew
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $background = null;
 
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $status = null;
+
     public function __construct()
     {
         $this->setCode(Uuid::v7());
         $this->shipRoles = new ArrayCollection();
+        $this->status = 'Active';
     }
 
     public function getId(): ?int
@@ -224,6 +228,18 @@ class Crew
     public function setBackground(?string $background): static
     {
         $this->background = $background;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }

@@ -8,6 +8,7 @@ use App\Form\Config\DayYearLimits;
 use App\Form\Type\ImperialDateType;
 use App\Model\ImperialDate;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\AbstractType;
@@ -56,6 +57,17 @@ class CrewType extends AbstractType
             ->add('birthWorld', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
                 'required' => false,
+            ])
+            ->add('status', ChoiceType::class, [
+                'required' => false,
+                'choices' => [
+                    'Active' => 'Active',
+                    'On Leave' => 'On Leave',
+                    'Retired' => 'Retired',
+                    'Missing (MIA)' => 'Missing (MIA)',
+                    'Deceased' => 'Deceased',
+                ],
+                'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('campaign', EntityType::class, [
                 'class' => Campaign::class,

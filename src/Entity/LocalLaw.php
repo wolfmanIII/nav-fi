@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\LocalLawRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LocalLawRepository::class)]
@@ -16,13 +17,13 @@ class LocalLaw
     #[ORM\Column(length: 50)]
     private ?string $code = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $shortDescription = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $disclaimer = null;
 
     public function getId(): ?int

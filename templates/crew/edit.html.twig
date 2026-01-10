@@ -144,6 +144,12 @@
             </div>
 
             <div class="col-span-2">
+                {{ form_label(form.status) }}
+                {{ form_widget(form.status) }}
+                {{ form_errors(form.status) }}
+            </div>
+
+            <div class="col-span-2">
                 {{ form_label(form.background) }}
                 {{ form_widget(form.background) }}
                 {{ form_errors(form.background) }}

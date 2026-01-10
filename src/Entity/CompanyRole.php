@@ -13,7 +13,7 @@ class CompanyRole
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 10)]
+    #[ORM\Column(length: 50)]
     private ?string $code = null;
 
     #[ORM\Column(length: 255)]
