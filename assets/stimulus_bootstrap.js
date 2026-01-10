@@ -26,5 +26,5 @@ app.register('single-select-table', SingleSelectTableController);
 app.register('session-date-lock', SessionDateLockController);
 app.register('year-limit', YearLimitController);
 app.register('role-selector', RoleSelectorController);
-app.register('ship_roles_toggle', ShipRolesToggleController);
+app.register('ship-roles-toggle', ShipRolesToggleController);
 app.register('crew-status-date', CrewStatusDateController);

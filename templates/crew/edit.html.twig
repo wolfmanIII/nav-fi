@@ -43,6 +43,34 @@
                 </div>
             {% endif %}
 
+            {% set statusHasErrors = form.status.vars.errors|length > 0 %}
+            {% set dateErrorCount = 0 %}
+            {% for dateField in ['activeDate', 'onLeaveDate', 'retiredDate', 'miaDate', 'deceasedDate'] %}
+                {% set dateErrorCount = dateErrorCount + attribute(form, dateField).vars.errors|length %}
+                {% set dateErrorCount = dateErrorCount + attribute(form, dateField).display.vars.errors|length %}
+                {% set dateErrorCount = dateErrorCount + attribute(form, dateField).year.vars.errors|length %}
+                {% set dateErrorCount = dateErrorCount + attribute(form, dateField).day.vars.errors|length %}
+            {% endfor %}
+            {% if statusHasErrors or dateErrorCount > 0 or form.vars.errors|length > 0 %}
+                <div class="col-span-2">
+                    <div class="alert alert-error alert-outline shadow-sm">
+                        <span class="flex items-center justify-center animate-spin-slow">
+                            {% include 'icons/radar.html.twig' %}
+                        </span>
+                        <div class="text-xs text-rose-100">
+                            {{ form_errors(form) }}
+                            {{ form_errors(form.status) }}
+                            {% for dateField in ['activeDate', 'onLeaveDate', 'retiredDate', 'miaDate', 'deceasedDate'] %}
+                                {{ form_errors(attribute(form, dateField)) }}
+                                {{ form_errors(attribute(form, dateField).display) }}
+                                {{ form_errors(attribute(form, dateField).year) }}
+                                {{ form_errors(attribute(form, dateField).day) }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
             <div>
                 {{ form_label(form.name) }}
                 {{ form_widget(form.name) }}
@@ -154,54 +182,29 @@
                     </div>
                 </div>
 
-                <div class="col-span-2 grid grid-cols-2 gap-4 items-start" data-controller="crew-status-date" data-ship-roles-toggle-target="statusWrapper">
-                    <div>
+                <div class="col-span-2 grid grid-cols-2 gap-4 items-end" data-controller="crew-status-date" data-ship-roles-toggle-target="statusWrapper">
+                    <div class="space-y-1">
                         {{ form_label(form.status) }}
                         {{ form_widget(form.status, { attr: {
                             'data-crew-status-date-target': 'status',
                             'data-ship-roles-toggle-target': 'statusSelect',
                             'data-action': 'change->crew-status-date#toggle'
                         } }) }}
-                        {{ form_errors(form.status) }}
                     </div>
-
-                    <div>
-                        <div data-controller="imperial-date" data-crew-status-date-target="active" class="hidden">
-                            {{ form_label(form.activeDate) }}
-                            {{ form_widget(form.activeDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
-                            {{ form_widget(form.activeDate.year) }}
-                            {{ form_widget(form.activeDate.day) }}
-                            {{ form_errors(form.activeDate) }}
+                    {% for row in [
+                        {'field': 'activeDate', 'label': 'Active date', 'target': 'active'},
+                        {'field': 'onLeaveDate', 'label': 'On leave date', 'target': 'onLeave'},
+                        {'field': 'retiredDate', 'label': 'Retired date', 'target': 'retired'},
+                        {'field': 'miaDate', 'label': 'MIA date', 'target': 'mia'},
+                        {'field': 'deceasedDate', 'label': 'Deceased date', 'target': 'deceased'}
+                    ] %}
+                        <div data-controller="imperial-date" data-crew-status-date-target="{{ row.target }}" class="hidden space-y-1">
+                            {{ form_label(attribute(form, row.field)) }}
+                            {{ form_widget(attribute(form, row.field).display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                            {{ form_widget(attribute(form, row.field).year) }}
+                            {{ form_widget(attribute(form, row.field).day) }}
                         </div>
-                        <div data-controller="imperial-date" data-crew-status-date-target="onLeave" class="hidden">
-                            {{ form_label(form.onLeaveDate) }}
-                            {{ form_widget(form.onLeaveDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
-                            {{ form_widget(form.onLeaveDate.year) }}
-                            {{ form_widget(form.onLeaveDate.day) }}
-                            {{ form_errors(form.onLeaveDate) }}
-                        </div>
-                        <div data-controller="imperial-date" data-crew-status-date-target="retired" class="hidden">
-                            {{ form_label(form.retiredDate) }}
-                            {{ form_widget(form.retiredDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
-                            {{ form_widget(form.retiredDate.year) }}
-                            {{ form_widget(form.retiredDate.day) }}
-                            {{ form_errors(form.retiredDate) }}
-                        </div>
-                        <div data-controller="imperial-date" data-crew-status-date-target="mia" class="hidden">
-                            {{ form_label(form.miaDate) }}
-                            {{ form_widget(form.miaDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
-                            {{ form_widget(form.miaDate.year) }}
-                            {{ form_widget(form.miaDate.day) }}
-                            {{ form_errors(form.miaDate) }}
-                        </div>
-                        <div data-controller="imperial-date" data-crew-status-date-target="deceased" class="hidden">
-                            {{ form_label(form.deceasedDate) }}
-                            {{ form_widget(form.deceasedDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
-                            {{ form_widget(form.deceasedDate.year) }}
-                            {{ form_widget(form.deceasedDate.day) }}
-                            {{ form_errors(form.deceasedDate) }}
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
 
