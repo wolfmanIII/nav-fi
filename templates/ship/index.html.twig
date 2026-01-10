@@ -35,6 +35,15 @@
             </div>
         </div>
 
+        <div class="alert alert-info alert-outline shadow-sm mb-6">
+            <span class="flex items-center justify-center animate-spin-slow">
+                {% include 'icons/radar.html.twig' %}
+            </span>
+            <div class="text-sm text-slate-200">
+                Some records cannot be deleted because they are linked to other logs (campaigns, ships, payments, crew) or locked by a recorded payment.
+            </div>
+        </div>
+
         <form id="ship-filters" method="get" action="{{ path('app_ship_index') }}" class="mb-6">
             <fieldset class="rounded-xl border border-cyan-500/30 bg-slate-900/60 p-4">
                 <legend class="px-2 text-xs uppercase tracking-[0.2em] text-cyan-300/70">Ship search</legend>
