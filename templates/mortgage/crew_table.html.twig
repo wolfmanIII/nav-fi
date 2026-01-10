@@ -17,30 +17,43 @@
                 </tr>
                 </thead>
                 <tbody>
+                {% set signingYear = mortgage.signingYear %}
+                {% set signingDay = mortgage.signingDay %}
+                {% set hasSigning = signingYear and signingDay %}
+                {% set signingIndex = hasSigning ? (signingYear * 1000 + signingDay) : 0 %}
+
                 {% for member in mortgage.ship.crews %}
-                    <tr>
-                        <td>{{ member.code }}</td>
-                        <td>{{ member.name }} "{{ member.nickname }}" {{ member.surname }}</td>
-                        <td>
-                            {% for role in member.shipRoles %}
-                                {{ role.name }}
-                                {% if loop.index != loop.last %}
-                                    -
-                                {% endif %}
-                            {% endfor %}
-                        </td>
-                        <td>
-                            {% if member.captain %}
-                                <div class="flex justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                    </svg>
-                                </div>
-                            {% endif %}
-                        </td>
-                    </tr>
+                    {% set status = member.status ?? '' %}
+                    {% set activeYear = member.activeYear ?? 0 %}
+                    {% set activeDay = member.activeDay ?? 0 %}
+                    {% set activeIndex = activeYear and activeDay ? (activeYear * 1000 + activeDay) : 0 %}
+                    {% if status not in ['Missing (MIA)', 'Deceased'] %}
+                        {% if not hasSigning or (activeIndex and activeIndex >= signingIndex) %}
+                            <tr>
+                                <td>{{ member.code }}</td>
+                                <td>{{ member.name }} "{{ member.nickname }}" {{ member.surname }}</td>
+                                <td>
+                                    {% for role in member.shipRoles %}
+                                        {{ role.name }}
+                                        {% if loop.index != loop.last %}
+                                            -
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% if member.captain %}
+                                        <div class="flex justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                            </svg>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endif %}
                 {% endfor %}
                 </tbody>
             </table>

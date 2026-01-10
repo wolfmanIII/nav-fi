@@ -62,10 +62,24 @@
     {% set summary = mortgage.calculate() %}
     {% set installments = mortgage.mortgageInstallments %}
     {% set crew = ship.crews %}
+    {% set signingYear = mortgage.signingYear %}
+    {% set signingDay = mortgage.signingDay %}
+    {% set hasSigning = signingYear is not null and signingDay is not null %}
+    {% set signingIndex = hasSigning ? (signingYear * 1000 + signingDay) : 0 %}
+    {% set filteredCrew = [] %}
     {% set captain = null %}
     {% for member in crew %}
         {% if captain is null and member.isCaptain() %}
             {% set captain = member %}
+        {% endif %}
+        {% set status = member.status ?? '' %}
+        {% set activeYear = member.activeYear ?? 0 %}
+        {% set activeDay = member.activeDay ?? 0 %}
+        {% set activeIndex = activeYear and activeDay ? (activeYear * 1000 + activeDay) : 0 %}
+        {% if status not in ['Missing (MIA)', 'Deceased'] %}
+            {% if not hasSigning or (activeIndex and activeIndex >= signingIndex) %}
+                {% set filteredCrew = filteredCrew|merge([member]) %}
+            {% endif %}
         {% endif %}
     {% endfor %}
 
@@ -318,7 +332,7 @@
         </div>
     {% endif %}
 
-    {% if crew|length > 0 %}
+    {% if filteredCrew|length > 0 %}
         <div class="card mb-4">
             <div class="card-body p-4">
                 <h2 class="card-title text-lg mb-3">Ship crew</h2>
@@ -332,7 +346,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for member in crew %}
+                        {% for member in filteredCrew %}
                             <tr>
                                 <td class="px-2">{{ member.name }}</td>
                                 <td class="px-2">{{ member.surname }}</td>
