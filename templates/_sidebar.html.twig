@@ -18,11 +18,22 @@
                     <span>Bridge</span>
                 </a>
             </li>
+
+            <li class="menu-title">
+                <span class="text-cyan-200/70 text-xs uppercase tracking-[0.2em]">Operations</span>
+            </li>
             <li>
                 <a href="{{ path('app_operation_guide') }}"
                    class="{% if controller_name == 'OperationGuideController' %}menu-active{% endif %}">
                     {% include 'icons/operations.html.twig' %}
-                    <span>Operations Checklist</span>
+                    <span>Checklist</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('app_operations_flow') }}"
+                   class="{% if controller_name == 'OperationsFlowController' %}menu-active{% endif %}">
+                    {% include 'icons/operations-flow.html.twig' %}
+                    <span>Flow</span>
                 </a>
             </li>
 

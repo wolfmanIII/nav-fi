@@ -5,14 +5,14 @@ namespace App\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class OperationGuideController extends BaseController
+final class OperationsFlowController extends BaseController
 {
-    const CONTROLLER_NAME = "OperationGuideController";
+    const CONTROLLER_NAME = 'OperationsFlowController';
 
-    #[Route('/operations/guide', name: 'app_operation_guide')]
+    #[Route('/operations/flow', name: 'app_operations_flow')]
     public function index(): Response
     {
-        return $this->render('guide/operations_checklist.html.twig', [
+        return $this->render('guide/operations_flow.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
         ]);
     }
