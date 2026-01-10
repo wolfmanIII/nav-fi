@@ -26,20 +26,62 @@
         <p class="text-sm">Service work order brief: vessel/asset, scheduled window, scope, parts/materials, risks and payment/extras/liability clauses.</p>
     </div>
 
+    {% set location_help_id = detail_form.location.vars.id ~ '-help' %}
     <div>
-        {{ form_label(detail_form.location) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.location) }}
+            <label for="{{ location_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        </div>
         {{ form_widget(detail_form.location) }}
         {{ form_errors(detail_form.location) }}
+        <input type="checkbox" id="{{ location_help_id }}" class="modal-toggle hidden" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Location</h3>
+                <p class="py-2 text-sm">Service site, dock, or orbital facility where work is performed.</p>
+                <div class="modal-action">
+                    <label for="{{ location_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
+    {% set service_help_id = detail_form.serviceType.vars.id ~ '-help' %}
     <div>
-        {{ form_label(detail_form.serviceType) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.serviceType) }}
+            <label for="{{ service_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        </div>
         {{ form_widget(detail_form.serviceType) }}
         {{ form_errors(detail_form.serviceType) }}
+        <input type="checkbox" id="{{ service_help_id }}" class="modal-toggle hidden" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Service type</h3>
+                <p class="py-2 text-sm">Primary service class defined by port operations.</p>
+                <div class="modal-action">
+                    <label for="{{ service_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
+    {% set requested_help_id = detail_form.requestedBy.vars.id ~ '-help' %}
     <div>
-        {{ form_label(detail_form.requestedBy) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.requestedBy) }}
+            <label for="{{ requested_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        </div>
         {{ form_widget(detail_form.requestedBy) }}
         {{ form_errors(detail_form.requestedBy) }}
+        <input type="checkbox" id="{{ requested_help_id }}" class="modal-toggle hidden" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Requested by</h3>
+                <p class="py-2 text-sm">Authority or client that issued the work order.</p>
+                <div class="modal-action">
+                    <label for="{{ requested_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="col-span-3 grid grid-cols-2 gap-4">
@@ -47,8 +89,12 @@
         {% set start_day = data ? data.startDay : null %}
         {% set start_year = data ? data.startYear : null %}
         {% set start_value = start_day is not null and start_year is not null ? start_day|format('%03d') ~ '/' ~ start_year : '' %}
+        {% set start_help_id = detail_form.startDate.vars.id ~ '-help' %}
         <div class="col-span-1" data-controller="imperial-date">
-            {{ form_label(detail_form.startDate) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.startDate) }}
+                <label for="{{ start_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.startDate.display, {
                 attr: {
                     'data-imperial-date-prev-icon': '«',
@@ -61,12 +107,26 @@
             {{ form_widget(detail_form.startDate.year) }}
             {{ form_widget(detail_form.startDate.day) }}
             {{ form_errors(detail_form.startDate) }}
+            <input type="checkbox" id="{{ start_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Start date</h3>
+                    <p class="py-2 text-sm">Service start window in imperial day/year.</p>
+                    <div class="modal-action">
+                        <label for="{{ start_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
         {% set end_day = data ? data.endDay : null %}
         {% set end_year = data ? data.endYear : null %}
         {% set end_value = end_day is not null and end_year is not null ? end_day|format('%03d') ~ '/' ~ end_year : '' %}
+        {% set end_help_id = detail_form.endDate.vars.id ~ '-help' %}
         <div class="col-span-1" data-controller="imperial-date">
-            {{ form_label(detail_form.endDate) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.endDate) }}
+                <label for="{{ end_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.endDate.display, {
                 attr: {
                     'data-imperial-date-prev-icon': '«',
@@ -79,25 +139,77 @@
             {{ form_widget(detail_form.endDate.year) }}
             {{ form_widget(detail_form.endDate.day) }}
             {{ form_errors(detail_form.endDate) }}
+            <input type="checkbox" id="{{ end_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">End date</h3>
+                    <p class="py-2 text-sm">Service completion or ETA window.</p>
+                    <div class="modal-action">
+                        <label for="{{ end_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
+    {% set work_help_id = detail_form.workSummary.vars.id ~ '-help' %}
     <div class="col-span-3">
-        {{ form_label(detail_form.workSummary) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.workSummary) }}
+            <label for="{{ work_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        </div>
         {{ form_widget(detail_form.workSummary) }}
         {{ form_errors(detail_form.workSummary) }}
+        <input type="checkbox" id="{{ work_help_id }}" class="modal-toggle hidden" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Work summary</h3>
+                <p class="py-2 text-sm">Scope of work and deliverables performed.</p>
+                <div class="modal-action">
+                    <label for="{{ work_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="col-span-3 grid grid-cols-2 gap-4">
+        {% set parts_help_id = detail_form.partsMaterials.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.partsMaterials) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.partsMaterials) }}
+                <label for="{{ parts_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.partsMaterials) }}
             {{ form_errors(detail_form.partsMaterials) }}
+            <input type="checkbox" id="{{ parts_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Parts / materials</h3>
+                    <p class="py-2 text-sm">Parts, consumables, or materials used during service.</p>
+                    <div class="modal-action">
+                        <label for="{{ parts_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
+        {% set risks_help_id = detail_form.risks.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.risks) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.risks) }}
+                <label for="{{ risks_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.risks) }}
             {{ form_errors(detail_form.risks) }}
+            <input type="checkbox" id="{{ risks_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Risks</h3>
+                    <p class="py-2 text-sm">Operational hazards or constraints acknowledged by both parties.</p>
+                    <div class="modal-action">
+                        <label for="{{ risks_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -122,15 +234,43 @@
     </div>
 
     <div class="col-span-3 grid grid-cols-3 gap-4">
+        {% set extras_help_id = detail_form.extras.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.extras) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.extras) }}
+                <label for="{{ extras_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.extras) }}
             {{ form_errors(detail_form.extras) }}
+            <input type="checkbox" id="{{ extras_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Extras</h3>
+                    <p class="py-2 text-sm">Additional charges outside the base service scope.</p>
+                    <div class="modal-action">
+                        <label for="{{ extras_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
+        {% set cancel_help_id = detail_form.cancellationTerms.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.cancellationTerms) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.cancellationTerms) }}
+                <label for="{{ cancel_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.cancellationTerms) }}
             {{ form_errors(detail_form.cancellationTerms) }}
+            <input type="checkbox" id="{{ cancel_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Cancellation terms</h3>
+                    <p class="py-2 text-sm">Fees or penalties for canceling the work order.</p>
+                    <div class="modal-action">
+                        <label for="{{ cancel_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
         {% set liab_help_id = detail_form.liabilityLimit.vars.id ~ '-help' %}
         <div>
@@ -154,16 +294,34 @@
     </div>
 
     <div class="col-span-3 grid grid-cols-3 gap-4">
+        {% set proof_ref_help_id = detail_form.deliveryProofRef.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.deliveryProofRef) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.deliveryProofRef) }}
+                <label for="{{ proof_ref_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.deliveryProofRef) }}
             {{ form_errors(detail_form.deliveryProofRef) }}
+            <input type="checkbox" id="{{ proof_ref_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Delivery proof ref</h3>
+                    <p class="py-2 text-sm">Receipt or protocol ID confirming service completion.</p>
+                    <div class="modal-action">
+                        <label for="{{ proof_ref_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
         {% set proof_day = data ? data.deliveryProofDay : null %}
         {% set proof_year = data ? data.deliveryProofYear : null %}
         {% set proof_value = proof_day is not null and proof_year is not null ? proof_day|format('%03d') ~ '/' ~ proof_year : '' %}
+        {% set proof_date_help_id = detail_form.deliveryProofDate.vars.id ~ '-help' %}
         <div data-controller="imperial-date">
-            {{ form_label(detail_form.deliveryProofDate) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.deliveryProofDate) }}
+                <label for="{{ proof_date_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.deliveryProofDate.display, {
                 attr: {
                     'data-imperial-date-prev-icon': '«',
@@ -176,11 +334,35 @@
             {{ form_widget(detail_form.deliveryProofDate.year) }}
             {{ form_widget(detail_form.deliveryProofDate.day) }}
             {{ form_errors(detail_form.deliveryProofDate) }}
+            <input type="checkbox" id="{{ proof_date_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Delivery proof date</h3>
+                    <p class="py-2 text-sm">Confirmation timestamp for service acceptance.</p>
+                    <div class="modal-action">
+                        <label for="{{ proof_date_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
+        {% set proof_received_help_id = detail_form.deliveryProofReceivedBy.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.deliveryProofReceivedBy) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.deliveryProofReceivedBy) }}
+                <label for="{{ proof_received_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.deliveryProofReceivedBy) }}
             {{ form_errors(detail_form.deliveryProofReceivedBy) }}
+            <input type="checkbox" id="{{ proof_received_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Received by</h3>
+                    <p class="py-2 text-sm">Authority or client officer confirming acceptance.</p>
+                    <div class="modal-action">
+                        <label for="{{ proof_received_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </fieldset>

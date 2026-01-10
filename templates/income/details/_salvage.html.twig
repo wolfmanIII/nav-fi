@@ -26,25 +26,81 @@
         <p class="text-sm">Salvage/recovery claim: site/source, recovery window, recovered items and hazards, award/split terms and dispute process.</p>
     </div>
 
+    {% set case_help_id = detail_form.caseRef.vars.id ~ '-help' %}
     <div>
-        {{ form_label(detail_form.caseRef) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.caseRef) }}
+            <label for="{{ case_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        </div>
         {{ form_widget(detail_form.caseRef) }}
         {{ form_errors(detail_form.caseRef) }}
+        <input type="checkbox" id="{{ case_help_id }}" class="modal-toggle hidden" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Case reference</h3>
+                <p class="py-2 text-sm">Claim file ID or salvage docket reference.</p>
+                <div class="modal-action">
+                    <label for="{{ case_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
+    {% set source_help_id = detail_form.source.vars.id ~ '-help' %}
     <div>
-        {{ form_label(detail_form.source) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.source) }}
+            <label for="{{ source_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        </div>
         {{ form_widget(detail_form.source) }}
         {{ form_errors(detail_form.source) }}
+        <input type="checkbox" id="{{ source_help_id }}" class="modal-toggle hidden" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Source</h3>
+                <p class="py-2 text-sm">Derelict, distress beacon, wreck registry, or authority assignment.</p>
+                <div class="modal-action">
+                    <label for="{{ source_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
+    {% set site_help_id = detail_form.siteLocation.vars.id ~ '-help' %}
     <div>
-        {{ form_label(detail_form.siteLocation) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.siteLocation) }}
+            <label for="{{ site_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        </div>
         {{ form_widget(detail_form.siteLocation) }}
         {{ form_errors(detail_form.siteLocation) }}
+        <input type="checkbox" id="{{ site_help_id }}" class="modal-toggle hidden" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Site location</h3>
+                <p class="py-2 text-sm">Coordinates, orbit or system location where recovery occurred.</p>
+                <div class="modal-action">
+                    <label for="{{ site_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
+    {% set qty_help_id = detail_form.qtyValue.vars.id ~ '-help' %}
     <div>
-        {{ form_label(detail_form.qtyValue) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.qtyValue) }}
+            <label for="{{ qty_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        </div>
         {{ form_widget(detail_form.qtyValue) }}
         {{ form_errors(detail_form.qtyValue) }}
+        <input type="checkbox" id="{{ qty_help_id }}" class="modal-toggle hidden" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Qty / value</h3>
+                <p class="py-2 text-sm">Recovered tonnage or assessed value at recovery time.</p>
+                <div class="modal-action">
+                    <label for="{{ qty_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="col-span-3">
@@ -68,38 +124,122 @@
     </div>
 
     <div class="col-span-3 grid grid-cols-3 gap-4">
+        {% set recovered_help_id = detail_form.recoveredItemsSummary.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.recoveredItemsSummary) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.recoveredItemsSummary) }}
+                <label for="{{ recovered_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.recoveredItemsSummary) }}
             {{ form_errors(detail_form.recoveredItemsSummary) }}
+            <input type="checkbox" id="{{ recovered_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Recovered items</h3>
+                    <p class="py-2 text-sm">Summary list of recovered hulls, cargo or components.</p>
+                    <div class="modal-action">
+                        <label for="{{ recovered_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
+        {% set hazards_help_id = detail_form.hazards.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.hazards) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.hazards) }}
+                <label for="{{ hazards_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.hazards) }}
             {{ form_errors(detail_form.hazards) }}
+            <input type="checkbox" id="{{ hazards_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Hazards</h3>
+                    <p class="py-2 text-sm">Known threats encountered: debris fields, radiation, hostiles.</p>
+                    <div class="modal-action">
+                        <label for="{{ hazards_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
+        {% set split_help_id = detail_form.splitTerms.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.splitTerms) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.splitTerms) }}
+                <label for="{{ split_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.splitTerms) }}
             {{ form_errors(detail_form.splitTerms) }}
+            <input type="checkbox" id="{{ split_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Split terms</h3>
+                    <p class="py-2 text-sm">Crew/claimant split or salvage share percentages.</p>
+                    <div class="modal-action">
+                        <label for="{{ split_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div> 
     </div>
     
     <div class="col-span-3 grid grid-cols-3 gap-4">
+        {% set rights_help_id = detail_form.rightsBasis.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.rightsBasis) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.rightsBasis) }}
+                <label for="{{ rights_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.rightsBasis) }}
             {{ form_errors(detail_form.rightsBasis) }}
+            <input type="checkbox" id="{{ rights_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Rights basis</h3>
+                    <p class="py-2 text-sm">Statute or charter defining salvage rights and authority.</p>
+                    <div class="modal-action">
+                        <label for="{{ rights_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
+        {% set trigger_help_id = detail_form.awardTrigger.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.awardTrigger) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.awardTrigger) }}
+                <label for="{{ trigger_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.awardTrigger) }}
             {{ form_errors(detail_form.awardTrigger) }}
+            <input type="checkbox" id="{{ trigger_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Award trigger</h3>
+                    <p class="py-2 text-sm">Final adjudication, escrow release or authority clearance.</p>
+                    <div class="modal-action">
+                        <label for="{{ trigger_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
+        {% set dispute_help_id = detail_form.disputeProcess.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.disputeProcess) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.disputeProcess) }}
+                <label for="{{ dispute_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.disputeProcess) }}
             {{ form_errors(detail_form.disputeProcess) }}
+            <input type="checkbox" id="{{ dispute_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Dispute process</h3>
+                    <p class="py-2 text-sm">Appeal channel or adjudication board for contested claims.</p>
+                    <div class="modal-action">
+                        <label for="{{ dispute_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </fieldset>

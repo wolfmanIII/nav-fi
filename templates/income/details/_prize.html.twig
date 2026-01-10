@@ -27,33 +27,103 @@
     </div>
 
     <div class="col-span-3 grid grid-cols-2 gap-4">
+        {% set basis_help_id = detail_form.legalBasis.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.legalBasis) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.legalBasis) }}
+                <label for="{{ basis_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.legalBasis) }}
             {{ form_errors(detail_form.legalBasis) }}
+            <input type="checkbox" id="{{ basis_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Legal basis</h3>
+                    <p class="py-2 text-sm">Authority, charter clause, or prize code authorizing the seizure.</p>
+                    <div class="modal-action">
+                        <label for="{{ basis_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
+        {% set case_help_id = detail_form.caseRef.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.caseRef) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.caseRef) }}
+                <label for="{{ case_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.caseRef) }}
             {{ form_errors(detail_form.caseRef) }}
+            <input type="checkbox" id="{{ case_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Case reference</h3>
+                    <p class="py-2 text-sm">Docket or seizure file ID assigned by the authority.</p>
+                    <div class="modal-action">
+                        <label for="{{ case_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="col-span-3 grid grid-cols-3 gap-4">
+        {% set prize_help_id = detail_form.prizeDescription.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.prizeDescription) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.prizeDescription) }}
+                <label for="{{ prize_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.prizeDescription) }}
             {{ form_errors(detail_form.prizeDescription) }}
+            <input type="checkbox" id="{{ prize_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Prize description</h3>
+                    <p class="py-2 text-sm">Describe the seized asset(s), cargo, hull or rights awarded.</p>
+                    <div class="modal-action">
+                        <label for="{{ prize_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
+        {% set value_help_id = detail_form.estimatedValue.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.estimatedValue) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.estimatedValue) }}
+                <label for="{{ value_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.estimatedValue) }}
             {{ form_errors(detail_form.estimatedValue) }}
+            <input type="checkbox" id="{{ value_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Estimated value</h3>
+                    <p class="py-2 text-sm">Appraised value for settlement or auction purposes.</p>
+                    <div class="modal-action">
+                        <label for="{{ value_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
+        {% set disposition_help_id = detail_form.disposition.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.disposition) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.disposition) }}
+                <label for="{{ disposition_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.disposition) }}
             {{ form_errors(detail_form.disposition) }}
+            <input type="checkbox" id="{{ disposition_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Disposition</h3>
+                    <p class="py-2 text-sm">Auctioned, retained, transferred or otherwise disposed asset.</p>
+                    <div class="modal-action">
+                        <label for="{{ disposition_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -78,15 +148,43 @@
     </div>
 
     <div class="col-span-3 grid grid-cols-2 gap-4">
+        {% set split_help_id = detail_form.shareSplit.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.shareSplit) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.shareSplit) }}
+                <label for="{{ split_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.shareSplit) }}
             {{ form_errors(detail_form.shareSplit) }}
+            <input type="checkbox" id="{{ split_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Share split</h3>
+                    <p class="py-2 text-sm">Crew/claimant allocation or percentage split of the prize.</p>
+                    <div class="modal-action">
+                        <label for="{{ split_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
+        {% set trigger_help_id = detail_form.awardTrigger.vars.id ~ '-help' %}
         <div>
-            {{ form_label(detail_form.awardTrigger) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.awardTrigger) }}
+                <label for="{{ trigger_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.awardTrigger) }}
             {{ form_errors(detail_form.awardTrigger) }}
+            <input type="checkbox" id="{{ trigger_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Award trigger</h3>
+                    <p class="py-2 text-sm">Final adjudication or escrow release condition.</p>
+                    <div class="modal-action">
+                        <label for="{{ trigger_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </fieldset>

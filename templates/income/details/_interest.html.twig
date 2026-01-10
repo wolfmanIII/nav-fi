@@ -26,25 +26,81 @@
         <p class="text-sm">Interest/investment receipt: account/instrument, principal and rate, accrual period, calculation method and payout terms.</p>
     </div>
 
+    {% set account_help_id = detail_form.accountRef.vars.id ~ '-help' %}
     <div>
-        {{ form_label(detail_form.accountRef) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.accountRef) }}
+            <label for="{{ account_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        </div>
         {{ form_widget(detail_form.accountRef) }}
         {{ form_errors(detail_form.accountRef) }}
+        <input type="checkbox" id="{{ account_help_id }}" class="modal-toggle hidden" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Account reference</h3>
+                <p class="py-2 text-sm">Ledger or instrument reference for the interest-bearing account.</p>
+                <div class="modal-action">
+                    <label for="{{ account_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
+    {% set instrument_help_id = detail_form.instrument.vars.id ~ '-help' %}
     <div>
-        {{ form_label(detail_form.instrument) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.instrument) }}
+            <label for="{{ instrument_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        </div>
         {{ form_widget(detail_form.instrument) }}
         {{ form_errors(detail_form.instrument) }}
+        <input type="checkbox" id="{{ instrument_help_id }}" class="modal-toggle hidden" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Instrument</h3>
+                <p class="py-2 text-sm">Bond, escrow, savings vault or other interest-bearing instrument.</p>
+                <div class="modal-action">
+                    <label for="{{ instrument_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
+    {% set principal_help_id = detail_form.principal.vars.id ~ '-help' %}
     <div>
-        {{ form_label(detail_form.principal) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.principal) }}
+            <label for="{{ principal_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        </div>
         {{ form_widget(detail_form.principal) }}
         {{ form_errors(detail_form.principal) }}
+        <input type="checkbox" id="{{ principal_help_id }}" class="modal-toggle hidden" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Principal</h3>
+                <p class="py-2 text-sm">Base amount on which interest is calculated.</p>
+                <div class="modal-action">
+                    <label for="{{ principal_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
+    {% set rate_help_id = detail_form.interestRate.vars.id ~ '-help' %}
     <div>
-        {{ form_label(detail_form.interestRate) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.interestRate) }}
+            <label for="{{ rate_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        </div>
         {{ form_widget(detail_form.interestRate) }}
         {{ form_errors(detail_form.interestRate) }}
+        <input type="checkbox" id="{{ rate_help_id }}" class="modal-toggle hidden" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Interest rate</h3>
+                <p class="py-2 text-sm">Contracted rate for this accrual period (APR or quoted cycle rate).</p>
+                <div class="modal-action">
+                    <label for="{{ rate_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
     {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
     {% set start_day = data ? data.startDay : null %}
@@ -54,8 +110,12 @@
     {% set end_year = data ? data.endYear : null %}
     {% set end_value = end_day is not null and end_year is not null ? end_day|format('%03d') ~ '/' ~ end_year : '' %}
     <div class="col-span-3 grid grid-cols-2 gap-4">
+        {% set start_help_id = detail_form.startDate.vars.id ~ '-help' %}
         <div data-controller="imperial-date">
-            {{ form_label(detail_form.startDate) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.startDate) }}
+                <label for="{{ start_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.startDate.display, {
                 attr: {
                     'data-imperial-date-prev-icon': '«',
@@ -68,9 +128,23 @@
             {{ form_widget(detail_form.startDate.year) }}
             {{ form_widget(detail_form.startDate.day) }}
             {{ form_errors(detail_form.startDate) }}
+            <input type="checkbox" id="{{ start_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Accrual start</h3>
+                    <p class="py-2 text-sm">Opening day/year for this interest window.</p>
+                    <div class="modal-action">
+                        <label for="{{ start_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
+        {% set end_help_id = detail_form.endDate.vars.id ~ '-help' %}
         <div data-controller="imperial-date">
-            {{ form_label(detail_form.endDate) }}
+            <div class="flex items-center gap-2">
+                {{ form_label(detail_form.endDate) }}
+                <label for="{{ end_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            </div>
             {{ form_widget(detail_form.endDate.display, {
                 attr: {
                     'data-imperial-date-prev-icon': '«',
@@ -83,22 +157,74 @@
             {{ form_widget(detail_form.endDate.year) }}
             {{ form_widget(detail_form.endDate.day) }}
             {{ form_errors(detail_form.endDate) }}
+            <input type="checkbox" id="{{ end_help_id }}" class="modal-toggle hidden" />
+            <div class="modal" role="dialog">
+                <div class="modal-box">
+                    <h3 class="font-bold">Accrual end</h3>
+                    <p class="py-2 text-sm">Closing day/year used to seal the interest period.</p>
+                    <div class="modal-action">
+                        <label for="{{ end_help_id }}" class="btn btn-primary">Close</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+    {% set calc_help_id = detail_form.calcMethod.vars.id ~ '-help' %}
     <div>
-        {{ form_label(detail_form.calcMethod) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.calcMethod) }}
+            <label for="{{ calc_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        </div>
         {{ form_widget(detail_form.calcMethod) }}
         {{ form_errors(detail_form.calcMethod) }}
+        <input type="checkbox" id="{{ calc_help_id }}" class="modal-toggle hidden" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Calculation method</h3>
+                <p class="py-2 text-sm">Simple, compound, or custom formula used by the issuer.</p>
+                <div class="modal-action">
+                    <label for="{{ calc_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
+    {% set earned_help_id = detail_form.interestEarned.vars.id ~ '-help' %}
     <div>
-        {{ form_label(detail_form.interestEarned) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.interestEarned) }}
+            <label for="{{ earned_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        </div>
         {{ form_widget(detail_form.interestEarned) }}
         {{ form_errors(detail_form.interestEarned) }}
+        <input type="checkbox" id="{{ earned_help_id }}" class="modal-toggle hidden" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Interest earned</h3>
+                <p class="py-2 text-sm">Gross interest credited for the period before fees or taxes.</p>
+                <div class="modal-action">
+                    <label for="{{ earned_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
+    {% set net_help_id = detail_form.netPaid.vars.id ~ '-help' %}
     <div>
-        {{ form_label(detail_form.netPaid) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.netPaid) }}
+            <label for="{{ net_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        </div>
         {{ form_widget(detail_form.netPaid) }}
         {{ form_errors(detail_form.netPaid) }}
+        <input type="checkbox" id="{{ net_help_id }}" class="modal-toggle hidden" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Net paid</h3>
+                <p class="py-2 text-sm">Net amount received after fees, taxes or escrow holds.</p>
+                <div class="modal-action">
+                    <label for="{{ net_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
     {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
     <div class="col-span-3">
@@ -119,9 +245,23 @@
             </div>
         </div>
     </div>
+    {% set dispute_help_id = detail_form.disputeWindow.vars.id ~ '-help' %}
     <div class="col-span-3">
-        {{ form_label(detail_form.disputeWindow) }}
+        <div class="flex items-center gap-2">
+            {{ form_label(detail_form.disputeWindow) }}
+            <label for="{{ dispute_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        </div>
         {{ form_widget(detail_form.disputeWindow) }}
         {{ form_errors(detail_form.disputeWindow) }}
+        <input type="checkbox" id="{{ dispute_help_id }}" class="modal-toggle hidden" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Dispute window</h3>
+                <p class="py-2 text-sm">How long you have to contest posted interest or statements.</p>
+                <div class="modal-action">
+                    <label for="{{ dispute_help_id }}" class="btn btn-primary">Close</label>
+                </div>
+            </div>
+        </div>
     </div>
 </fieldset>
