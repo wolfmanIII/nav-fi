@@ -37,28 +37,20 @@
             </div>
 
             {% if crew.id %}
-                <div class="col-span-1">
-                    <label class="label">Code</label>
-                    <div><b>{{ crew.code }}</b></div>
-                </div>
-                <div class="col-span-1">
+                <div class="col-span-2">
+                    <label class="block text-slate-300">Code</label>
+                    <div class="m-1 w-full"><b>{{ crew.code }}</b></div>
                 </div>
             {% endif %}
 
             <div>
-                <div class="flex items-center gap-1">
-                    {{ form_label(form.name) }}
-                    {% if form.name.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                </div>
+                {{ form_label(form.name) }}
                 {{ form_widget(form.name) }}
                 {{ form_errors(form.name) }}
             </div>
 
             <div>
-                <div class="flex items-center gap-1">
-                    {{ form_label(form.surname) }}
-                    {% if form.surname.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                </div>
+                {{ form_label(form.surname) }}
                 {{ form_widget(form.surname) }}
                 {{ form_errors(form.surname) }}
             </div>
@@ -101,18 +93,12 @@
                 data-controller="campaign-ship role-selector ship-roles-toggle"
                 data-action="show->role-selector#prepareSelection close->role-selector#resetSelection cancel->role-selector#resetSelection">
                 <div>
-                    <div class="flex items-center gap-1">
-                        {{ form_label(form.campaign) }}
-                        {% if form.campaign.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                    </div>
+                    {{ form_label(form.campaign) }}
                     {{ form_widget(form.campaign) }}
                     {{ form_errors(form.campaign) }}
                 </div>
                 <div>
-                    <div class="flex items-center gap-1">
-                        {{ form_label(form.ship) }}
-                        {% if form.ship.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                    </div>
+                    {{ form_label(form.ship) }}
                     {{ form_widget(form.ship, { attr: {
                         'data-ship-roles-toggle-target': 'shipSelect',
                         'data-action': 'change->ship-roles-toggle#refresh'

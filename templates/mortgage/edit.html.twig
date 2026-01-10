@@ -43,8 +43,8 @@
             {% if mortgage.id %}
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="label mt-1 mb-1">Code</label>
-                        <div><b>{{ mortgage.code }}</b></div>
+                        <label class="block text-slate-300">Code</label>
+                        <div class="m-1 w-full"><b>{{ mortgage.code }}</b></div>
                     </div>
 
                     <div class="{{ mortgage.signed ? 'alert alert-success alert-outline' : 'alert alert-info alert-outline' }}">
@@ -77,26 +77,17 @@
 
                 <div class="grid grid-cols-4 gap-4" data-controller="campaign-ship">
                     <div>
-                        <div class="flex items-center gap-1">
-                            {{ form_label(form.campaign) }}
-                            {% if form.campaign.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                        </div>
+                        {{ form_label(form.campaign) }}
                         {{ form_widget(form.campaign) }}
                         {{ form_errors(form.campaign) }}
                     </div>
                     <div>
-                        <div class="flex items-center gap-1">
-                            {{ form_label(form.ship) }}
-                            {% if form.ship.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                        </div>
+                        {{ form_label(form.ship) }}
                         {{ form_widget(form.ship) }}
                         {{ form_errors(form.ship) }}
                     </div>
                     <div class="col-span-2" data-controller="imperial-date">
-                        <div class="flex items-center gap-1">
-                            {{ form_label(form.startDate) }}
-                            {% if form.startDate.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                        </div>
+                        {{ form_label(form.startDate) }}
                         {{ form_widget(form.startDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
                         {{ form_widget(form.startDate.year) }}
                         {{ form_widget(form.startDate.day) }}
@@ -106,19 +97,13 @@
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <div class="flex items-center gap-1">
-                            {{ form_label(form.company) }}
-                            {% if form.company.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                        </div>
+                        {{ form_label(form.company) }}
                         {{ form_widget(form.company) }}
                         {{ form_errors(form.company) }}
                     </div>
 
                     <div>
-                        <div class="flex items-center gap-1">
-                            {{ form_label(form.localLaw) }}
-                            {% if form.localLaw.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                        </div>
+                        {{ form_label(form.localLaw) }}
                         {{ form_widget(form.localLaw) }}
                         {{ form_errors(form.localLaw) }}
                     </div>

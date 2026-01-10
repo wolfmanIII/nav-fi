@@ -2,6 +2,7 @@ twig:
     file_name_pattern: '*.twig'
     form_themes:
         - 'tailwind_2_layout.html.twig'
+        - 'form/tailwind_2_override.html.twig'
 
 when@test:
     twig:

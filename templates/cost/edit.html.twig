@@ -32,17 +32,12 @@
             </div>
 
             {% if cost.id %}
-                    <div class="col-span-2">
-                        <label class="label">Code</label>
-                        <div><b>{{ cost.code }}</b></div>
-                    </div>
+                <label class="block text-slate-300">Code</label>
+                <div class="m-1 w-full"><b>{{ cost.code }}</b></div>
             {% endif %}
 
             <div class="col-span-2">
-                <div class="flex items-center gap-1">
-                    {{ form_label(form.title) }}
-                    {% if form.title.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                </div>
+                {{ form_label(form.title) }}
                 {{ form_widget(form.title) }}
                 {{ form_errors(form.title) }}
             </div>
@@ -60,18 +55,12 @@
 
             <div class="col-span-2 grid grid-cols-2 gap-4" data-controller="campaign-ship">
                 <div>
-                    <div class="flex items-center gap-1">
-                        {{ form_label(form.campaign) }}
-                        {% if form.campaign.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                    </div>
+                    {{ form_label(form.campaign) }}
                     {{ form_widget(form.campaign) }}
                     {{ form_errors(form.campaign) }}
                 </div>
                 <div>
-                    <div class="flex items-center gap-1">
-                        {{ form_label(form.ship) }}
-                        {% if form.ship.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                    </div>
+                    {{ form_label(form.ship) }}
                     {{ form_widget(form.ship) }}
                     {{ form_errors(form.ship) }}
                 </div>
@@ -97,28 +86,19 @@
 
             <div class="col-span-2 grid grid-cols-2 gap-4">
                 <div>
-                    <div class="flex items-center gap-1">
-                        {{ form_label(form.company) }}
-                        {% if form.company.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                    </div>
+                    {{ form_label(form.company) }}
                     {{ form_widget(form.company) }}
                     {{ form_errors(form.company) }}
                 </div>
                 <div>
-                    <div class="flex items-center gap-1">
-                        {{ form_label(form.costCategory) }}
-                        {% if form.costCategory.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                    </div>
+                    {{ form_label(form.costCategory) }}
                     {{ form_widget(form.costCategory) }}
                     {{ form_errors(form.costCategory) }}
                 </div>
             </div>
 
             <div class="col-span-2">
-                <div class="flex items-center gap-1">
-                    {{ form_label(form.localLaw) }}
-                    {% if form.localLaw.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                </div>
+                {{ form_label(form.localLaw) }}
                 {{ form_widget(form.localLaw) }}
                 {{ form_errors(form.localLaw) }}
             </div>

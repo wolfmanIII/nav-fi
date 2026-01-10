@@ -43,36 +43,26 @@
             </div>
 
             {% if ship.id %}
-                <div>
-                    <label class="label">Code</label>
-                    <div><b>{{ ship.code }}</b></div>
+                <div class="col-span-2">
+                    <label class="block text-slate-300">Code</label>
+                    <div class="m-1 w-full"><b>{{ ship.code }}</b></div>
                 </div>
-                <div></div>
             {% endif %}
 
             <div>
-                <div class="flex items-center gap-1">
-                    {{ form_label(form.name) }}
-                    {% if form.name.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                </div>
+                {{ form_label(form.name) }}
                 {{ form_widget(form.name) }}
                 {{ form_errors(form.name) }}
             </div>
 
             <div>
-                <div class="flex items-center gap-1">
-                    {{ form_label(form.type) }}
-                    {% if form.type.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                </div>
+                {{ form_label(form.type) }}
                 {{ form_widget(form.type) }}
                 {{ form_errors(form.type) }}
             </div>
 
             <div>
-                <div class="flex items-center gap-1">
-                    {{ form_label(form.class) }}
-                    {% if form.class.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                </div>
+                {{ form_label(form.class) }}
                 {{ form_widget(form.class) }}
                 {{ form_errors(form.class) }}
             </div>
@@ -84,10 +74,7 @@
             </div>
 
             <div>
-                <div class="flex items-center gap-1">
-                    {{ form_label(form.price) }}
-                    {% if form.price.vars.required %}{% include 'icons/required.html.twig' %}{% endif %}
-                </div>
+                {{ form_label(form.price) }}
                 {{ form_widget(form.price) }}
                 {{ form_errors(form.price) }}
             </div>
