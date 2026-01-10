@@ -7,6 +7,8 @@ Ref/Account: {{AUTHORITY_REF}}              Vessel: {{VESSEL_NAME}}
 
 Route: {{ORIGIN}}  →  {{DESTINATION}}
 Dispatch: {{DISPATCH_DATE}}               Delivery ETA: {{DELIVERY_DATE}}
+Proof Ref: {{DELIVERY_PROOF_REF}}         Proof Date: {{DELIVERY_PROOF_DATE}}
+Received By: {{DELIVERY_PROOF_RECEIVED_BY}}
 
 Mail Type: {{MAIL_TYPE}} (e.g., Official / Priority / Secure)
 Package Count: {{PACKAGE_COUNT}}          Total Mass: {{TOTAL_MASS}}

@@ -7,6 +7,8 @@ Contact: {{CHARTERER_CONTACT}}           Vessel: {{VESSEL_NAME}}
 
 Charter Type: {{CHARTER_TYPE}} (e.g., Full ship / Partial / Time charter)
 Period: {{START_DATE}}  →  {{END_DATE}}
+Proof Ref: {{DELIVERY_PROOF_REF}}        Proof Date: {{DELIVERY_PROOF_DATE}}
+Received By: {{DELIVERY_PROOF_RECEIVED_BY}}
 Operating Area / Route (opt.): {{AREA_OR_ROUTE}}
 
 Purpose: {{PURPOSE}} (e.g., transport, tour, private run)

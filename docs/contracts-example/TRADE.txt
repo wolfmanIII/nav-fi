@@ -15,6 +15,8 @@ Payment: {{PAYMENT_TERMS}}               Taxes/Fees (opt.): {{TAXES_FEES}}
 
 Delivery: {{DELIVERY_METHOD}} (e.g., immediate, warehouse pickup, ship-to-ship)
 Delivery Date/ETA: {{DELIVERY_DATE}}     Transfer Point (opt.): {{TRANSFER_POINT}}
+Proof Ref: {{DELIVERY_PROOF_REF}}        Proof Date: {{DELIVERY_PROOF_DATE}}
+Received By: {{DELIVERY_PROOF_RECEIVED_BY}}
 
 Notes (opt.): {{NOTES}}
 

@@ -30,6 +30,7 @@ class IncomeCharterDetailsType extends AbstractType
         $data = $builder->getData();
         $startDate = new ImperialDate($data?->getStartYear(), $data?->getStartDay());
         $endDate = new ImperialDate($data?->getEndYear(), $data?->getEndDay());
+        $deliveryProofDate = new ImperialDate($data?->getDeliveryProofYear(), $data?->getDeliveryProofDay());
         $builder
             ->add('areaOrRoute', TextType::class, [
                 'required' => false,
@@ -67,6 +68,24 @@ class IncomeCharterDetailsType extends AbstractType
                 'data' => $endDate,
                 'min_year' => $minYear,
                 'max_year' => $this->limits->getYearMax(),
+            ])
+            ->add('deliveryProofRef', TextType::class, [
+                'required' => false,
+                'label' => 'Delivery proof ref',
+                'attr' => ['class' => 'input m-1 w-full'],
+            ])
+            ->add('deliveryProofDate', ImperialDateType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Delivery proof date',
+                'data' => $deliveryProofDate,
+                'min_year' => $minYear,
+                'max_year' => $this->limits->getYearMax(),
+            ])
+            ->add('deliveryProofReceivedBy', TextType::class, [
+                'required' => false,
+                'label' => 'Received by',
+                'attr' => ['class' => 'input m-1 w-full'],
             ])
             ->add('paymentTerms', TextareaType::class, [
                 'required' => false,
@@ -113,6 +132,13 @@ class IncomeCharterDetailsType extends AbstractType
             if ($end instanceof ImperialDate) {
                 $details->setEndDay($end->getDay());
                 $details->setEndYear($end->getYear());
+            }
+
+            /** @var ImperialDate|null $deliveryProof */
+            $deliveryProof = $form->get('deliveryProofDate')->getData();
+            if ($deliveryProof instanceof ImperialDate) {
+                $details->setDeliveryProofDay($deliveryProof->getDay());
+                $details->setDeliveryProofYear($deliveryProof->getYear());
             }
         });
     }

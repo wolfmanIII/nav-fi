@@ -29,6 +29,7 @@ class IncomePassengersDetailsType extends AbstractType
         $data = $builder->getData();
         $departureDate = new ImperialDate($data?->getDepartureYear(), $data?->getDepartureDay());
         $arrivalDate = new ImperialDate($data?->getArrivalYear(), $data?->getArrivalDay());
+        $deliveryProofDate = new ImperialDate($data?->getDeliveryProofYear(), $data?->getDeliveryProofDay());
         $builder
             ->add('origin', TextType::class, [
                 'required' => false,
@@ -55,6 +56,24 @@ class IncomePassengersDetailsType extends AbstractType
                 'data' => $arrivalDate,
                 'min_year' => $minYear,
                 'max_year' => $this->limits->getYearMax(),
+            ])
+            ->add('deliveryProofRef', TextType::class, [
+                'required' => false,
+                'label' => 'Delivery proof ref',
+                'attr' => ['class' => 'input m-1 w-full'],
+            ])
+            ->add('deliveryProofDate', ImperialDateType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Delivery proof date',
+                'data' => $deliveryProofDate,
+                'min_year' => $minYear,
+                'max_year' => $this->limits->getYearMax(),
+            ])
+            ->add('deliveryProofReceivedBy', TextType::class, [
+                'required' => false,
+                'label' => 'Received by',
+                'attr' => ['class' => 'input m-1 w-full'],
             ])
             ->add('classOrBerth', TextType::class, [
                 'required' => false,
@@ -114,6 +133,13 @@ class IncomePassengersDetailsType extends AbstractType
             if ($arr instanceof ImperialDate) {
                 $details->setArrivalDay($arr->getDay());
                 $details->setArrivalYear($arr->getYear());
+            }
+
+            /** @var ImperialDate|null $deliveryProof */
+            $deliveryProof = $form->get('deliveryProofDate')->getData();
+            if ($deliveryProof instanceof ImperialDate) {
+                $details->setDeliveryProofDay($deliveryProof->getDay());
+                $details->setDeliveryProofYear($deliveryProof->getYear());
             }
         });
     }

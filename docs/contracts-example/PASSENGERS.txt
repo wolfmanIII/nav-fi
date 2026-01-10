@@ -7,6 +7,8 @@ Contact: {{PASSENGER_CONTACT}}          Vessel: {{VESSEL_NAME}}
 
 Route: {{ORIGIN}}  →  {{DESTINATION}}
 Departure: {{DEPARTURE_DATE}}           Arrival ETA: {{ARRIVAL_DATE}}
+Proof Ref: {{DELIVERY_PROOF_REF}}       Proof Date: {{DELIVERY_PROOF_DATE}}
+Received By: {{DELIVERY_PROOF_RECEIVED_BY}}
 
 Class / Berth: {{CLASS_OR_BERTH}}       Qty (seats/berths): {{QTY}}
 Baggage Allowance: {{BAGGAGE_ALLOWANCE}}  Extra Baggage (opt.): {{EXTRA_BAGGAGE}}

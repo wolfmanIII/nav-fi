@@ -8,6 +8,8 @@ Contact (Authority): {{AUTHORITY_CONTACT}}  Contact (Carrier): {{CARRIER_CONTACT
 
 Service/Route: {{ORIGIN}}  →  {{DESTINATION}}
 Coverage Period: {{START_DATE}} → {{END_DATE}}
+Proof Ref: {{DELIVERY_PROOF_REF}}       Proof Date: {{DELIVERY_PROOF_DATE}}
+Received By: {{DELIVERY_PROOF_RECEIVED_BY}}
 Service Level: {{SERVICE_LEVEL}} (e.g., weekly run, priority cargo, passenger capacity)
 
 Subsidy Amount: {{SUBSIDY_AMOUNT}} {{CURRENCY}}   Payment: {{PAYMENT_TERMS}}

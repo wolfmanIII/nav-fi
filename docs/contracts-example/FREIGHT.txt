@@ -7,6 +7,8 @@ Contact: {{SHIPPER_CONTACT}}           Vessel: {{VESSEL_NAME}}
 
 Route: {{ORIGIN}}  →  {{DESTINATION}}
 Pickup: {{PICKUP_DATE}}                Delivery ETA: {{DELIVERY_DATE}}
+Proof Ref: {{DELIVERY_PROOF_REF}}      Proof Date: {{DELIVERY_PROOF_DATE}}
+Received By: {{DELIVERY_PROOF_RECEIVED_BY}}
 
 Cargo: {{CARGO_DESCRIPTION}}
 Qty/Weight: {{CARGO_QTY}}              Declared Value (opt.): {{DECLARED_VALUE}}

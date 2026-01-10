@@ -9,6 +9,8 @@ Vessel/Asset: {{VESSEL_NAME}}            Reg/ID (opt.): {{VESSEL_ID}}
 Service Type: {{SERVICE_TYPE}} (e.g., refuel, repair, towing, escort, docking)
 Requested By: {{REQUESTED_BY}}
 Start: {{START_DATE}}                    End/ETA: {{END_DATE}}
+Proof Ref: {{DELIVERY_PROOF_REF}}        Proof Date: {{DELIVERY_PROOF_DATE}}
+Received By: {{DELIVERY_PROOF_RECEIVED_BY}}
 
 Work Summary: {{WORK_SUMMARY}}
 Parts/Materials (opt.): {{PARTS_MATERIALS}}

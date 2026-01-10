@@ -150,4 +150,35 @@
             </div>
         </div>
     </div>
+
+    <div class="col-span-3 grid grid-cols-3 gap-4">
+        <div>
+            {{ form_label(detail_form.deliveryProofRef) }}
+            {{ form_widget(detail_form.deliveryProofRef) }}
+            {{ form_errors(detail_form.deliveryProofRef) }}
+        </div>
+        {% set proof_day = data ? data.deliveryProofDay : null %}
+        {% set proof_year = data ? data.deliveryProofYear : null %}
+        {% set proof_value = proof_day is not null and proof_year is not null ? proof_day|format('%03d') ~ '/' ~ proof_year : '' %}
+        <div data-controller="imperial-date">
+            {{ form_label(detail_form.deliveryProofDate) }}
+            {{ form_widget(detail_form.deliveryProofDate.display, {
+                attr: {
+                    'data-imperial-date-prev-icon': '«',
+                    'data-imperial-date-next-icon': '»',
+                    'data-imperial-date-initial-day': proof_day ?? '',
+                    'data-imperial-date-initial-year': proof_year ?? '',
+                    'value': proof_value,
+                }
+            }) }}
+            {{ form_widget(detail_form.deliveryProofDate.year) }}
+            {{ form_widget(detail_form.deliveryProofDate.day) }}
+            {{ form_errors(detail_form.deliveryProofDate) }}
+        </div>
+        <div>
+            {{ form_label(detail_form.deliveryProofReceivedBy) }}
+            {{ form_widget(detail_form.deliveryProofReceivedBy) }}
+            {{ form_errors(detail_form.deliveryProofReceivedBy) }}
+        </div>
+    </div>
 </fieldset>

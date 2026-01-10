@@ -39,6 +39,18 @@ class IncomeCharterDetails
     #[ORM\Column(nullable: true)]
     private ?int $endYear = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $deliveryProofRef = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $deliveryProofDay = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $deliveryProofYear = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $deliveryProofReceivedBy = null;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $paymentTerms = null;
 
@@ -211,6 +223,54 @@ class IncomeCharterDetails
     public function setEndYear(?int $endYear): static
     {
         $this->endYear = $endYear;
+
+        return $this;
+    }
+
+    public function getDeliveryProofRef(): ?string
+    {
+        return $this->deliveryProofRef;
+    }
+
+    public function setDeliveryProofRef(?string $deliveryProofRef): static
+    {
+        $this->deliveryProofRef = $deliveryProofRef;
+
+        return $this;
+    }
+
+    public function getDeliveryProofDay(): ?int
+    {
+        return $this->deliveryProofDay;
+    }
+
+    public function setDeliveryProofDay(?int $deliveryProofDay): static
+    {
+        $this->deliveryProofDay = $deliveryProofDay;
+
+        return $this;
+    }
+
+    public function getDeliveryProofYear(): ?int
+    {
+        return $this->deliveryProofYear;
+    }
+
+    public function setDeliveryProofYear(?int $deliveryProofYear): static
+    {
+        $this->deliveryProofYear = $deliveryProofYear;
+
+        return $this;
+    }
+
+    public function getDeliveryProofReceivedBy(): ?string
+    {
+        return $this->deliveryProofReceivedBy;
+    }
+
+    public function setDeliveryProofReceivedBy(?string $deliveryProofReceivedBy): static
+    {
+        $this->deliveryProofReceivedBy = $deliveryProofReceivedBy;
 
         return $this;
     }

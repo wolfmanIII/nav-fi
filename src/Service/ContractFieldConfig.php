@@ -39,12 +39,14 @@ class ContractFieldConfig
     private array $optionalFields = [
         'CHARTER' => [
             'areaOrRoute', 'startDay', 'startYear', 'endDay', 'endYear',
+            'deliveryProofRef', 'deliveryProofDay', 'deliveryProofYear', 'deliveryProofReceivedBy',
             'purpose', 'manifestSummary', 'paymentTerms', 'deposit', 'extras',
             'damageTerms', 'cancellationTerms',
         ],
         'SUBSIDY' => [
             'programRef', 'origin', 'destination', 'startDay', 'startYear',
-            'endDay', 'endYear', 'serviceLevel', 'subsidyAmount', 'paymentTerms',
+            'endDay', 'endYear', 'deliveryProofRef', 'deliveryProofDay', 'deliveryProofYear',
+            'deliveryProofReceivedBy', 'serviceLevel', 'subsidyAmount', 'paymentTerms',
             'milestones', 'reportingRequirements', 'nonComplianceTerms',
             'proofRequirements', 'cancellationTerms',
         ],
@@ -55,18 +57,21 @@ class ContractFieldConfig
         ],
         'FREIGHT' => [
             'origin', 'destination', 'pickupDay', 'pickupYear',
-            'deliveryDay', 'deliveryYear', 'cargoDescription', 'cargoQty',
+            'deliveryDay', 'deliveryYear', 'deliveryProofRef', 'deliveryProofDay',
+            'deliveryProofYear', 'deliveryProofReceivedBy', 'cargoDescription', 'cargoQty',
             'declaredValue', 'paymentTerms', 'liabilityLimit', 'cancellationTerms',
         ],
         'SERVICES' => [
             'location', 'serviceType', 'requestedBy',
-            'startDay', 'startYear', 'endDay', 'endYear', 'workSummary',
+            'startDay', 'startYear', 'endDay', 'endYear', 'deliveryProofRef',
+            'deliveryProofDay', 'deliveryProofYear', 'deliveryProofReceivedBy', 'workSummary',
             'partsMaterials', 'risks', 'paymentTerms', 'extras',
             'liabilityLimit', 'cancellationTerms',
         ],
         'PASSENGERS' => [
             'origin', 'destination', 'departureDay', 'departureYear',
-            'arrivalDay', 'arrivalYear', 'classOrBerth', 'qty', 'passengerNames',
+            'arrivalDay', 'arrivalYear', 'deliveryProofRef', 'deliveryProofDay',
+            'deliveryProofYear', 'deliveryProofReceivedBy', 'classOrBerth', 'qty', 'passengerNames',
             'passengerContact', 'baggageAllowance', 'extraBaggage',
             'paymentTerms', 'refundChangePolicy',
         ],
@@ -83,7 +88,8 @@ class ContractFieldConfig
         ],
         'MAIL' => [
             'origin', 'destination', 'dispatchDay',
-            'dispatchYear', 'deliveryDay', 'deliveryYear', 'mailType',
+            'dispatchYear', 'deliveryDay', 'deliveryYear', 'deliveryProofRef',
+            'deliveryProofDay', 'deliveryProofYear', 'deliveryProofReceivedBy', 'mailType',
             'packageCount', 'totalMass', 'securityLevel', 'sealCodes',
             'paymentTerms', 'proofOfDelivery', 'liabilityLimit',
         ],
@@ -102,6 +108,7 @@ class ContractFieldConfig
             'location', 'transferPoint', 'transferCondition',
             'goodsDescription', 'qty', 'grade', 'batchIds', 'unitPrice',
             'paymentTerms', 'deliveryMethod', 'deliveryDay', 'deliveryYear',
+            'deliveryProofRef', 'deliveryProofDay', 'deliveryProofYear', 'deliveryProofReceivedBy',
             'asIsOrWarranty', 'warrantyText', 'claimWindow', 'returnPolicy',
         ],
     ];
