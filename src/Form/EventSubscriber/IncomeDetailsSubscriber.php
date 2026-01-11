@@ -28,6 +28,7 @@ use App\Form\Type\IncomeServicesDetailsType;
 use App\Form\Type\IncomeSubsidyDetailsType;
 use App\Form\Type\IncomeTradeDetailsType;
 use App\Repository\IncomeCategoryRepository;
+use App\Service\ContractFieldConfig;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -55,6 +56,7 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
 
     public function __construct(
         private readonly IncomeCategoryRepository $incomeCategoryRepository,
+        private readonly ContractFieldConfig $contractFieldConfig,
     ) {
     }
 
@@ -165,6 +167,8 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
             'required' => false,
             'label' => false,
             'campaign_start_year' => $campaignStartYear,
+            'enabled_fields' => $this->contractFieldConfig->getOptionalFields($code),
+            'field_placeholders' => $this->contractFieldConfig->getPlaceholders($code),
         ]);
     }
 }

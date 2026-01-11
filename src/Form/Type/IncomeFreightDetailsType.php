@@ -17,6 +17,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IncomeFreightDetailsType extends AbstractType
 {
+    use ContractFieldOptionsTrait;
+
     public function __construct(private readonly DayYearLimits $limits)
     {
     }
@@ -30,83 +32,82 @@ class IncomeFreightDetailsType extends AbstractType
         $pickupDate = new ImperialDate($data?->getPickupYear(), $data?->getPickupDay());
         $deliveryDate = new ImperialDate($data?->getDeliveryYear(), $data?->getDeliveryDay());
         $deliveryProofDate = new ImperialDate($data?->getDeliveryProofYear(), $data?->getDeliveryProofDay());
-        $builder
-            ->add('origin', TextType::class, [
-                'required' => false,
-                'label' => 'Origin',
-                'attr' => ['class' => 'input m-1 w-full'],
-            ])
-            ->add('destination', TextType::class, [
-                'required' => false,
-                'label' => 'Destination',
-                'attr' => ['class' => 'input m-1 w-full'],
-            ])
-            ->add('pickupDate', ImperialDateType::class, [
-                'mapped' => false,
-                'required' => false,
-                'label' => 'Pickup date',
-                'data' => $pickupDate,
-                'min_year' => $minYear,
-                'max_year' => $this->limits->getYearMax(),
-            ])
-            ->add('deliveryDate', ImperialDateType::class, [
-                'mapped' => false,
-                'required' => false,
-                'label' => 'Delivery date',
-                'data' => $deliveryDate,
-                'min_year' => $minYear,
-                'max_year' => $this->limits->getYearMax(),
-            ])
-            ->add('deliveryProofRef', TextType::class, [
-                'required' => false,
-                'label' => 'Delivery proof ref',
-                'attr' => ['class' => 'input m-1 w-full'],
-            ])
-            ->add('deliveryProofDate', ImperialDateType::class, [
-                'mapped' => false,
-                'required' => false,
-                'label' => 'Delivery proof date',
-                'data' => $deliveryProofDate,
-                'min_year' => $minYear,
-                'max_year' => $this->limits->getYearMax(),
-            ])
-            ->add('deliveryProofReceivedBy', TextType::class, [
-                'required' => false,
-                'label' => 'Received by',
-                'attr' => ['class' => 'input m-1 w-full'],
-            ])
-            ->add('cargoDescription', TextareaType::class, [
-                'required' => false,
-                'label' => 'Cargo description',
-                'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 2],
-            ])
-            ->add('cargoQty', TextType::class, [
-                'required' => false,
-                'label' => 'Cargo qty',
-                'attr' => ['class' => 'input m-1 w-full'],
-            ])
-            ->add('declaredValue', NumberType::class, [
-                'required' => false,
-                'label' => 'Declared value (Cr)',
-                'scale' => 2,
-                'attr' => ['class' => 'input m-1 w-full'],
-            ])
-            ->add('paymentTerms', TextareaType::class, [
-                'required' => false,
-                'label' => 'Payment terms',
-                'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 2],
-            ])
-            ->add('liabilityLimit', NumberType::class, [
-                'required' => false,
-                'label' => 'Liability limit (Cr)',
-                'scale' => 2,
-                'attr' => ['class' => 'input m-1 w-full'],
-            ])
-            ->add('cancellationTerms', TextareaType::class, [
-                'required' => false,
-                'label' => 'Cancellation terms',
-                'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 2],
-            ]);
+        $this->addIfEnabled($builder, $options, 'origin', TextType::class, [
+            'required' => false,
+            'label' => 'Origin',
+            'attr' => ['class' => 'input m-1 w-full'],
+        ]);
+        $this->addIfEnabled($builder, $options, 'destination', TextType::class, [
+            'required' => false,
+            'label' => 'Destination',
+            'attr' => ['class' => 'input m-1 w-full'],
+        ]);
+        $this->addIfEnabled($builder, $options, 'pickupDate', ImperialDateType::class, [
+            'mapped' => false,
+            'required' => false,
+            'label' => 'Pickup date',
+            'data' => $pickupDate,
+            'min_year' => $minYear,
+            'max_year' => $this->limits->getYearMax(),
+        ]);
+        $this->addIfEnabled($builder, $options, 'deliveryDate', ImperialDateType::class, [
+            'mapped' => false,
+            'required' => false,
+            'label' => 'Delivery date',
+            'data' => $deliveryDate,
+            'min_year' => $minYear,
+            'max_year' => $this->limits->getYearMax(),
+        ]);
+        $this->addIfEnabled($builder, $options, 'deliveryProofRef', TextType::class, [
+            'required' => false,
+            'label' => 'Delivery proof ref',
+            'attr' => ['class' => 'input m-1 w-full'],
+        ]);
+        $this->addIfEnabled($builder, $options, 'deliveryProofDate', ImperialDateType::class, [
+            'mapped' => false,
+            'required' => false,
+            'label' => 'Delivery proof date',
+            'data' => $deliveryProofDate,
+            'min_year' => $minYear,
+            'max_year' => $this->limits->getYearMax(),
+        ]);
+        $this->addIfEnabled($builder, $options, 'deliveryProofReceivedBy', TextType::class, [
+            'required' => false,
+            'label' => 'Received by',
+            'attr' => ['class' => 'input m-1 w-full'],
+        ]);
+        $this->addIfEnabled($builder, $options, 'cargoDescription', TextareaType::class, [
+            'required' => false,
+            'label' => 'Cargo description',
+            'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 2],
+        ]);
+        $this->addIfEnabled($builder, $options, 'cargoQty', TextType::class, [
+            'required' => false,
+            'label' => 'Cargo qty',
+            'attr' => ['class' => 'input m-1 w-full'],
+        ]);
+        $this->addIfEnabled($builder, $options, 'declaredValue', NumberType::class, [
+            'required' => false,
+            'label' => 'Declared value (Cr)',
+            'scale' => 2,
+            'attr' => ['class' => 'input m-1 w-full'],
+        ]);
+        $this->addIfEnabled($builder, $options, 'paymentTerms', TextareaType::class, [
+            'required' => false,
+            'label' => 'Payment terms',
+            'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 2],
+        ]);
+        $this->addIfEnabled($builder, $options, 'liabilityLimit', NumberType::class, [
+            'required' => false,
+            'label' => 'Liability limit (Cr)',
+            'scale' => 2,
+            'attr' => ['class' => 'input m-1 w-full'],
+        ]);
+        $this->addIfEnabled($builder, $options, 'cancellationTerms', TextareaType::class, [
+            'required' => false,
+            'label' => 'Cancellation terms',
+            'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 2],
+        ]);
 
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
             /** @var IncomeFreightDetails $details */
@@ -114,24 +115,30 @@ class IncomeFreightDetailsType extends AbstractType
             $form = $event->getForm();
 
             /** @var ImperialDate|null $pickup */
-            $pickup = $form->get('pickupDate')->getData();
-            if ($pickup instanceof ImperialDate) {
-                $details->setPickupDay($pickup->getDay());
-                $details->setPickupYear($pickup->getYear());
+            if ($form->has('pickupDate')) {
+                $pickup = $form->get('pickupDate')->getData();
+                if ($pickup instanceof ImperialDate) {
+                    $details->setPickupDay($pickup->getDay());
+                    $details->setPickupYear($pickup->getYear());
+                }
             }
 
             /** @var ImperialDate|null $delivery */
-            $delivery = $form->get('deliveryDate')->getData();
-            if ($delivery instanceof ImperialDate) {
-                $details->setDeliveryDay($delivery->getDay());
-                $details->setDeliveryYear($delivery->getYear());
+            if ($form->has('deliveryDate')) {
+                $delivery = $form->get('deliveryDate')->getData();
+                if ($delivery instanceof ImperialDate) {
+                    $details->setDeliveryDay($delivery->getDay());
+                    $details->setDeliveryYear($delivery->getYear());
+                }
             }
 
             /** @var ImperialDate|null $deliveryProof */
-            $deliveryProof = $form->get('deliveryProofDate')->getData();
-            if ($deliveryProof instanceof ImperialDate) {
-                $details->setDeliveryProofDay($deliveryProof->getDay());
-                $details->setDeliveryProofYear($deliveryProof->getYear());
+            if ($form->has('deliveryProofDate')) {
+                $deliveryProof = $form->get('deliveryProofDate')->getData();
+                if ($deliveryProof instanceof ImperialDate) {
+                    $details->setDeliveryProofDay($deliveryProof->getDay());
+                    $details->setDeliveryProofYear($deliveryProof->getYear());
+                }
             }
         });
     }
@@ -141,6 +148,8 @@ class IncomeFreightDetailsType extends AbstractType
         $resolver->setDefaults([
             'data_class' => IncomeFreightDetails::class,
             'campaign_start_year' => null,
+            'enabled_fields' => null,
+            'field_placeholders' => [],
         ]);
     }
 }

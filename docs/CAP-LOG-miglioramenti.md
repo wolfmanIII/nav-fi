@@ -40,8 +40,8 @@ Documento di analisi tecnica con aree di miglioramento e funzionalità potenzial
    - Stato: badge “Filtered” mostrato nel legend quando almeno un filtro è valorizzato.
    - Beneficio: i filtri attivi sono evidenti a colpo d’occhio.
 
-8) **Placeholder operativi coerenti**
-   - Azione: per filtri day/year usare placeholder uniformi (`Start >= Day/Year or Year`).
+8) **Placeholder operativi coerenti — risolto**
+   - Stato: placeholder uniformi applicati ai filtri day/year (Annual Budget: `Start >= Day/Year or Year`, `End <= Day/Year or Year`).
 
 9) **Select con ricerca per Cost ref in Amendments — implementato**
    - Stato: la select Cost degli Ship Amendments usa Tom Select con ricerca e filtri su SHIP_GEAR/SHIP_SOFTWARE.
@@ -49,12 +49,9 @@ Documento di analisi tecnica con aree di miglioramento e funzionalità potenzial
 
 ## Contratti e PDF
 
-10) **ContractFieldConfig come fonte unica**
-   - Stato: la form Income usa `IncomeDetailsSubscriber`, mentre `ContractFieldConfig` è una mappa parallela.
-   - Soluzione: usare `ContractFieldConfig` come sorgente di verità per:
-     - campi opzionali;
-     - placeholder;
-     - eventuale generazione di template/section.
+10) **ContractFieldConfig come fonte unica — risolto**
+   - Stato: `ContractFieldConfig` guida i campi opzionali e i placeholder per i dettagli Income.
+   - Beneficio: configurazione unica per campi mostrati/placeholder, con coerenza tra form e logica.
 
 11) **Tracciamento versione dei template**
    - Opzione: inserire una versione o hash nei PDF generati per auditing.

@@ -32,71 +32,66 @@ class ContractFieldConfig
     ];
 
     /**
-     * Mappa categoria → elenco campi opzionali aggiuntivi da mostrare.
+     * Mappa categoria → elenco campi opzionali aggiuntivi (nomi form).
      *
      * @var array<string, string[]>
      */
     private array $optionalFields = [
         'CHARTER' => [
-            'areaOrRoute', 'startDay', 'startYear', 'endDay', 'endYear',
-            'deliveryProofRef', 'deliveryProofDay', 'deliveryProofYear', 'deliveryProofReceivedBy',
-            'purpose', 'manifestSummary', 'paymentTerms', 'deposit', 'extras',
-            'damageTerms', 'cancellationTerms',
+            'areaOrRoute', 'purpose', 'manifestSummary',
+            'startDate', 'endDate',
+            'deliveryProofRef', 'deliveryProofDate', 'deliveryProofReceivedBy',
+            'paymentTerms', 'deposit', 'extras', 'damageTerms', 'cancellationTerms',
         ],
         'SUBSIDY' => [
-            'programRef', 'origin', 'destination', 'startDay', 'startYear',
-            'endDay', 'endYear', 'deliveryProofRef', 'deliveryProofDay', 'deliveryProofYear',
-            'deliveryProofReceivedBy', 'serviceLevel', 'subsidyAmount', 'paymentTerms',
+            'programRef', 'origin', 'destination', 'startDate', 'endDate',
+            'deliveryProofRef', 'deliveryProofDate', 'deliveryProofReceivedBy',
+            'serviceLevel', 'subsidyAmount', 'paymentTerms',
             'milestones', 'reportingRequirements', 'nonComplianceTerms',
             'proofRequirements', 'cancellationTerms',
         ],
         'PRIZE' => [
-            'caseRef', 'legalBasis',
-            'prizeDescription', 'estimatedValue', 'disposition',
-            'paymentTerms', 'shareSplit', 'awardTrigger',
+            'caseRef', 'legalBasis', 'prizeDescription', 'estimatedValue',
+            'disposition', 'paymentTerms', 'shareSplit', 'awardTrigger',
         ],
         'FREIGHT' => [
-            'origin', 'destination', 'pickupDay', 'pickupYear',
-            'deliveryDay', 'deliveryYear', 'deliveryProofRef', 'deliveryProofDay',
-            'deliveryProofYear', 'deliveryProofReceivedBy', 'cargoDescription', 'cargoQty',
-            'declaredValue', 'paymentTerms', 'liabilityLimit', 'cancellationTerms',
+            'origin', 'destination', 'pickupDate', 'deliveryDate',
+            'deliveryProofRef', 'deliveryProofDate', 'deliveryProofReceivedBy',
+            'cargoDescription', 'cargoQty', 'declaredValue',
+            'paymentTerms', 'liabilityLimit', 'cancellationTerms',
         ],
         'SERVICES' => [
             'location', 'serviceType', 'requestedBy',
-            'startDay', 'startYear', 'endDay', 'endYear', 'deliveryProofRef',
-            'deliveryProofDay', 'deliveryProofYear', 'deliveryProofReceivedBy', 'workSummary',
-            'partsMaterials', 'risks', 'paymentTerms', 'extras',
+            'startDate', 'endDate', 'deliveryProofRef', 'deliveryProofDate', 'deliveryProofReceivedBy',
+            'workSummary', 'partsMaterials', 'risks', 'paymentTerms', 'extras',
             'liabilityLimit', 'cancellationTerms',
         ],
         'PASSENGERS' => [
-            'origin', 'destination', 'departureDay', 'departureYear',
-            'arrivalDay', 'arrivalYear', 'deliveryProofRef', 'deliveryProofDay',
-            'deliveryProofYear', 'deliveryProofReceivedBy', 'classOrBerth', 'qty', 'passengerNames',
-            'passengerContact', 'baggageAllowance', 'extraBaggage',
-            'paymentTerms', 'refundChangePolicy',
+            'origin', 'destination', 'departureDate', 'arrivalDate',
+            'deliveryProofRef', 'deliveryProofDate', 'deliveryProofReceivedBy',
+            'classOrBerth', 'qty', 'passengerNames', 'passengerContact',
+            'baggageAllowance', 'extraBaggage', 'paymentTerms', 'refundChangePolicy',
         ],
         'CONTRACT' => [
             'jobType', 'objective', 'location', 'successCondition',
-            'startDay', 'startYear', 'deadlineDay', 'deadlineYear',
+            'startDate', 'deadlineDate',
             'paymentTerms', 'bonus', 'expensesPolicy', 'deposit', 'restrictions',
             'confidentialityLevel', 'failureTerms', 'cancellationTerms',
         ],
         'INTEREST' => [
             'accountRef', 'instrument', 'principal', 'interestRate',
-            'startDay', 'startYear', 'endDay', 'endYear', 'calcMethod',
+            'startDate', 'endDate', 'calcMethod',
             'interestEarned', 'netPaid', 'paymentTerms', 'disputeWindow',
         ],
         'MAIL' => [
-            'origin', 'destination', 'dispatchDay',
-            'dispatchYear', 'deliveryDay', 'deliveryYear', 'deliveryProofRef',
-            'deliveryProofDay', 'deliveryProofYear', 'deliveryProofReceivedBy', 'mailType',
-            'packageCount', 'totalMass', 'securityLevel', 'sealCodes',
+            'origin', 'destination', 'dispatchDate', 'deliveryDate',
+            'deliveryProofRef', 'deliveryProofDate', 'deliveryProofReceivedBy',
+            'mailType', 'packageCount', 'totalMass', 'securityLevel', 'sealCodes',
             'paymentTerms', 'proofOfDelivery', 'liabilityLimit',
         ],
         'INSURANCE' => [
-            'incidentRef', 'incidentDay', 'incidentYear',
-            'incidentLocation', 'incidentCause', 'lossType', 'verifiedLoss',
-            'deductible', 'paymentTerms', 'acceptanceEffect',
+            'incidentRef', 'incidentDate', 'incidentLocation', 'incidentCause', 'lossType',
+            'verifiedLoss', 'deductible', 'paymentTerms', 'acceptanceEffect',
             'subrogationTerms', 'coverageNotes',
         ],
         'SALVAGE' => [
@@ -107,9 +102,57 @@ class ContractFieldConfig
         'TRADE' => [
             'location', 'transferPoint', 'transferCondition',
             'goodsDescription', 'qty', 'grade', 'batchIds', 'unitPrice',
-            'paymentTerms', 'deliveryMethod', 'deliveryDay', 'deliveryYear',
-            'deliveryProofRef', 'deliveryProofDay', 'deliveryProofYear', 'deliveryProofReceivedBy',
+            'paymentTerms', 'deliveryMethod', 'deliveryDate',
+            'deliveryProofRef', 'deliveryProofDate', 'deliveryProofReceivedBy',
             'asIsOrWarranty', 'warrantyText', 'claimWindow', 'returnPolicy',
+        ],
+    ];
+
+    /**
+     * Placeholder opzionali per categoria e campo.
+     *
+     * @var array<string, array<string, string>>
+     */
+    private array $placeholders = [
+        'CHARTER' => [
+            'deliveryProofRef' => 'Ref / docket',
+        ],
+        'SUBSIDY' => [
+            'programRef' => 'Program ref',
+            'deliveryProofRef' => 'Ref / docket',
+        ],
+        'PRIZE' => [
+            'caseRef' => 'Case ref',
+        ],
+        'FREIGHT' => [
+            'deliveryProofRef' => 'Ref / docket',
+        ],
+        'SERVICES' => [
+            'deliveryProofRef' => 'Ref / docket',
+        ],
+        'PASSENGERS' => [
+            'deliveryProofRef' => 'Ref / docket',
+        ],
+        'CONTRACT' => [
+            'jobType' => 'Job type',
+        ],
+        'INTEREST' => [
+            'accountRef' => 'Account ref',
+        ],
+        'MAIL' => [
+            'deliveryProofRef' => 'Ref / docket',
+            'sealCodes' => 'Comma-separated',
+        ],
+        'INSURANCE' => [
+            'incidentRef' => 'Incident ref',
+        ],
+        'SALVAGE' => [
+            'caseRef' => 'Case ref',
+        ],
+        'TRADE' => [
+            'transferPoint' => 'Port/berth',
+            'deliveryProofRef' => 'Ref / docket',
+            'batchIds' => 'Comma-separated',
         ],
     ];
 
@@ -137,6 +180,20 @@ class ContractFieldConfig
         }
 
         return $this->optionalFields[$categoryCode] ?? [];
+    }
+
+    /**
+     * Restituisce i placeholder opzionali per una categoria.
+     *
+     * @return array<string, string>
+     */
+    public function getPlaceholders(?string $categoryCode): array
+    {
+        if ($categoryCode === null) {
+            return [];
+        }
+
+        return $this->placeholders[$categoryCode] ?? [];
     }
 
     /**
