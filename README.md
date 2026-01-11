@@ -9,10 +9,12 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, 
 - Company e CompanyRole come controparti contrattuali condivise: le companies sono disponibili cross-campaign e portano la propria LocalLaw/ disclaimer nei costi e nei contratti.
 - Entrate e costi legati alla nave con dettagli per categoria (es. Freight, Contract): form dinamiche e PDF contrattuali generati con wkhtmltopdf, con date rese via ImperialDateType + controller Stimulus `imperial-date` (popover con pulsanti di navigazione e tasto Clear per svuotare il giorno).
 - Scheda dettagli nave salvata come JSON (`shipDetails`) con campi base e collezioni (weapons, craft, systems, staterooms, software) editabili da form dedicata.
-- Amendments nave post‑firma: `ShipAmendment` con `patchDetails` (stessa struttura di `shipDetails`), data effetto e collegamento opzionale a `Cost` (SHIP_GEAR/SHIP_SOFTWARE) per tracciare upgrade senza alterare il mutuo.
+- Amendments nave post‑firma: `ShipAmendment` con `patchDetails` (stessa struttura di `shipDetails`) e **Cost reference obbligatoria** (categorie SHIP_GEAR/SHIP_SOFTWARE) con payment date valorizzata; la data effetto viene derivata dalla payment date del Cost e l’amendment compare nel PDF della nave.
+- La select Cost reference per gli amendments usa Tom Select con ricerca, inizializzato via Stimulus e asset locali in `assets/vendor/tom-select/`.
 - Tracciamento dell’utente proprietario su Ship, Crew, Mortgage, MortgageInstallment, Cost, Income e budget; i voter bloccano l’accesso se l’utente non coincide. Il PDF del mutuo può essere generato anche non firmato (marcato “Pro forma draft”).
 - Stato equipaggio con date operative: l’assegnazione da “unassigned crew” imposta `Active` + session date; lo sgancio azzera status e date operative (salvo `Missing (MIA)`/`Deceased`). Crew `Missing/Deceased` non compaiono tra gli unassigned e non vengono mostrati nei crew list del mutuo se non attivi alla data di firma.
 - Annual Budget per nave: calcolo riepilogativo di ricavi, costi e rate annuali del mutuo (su 13 periodi), più grafico temporale Income/Cost. Esempio: un mutuo di 100.000 Cr con duration 5 anni e multiplier 1.10 genera 13 rate/anno per 5 anni, non 12.
+- Cost detail items con amount auto‑calcolato: le righe dettaglio alimentano il totale e la stampa PDF del Cost.
 - Dashboard EasyAdmin personalizzata e CRUD dedicati alle entità di contesto.
 - Comandi di export/import JSON per ripristinare rapidamente i dati di contesto.
 - Liste principali con filtri di ricerca e paginazione (Ship, Crew, Mortgage, Cost, Income, Company, AnnualBudget, Campaign).
@@ -49,7 +51,7 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, 
    ```bash
    composer install
    ```
-2. Interfaccia grafica, Tailwind, Tipography e DaisyUI
+2. Interfaccia grafica, Tailwind, Typography e DaisyUI
    #### Installare nvm (nodejs version manager)
    ```bash
    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
@@ -63,7 +65,7 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, 
    ```bash
    source ~/.bashrc
    ```
-   ### Installare nodejs e i plugin aggiuntivi per Tailwind
+   #### Installare nodejs e i plugin aggiuntivi per Tailwind
    ```bash
    nvm install --lts
    npm init
@@ -83,8 +85,6 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, 
    APP_DAY_MAX=365
    APP_YEAR_MIN=0
    APP_YEAR_MAX=6000
-
-
    # wkhtmltopdf
    WKHTMLTOPDF_PATH="/usr/local/bin/wkhtmltopdf"
    ```

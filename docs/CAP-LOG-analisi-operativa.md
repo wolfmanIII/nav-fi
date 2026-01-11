@@ -25,12 +25,14 @@ flowchart TB
 
     Ships -->|1..N| AnnualBudgets
     Ships -->|JSON| ShipDetails["shipDetails (JSON)"]
+    Ships -->|1..N| ShipAmendments
+    ShipAmendments -->|N..1| Costs
 
     Companies -->|N..1| CompanyRole
     Mortgage -->|N..1| Company
     Mortgage -->|N..1| LocalLaw
 
-    Campaigns -->|N..1| Ships
+    Campaigns -->|1..N| Ships
 ```
 
 ## Flusso operativo: setup campagna
@@ -46,7 +48,8 @@ flowchart TB
 - La scheda dettagli è editata via `ShipDetailsType` e salvata come JSON su `Ship.shipDetails`.
 - M‑Drive/J‑Drive hanno campi extra `thrust` e `jump` nel form.
 - “Total Cost” è calcolato client‑side sommando i `cost_mcr` e viene salvato nel JSON, ma **non** modifica `Ship.price`.
-- Se il mutuo è firmato, la scheda nave è bloccata: le modifiche ai componenti passano tramite **Ship Amendment** con `patchDetails` (stessa struttura di `shipDetails`) e data effetto.
+- Se il mutuo è firmato, la scheda nave è bloccata: le modifiche ai componenti passano tramite **Ship Amendment** con `patchDetails` (stessa struttura di `shipDetails`) e **Cost reference obbligatoria** (SHIP_GEAR/SHIP_SOFTWARE). La data effetto viene derivata dalla payment date del Cost selezionato.
+- La select del Cost reference supporta ricerca testuale (Tom Select) e filtra i costi già usati da altri amendment.
 
 ## Flusso operativo: mutuo
 
@@ -67,6 +70,7 @@ flowchart TB
 
 - Cost è legato a Ship + CostCategory (+ LocalLaw, Company).
 - Le date di pagamento sono in formato imperiale (day/year).
+- Le righe dettaglio (`detailItems`) alimentano il calcolo dell’amount, che resta read‑only in form.
 
 ## Flusso operativo: annual budget
 

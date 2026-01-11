@@ -10,4 +10,4 @@ import './styles/app.css';
 
 //Turbo.session.drive = false;
 
-console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+// App entrypoint (AssetMapper)

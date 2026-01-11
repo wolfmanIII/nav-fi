@@ -27,6 +27,9 @@
                     <p class="text-lg text-slate-200/90 max-w-2xl">
                         Captain Log is the holo-console for your Traveller campaign: ships, crew, one-to-one mortgages per hull (sign with campaign session date + location, PDF anche in draft), contract & ship PDFs with counterparties and local law, Campaign calendars that drive year limits, and annual budgets to track routes, income, costs, and installments in real time. Fast scans keep rosters and ledgers in sight when the jump clock is ticking.
                     </p>
+                    <p class="text-sm text-slate-200/80 max-w-2xl">
+                        Signed hulls stay editable through Ship Amendments tied to Cost references (SHIP_GEAR/SHIP_SOFTWARE), and cost detail items feed calculated totals automatically.
+                    </p>
                     <p class="text-sm text-emerald-200/80 max-w-2xl">
                         Companies and counterparties live outside any single campaign—define them once and reuse the same cross-campaign partners, LocalLaw, and disclaimers across costs, incomes, and mortgages.
                     </p>
@@ -38,6 +41,10 @@
                         <a href="{{ path('app_operation_guide') }}" class="{{ drawer_btn }} flex items-center gap-2">
                             {% include 'icons/operations-checklist.html.twig' %}
                             <span>Operations Checklist</span>
+                        </a>
+                        <a href="{{ path('app_operations_flow') }}" class="{{ drawer_btn }} flex items-center gap-2">
+                            {% include 'icons/operations-flow.html.twig' %}
+                            <span>Operations Flow</span>
                         </a>
                         <a href="{{ path('app_campaign_index') }}" class="{{ drawer_btn }} flex items-center gap-2">
                             {% include 'icons/alien-structure-1.html.twig' %}
@@ -71,6 +78,8 @@
                         <span class="badge badge-outline badge-sm">Mortgage signing modal</span>
                         <span class="badge badge-outline badge-sm">Crew status dates</span>
                         <span class="badge badge-outline badge-sm">Ops Guide</span>
+                        <span class="badge badge-outline badge-sm">Ship Amendments</span>
+                        <span class="badge badge-outline badge-sm">Cost detail items</span>
                     </div>
                 </div>
 
@@ -82,7 +91,7 @@
                                 <p class="text-xs uppercase tracking-widest text-cyan-200/80">Ships</p>
                             </div>
                             <p class="text-2xl font-bold mt-2">Fleets and classes</p>
-                            <p class="text-sm opacity-80 mt-1">Ship sheets, price, mortgage status, crew, and printable PDFs with structured details—easy to spot by hull or class.</p>
+                            <p class="text-sm opacity-80 mt-1">Ship sheets, price, mortgage status, crew, and printable PDFs with structured details—plus amendment logs tied to upgrade costs.</p>
                         </div>
                         <div class="rounded-xl bg-white/5 p-4 border border-white/10">
                             <div class="flex items-center gap-2 text-cyan-200">

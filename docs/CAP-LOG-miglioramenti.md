@@ -1,4 +1,4 @@
-   # Captain Log Web – Possibili miglioramenti
+# Captain Log Web – Possibili miglioramenti
 
 Documento di analisi tecnica con aree di miglioramento e funzionalità potenziali, basato sullo stato attuale del progetto.
 
@@ -18,8 +18,9 @@ Documento di analisi tecnica con aree di miglioramento e funzionalità potenzial
 ## Qualità dati e performance
 
 4) **Indici database mirati**
-   - Entità: `Cost`, `Income`, `Mortgage`, `AnnualBudget`, `Crew`, `Ship`, `Company`.
-   - Indici consigliati: `user_id`, `ship_id`, `campaign_id`, `income_category_id`, `cost_category_id`, `company_role_id`.
+   - Entità: `Cost`, `Income`, `Mortgage`, `AnnualBudget`, `Crew`, `Ship`, `Company`, `Campaign`, `ShipAmendment`.
+   - Indici consigliati: `user_id`, `ship_id`, `campaign_id`, `income_category_id`, `cost_category_id`, `company_role_id`, `cost_id`.
+   - Note: per `Cost` valutare anche indice su `payment_day/payment_year` se si filtrano date in liste o report.
    - Beneficio: query filtrate/paginate più stabili sotto carico.
 
 5) **Normalizzazione date imperiali**
@@ -42,21 +43,25 @@ Documento di analisi tecnica con aree di miglioramento e funzionalità potenzial
 8) **Placeholder operativi coerenti**
    - Azione: per filtri day/year usare placeholder uniformi (`Start >= Day/Year or Year`).
 
+9) **Select con ricerca per Cost ref in Amendments — implementato**
+   - Stato: la select Cost degli Ship Amendments usa Tom Select con ricerca e filtri su SHIP_GEAR/SHIP_SOFTWARE.
+   - Beneficio: selezione rapida anche con liste lunghe di costi.
+
 ## Contratti e PDF
 
-9) **ContractFieldConfig come fonte unica**
+10) **ContractFieldConfig come fonte unica**
    - Stato: la form Income usa `IncomeDetailsSubscriber`, mentre `ContractFieldConfig` è una mappa parallela.
    - Soluzione: usare `ContractFieldConfig` come sorgente di verità per:
      - campi opzionali;
      - placeholder;
      - eventuale generazione di template/section.
 
-10) **Tracciamento versione dei template**
+11) **Tracciamento versione dei template**
    - Opzione: inserire una versione o hash nei PDF generati per auditing.
 
 ## Test e affidabilità
 
-11) **Test funzionali minimi**
+12) **Test funzionali minimi**
    - Scopo: proteggere i flussi principali.
    - Copertura consigliata:
      - filtro + paginazione (Crew/Ship/Cost/Income);
@@ -65,10 +70,10 @@ Documento di analisi tecnica con aree di miglioramento e funzionalità potenzial
 
 ## Possibili evoluzioni (opzionali)
 
-12) **Workflow “Draft → Signed” per contratti Income**
+13) **Workflow “Draft → Signed” per contratti Income**
    - Stato: il PDF esiste, ma manca un flag per stato contrattuale uniforme.
    - Valore: semplifica workflow di gioco (pre‑accordi vs contratti finali).
 
-13) **Export operativo per sessione**
+14) **Export operativo per sessione**
    - Generare un “session pack” (CSV/JSON) con crew, costs, incomes e budget di una singola ship.
    - Utile per logistica in sessione.

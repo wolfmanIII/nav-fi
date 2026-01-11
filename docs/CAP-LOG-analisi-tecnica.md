@@ -5,7 +5,8 @@ Applicazione Symfony dedicata alla gestione di navi, equipaggi, contratti e mutu
 Questo documento descrive in modo discorsivo l’architettura attuale di Captain Log Web, le sue dipendenze, i componenti applicativi principali e alcuni punti di attenzione operativi.
 
 ## Stack e infrastruttura
-- **Framework:** Symfony 7.3 (PHP ≥ 8.2), asset mapper, Stimulus, Twig, Tailwind + DaisyUI per la UI.
+- **Framework:** Symfony 7.3 (PHP ≥ 8.2), asset mapper, Stimulus, Twig, Tailwind + DaisyUI per la UI, Tom Select per le select con ricerca.
+- **Tom Select (integrazione):** inizializzato via controller Stimulus `tom-select`; asset JS/CSS caricati da `assets/vendor/tom-select/` per evitare importmap bare‑module.
 - **Persistenza:** Doctrine ORM con PostgreSQL/MySQL/SQLite.
 - **Admin:** EasyAdmin per le entità di contesto.
 - **PDF:** wkhtmltopdf via KnpSnappy (binario da `WKHTMLTOPDF_PATH`), template contratti in `templates/pdf/contracts` e scheda nave in `templates/pdf/ship/SHEET.html.twig`.
@@ -16,11 +17,12 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 - **Campagne e sessioni:** `Campaign` con calendario di sessione (giorno/anno) e relazione 1–N con Ship; le date sessione mostrate nelle liste/PDF derivano dalla Campaign della nave.
 - **Navi e mutui:** `Ship`, `Mortgage`, `MortgageInstallment`, `InterestRate`, `Insurance`; il mutuo conserva `signingDay/Year` derivati dalla sessione della Campaign e `signingLocation` raccolta via modale al momento della firma. Il PDF del mutuo è generato da template dedicato; i piani usano 13 periodi/anno (esempio: 5 anni ⇒ 65 rate).
 - **Dettagli nave strutturati:** `Ship.shipDetails` (JSON) con DTO/form (`ShipDetailsData`, `ShipDetailItemType`, `MDriveDetailItemType`, `JDriveDetailItemType`) per hull/drive/bridge e collezioni (weapons, craft, systems, staterooms, software). Il “Total Cost” dei componenti è calcolato lato client e salvato nel JSON, ma **non** modifica `Ship.price`.
-- **Amendment nave:** `ShipAmendment` registra modifiche post‑firma con `patchDetails` (stessa struttura di `Ship.shipDetails`), data effetto e riferimento opzionale a `Cost` (categorie SHIP_GEAR/SHIP_SOFTWARE).
+- **Amendment nave:** `ShipAmendment` registra modifiche post‑firma con `patchDetails` (stessa struttura di `Ship.shipDetails`) e **Cost reference obbligatoria** (categorie SHIP_GEAR/SHIP_SOFTWARE). La data effetto viene derivata dalla payment date del Cost selezionato; la select Cost usa ricerca (Tom Select) e filtra cost già usati da altri amendment.
 - **Annual Budget per nave:** ogni budget è legato a una singola nave e aggrega ricavi (`Income`), costi (`Cost`) e rate del mutuo pagate nel periodo (start/end giorno/anno). Dashboard e grafico mostrano la timeline per nave.
 - **Equipaggio:** `Crew` con ruoli (`ShipRole`); la presenza di capitano è validata da validator dedicato.
 - **Status crew e date:** `Crew.status` + date associate (Active/On Leave/Retired/MIA/Deceased) gestite via `ImperialDateType`. La UI mostra la data relativa allo status solo quando la ship è selezionata.
 - **CostCategory / IncomeCategory:** tabelle di contesto per tipologie di spesa/entrata (code, description), con seeds JSON.
+- **Cost detail items:** `Cost.detailItems` (JSON) alimenta l’amount calcolato (campo read‑only lato form) e la stampa PDF del Cost.
 - **Company e CompanyRole:** controparti contrattuali usate da `Cost`, `Income` e `Mortgage`.
 - **CompanyRole.shortDescription:** etichetta breve usata nelle select e nelle liste per rendere i ruoli immediati.
 - **LocalLaw:** codice, descrizione breve e disclaimer giurisdizionale; referenziato da Cost, Income, Mortgage.
@@ -61,6 +63,7 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 - Servizio `PdfGenerator` basato su KnpSnappy/wkhtmltopdf per stampare i contratti Income, il mutuo e la scheda nave; percorso binario configurato in `config/packages/knp_snappy.yaml` via env.
 - I campi opzionali delle sottoform Income sono determinati dal codice categoria e mostrati solo se richiesti (form dinamiche con event subscriber).
 - Nel PDF del mutuo l’elenco crew è filtrato: esclusi `Missing (MIA)`/`Deceased` e inclusi solo membri con `activeDate >= signingDate`.
+- Nel PDF nave la sezione “Amendments Log” mostra code, titolo, data effetto e Cost ref + amount.
 - Le amendment sono disponibili solo se il mutuo è firmato e vengono gestite in pagina dedicata (`/ship/{id}/amendments/new`).
 
 ## Persistenza e migrazioni
@@ -78,6 +81,7 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 - **Sessione campagne:** sessionDay/sessionYear vive su Campaign; le Ship mostrano i valori ereditati. Migrazioni legacy potrebbero aver popolato le Ship: mantenerle allineate se si rimuovono i campi.
 - **Workflow Crew:** l’assegnazione da lista “unassigned” imposta `status=Active` e `activeDay/Year` alla session date; lo sgancio della ship azzera status (salvo `Missing (MIA)`/`Deceased`) e le date Active/On Leave/Retired. L’elenco “unassigned” esclude Missing/Deceased.
 - **Ship details JSON:** il form salva blocchi strutturati; se si altera la struttura, valutare migrazioni o normalizzazioni per non perdere dati.
+- **Amendment e Cost reference:** un amendment richiede un Cost con payment date valorizzata; la selezione esclude cost già collegati ad altri amendment per evitare duplicazioni.
 
 ## Flussi operativi principali
 
@@ -86,7 +90,7 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
    - Lo status e la data relativa diventano obbligatori solo quando la ship è selezionata.
    - La lista “unassigned” esclude Missing/Deceased e l’assegnazione imposta Active + session date.
 3. **Mutui, costi e income:** la firma del mutuo avviene con `signingDay/Year` dalla Campaign; costi e entrate hanno `Company`/`LocalLaw` cross-campaign e utilizzano `ImperialDateType` + PDF builder per stampare contratti e schede bianche.
-4. **Amendment nave firmata:** se la nave ha mutuo firmato, le modifiche ai componenti passano tramite `ShipAmendment` con `patchDetails` (stessa struttura di `shipDetails`) e data effetto, con collegamento opzionale a `Cost` (SHIP_GEAR/SHIP_SOFTWARE).
+4. **Amendment nave firmata:** se la nave ha mutuo firmato, le modifiche ai componenti passano tramite `ShipAmendment` con `patchDetails` (stessa struttura di `shipDetails`) e **Cost reference obbligatoria** (SHIP_GEAR/SHIP_SOFTWARE); la data effetto deriva dalla payment date del Cost.
 5. **Annual budget per nave:** aggregare income, cost e rate in 13 periodi annui, validare `start <= end`, formattare le date con `ImperialDate` e rappresentare il bilancio sulla UI e nei PDF.
 6. **UX e riferimenti:** tooltip e badge uniformati (vedi `docs/tooltip-guidelines.md`), sidebar e checklist enfatizzano il flusso "Campaign first → Ships/Crew → Companies → Cost/Income/Mortgage/Budget".
 
