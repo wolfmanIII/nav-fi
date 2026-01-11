@@ -41,36 +41,35 @@
             </div>
         </div>
 
-        <form id="company-filters" method="get" action="{{ path('app_company_index') }}" class="mb-6">
-            <fieldset class="rounded-xl border border-cyan-500/30 bg-slate-900/60 p-4">
-                <legend class="px-2 text-xs uppercase tracking-[0.2em] text-cyan-300/70">Company search</legend>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Name</label>
-                        <input type="text" name="name" value="{{ filters.name }}" class="input m-1 w-full">
-                    </div>
-                    <div>
-                        <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Role</label>
-                        <select name="role" class="select m-1 w-full">
-                            <option value="">All roles</option>
-                            {% for role in roles %}
-                                <option value="{{ role.id }}" {% if filters.role == role.id %}selected{% endif %}>
-                                    {{ role.shortDescription ?? role.code }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div>
-                        <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Contact</label>
-                        <input type="text" name="contact" value="{{ filters.contact }}" class="input m-1 w-full">
-                    </div>
-                </div>
-                <div class="mt-4 flex flex-wrap gap-2">
-                    <button type="submit" class="btn btn-outline btn-primary btn-sm">Search</button>
-                    <a href="{{ path('app_company_index') }}" class="btn btn-ghost btn-sm">Reset</a>
-                </div>
-            </fieldset>
-        </form>
+        {% set filter_fields %}
+            <div>
+                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Name</label>
+                <input type="text" name="name" value="{{ filters.name }}" class="input m-1 w-full">
+            </div>
+            <div>
+                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Role</label>
+                <select name="role" class="select m-1 w-full">
+                    <option value="">All roles</option>
+                    {% for role in roles %}
+                        <option value="{{ role.id }}" {% if filters.role == role.id %}selected{% endif %}>
+                            {{ role.shortDescription ?? role.code }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Contact</label>
+                <input type="text" name="contact" value="{{ filters.contact }}" class="input m-1 w-full">
+            </div>
+        {% endset %}
+        {% include 'components/index_filters.html.twig' with {
+            form_id: 'company-filters',
+            action: path('app_company_index'),
+            legend: 'Company search',
+            grid_class: 'md:grid-cols-3',
+            fields: filter_fields,
+            reset_path: path('app_company_index')
+        } %}
 
         <div class="flow-root">
 

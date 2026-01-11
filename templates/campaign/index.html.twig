@@ -41,25 +41,23 @@
             </div>
         </div>
 
-        <form method="get" action="{{ path('app_campaign_index') }}" class="mb-6">
-            <fieldset class="rounded-xl border border-cyan-500/30 bg-slate-900/60 p-4">
-                <legend class="px-2 text-xs uppercase tracking-[0.2em] text-cyan-300/70">Campaign search</legend>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Title</label>
-                        <input type="text" name="title" value="{{ filters.title }}" class="input m-1 w-full">
-                    </div>
-                    <div>
-                        <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Starting year (exact)</label>
-                        <input type="text" name="starting_year" value="{{ filters.starting_year }}" class="input m-1 w-full" placeholder="Year">
-                    </div>
-                </div>
-                <div class="mt-4 flex flex-wrap gap-2">
-                    <button type="submit" class="btn btn-outline btn-primary btn-sm">Search</button>
-                    <a href="{{ path('app_campaign_index') }}" class="btn btn-ghost btn-sm">Reset</a>
-                </div>
-            </fieldset>
-        </form>
+        {% set filter_fields %}
+            <div>
+                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Title</label>
+                <input type="text" name="title" value="{{ filters.title }}" class="input m-1 w-full">
+            </div>
+            <div>
+                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Starting year (exact)</label>
+                <input type="text" name="starting_year" value="{{ filters.starting_year }}" class="input m-1 w-full" placeholder="Year">
+            </div>
+        {% endset %}
+        {% include 'components/index_filters.html.twig' with {
+            action: path('app_campaign_index'),
+            legend: 'Campaign search',
+            grid_class: 'md:grid-cols-2',
+            fields: filter_fields,
+            reset_path: path('app_campaign_index')
+        } %}
 
         <div class="flow-root">
             <div class="overflow-x-auto overflow-y-visible rounded-box border border-base-content/5 bg-base-100">

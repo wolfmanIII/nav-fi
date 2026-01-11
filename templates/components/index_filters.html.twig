@@ -1,0 +1,20 @@
+{# Shared index filter form #}
+<form method="get"
+      action="{{ action }}"
+      class="mb-6"
+      {% if form_id|default('') %}id="{{ form_id }}"{% endif %}
+      {% for name, value in form_attrs|default({}) %}
+          {{ name }}="{{ value }}"
+      {% endfor %}>
+    <fieldset class="rounded-xl border border-cyan-500/30 bg-slate-900/60 p-4">
+        <legend class="px-2 text-xs uppercase tracking-[0.2em] text-cyan-300/70">{{ legend }}</legend>
+        <div class="grid grid-cols-1 {{ grid_class|default('md:grid-cols-2 lg:grid-cols-4') }} gap-4">
+            {{ fields|raw }}
+        </div>
+        {{ hidden_fields|default('')|raw }}
+        <div class="mt-4 flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-outline btn-primary btn-sm">{{ submit_label|default('Search') }}</button>
+            <a href="{{ reset_path }}" class="btn btn-ghost btn-sm">Reset</a>
+        </div>
+    </fieldset>
+</form>

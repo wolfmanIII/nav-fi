@@ -41,39 +41,38 @@
             </div>
         </div>
 
-        <form id="crew-filters" method="get" action="{{ path('app_crew_index') }}" class="mb-6">
-            <fieldset class="rounded-xl border border-cyan-500/30 bg-slate-900/60 p-4">
-                <legend class="px-2 text-xs uppercase tracking-[0.2em] text-cyan-300/70">Crew search</legend>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Name / Surname</label>
-                        <input type="text" name="search" value="{{ filters.search }}" class="input m-1 w-full">
-                    </div>
-                    <div>
-                        <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Ship</label>
-                        <select name="ship" class="select m-1 w-full">
-                            <option value="">All ships</option>
-                            {% for ship in ships %}
-                                <option value="{{ ship.id }}" {% if filters.ship == ship.id %}selected{% endif %}>{{ ship.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div>
-                        <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Campaign</label>
-                        <select name="campaign" class="select m-1 w-full">
-                            <option value="">All campaigns</option>
-                            {% for campaign in campaigns %}
-                                <option value="{{ campaign.id }}" {% if filters.campaign == campaign.id %}selected{% endif %}>{{ campaign.title }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="mt-4 flex flex-wrap gap-2">
-                    <button type="submit" class="btn btn-outline btn-primary btn-sm">Search</button>
-                    <a href="{{ path('app_crew_index') }}" class="btn btn-ghost btn-sm">Reset</a>
-                </div>
-            </fieldset>
-        </form>
+        {% set filter_fields %}
+            <div>
+                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Name / Surname</label>
+                <input type="text" name="search" value="{{ filters.search }}" class="input m-1 w-full">
+            </div>
+            <div>
+                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Ship</label>
+                <select name="ship" class="select m-1 w-full">
+                    <option value="">All ships</option>
+                    {% for ship in ships %}
+                        <option value="{{ ship.id }}" {% if filters.ship == ship.id %}selected{% endif %}>{{ ship.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Campaign</label>
+                <select name="campaign" class="select m-1 w-full">
+                    <option value="">All campaigns</option>
+                    {% for campaign in campaigns %}
+                        <option value="{{ campaign.id }}" {% if filters.campaign == campaign.id %}selected{% endif %}>{{ campaign.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endset %}
+        {% include 'components/index_filters.html.twig' with {
+            form_id: 'crew-filters',
+            action: path('app_crew_index'),
+            legend: 'Crew search',
+            grid_class: 'md:grid-cols-3',
+            fields: filter_fields,
+            reset_path: path('app_crew_index')
+        } %}
 
         <div class="flow-root">
 

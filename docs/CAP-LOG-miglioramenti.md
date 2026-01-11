@@ -32,9 +32,9 @@ Documento di analisi tecnica con aree di miglioramento e funzionalità potenzial
 
 ## UX / UI (qualità d’uso)
 
-6) **Componente filtri riusabile**
-   - Stato: i blocchi di filtro sono ripetuti nei template index.
-   - Soluzione: partial Twig che standardizza label, layout e pulsanti (Search/Reset).
+6) **Componente filtri riusabile — risolto**
+   - Stato: creato il partial `templates/components/index_filters.html.twig` usato da tutte le index.
+   - Beneficio: layout coerente per label, griglie e pulsanti Search/Reset, con minori duplicazioni.
 
 7) **Feedback su filtri attivi**
    - Stato: non è evidente quando un filtro è applicato.
