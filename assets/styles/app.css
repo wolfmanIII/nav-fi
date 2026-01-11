@@ -40,6 +40,14 @@
         animation: spin 2.5s linear infinite;
     }
 
+    .login-panel-offset {
+        margin-top: 50px;
+    }
+
+    .login-layout-offset {
+        padding-top: 64px;
+    }
+
     /* Required marker: deve vincere su tutto */
     label.required::after {
         content: " *" !important;

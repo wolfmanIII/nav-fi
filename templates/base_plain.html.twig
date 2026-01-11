@@ -22,9 +22,14 @@
     {% endblock %}
 </head>
 <body class="bg-base-200 min-h-screen">
-    <div class="flex flex-col items-center justify-center min-h-screen px-4 py-8">
-        <div class="w-full px-6">
-            <div class="w-full rounded-2xl p-6 bg-gradient-to-r from-emerald-500 via-slate-800 to-slate-900 text-cyan-100">
+    <div class="flex flex-col items-stretch justify-start min-h-screen">
+        <div class="w-full px-0">
+            <div class="relative isolate overflow-hidden w-full p-6 min-h-screen bg-gradient-to-br from-slate-900 via-emerald-900/30 to-cyan-800/20 text-cyan-100">
+                <div class="absolute inset-0 opacity-30" aria-hidden="true">
+                    <div class="absolute -left-10 -top-10 h-64 w-64 rounded-full bg-cyan-500 blur-3xl"></div>
+                    <div class="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-indigo-500 blur-3xl"></div>
+                </div>
+                <div class="relative">
             {% for label, messages in app.flashes %}
                 {% for message in messages %}
                     <div role="alert" class="alert alert-{{ label }} alert-outline mb-3 w-full">
@@ -34,8 +39,9 @@
             {% endfor %}
 
             {% block pageContent %}{% endblock %}
+                </div>
             </div>
         </div>
-    </div>
+    </div>  
 </body>
 </html>
