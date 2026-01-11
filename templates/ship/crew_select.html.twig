@@ -161,6 +161,9 @@
                         placeholder="Enter nickname">
                 </div>
             {% endset %}
+            {% set filter_hidden %}
+                <input type="hidden" name="crew_page" value="1">
+            {% endset %}
             {% include 'components/index_filters.html.twig' with {
                 action: path('app_ship_crew', {id: ship.id}),
                 legend: 'Unassigned crew',
@@ -169,7 +172,7 @@
                 reset_path: path('app_ship_crew', {id: ship.id}),
                 submit_label: 'Search crew',
                 form_attrs: { autocomplete: 'off' },
-                hidden_fields: '<input type=\"hidden\" name=\"crew_page\" value=\"1\">'
+                hidden_fields: filter_hidden
             } %}
 
             <div class="rounded-xl border border-base-content/10 bg-base-100 p-4 shadow-inner">
