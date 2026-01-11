@@ -114,14 +114,14 @@ final class CostController extends BaseController
             throw new NotFoundHttpException();
         }
 
+        $wasPaid = $cost->getPaymentDay() !== null || $cost->getPaymentYear() !== null;
+
         $form = $this->createForm(CostType::class, $cost, ['user' => $user]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if (
-                !$this->isGranted(CostVoter::EDIT, $cost)
-            ) {
+            if ( $wasPaid && !$this->isGranted(CostVoter::EDIT, $cost) ) {
                 $this->addFlash('error', 'Cost payed, Action Denied!');
                 return $this->redirectToRoute('app_cost_edit', ['id' => $cost->getId()]);
             }

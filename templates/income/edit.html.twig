@@ -107,6 +107,29 @@
             </div>
 
             <div class="col-span-1">
+                {% set status_help_id = form.status.vars.id ~ '-help' %}
+                <div class="flex items-center gap-2">
+                    {{ form_label(form.status) }}
+                    <label for="{{ status_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+                </div>
+                {{ form_widget(form.status) }}
+                {{ form_errors(form.status) }}
+                <input type="checkbox" id="{{ status_help_id }}" class="modal-toggle hidden" />
+                <div class="modal" role="dialog">
+                    <div class="modal-box">
+                        <div class="flex items-center gap-2">
+                            <span class="animate-spin-slow">{% include 'icons/radar.html.twig' %}</span>
+                            <h3 class="font-bold">Contract status</h3>
+                        </div>
+                        <p class="py-2 text-sm">Status is auto-managed: Draft until a signing date is recorded, then it locks to Signed.</p>
+                        <div class="modal-action">
+                            <label for="{{ status_help_id }}" class="btn btn-primary">Close</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-span-1">
                 {{ form_label(form.signingLocation) }}
                 {{ form_widget(form.signingLocation) }}
                 {{ form_errors(form.signingLocation) }}

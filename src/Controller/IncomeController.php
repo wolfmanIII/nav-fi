@@ -155,14 +155,14 @@ final class IncomeController extends BaseController
             }
         }
 
+        $wasPaid = $income->getPaymentDay() !== null || $income->getPaymentYear() !== null;
+
         $form = $this->createForm(IncomeType::class, $income, ['user' => $user]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if (
-                !$this->isGranted(IncomeVoter::EDIT, $income)
-            ) {
+            if ( $wasPaid && !$this->isGranted(IncomeVoter::EDIT, $income) ) {
                 $this->addFlash('error', 'Income payed, Action Denied!');
                 return $this->redirectToRoute('app_income_edit', ['id' => $income->getId()]);
             }
@@ -313,6 +313,7 @@ final class IncomeController extends BaseController
             '{{PRIZE_ID}}' => $income->getCode(),
             '{{SERVICE_ID}}' => $income->getCode(),
             '{{PROGRAM_REF}}' => $this->fallback($income->getCode()),
+            '{{STATUS}}' => $income->getStatus() ?: Income::STATUS_DRAFT,
             '{{VESSEL_NAME}}' => $ship?->getName() ?? '—',
             '{{CURRENCY}}' => $currency,
             '{{NOTES}}' => $this->fallback($income->getNote()),

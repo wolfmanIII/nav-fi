@@ -28,6 +28,9 @@ use Symfony\Component\Uid\Uuid;
 ])]
 class Income
 {
+    public const STATUS_DRAFT = 'Draft';
+    public const STATUS_SIGNED = 'Signed';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -38,6 +41,9 @@ class Income
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;
+
+    #[ORM\Column(length: 20)]
+    private ?string $status = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $signingDay = null;
@@ -310,6 +316,7 @@ class Income
     public function __construct()
     {
         $this->setCode(Uuid::v7());
+        $this->status = self::STATUS_DRAFT;
     }
 
     public function getId(): ?int
@@ -339,6 +346,23 @@ class Income
         $this->title = $title;
 
         return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function isSigned(): bool
+    {
+        return $this->status === self::STATUS_SIGNED;
     }
 
     public function getSigningDay(): ?int

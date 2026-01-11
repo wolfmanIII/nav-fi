@@ -98,6 +98,7 @@
                         <th>Ship</th>
                         <th class="text-right">Amount</th>
                         <th class="text-right">Signing</th>
+                        <th>Status</th>
                         <th class="text-right">Payment</th>
                         <th class="text-right">Expiration</th>
                         <th class="text-right">Cancel</th>
@@ -121,6 +122,13 @@
                                 </td>
                                 <td class="text-right">{{ income.amount|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
                                 <td class="text-right">{{ income.signingLocation }} - {{ (income.signingDay is not null and income.signingYear is not null) ? (income.signingDay|imperial_date(income.signingYear)) : '—' }}</td>
+                                <td>
+                                    {% if income.status %}
+                                        <span class="badge badge-outline badge-sm">{{ income.status }}</span>
+                                    {% else %}
+                                        <span class="opacity-60">—</span>
+                                    {% endif %}
+                                </td>
                                 <td class="text-right">
                                     {% if income.paymentDay is not null and income.paymentYear is not null %}
                                         {{ (income.paymentDay is not null and income.paymentYear is not null) ? (income.paymentDay|imperial_date(income.paymentYear)) : '—' }}

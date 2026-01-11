@@ -67,9 +67,9 @@ Documento di analisi tecnica con aree di miglioramento e funzionalità potenzial
 
 ## Possibili evoluzioni (opzionali)
 
-13) **Workflow “Draft → Signed” per contratti Income**
-   - Stato: il PDF esiste, ma manca un flag per stato contrattuale uniforme.
-   - Valore: semplifica workflow di gioco (pre‑accordi vs contratti finali).
+13) **Workflow “Draft → Signed” per contratti Income — risolto**
+   - Stato: introdotto `status` su Income con valori Draft/Signed.
+   - Beneficio: distingue pre‑accordi e contratti finali in modo uniforme.
 
 14) **Export operativo per sessione**
    - Generare un “session pack” (CSV/JSON) con crew, costs, incomes e budget di una singola ship.

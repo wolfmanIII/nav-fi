@@ -16,11 +16,13 @@ use App\Repository\ShipRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\Campaign;
 
@@ -99,6 +101,17 @@ class IncomeType extends AbstractType
                     'data-controller' => 'income-details',
                     'data-action' => 'change->income-details#change',
                 ],
+            ])
+            ->add('status', ChoiceType::class, [
+                'label' => 'Status',
+                'choices' => [
+                    Income::STATUS_DRAFT => Income::STATUS_DRAFT,
+                    Income::STATUS_SIGNED => Income::STATUS_SIGNED,
+                ],
+                'required' => false,
+                'disabled' => true,
+                'data' => $income?->getStatus() ?? Income::STATUS_DRAFT,
+                'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('campaign', EntityType::class, [
                 'class' => Campaign::class,
@@ -189,6 +202,11 @@ class IncomeType extends AbstractType
             if ($signing instanceof ImperialDate) {
                 $income->setSigningDay($signing->getDay());
                 $income->setSigningYear($signing->getYear());
+            }
+            if ($signing instanceof ImperialDate && $signing->getDay() !== null && $signing->getYear() !== null) {
+                $income->setStatus(Income::STATUS_SIGNED);
+            } else {
+                $income->setStatus(Income::STATUS_DRAFT);
             }
 
             /** @var ImperialDate|null $payment */
