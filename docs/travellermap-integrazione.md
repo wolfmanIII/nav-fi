@@ -58,7 +58,7 @@ Obiettivo: tracciare e visualizzare rotte Traveller dentro Captain Log, sfruttan
   - Link "Apri su TravellerMap" generato da controller: costruire query string con `s=<startHex>&d=<destHex>` o `jump=<rating>` se supportato.
 
 - **API Lookup (opzionale, con rete)**:
-  - Endpoint TravellerMap JSON: `https://travellermap.com/api/sector/<sector>/hex/<hex>` o varianti (verificare doc ufficiale).
+  - Endpoint TravellerMap JSON: `https://travellermap.com/api/sector/<sector>/hex/<hex>` o varianti (verificare doc ufficiale: https://travellermap.com/doc/api).
   - Service `TravellerMapClient` (HTTP client Symfony) con base URL configurabile via env, con flag di rete (disabilitabile se sandbox).
   - Cache locale (FilesystemAdapter) per ridurre chiamate; timeout basso (es. 5s) e fallback silenzioso in caso di errore.
   - Dati estratti: `world` name, `UWP`, trade codes, stellar data. Salvare su waypoint (non vincolante).

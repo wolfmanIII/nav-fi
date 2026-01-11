@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Captain Log - Route{% endblock %}
+
+{% block pageContent %}
+
+    <div class="flex flex-col items-stretch gap-6">
+        <div class="relative rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
+            <div class="absolute inset-0 rounded-xl opacity-30 mix-blend-screen pointer-events-none"
+                 style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
+            </div>
+            <div class="relative p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
+                        {% include 'icons/routes.html.twig' %}
+                    </div>
+                    <div>
+                        <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Route dossier</p>
+                        <h1 class="text-3xl font-semibold text-cyan-100 leading-tight">{{ route.name }}</h1>
+                        <p class="text-sm text-cyan-100/80">{{ route.description ?? '—' }}</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <a href="{{ path('app_route_edit', { id: route.id }) }}" class="btn btn-outline btn-primary btn-sm">Edit</a>
+                    <a href="{{ mapUrl }}" target="_blank" rel="noopener" class="btn btn-outline btn-info btn-sm">Open TravellerMap</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div class="rounded-xl border border-base-300 bg-base-200 p-4">
+                <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Ship</div>
+                <div class="text-lg text-cyan-100">{{ route.ship.name }}</div>
+            </div>
+            <div class="rounded-xl border border-base-300 bg-base-200 p-4">
+                <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Campaign</div>
+                <div class="text-lg text-cyan-100">{{ route.campaign ? route.campaign.title : '—' }}</div>
+            </div>
+            <div class="rounded-xl border border-base-300 bg-base-200 p-4">
+                <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Jump / Fuel</div>
+                <div class="text-lg text-cyan-100">
+                    {{ route.jumpRating ?? '—' }} / {{ route.fuelEstimate ?? '—' }}
+                </div>
+            </div>
+        </div>
+
+        <div class="rounded-xl border border-base-300 bg-base-200 p-4">
+            <div class="text-xs uppercase tracking-[0.2em] text-slate-400 mb-2">TravellerMap</div>
+            <iframe
+                src="{{ mapUrl }}"
+                class="w-full h-80 rounded-lg border border-base-300"
+                loading="lazy"
+                referrerpolicy="no-referrer">
+            </iframe>
+        </div>
+
+        <div class="overflow-x-auto overflow-y-visible rounded-box border border-base-content/5 bg-base-100">
+            <table class="table border-separate border-spacing-0 inner-bordered-table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Hex</th>
+                    <th>World</th>
+                    <th>UWP</th>
+                    <th class="text-right">Jump</th>
+                    <th>Notes</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if route.waypoints|length > 0 %}
+                    {% for waypoint in route.waypoints %}
+                        <tr>
+                            <td>{{ waypoint.position }}</td>
+                            <td>{{ waypoint.hex }}</td>
+                            <td>{{ waypoint.world ?? '—' }}</td>
+                            <td>{{ waypoint.uwp ?? '—' }}</td>
+                            <td class="text-right">{{ waypoint.jumpDistance ?? '—' }}</td>
+                            <td>{{ waypoint.notes ?? '—' }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-slate-400 py-6">No waypoints recorded.</td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

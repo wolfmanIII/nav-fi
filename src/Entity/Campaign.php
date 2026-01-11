@@ -48,9 +48,16 @@ class Campaign
     #[ORM\OneToMany(targetEntity: Ship::class, mappedBy: 'campaign')]
     private Collection $ships;
 
+    /**
+     * @var Collection<int, Route>
+     */
+    #[ORM\OneToMany(targetEntity: Route::class, mappedBy: 'campaign')]
+    private Collection $routes;
+
     public function __construct()
     {
         $this->ships = new ArrayCollection();
+        $this->routes = new ArrayCollection();
         $this->code = Uuid::v7();
     }
 
@@ -166,6 +173,35 @@ class Campaign
         if ($this->ships->removeElement($ship)) {
             if ($ship->getCampaign() === $this) {
                 $ship->setCampaign(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Route>
+     */
+    public function getRoutes(): Collection
+    {
+        return $this->routes;
+    }
+
+    public function addRoute(Route $route): static
+    {
+        if (!$this->routes->contains($route)) {
+            $this->routes->add($route);
+            $route->setCampaign($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRoute(Route $route): static
+    {
+        if ($this->routes->removeElement($route)) {
+            if ($route->getCampaign() === $this) {
+                $route->setCampaign(null);
             }
         }
 

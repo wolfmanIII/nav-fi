@@ -1,0 +1,131 @@
+{% extends 'base.html.twig' %}
+{% import '_tooltip.html.twig' as tooltip %}
+
+{% block title %}Captain Log - Routes{% endblock %}
+
+{% block pageContent %}
+
+    <div class="">
+        <div class="relative rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-6">
+            <div class="absolute inset-0 rounded-xl opacity-30 mix-blend-screen pointer-events-none"
+                 style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
+            </div>
+            <div class="relative p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
+                        {% include 'icons/routes.html.twig' %}
+                    </div>
+                    <div>
+                        <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Navigation lanes</p>
+                        <h1 class="text-3xl font-semibold text-cyan-100 leading-tight">Routes</h1>
+                        <p class="text-sm text-cyan-100/80">Plan your jumps and keep each ship aligned with the session timeline.</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    {{ tooltip.link('Create a new route',
+                                    'Add route',
+                                    'icons/routes.html.twig',
+                                    path('app_route_new'),
+                                    { dim: 24, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
+                </div>
+            </div>
+        </div>
+
+        {% set filter_fields %}
+            <div>
+                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Name</label>
+                <input type="text" name="name" value="{{ filters.name }}" class="input m-1 w-full">
+            </div>
+            <div>
+                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Ship</label>
+                <select name="ship" class="select m-1 w-full">
+                    <option value="">All ships</option>
+                    {% for ship in ships %}
+                        <option value="{{ ship.id }}" {% if filters.ship == ship.id %}selected{% endif %}>{{ ship.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Campaign</label>
+                <select name="campaign" class="select m-1 w-full">
+                    <option value="">All campaigns</option>
+                    {% for campaign in campaigns %}
+                        <option value="{{ campaign.id }}" {% if filters.campaign == campaign.id %}selected{% endif %}>{{ campaign.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endset %}
+        {% include 'components/index_filters.html.twig' with {
+            action: path('app_route_index'),
+            legend: 'Route search',
+            fields: filter_fields,
+            reset_path: path('app_route_index'),
+            grid_class: 'md:grid-cols-2 lg:grid-cols-3',
+            is_filtered: filters.name or filters.ship or filters.campaign
+        } %}
+
+        <div class="flow-root">
+            <div class="overflow-x-auto overflow-y-visible rounded-box border border-base-content/5 bg-base-100">
+                <table class="table border-separate border-spacing-0 inner-bordered-table">
+                    <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Ship</th>
+                        <th>Campaign</th>
+                        <th>Start</th>
+                        <th>Destination</th>
+                        <th class="text-right">Jump</th>
+                        <th class="text-right">Fuel</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if routes|length > 0 %}
+                        {% for route in routes %}
+                            <tr>
+                                <td>{% include 'components/code_with_copy.html.twig' with { code: route.code } %}</td>
+                                <td>{{ route.name }}</td>
+                                <td>{{ route.ship.name }}</td>
+                                <td>{{ route.campaign ? route.campaign.title : '—' }}</td>
+                                <td>{{ route.startHex ?? '—' }}</td>
+                                <td>{{ route.destHex ?? '—' }}</td>
+                                <td class="text-right">{{ route.jumpRating ?? '—' }}</td>
+                                <td class="text-right">{{ route.fuelEstimate ?? '—' }}</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        {{ tooltip.link('Inspect route',
+                                                        '',
+                                                        'icons/action-edit.html.twig',
+                                                        path('app_route_details', { id: route.id }),
+                                                        { dim: 14, linkClass: 'btn btn-outline btn-info btn-xs' }) }}
+                                        {{ tooltip.link('Edit route',
+                                                        '',
+                                                        'icons/action-edit.html.twig',
+                                                        path('app_route_edit', { id: route.id }),
+                                                        { dim: 14, linkClass: 'btn btn-outline btn-primary btn-xs' }) }}
+                                        {{ tooltip.link('Delete route',
+                                                        '',
+                                                        'icons/action-trash.html.twig',
+                                                        path('app_route_delete', { id: route.id }),
+                                                        { dim: 14, linkClass: 'btn btn-outline btn-error btn-xs' }) }}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="9" class="text-center text-slate-400 py-6">No routes logged.</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {% if pagination.total > 0 %}
+            {% include 'components/pagination.html.twig' with { pagination: pagination, path: 'app_route_index' } %}
+        {% endif %}
+    </div>
+
+{% endblock %}

@@ -54,6 +54,10 @@
                             {% include 'icons/far-trader.html.twig' %}
                             <span>Go to Shipyard</span>
                         </a>
+                        <a href="{{ path('app_route_index') }}" class="{{ drawer_btn }} flex items-center gap-2">
+                            {% include 'icons/routes.html.twig' %}
+                            <span>Plan Routes</span>
+                        </a>
                         <a href="{{ path('app_mortgage_index') }}" class="{{ drawer_btn }} flex items-center gap-2">
                             {% include 'icons/handbook.html.twig' %}
                             <span>Manage Mortgages</span>

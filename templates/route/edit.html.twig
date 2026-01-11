@@ -1,0 +1,173 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Captain Log - Route{% endblock %}
+
+{% block pageContent %}
+
+    <div class="flex flex-col items-stretch gap-4">
+        {{ form_start(form) }}
+
+        <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full"
+                 data-controller="route-waypoints">
+            <legend class="fieldset-legend">Route</legend>
+
+            <div class="col-span-2">
+                <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
+                    <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
+                         style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
+                    </div>
+                    <div class="relative p-4 flex items-start gap-3">
+                        <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
+                            {% include 'icons/routes.html.twig' %}
+                        </div>
+                        <div>
+                            <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Route drafting</p>
+                            <h3 class="font-semibold text-cyan-100 text-xl leading-tight">Navigation plan</h3>
+                            <p class="text-sm text-cyan-100/80">Define ship, campaign and waypoints, then validate jump limits.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if route.id %}
+                <div class="col-span-2">
+                    <label class="block text-slate-300">Code</label>
+                    <div class="m-1 w-full"><b>{{ route.code }}</b></div>
+                </div>
+            {% endif %}
+
+            <div>
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name) }}
+                {{ form_errors(form.name) }}
+            </div>
+            <div class="col-span-2 grid grid-cols-2 gap-4" data-controller="campaign-ship">
+                <div>
+                    {{ form_label(form.campaign) }}
+                    {{ form_widget(form.campaign) }}
+                    {{ form_errors(form.campaign) }}
+                </div>
+                <div>
+                    {{ form_label(form.ship) }}
+                    {{ form_widget(form.ship) }}
+                    {{ form_errors(form.ship) }}
+                </div>
+            </div>
+            <div>
+                {{ form_label(form.jumpRating) }}
+                {{ form_widget(form.jumpRating) }}
+                {{ form_errors(form.jumpRating) }}
+            </div>
+            <div>
+                {{ form_label(form.startHex) }}
+                {{ form_widget(form.startHex) }}
+                {{ form_errors(form.startHex) }}
+            </div>
+            <div>
+                {{ form_label(form.destHex) }}
+                {{ form_widget(form.destHex) }}
+                {{ form_errors(form.destHex) }}
+            </div>
+            <div>
+                {{ form_label(form.fuelEstimate) }}
+                {{ form_widget(form.fuelEstimate) }}
+                {{ form_errors(form.fuelEstimate) }}
+            </div>
+            <div class="col-span-2">
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description) }}
+                {{ form_errors(form.description) }}
+            </div>
+            <div class="col-span-2">
+                {{ form_label(form.notes) }}
+                {{ form_widget(form.notes) }}
+                {{ form_errors(form.notes) }}
+            </div>
+
+            <div class="col-span-2" data-route-waypoints-target="collection">
+                <div class="flex items-center justify-between">
+                    <h4 class="font-semibold text-cyan-100">Waypoints</h4>
+                    <button type="button" class="btn btn-outline btn-xs" data-action="route-waypoints#addItem">+ Add</button>
+                </div>
+                <div class="space-y-2 mt-2" data-route-waypoints-target="list">
+                    {% for child in form.waypoints %}
+                        <div class="collection-item border border-base-300 rounded p-3 bg-base-100 relative">
+                            <button type="button"
+                                    class="btn btn-ghost btn-xs absolute right-2 top-2"
+                                    data-action="route-waypoints#removeItem">&times;</button>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                                <div>
+                                    {{ form_label(child.hex) }}
+                                    {{ form_widget(child.hex) }}
+                                    {{ form_errors(child.hex) }}
+                                </div>
+                                <div>
+                                    {{ form_label(child.world) }}
+                                    {{ form_widget(child.world) }}
+                                    {{ form_errors(child.world) }}
+                                </div>
+                                <div>
+                                    {{ form_label(child.uwp) }}
+                                    {{ form_widget(child.uwp) }}
+                                    {{ form_errors(child.uwp) }}
+                                </div>
+                                <div>
+                                    {{ form_label(child.jumpDistance) }}
+                                    {{ form_widget(child.jumpDistance) }}
+                                    {{ form_errors(child.jumpDistance) }}
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                {{ form_label(child.notes) }}
+                                {{ form_widget(child.notes) }}
+                                {{ form_errors(child.notes) }}
+                            </div>
+                            {{ form_widget(child.position) }}
+                        </div>
+                    {% endfor %}
+                </div>
+                <template data-route-waypoints-target="prototype">
+                    <div class="collection-item border border-base-300 rounded p-3 bg-base-100 relative">
+                        <button type="button"
+                                class="btn btn-ghost btn-xs absolute right-2 top-2"
+                                data-action="route-waypoints#removeItem">&times;</button>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                            <div>
+                                {{ form_label(form.waypoints.vars.prototype.hex) }}
+                                {{ form_widget(form.waypoints.vars.prototype.hex) }}
+                                {{ form_errors(form.waypoints.vars.prototype.hex) }}
+                            </div>
+                            <div>
+                                {{ form_label(form.waypoints.vars.prototype.world) }}
+                                {{ form_widget(form.waypoints.vars.prototype.world) }}
+                                {{ form_errors(form.waypoints.vars.prototype.world) }}
+                            </div>
+                            <div>
+                                {{ form_label(form.waypoints.vars.prototype.uwp) }}
+                                {{ form_widget(form.waypoints.vars.prototype.uwp) }}
+                                {{ form_errors(form.waypoints.vars.prototype.uwp) }}
+                            </div>
+                            <div>
+                                {{ form_label(form.waypoints.vars.prototype.jumpDistance) }}
+                                {{ form_widget(form.waypoints.vars.prototype.jumpDistance) }}
+                                {{ form_errors(form.waypoints.vars.prototype.jumpDistance) }}
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            {{ form_label(form.waypoints.vars.prototype.notes) }}
+                            {{ form_widget(form.waypoints.vars.prototype.notes) }}
+                            {{ form_errors(form.waypoints.vars.prototype.notes) }}
+                        </div>
+                        {{ form_widget(form.waypoints.vars.prototype.position) }}
+                    </div>
+                </template>
+            </div>
+        </fieldset>
+
+        <button type="submit" class="btn btn-outline btn-primary mt-4 mb-4 mr-4">Save</button>
+        <a href="{{ path('app_route_index') }}" role="button" class="btn btn-outline btn-default mt-4 mb-4 mr-4">Cancel</a>
+
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}

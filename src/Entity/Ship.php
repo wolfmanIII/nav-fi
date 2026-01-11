@@ -78,6 +78,12 @@ class Ship
     #[ORM\OneToMany(targetEntity: Income::class, mappedBy: 'ship')]
     private Collection $incomes;
 
+    /**
+     * @var Collection<int, Route>
+     */
+    #[ORM\OneToMany(targetEntity: Route::class, mappedBy: 'ship')]
+    private Collection $routes;
+
     public function __construct()
     {
         $this->setCode(Uuid::v7());
@@ -85,6 +91,7 @@ class Ship
         $this->costs = new ArrayCollection();
         $this->incomes = new ArrayCollection();
         $this->amendments = new ArrayCollection();
+        $this->routes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -316,6 +323,35 @@ class Ship
     public function getIncomes(): Collection
     {
         return $this->incomes;
+    }
+
+    /**
+     * @return Collection<int, Route>
+     */
+    public function getRoutes(): Collection
+    {
+        return $this->routes;
+    }
+
+    public function addRoute(Route $route): static
+    {
+        if (!$this->routes->contains($route)) {
+            $this->routes->add($route);
+            $route->setShip($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRoute(Route $route): static
+    {
+        if ($this->routes->removeElement($route)) {
+            if ($route->getShip() === $this) {
+                $route->setShip(null);
+            }
+        }
+
+        return $this;
     }
 
     public function addIncome(Income $income): static
