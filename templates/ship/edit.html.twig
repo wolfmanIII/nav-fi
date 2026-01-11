@@ -4,6 +4,7 @@
 {% set CAN_CREATE = constant('App\\Security\\Voter\\ShipVoter::CREATE') %}
 {% set can_edit = is_granted(CAN_EDIT, ship) %}
 {% set can_create = is_granted(CAN_CREATE, ship) %}
+{% import '_tooltip.html.twig' as tooltip %}
 
 {% block title %}Captain Log - Ship{% endblock %}
 
@@ -19,7 +20,7 @@
             {% if ship.mortgageSigned %}
                 <div class="col-span-2">
                     <div class="alert alert-info w-full">
-                        The Ship has Mortgage signed! It can not be updated.
+                        The Ship has Mortgage signed! It can not be updated. Use a Ship Amendment to register changes.
                     </div>
                 </div>
             {% endif %}
@@ -33,11 +34,27 @@
                         <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
                             {% include 'icons/far-trader.html.twig' %}
                         </div>
-                        <div>
+                        <div class="flex-1">
                             <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Ship sheet</p>
                             <h3 class="font-semibold text-cyan-100 text-xl leading-tight">Update your ship</h3>
                             <p class="text-sm text-cyan-100/80">Update class and price before mortgages and embarkations: every jump starts with an aligned bridge.</p>
                         </div>
+                        {% if ship.id %}
+                            <div class="flex items-start gap-2">
+                                {{ tooltip.link('Open ship PDF',
+                                                'Ship PDF',
+                                                'icons/ship-pdf.html.twig',
+                                                path('app_ship_pdf', { id: ship.id }),
+                                                { dim: 16, linkClass: 'btn btn-outline btn-secondary btn-sm', attrs: { target: '_blank', rel: 'noopener' } }) }}
+                                {% if ship.mortgageSigned %}
+                                    {{ tooltip.link('Log ship amendments',
+                                                    'Ship amendments',
+                                                    'icons/ship-amendment.html.twig',
+                                                    path('app_ship_amendment_new', { id: ship.id }),
+                                                    { dim: 16, linkClass: 'btn btn-outline btn-info btn-sm' }) }}
+                                {% endif %}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -90,18 +107,6 @@
             >
                 Save
             </button>
-            {% if ship.id %}
-                <a href="{{ path('app_ship_pdf', { id: ship.id }) }}" target="_blank"
-                   class="btn btn-outline btn-secondary mt-4 mb-4">
-                    PDF
-                </a>
-            {% endif %}
-            {% if ship.id and ship.mortgageSigned %}
-                <a href="{{ path('app_ship_amendment_new', { id: ship.id }) }}"
-                   class="btn btn-outline btn-info mt-4 mb-4">
-                    Amendments
-                </a>
-            {% endif %}
             <a href="{{ path('app_ship_index') }}" role="button" class="btn btn-outline btn-default mt-4 mb-4">Cancel</a>
         </div>
 
