@@ -59,6 +59,11 @@
                 {{ form_errors(form.jumpRating) }}
             </div>
             <div>
+                {{ form_label(form.fuelEstimate) }}
+                {{ form_widget(form.fuelEstimate) }}
+                {{ form_errors(form.fuelEstimate) }}
+            </div>
+            <div>
                 {{ form_label(form.startHex) }}
                 {{ form_widget(form.startHex) }}
                 {{ form_errors(form.startHex) }}
@@ -68,10 +73,29 @@
                 {{ form_widget(form.destHex) }}
                 {{ form_errors(form.destHex) }}
             </div>
-            <div>
-                {{ form_label(form.fuelEstimate) }}
-                {{ form_widget(form.fuelEstimate) }}
-                {{ form_errors(form.fuelEstimate) }}
+            <div data-controller="imperial-date">
+                {{ form_label(form.startDate) }}
+                {{ form_widget(form.startDate.display, {
+                    attr: {
+                        'data-imperial-date-prev-icon': '«',
+                        'data-imperial-date-next-icon': '»',
+                    }
+                }) }}
+                {{ form_widget(form.startDate.year) }}
+                {{ form_widget(form.startDate.day) }}
+                {{ form_errors(form.startDate.display) }}
+            </div>
+            <div data-controller="imperial-date">
+                {{ form_label(form.destDate) }}
+                {{ form_widget(form.destDate.display, {
+                    attr: {
+                        'data-imperial-date-prev-icon': '«',
+                        'data-imperial-date-next-icon': '»',
+                    }
+                }) }}
+                {{ form_widget(form.destDate.year) }}
+                {{ form_widget(form.destDate.day) }}
+                {{ form_errors(form.destDate.display) }}
             </div>
             <div class="col-span-2">
                 {{ form_label(form.description) }}

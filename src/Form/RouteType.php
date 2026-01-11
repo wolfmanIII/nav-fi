@@ -5,7 +5,11 @@ namespace App\Form;
 use App\Entity\Campaign;
 use App\Entity\Route;
 use App\Entity\Ship;
+use App\Form\Config\DayYearLimits;
 use App\Form\RouteWaypointType;
+use App\Form\Type\ImperialDateType;
+use App\Model\ImperialDate;
+use App\Service\ImperialDateHelper;
 use App\Service\RouteMathHelper;
 use App\Repository\ShipRepository;
 use Doctrine\ORM\EntityRepository;
@@ -23,15 +27,23 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RouteType extends AbstractType
 {
-    public function __construct(private readonly RouteMathHelper $routeMathHelper)
-    {
-    }
+    public function __construct(
+        private readonly RouteMathHelper $routeMathHelper,
+        private readonly DayYearLimits $limits,
+        private readonly ImperialDateHelper $imperialDateHelper
+    ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $user = $options['user'];
         /** @var Route $route */
         $route = $builder->getData();
+
+        $campaignStartYear = $route->getCampaign()?->getStartingYear()
+            ?? $route->getShip()?->getCampaign()?->getStartingYear();
+        $minYear = max($this->limits->getYearMin(), $campaignStartYear ?? $this->limits->getYearMin());
+        $startDate = new ImperialDate($route->getStartYear(), $route->getStartDay());
+        $destDate = new ImperialDate($route->getDestYear(), $route->getDestDay());
 
         $builder
             ->add('name', TextType::class, [
@@ -90,6 +102,22 @@ class RouteType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'input m-1 w-full uppercase', 'maxlength' => 4],
             ])
+            ->add('startDate', ImperialDateType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Start date',
+                'data' => $startDate,
+                'min_year' => $minYear,
+                'max_year' => $this->limits->getYearMax(),
+            ])
+            ->add('destDate', ImperialDateType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Destination date',
+                'data' => $destDate,
+                'min_year' => $minYear,
+                'max_year' => $this->limits->getYearMax(),
+            ])
             ->add('jumpRating', IntegerType::class, [
                 'required' => false,
                 'attr' => ['class' => 'input m-1 w-full'],
@@ -118,6 +146,31 @@ class RouteType extends AbstractType
             /** @var Route $route */
             $route = $event->getData();
             $form = $event->getForm();
+
+            /** @var ImperialDate|null $start */
+            $start = $form->get('startDate')->getData();
+            /** @var ImperialDate|null $dest */
+            $dest = $form->get('destDate')->getData();
+            if ($start instanceof ImperialDate) {
+                $route->setStartDay($start->getDay());
+                $route->setStartYear($start->getYear());
+            } else {
+                $route->setStartDay(null);
+                $route->setStartYear(null);
+            }
+            if ($dest instanceof ImperialDate) {
+                $route->setDestDay($dest->getDay());
+                $route->setDestYear($dest->getYear());
+            } else {
+                $route->setDestDay(null);
+                $route->setDestYear(null);
+            }
+
+            $startKey = $this->imperialDateHelper->toKey($route->getStartDay(), $route->getStartYear());
+            $destKey = $this->imperialDateHelper->toKey($route->getDestDay(), $route->getDestYear());
+            if ($startKey !== null && $destKey !== null && $startKey > $destKey) {
+                $form->get('startDate')->addError(new FormError('Start date must be before destination date.'));
+            }
 
             $waypoints = $route->getWaypoints();
             $hexes = [];

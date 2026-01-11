@@ -70,21 +70,24 @@
             </li>
 
             <li>
-                <a href="{{ path('app_route_index') }}"
-                   class="{% if controller_name == constant('App\\Controller\\RouteController::CONTROLLER_NAME') %}menu-active{% endif %}"
-                >
-                    {% include 'icons/routes.html.twig' %}
-                    <span>Routes</span>
-                </a>
-            </li>
-
-            <li>
                 <a href="{{ path('app_crew_index') }}"
                    class="{% if controller_name == constant('App\\Controller\\CrewController::CONTROLLER_NAME') %}menu-active{% endif %}"
                 >
                     <!-- icona crew -->
                     {% include 'icons/crew.html.twig' with {'dim': '24'} %}
                     <span>Crew</span>
+                </a>
+            </li>
+
+            <li class="menu-title">
+                <span class="text-cyan-200/70 text-xs uppercase tracking-[0.2em]">Nav</span>
+            </li>
+            <li>
+                <a href="{{ path('app_route_index') }}"
+                   class="{% if controller_name == constant('App\\Controller\\RouteController::CONTROLLER_NAME') %}menu-active{% endif %}"
+                >
+                    {% include 'icons/routes.html.twig' %}
+                    <span>Routes</span>
                 </a>
             </li>
 

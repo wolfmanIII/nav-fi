@@ -49,6 +49,18 @@ class Route
     private ?string $destHex = null;
 
     #[ORM\Column(nullable: true)]
+    private ?int $startDay = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $startYear = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $destDay = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $destYear = null;
+
+    #[ORM\Column(nullable: true)]
     private ?int $jumpRating = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
@@ -180,6 +192,54 @@ class Route
     public function setDestHex(?string $destHex): static
     {
         $this->destHex = $destHex;
+
+        return $this;
+    }
+
+    public function getStartDay(): ?int
+    {
+        return $this->startDay;
+    }
+
+    public function setStartDay(?int $startDay): static
+    {
+        $this->startDay = $startDay;
+
+        return $this;
+    }
+
+    public function getStartYear(): ?int
+    {
+        return $this->startYear;
+    }
+
+    public function setStartYear(?int $startYear): static
+    {
+        $this->startYear = $startYear;
+
+        return $this;
+    }
+
+    public function getDestDay(): ?int
+    {
+        return $this->destDay;
+    }
+
+    public function setDestDay(?int $destDay): static
+    {
+        $this->destDay = $destDay;
+
+        return $this;
+    }
+
+    public function getDestYear(): ?int
+    {
+        return $this->destYear;
+    }
+
+    public function setDestYear(?int $destYear): static
+    {
+        $this->destYear = $destYear;
 
         return $this;
     }
