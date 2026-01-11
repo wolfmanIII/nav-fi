@@ -80,23 +80,24 @@
             </nav>
 
             <div class="p-4">
+                <div class="w-full px-6">
+                    <div class="flex flex-col items-stretch gap-4">
+                        {% for label, messages in app.flashes %}
+                            <fieldset class="fieldset bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
+                                {% for message in messages %}
+                                    <div role="alert" class="alert alert-{{ label }} alert-outline w-full">
+                                        <span class="animate-spin-slow">
+                                            {% include 'icons/radar.html.twig' %}
+                                        </span>
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                            </fieldset>
+                        {% endfor %}
+                    </div>
 
-                <div class="flex flex-col items-center gap-4">
-                    {% for label, messages in app.flashes %}
-                        <fieldset class="fieldset bg-base-200 border-base-300 gap-4 p-4 border rounded w-315">
-                            {% for message in messages %}
-                                <div role="alert" class="alert alert-{{ label }} alert-outline">
-                                    <span class="animate-spin-slow">
-                                        {% include 'icons/radar.html.twig' %}
-                                    </span>
-                                    {{ message }}
-                                </div>
-                            {% endfor %}
-                        </fieldset>
-                    {% endfor %}
+                    {% block pageContent %}{% endblock %}
                 </div>
-
-                {% block pageContent %}{% endblock %}
             </div>
 
             <footer class="footer sm:footer-horizontal footer-center bg-neutral text-base-content p-4 sticky top-[100vh]">

@@ -50,6 +50,10 @@
 }
 
 @layer components {
+    .content-width {
+        @apply w-full max-w-5xl mx-auto;
+    }
+
     /* DaisyUI: il colore lo decide la label, il testo deve ereditare */
     .label {
         @apply text-base-content;
@@ -184,5 +188,15 @@
         background-color: var(--b2) !important;
         border-color: var(--b3) !important;
         color: var(--bc) !important;
+    }
+
+    .form-errors,
+    .form-error-message,
+    .form-error {
+        color: hsl(var(--er));
+    }
+
+    .form-errors {
+        @apply text-xs mt-1;
     }
 }

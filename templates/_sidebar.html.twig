@@ -61,13 +61,7 @@
 
             <li>
                 <a href="{{ path('app_ship_index') }}"
-                   class="
-                   {% 
-                    if controller_name == constant('App\\Controller\\ShipController::CONTROLLER_NAME')
-                    or controller_name == constant('App\\Controller\\ShipAmendmentController::CONTROLLER_NAME')
-                    %}
-                        menu-active
-                   {% endif %}"
+                   class="{% if controller_name == constant('App\\Controller\\ShipController::CONTROLLER_NAME') or controller_name == constant('App\\Controller\\ShipAmendmentController::CONTROLLER_NAME') %} menu-active {% endif %}"
                 >
                     <!-- icona ships -->
                     {% include 'icons/far-trader.html.twig' %}
