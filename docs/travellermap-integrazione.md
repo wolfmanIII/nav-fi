@@ -2,6 +2,9 @@
 
 Obiettivo: tracciare e visualizzare rotte Traveller dentro Captain Log, sfruttando TravellerMap (embed e API) mantenendo coerenza con Campaign/Ship e con la UI sci-fi esistente.
 
+> Nota: questa proposta separa ciò che è fattibile **senza API ufficiali** (link/iframe) da ciò che richiede **verifica sulla documentazione di TravellerMap**.
+> Quando avremo accesso alla doc ufficiale, confermeremo endpoint, parametri, limiti e CORS.
+
 ## Modello dati
 - **Route** (nuova entità)
   - `id` (int/uuid), `code` (uuid v7 per coerenza con altre entità visibili in UI)
@@ -40,6 +43,16 @@ Obiettivo: tracciare e visualizzare rotte Traveller dentro Captain Log, sfruttan
   - Validazione: segnalare segmento > jumpRating con errore form.
 
 ## Integrazione TravellerMap
+### Cosa possiamo fare sicuramente (senza API ufficiali)
+- Link esterni a TravellerMap con parametri `p`/`jump`/`path` (da confermare) per aprire la mappa in una nuova scheda.
+- Iframe embed con URL di TravellerMap per mostrare una vista statica del settore/hex.
+- Route planner lato UI: il percorso è costruito localmente e passato a TravellerMap come query string.
+
+### Cosa richiede verifica ufficiale
+- Endpoint JSON per lookup (world, UWP, trade codes, stellar data).
+- Endpoint static map (PNG/JPG) con marker/linee.
+- Politiche CORS e rate limit per chiamate client-side.
+
 - **Embed (semplice, zero API key)**:
   - Iframe con URL `https://travellermap.com/?p=<sector>/<hex>` o `.../jump?p=<hex>&j=<jump>` se disponibile.
   - Link "Apri su TravellerMap" generato da controller: costruire query string con `s=<startHex>&d=<destHex>` o `jump=<rating>` se supportato.
@@ -95,3 +108,10 @@ Obiettivo: tracciare e visualizzare rotte Traveller dentro Captain Log, sfruttan
 - Campi hex: input text uppercase con validazione regex `^[0-9A-F]{4}$`.
 - Mostrare badge "Jump limit exceeded" se un segmento supera `jumpRating`.
 - Se Ship ha `campaign`, default route.campaign = ship.campaign per coerenza con year-limit.
+
+## Checklist di verifica (doc ufficiale TravellerMap)
+- Endpoint e parametri URL per mostrare percorso (path/jump/zoom/scale).
+- Endpoint JSON per lookup world/UWP e formato risposta.
+- Endpoint static map (PNG/JPG) e limiti dimensioni/uso.
+- CORS e rate limit per chiamate browser.
+- Policy di caching e attribution richiesto.
