@@ -69,6 +69,32 @@ class RouteMathHelper
         return $total;
     }
 
+    /**
+     * @param array<int, int|null> $distances
+     */
+    public function estimateJumpFuel(Route $route, array $distances): ?string
+    {
+        $hullTons = $this->getShipHullTonnage($route->getShip());
+        if ($hullTons === null) {
+            return null;
+        }
+
+        $fuel = 0.0;
+        foreach ($distances as $distance) {
+            if ($distance === null || $distance <= 0) {
+                continue;
+            }
+            $effectiveJump = max(1, $distance);
+            $fuel += 0.1 * $hullTons * $effectiveJump;
+        }
+
+        if ($fuel <= 0) {
+            return null;
+        }
+
+        return sprintf('%.2f', $fuel);
+    }
+
     public function resolveJumpRating(Route $route): ?int
     {
         if ($route->getJumpRating() !== null) {
@@ -102,6 +128,17 @@ class RouteMathHelper
     {
         $details = $ship?->getShipDetails() ?? [];
         $tons = $details['fuel']['tons'] ?? null;
+        if (is_numeric($tons)) {
+            return (float) $tons;
+        }
+
+        return null;
+    }
+
+    public function getShipHullTonnage(?Ship $ship): ?float
+    {
+        $details = $ship?->getShipDetails() ?? [];
+        $tons = $details['hull']['tons'] ?? null;
         if (is_numeric($tons)) {
             return (float) $tons;
         }

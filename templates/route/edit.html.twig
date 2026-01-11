@@ -53,6 +53,16 @@
                     {{ form_errors(form.ship) }}
                 </div>
             </div>
+            <div class="col-span-2">
+                <div class="alert alert-info alert-outline shadow-sm">
+                    <span class="flex items-center justify-center animate-spin-slow">
+                        {% include 'icons/radar.html.twig' %}
+                    </span>
+                    <div class="text-sm text-slate-200">
+                        Jump Rating and Fuel Estimate are sourced from the ship’s registered components. Fill them only if you need to override the ship‑details telemetry for this route.
+                    </div>
+                </div>
+            </div>
             <div>
                 {{ form_label(form.jumpRating) }}
                 {{ form_widget(form.jumpRating) }}
@@ -63,15 +73,62 @@
                 {{ form_widget(form.fuelEstimate) }}
                 {{ form_errors(form.fuelEstimate) }}
             </div>
-            <div>
-                {{ form_label(form.startHex) }}
-                {{ form_widget(form.startHex) }}
-                {{ form_errors(form.startHex) }}
+
+            <div class="col-span-2">
+                <div class="alert alert-info alert-outline shadow-sm">
+                    <span class="flex items-center justify-center animate-spin-slow">
+                        {% include 'icons/radar.html.twig' %}
+                    </span>
+                    <div class="text-sm text-slate-200">
+                        If Start/Destination hex are left empty, the route will auto‑seal them from the first and last waypoint.
+                    </div>
+                </div>
             </div>
             <div>
-                {{ form_label(form.destHex) }}
+                {% set start_hex_help_id = form.startHex.vars.id ~ '-help' %}
+                <div class="flex items-center gap-2">
+                    {{ form_label(form.startHex) }}
+                    <label for="{{ start_hex_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+                </div>
+                {{ form_widget(form.startHex) }}
+                {{ form_errors(form.startHex) }}
+                <p class="text-xs text-slate-400 mt-1">Traveller hex code, 4 digits (e.g. 0101).</p>
+                <input type="checkbox" id="{{ start_hex_help_id }}" class="modal-toggle hidden" />
+                <div class="modal" role="dialog">
+                    <div class="modal-box">
+                        <h3 class="font-bold">Start Hex</h3>
+                        <p class="py-2 text-sm">
+                            Enter the 4‑digit Traveller hex code for the departure world (sector grid coordinates).
+                            Example: <code>0101</code> or <code>1234</code>. Use only 0‑9 and A‑F.
+                        </p>
+                        <div class="modal-action">
+                            <label for="{{ start_hex_help_id }}" class="btn btn-primary">Close</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                {% set dest_hex_help_id = form.destHex.vars.id ~ '-help' %}
+                <div class="flex items-center gap-2">
+                    {{ form_label(form.destHex) }}
+                    <label for="{{ dest_hex_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+                </div>
                 {{ form_widget(form.destHex) }}
                 {{ form_errors(form.destHex) }}
+                <p class="text-xs text-slate-400 mt-1">Traveller hex code, 4 digits (e.g. 1234).</p>
+                <input type="checkbox" id="{{ dest_hex_help_id }}" class="modal-toggle hidden" />
+                <div class="modal" role="dialog">
+                    <div class="modal-box">
+                        <h3 class="font-bold">Destination Hex</h3>
+                        <p class="py-2 text-sm">
+                            Enter the 4‑digit Traveller hex code for the arrival world (sector grid coordinates).
+                            Example: <code>0101</code> or <code>1234</code>. Use only 0‑9 and A‑F.
+                        </p>
+                        <div class="modal-action">
+                            <label for="{{ dest_hex_help_id }}" class="btn btn-primary">Close</label>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div data-controller="imperial-date">
                 {{ form_label(form.startDate) }}

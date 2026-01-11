@@ -94,6 +94,18 @@
                                 <td class="text-right">{{ route.fuelEstimate ?? '—' }}</td>
                                 <td>
                                     <div class="flex items-center gap-2">
+                                        {% if route.startHex %}
+                                            {{ tooltip.link('Open on TravellerMap',
+                                                            '',
+                                                            'icons/routes.html.twig',
+                                                            'https://travellermap.com/?p=' ~ route.startHex,
+                                                            { dim: 14, linkClass: 'btn btn-outline btn-accent btn-xs', attrs: { target: '_blank', rel: 'noopener' } }) }}
+                                        {% else %}
+                                            {{ tooltip.button('No start hex for map',
+                                                              '',
+                                                              'icons/routes.html.twig',
+                                                              { dim: 14, buttonClass: 'btn btn-outline btn-accent btn-xs opacity-60 cursor-not-allowed', attrs: { disabled: 'disabled' } }) }}
+                                        {% endif %}
                                         {{ tooltip.link('Inspect route',
                                                         '',
                                                         'icons/action-edit.html.twig',

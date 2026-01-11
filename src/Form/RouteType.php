@@ -200,9 +200,19 @@ class RouteType extends AbstractType
             }
 
             if ($route->getFuelEstimate() === null) {
-                $total = $this->routeMathHelper->sumDistances($distances);
-                if ($total > 0) {
-                    $route->setFuelEstimate(sprintf('%.2f', (float) $total));
+                $estimate = $this->routeMathHelper->estimateJumpFuel($route, $distances);
+                if ($estimate !== null) {
+                    $route->setFuelEstimate($estimate);
+                }
+            }
+
+            $capacity = $this->routeMathHelper->getShipFuelCapacity($route->getShip());
+            $estimateValue = $route->getFuelEstimate();
+            if ($capacity !== null && $estimateValue !== null && is_numeric($estimateValue)) {
+                if ((float) $estimateValue > $capacity) {
+                    $form->get('fuelEstimate')->addError(new FormError(
+                        'Estimated jump fuel exceeds ship fuel tankage.'
+                    ));
                 }
             }
         });
