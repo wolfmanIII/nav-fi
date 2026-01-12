@@ -21,6 +21,9 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 - **Navi e mutui:** `Ship`, `Mortgage`, `MortgageInstallment`, `InterestRate`, `Insurance`; il mutuo conserva `signingDay/Year` derivati dalla sessione della Campaign e `signingLocation` raccolta via modale al momento della firma. Il PDF del mutuo è generato da template dedicato; i piani usano 13 periodi/anno (esempio: 5 anni ⇒ 65 rate).
 - **Dettagli nave strutturati:** `Ship.shipDetails` (JSON) con DTO/form (`ShipDetailsData`, `ShipDetailItemType`, `MDriveDetailItemType`, `JDriveDetailItemType`) per hull/drive/bridge e collezioni (weapons, craft, systems, staterooms, software). Il “Total Cost” dei componenti è calcolato lato client e salvato nel JSON, ma **non** modifica `Ship.price`.
 - **Amendment nave:** `ShipAmendment` registra modifiche post‑firma con `patchDetails` (stessa struttura di `Ship.shipDetails`) e **Cost reference obbligatoria** (categorie SHIP_GEAR/SHIP_SOFTWARE). La data effetto viene derivata dalla payment date del Cost selezionato; la select Cost usa ricerca (Tom Select) e filtra cost già usati da altri amendment.
+- **Rotte e waypoints:** `Route` lega Campaign + Ship e contiene `startHex/destHex` (auto‑seal dai waypoints), date start/dest, jumpRating/fuelEstimate (override opzionali). I waypoints (`RouteWaypoint`) includono `hex`, `sector` (nome o abbreviazione T5SS), `world`, `UWP`, `jumpDistance` e note. La mappa usa `https://travellermap.com/go/{sector}/{hex}` per aprire/embeddare la rotta.
+- **Route math helper:** `RouteMathHelper` calcola distanze (hex grid) e fuel estimate secondo `docs/Traveller-Fuel-Management.md`; se un segmento supera il jump rating, la form segnala errore.
+- **Lookup TravellerMap (on‑the‑fly):** servizio `TravellerMapSectorLookup` scarica `https://travellermap.com/data/{sector}` (cache 24h) e può restituire `world`/`UWP` per un `hex` (endpoint interno `/route/waypoint-lookup`).
 - **Annual Budget per nave:** ogni budget è legato a una singola nave e aggrega ricavi (`Income`), costi (`Cost`) e rate del mutuo pagate nel periodo (start/end giorno/anno). Dashboard e grafico mostrano la timeline per nave con chiavi day/year normalizzate dal helper.
 - **Equipaggio:** `Crew` con ruoli (`ShipRole`); la presenza di capitano è validata da validator dedicato.
 - **Status crew e date:** `Crew.status` + date associate (Active/On Leave/Retired/MIA/Deceased) gestite via `ImperialDateType`. La UI mostra la data relativa allo status solo quando la ship è selezionata.
@@ -37,11 +40,13 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 - Campaign 1–N Ship (calendario di sessione condiviso).
 - Ship 1–1 Mortgage (vincolo univoco: una nave ha al massimo un mutuo).
 - Ship 1–N Crew, 1–N Cost, 1–N Income, 1–N AnnualBudget.
+- Ship 1–N Route.
 - Mortgage 1–N MortgageInstallment; ManyToOne InterestRate/Insurance; ManyToOne Company/LocalLaw.
 - Crew N–M ShipRole.
 - Cost ManyToOne CostCategory, Company, LocalLaw.
 - Income ManyToOne IncomeCategory, Company, LocalLaw + 1–1 con tabella dettaglio categoria.
 - CompanyRole 1–N Company.
+- Route 1–N RouteWaypoint.
 
 ## Sicurezza e autorizzazioni
 - **Autenticazione:** form login (`/login`), CSRF abilitato, provider User (email). Access control su rotte principali con ruolo USER/ADMIN.
@@ -96,7 +101,8 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 3. **Mutui, costi e income:** la firma del mutuo avviene con `signingDay/Year` dalla Campaign; costi e entrate hanno `Company`/`LocalLaw` cross-campaign e utilizzano `ImperialDateType` + PDF builder per stampare contratti e schede bianche.
 4. **Amendment nave firmata:** se la nave ha mutuo firmato, le modifiche ai componenti passano tramite `ShipAmendment` con `patchDetails` (stessa struttura di `shipDetails`) e **Cost reference obbligatoria** (SHIP_GEAR/SHIP_SOFTWARE); la data effetto deriva dalla payment date del Cost.
 5. **Annual budget per nave:** aggregare income, cost e rate in 13 periodi annui, validare `start <= end`, formattare le date con `ImperialDate` e rappresentare il bilancio sulla UI e nei PDF.
-6. **UX e riferimenti:** tooltip e badge uniformati (vedi `docs/tooltip-guidelines.md`), sidebar e checklist enfatizzano il flusso "Campaign first → Ships/Crew → Companies → Cost/Income/Mortgage/Budget".
+6. **Routes e navigazione:** creare rotte con waypoints sector+hex, calcolare jumpDistance e fuel estimate, e aprire la mappa TravellerMap via `/go/{sector}/{hex}` per verifiche rapide.
+7. **UX e riferimenti:** tooltip e badge uniformati (vedi `docs/tooltip-guidelines.md`), sidebar e checklist enfatizzano il flusso "Campaign first → Ships/Crew → Companies → Cost/Income/Mortgage/Budget/Routes".
 
 ## UX e documentazione
 

@@ -62,6 +62,7 @@ Obiettivo: tracciare e visualizzare rotte Traveller dentro Captain Log, sfruttan
   - Service `TravellerMapClient` (HTTP client Symfony) con base URL configurabile via env, con flag di rete (disabilitabile se sandbox).
   - Cache locale (FilesystemAdapter) per ridurre chiamate; timeout basso (es. 5s) e fallback silenzioso in caso di errore.
   - Dati estratti: `world` name, `UWP`, trade codes, stellar data. Salvare su waypoint (non vincolante).
+  - In Captain Log è disponibile un helper `TravellerMapSectorLookup` che scarica i dati raw del settore (`/data/{sector}`) e può compilare `world/UWP` dopo il submit.
 
 - **Static map overlay (facoltativo)**:
   - Se API static map disponibile: generare URL immagine con markers su hex dei waypoint; salvare URL in Route o rigenerarla on demand.

@@ -33,6 +33,7 @@
                 <span class="badge badge-outline badge-sm">Contract PDFs</span>
                 <span class="badge badge-outline badge-sm">Template Version</span>
                 <span class="badge badge-outline badge-sm">Ship Amendments</span>
+                <span class="badge badge-outline badge-sm">Routes & TravellerMap</span>
             </div>
         </div>
     </div>
@@ -116,6 +117,22 @@
                 <li>Cost ref is mandatory and must have payment day/year.</li>
                 <li>Costs already used by other amendments are excluded.</li>
                 <li>Amendments are logged in the ship PDF for auditing.</li>
+            </ul>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-base-200/80 p-6 shadow-sm">
+            <div class="flex items-center gap-2 text-cyan-200 mb-3">
+                {% include 'icons/routes.html.twig' %}
+                <p class="text-xs uppercase tracking-[0.25em]">Nav Dossier</p>
+            </div>
+            <h3 class="text-xl font-semibold text-slate-100">Routes</h3>
+            <p class="text-sm text-slate-300 mt-2">
+                Routes are built from waypoints and tied to a Ship + Campaign. Each waypoint carries a sector name or T5SS abbreviation plus its 4‑digit hex for TravellerMap.
+            </p>
+            <ul class="mt-3 text-sm text-slate-300 space-y-2">
+                <li>Start/Destination hex are auto‑sealed from the first and last waypoint.</li>
+                <li>Jump distances and fuel estimate are calculated on submit.</li>
+                <li>Map links open `travellermap.com/go/{sector}/{hex}` for quick visual checks.</li>
             </ul>
         </div>
 

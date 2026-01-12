@@ -24,6 +24,7 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, 
 - I controller e i repository filtrano le entità sull’utente proprietario restituendo 404 se non corrispondono, per difesa in profondità oltre ai voter.
 - I calcoli del mutuo usano BCMath e importi normalizzati a stringa per evitare drift tipici dei float; la formattazione numerica nelle liste/PDF è localizzata tramite `twig/intl-extra`.
 - I campi giorno/anno usano `ImperialDateType` (picker Stimulus `imperial-date` con formato `DDD/YYYY`) e limiti min/max: l’anno minimo è derivato dallo `startingYear` della Campaign selezionata (fallback `APP_YEAR_MIN`), applicato dinamicamente dal controller.
+- Rotte di navigazione con waypoints: la rotta è legata a Campaign + Ship, i waypoints includono `hex` e `sector` (nome o abbreviazione T5SS), e la mappa TravellerMap usa `https://travellermap.com/go/{sector}/{hex}`. Jump distance e fuel estimate sono calcolati dal helper `RouteMathHelper` con riferimento a `docs/Traveller-Fuel-Management.md`.
 
 ## Requisiti
 - PHP 8.2+

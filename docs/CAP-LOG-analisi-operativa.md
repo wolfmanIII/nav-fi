@@ -24,9 +24,11 @@ flowchart TB
     Incomes -->|N..1| LocalLaw
 
     Ships -->|1..N| AnnualBudgets
+    Ships -->|1..N| Routes
     Ships -->|JSON| ShipDetails["shipDetails (JSON)"]
     Ships -->|1..N| ShipAmendments
     ShipAmendments -->|N..1| Costs
+    Routes -->|1..N| RouteWaypoints
 
     Companies -->|N..1| CompanyRole
     Mortgage -->|N..1| Company
@@ -81,6 +83,12 @@ flowchart TB
 - Ogni budget è per **una singola nave**.
 - Timeline aggrega **Income**, **Cost** e **MortgageInstallment** per periodo.
 - Le chiavi day/year sono normalizzate da helper e i filtri accettano `DDD/YYYY` o solo `YYYY`.
+
+## Flusso operativo: routes
+
+- Le Routes sono agganciate a **Campaign + Ship** e costruite tramite waypoint in sequenza.
+- I waypoints richiedono `hex` (4 cifre) e `sector` (nome o abbreviazione T5SS) per aprire la mappa `travellermap.com/go/{sector}/{hex}`.
+- `startHex/destHex` sono auto‑seal dai waypoints; jumpDistance e fuelEstimate sono calcolati al submit secondo `docs/Traveller-Fuel-Management.md`.
 
 ## Ownership e sicurezza (operativa)
 
