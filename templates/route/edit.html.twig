@@ -143,13 +143,13 @@
                                 {{ form_widget(child.world) }}
                                 {{ form_errors(child.world) }}
                             </div>
-                            <div>
+                            <div class="route-waypoint-highlight">
                                 {{ form_label(child.uwp) }}
                                 {{ form_widget(child.uwp) }}
                                 {{ form_errors(child.uwp) }}
                                 <p class="text-xs text-slate-400 mt-1">Auto-filled after submit from TravellerMap sector data.</p>
                             </div>
-                            <div>
+                            <div class="route-waypoint-highlight">
                                 {{ form_label(child.jumpDistance) }}
                                 {{ form_widget(child.jumpDistance) }}
                                 {{ form_errors(child.jumpDistance) }}
@@ -187,14 +187,14 @@
                             {{ form_widget(form.waypoints.vars.prototype.world) }}
                             {{ form_errors(form.waypoints.vars.prototype.world) }}
                         </div>
-                        <div>
-                            {{ form_label(form.waypoints.vars.prototype.uwp) }}
+                        <div class="route-waypoint-highlight">
+                                {{ form_label(form.waypoints.vars.prototype.uwp) }}
                             {{ form_widget(form.waypoints.vars.prototype.uwp) }}
                             {{ form_errors(form.waypoints.vars.prototype.uwp) }}
                             <p class="text-xs text-slate-400 mt-1">Auto-filled after submit from TravellerMap sector data.</p>
                         </div>
-                        <div>
-                            {{ form_label(form.waypoints.vars.prototype.jumpDistance) }}
+                        <div class="route-waypoint-highlight">
+                                {{ form_label(form.waypoints.vars.prototype.jumpDistance) }}
                             {{ form_widget(form.waypoints.vars.prototype.jumpDistance) }}
                             {{ form_errors(form.waypoints.vars.prototype.jumpDistance) }}
                             <p class="text-xs text-slate-400 mt-1">Calculated after submit from the waypoint sequence.</p>
