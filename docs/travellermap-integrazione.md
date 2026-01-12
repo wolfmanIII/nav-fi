@@ -67,6 +67,10 @@ Obiettivo: tracciare e visualizzare rotte Traveller dentro Captain Log, sfruttan
 - **Static map overlay (facoltativo)**:
   - Se API static map disponibile: generare URL immagine con markers su hex dei waypoint; salvare URL in Route o rigenerarla on demand.
   - Alternativa: costruire un link con parametri `?options=...&path=HEX1,HEX2,...` se supportato.
+  - **Jumpmap statica (esempio funzionante):**
+    - URL `https://travellermap.com/api/jumpmap?sector=Spinward%20Marches&hex=1910&jump=2` mostra la mappa centrata su `hex=1910` nel settore `Spinward Marches`.
+    - Il parametro `jump` definisce la distanza (in parsec) attorno all’hex centrale che verrà visualizzata dalla mappa: aumentando il valore si allarga il raggio di visualizzazione, permettendo di coprire più waypoint intorno alla rotta.
+  - **Mappa dettagli waypoint:** `https://travellermap.com/api/route?start=spin+1910&end=spin+2510&jump=2` restituisce i dati lungo la rotta specificata e può essere usata per ottenere la lista dei waypoint seguiti fra gli hex indicati, coerente con il parametro `jump` della rotta.
 
 ## Frontend/UI
 - **Dettaglio Campaign**: nuova scheda/box "Routes" con tabella rotte (nome, ship, start→dest, jumps, azioni) e pulsante "Add route".
