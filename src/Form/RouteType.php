@@ -11,6 +11,7 @@ use App\Form\Type\ImperialDateType;
 use App\Model\ImperialDate;
 use App\Service\ImperialDateHelper;
 use App\Service\RouteMathHelper;
+use App\Service\TravellerMapSectorLookup;
 use App\Repository\ShipRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -32,7 +33,8 @@ class RouteType extends AbstractType
     public function __construct(
         private readonly RouteMathHelper $routeMathHelper,
         private readonly DayYearLimits $limits,
-        private readonly ImperialDateHelper $imperialDateHelper
+        private readonly ImperialDateHelper $imperialDateHelper,
+        private readonly TravellerMapSectorLookup $sectorLookup
     ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -207,6 +209,16 @@ class RouteType extends AbstractType
                     $form->get('waypoints')->addError(new FormError(
                         sprintf('Jump %d exceeds rating %d on segment #%d.', $distance, $jumpRating, $idx + 1)
                     ));
+                }
+
+                $sector = trim((string) $waypoint->getSector());
+                $hex = trim((string) $waypoint->getHex());
+                if ($sector !== '' && $hex !== '') {
+                    $lookup = $this->sectorLookup->lookupWorld($sector, $hex);
+                    if ($lookup) {
+                        $waypoint->setWorld($lookup['world'] ?? $waypoint->getWorld());
+                        $waypoint->setUwp($lookup['uwp'] ?? $waypoint->getUwp());
+                    }
                 }
             }
 
