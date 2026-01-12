@@ -51,6 +51,7 @@ security:
         - { path: ^/cost, roles: ROLE_USER }
         - { path: ^/income, roles: ROLE_USER }
         - { path: ^/campaign, roles: ROLE_USER }
+        - { path: ^/route, roles: ROLE_USER }
         - { path: ^/, roles: PUBLIC_ACCESS }
 
 when@test:
