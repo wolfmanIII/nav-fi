@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}De-authorize 2FA{% endblock %}
+
+{% block pageContent %}
+<div class="">
+    {# Header Section #}
+    <div class="relative rounded-xl border border-red-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-red-900/50 shadow-lg mb-6">
+        <div class="absolute inset-0 rounded-xl opacity-30 mix-blend-screen pointer-events-none"
+             style="background: radial-gradient(circle at 20% 20%, rgba(239,68,68,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(220,38,38,0.25), transparent 35%);">
+        </div>
+        <div class="relative p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div class="flex items-start gap-4">
+                <div class="p-3 rounded-lg bg-red-500/10 border border-red-400/40 text-red-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        <line x1="8" y1="11" x2="8" y2="7"/><line x2="16" y1="11" y2="7"/>
+                        <circle cx="12" cy="16" r="1"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="uppercase text-xs tracking-[0.25em] text-red-300/70">Critical Protocol</p>
+                    <h1 class="text-3xl font-semibold text-red-100 leading-tight">Emergency De-authorization</h1>
+                    <p class="text-sm text-red-100/80">Initiating the removal of biometric transponder encryption. Confirm credentials to proceed.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-xl mx-auto">
+        <div class="card bg-slate-800 border border-red-500/20 shadow-xl overflow-hidden">
+            <div class="p-8 text-center">
+                <div class="mb-8">
+                    <div class="inline-block p-4 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 mb-4 animate-pulse">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-red-100 uppercase tracking-widest mb-2">Final Confirmation Required</h2>
+                    <p class="text-slate-400 text-sm">
+                        De-authorizing your neural link will revert your bridge access to standard encryption. This action reduces the ship's overall security rating.
+                    </p>
+                </div>
+
+                <form action="{{ path('app_profile_2fa_disable_confirm') }}" method="post" class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-widest text-red-500/80 mb-3">One-Time Security Token</label>
+                        <input type="text" name="code" 
+                               placeholder="000 000" 
+                               inputmode="numeric" 
+                               pattern="[0-9]*" 
+                               maxlength="6"
+                               class="input input-lg w-full bg-slate-900 text-red-400 border-red-700/50 focus:border-red-400 text-center text-3xl tracking-[0.5em] font-mono shadow-inner" 
+                               required autofocus>
+                    </div>
+
+                    <div class="flex flex-col gap-3">
+                        <button type="submit" class="btn btn-error py-4 font-bold uppercase tracking-[0.2em] shadow-lg shadow-red-900/20">
+                            Confirm De-authorization
+                        </button>
+                        <a href="{{ path('app_profile') }}" class="btn btn-ghost btn-sm text-slate-500 hover:text-cyan-400 uppercase tracking-widest">
+                            // Cancel Sequence
+                        </a>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="bg-red-950/20 p-3 border-t border-red-500/10">
+                <p class="text-[10px] text-red-400/60 uppercase tracking-[0.3em] font-mono">
+                    Warning: Disabling 2FA bypasses level-3 safety interlocks
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

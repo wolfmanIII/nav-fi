@@ -4,33 +4,33 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    app.day_min: '%env(int:APP_DAY_MIN)%'
-    app.day_max: '%env(int:APP_DAY_MAX)%'
-    app.year_min: '%env(int:APP_YEAR_MIN)%'
-    app.year_max: '%env(int:APP_YEAR_MAX)%'
-    ai.backend: '%env(AI_BACKEND)%' # ollama | openai
+    app.day_min: "%env(int:APP_DAY_MIN)%"
+    app.day_max: "%env(int:APP_DAY_MAX)%"
+    app.year_min: "%env(int:APP_YEAR_MIN)%"
+    app.year_max: "%env(int:APP_YEAR_MAX)%"
+    ai.backend: "%env(AI_BACKEND)%" # ollama | openai
 
 services:
     # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
+        autowire: true # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
-        resource: '../src/'
+        resource: "../src/"
 
     App\Form\Config\DayYearLimits:
         arguments:
-            $dayMin: '%app.day_min%'
-            $dayMax: '%app.day_max%'
-            $yearMin: '%app.year_min%'
-            $yearMax: '%app.year_max%'
+            $dayMin: "%app.day_min%"
+            $dayMax: "%app.day_max%"
+            $yearMin: "%app.year_min%"
+            $yearMax: "%app.year_max%"
 
     App\Service\TemplateVersionRegistry:
         arguments:
-            $projectDir: '%kernel.project_dir%'
+            $projectDir: "%kernel.project_dir%"
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
@@ -41,4 +41,9 @@ services:
     #       - { name: 'doctrine.middleware' }
 
     App\EventSubscriber\AssignUserSubscriber:
-        tags: ['doctrine.event_subscriber']
+        tags: ["doctrine.event_subscriber"]
+
+    # Fix for SchebTwoFactorBundle controller not being public/auto-wired
+    Scheb\TwoFactorBundle\Controller\FormController:
+        alias: scheb_two_factor.form_controller
+        public: true

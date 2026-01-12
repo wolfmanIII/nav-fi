@@ -1,7 +1,7 @@
 security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
     role_hierarchy:
         ROLE_SUPER_ADMIN: [ROLE_ADMIN]
         ROLE_ADMIN: [ROLE_USER]
@@ -20,6 +20,7 @@ security:
             pattern: ^/
             provider: app_user_provider
             lazy: true
+            entry_point: form_login
             form_login:
                 login_path: app_login
                 check_path: app_login
@@ -31,6 +32,12 @@ security:
                 path: app_logout
                 target: app_home
 
+            two_factor:
+                auth_form_path: 2fa_login # The route name you have used in the routes.yaml
+                check_path: 2fa_login_check # The route name you have used in the routes.yaml
+
+            custom_authenticator: App\Security\GoogleAuthenticator
+
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
@@ -41,6 +48,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/2fa, roles: PUBLIC_ACCESS }
         - { path: ^/_components, roles: PUBLIC_ACCESS } # endpoint che Symfony/Twig UX usa per i componenti
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/crew, roles: ROLE_USER }
