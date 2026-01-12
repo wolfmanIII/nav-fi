@@ -8,7 +8,16 @@
             </span>
             <span>Beacon // Dock Ready</span>
         </div>
+
         <ul class="menu w-full grow">
+
+            <li>
+                <a href="{{ path('app_profile') }}"
+                   class="{% if controller_name == 'ProfileController' %}menu-active{% endif %}">
+                    {% include 'icons/dossier.html.twig' with {'dim': '24'} %}
+                    <span>Dossier // 01</span>
+                </a>
+            </li>
             <li>
                 <a href="{{ path('app_home') }}"
                    class="{% if controller_name == constant('App\\Controller\\HomeController::CONTROLLER_NAME') %}menu-active{% endif %}"
@@ -144,14 +153,6 @@
                     </a>
                 </li>
             {% endif %}
-
-            <li>
-                <a href="{{ path('app_profile') }}"
-                   class="{% if controller_name == 'ProfileController' %}menu-active{% endif %}">
-                    {% include 'icons/crew.html.twig' with {'dim': '24'} %}
-                    <span>Profile</span>
-                </a>
-            </li>
 
         </ul>
     </div>

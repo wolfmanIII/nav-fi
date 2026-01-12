@@ -12,7 +12,7 @@
         <div class="relative p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div class="flex items-start gap-4">
                 <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40 text-cyan-400">
-                    {% include 'icons/rag-profiles.html.twig' %}
+                    {% include 'icons/dossier.html.twig' %}
                 </div>
                 <div>
                     <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Traveller Identity</p>
@@ -64,7 +64,9 @@
             <div class="p-6">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="text-cyan-400">
-                        {% include 'icons/radar.html.twig' with {'dim': 20} %}
+                        <span class="flex items-center justify-center animate-spin-slow">
+                            {% include 'icons/radar.html.twig' with {'dim': 20} %}
+                        </span>
                     </div>
                     <h2 class="text-xl font-semibold text-cyan-100 uppercase tracking-wider">Biometric Lock</h2>
                 </div>
