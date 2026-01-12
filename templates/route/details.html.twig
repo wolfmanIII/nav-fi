@@ -49,8 +49,7 @@
             <iframe
                 src="{{ mapUrl }}"
                 class="w-full h-80 rounded-lg border border-base-300"
-                loading="lazy"
-                referrerpolicy="no-referrer">
+                loading="lazy">
             </iframe>
         </div>
 
@@ -60,10 +59,12 @@
                 <tr>
                     <th>#</th>
                     <th>Hex</th>
+                    <th>Sector</th>
                     <th>World</th>
                     <th>UWP</th>
                     <th class="text-right">Jump</th>
                     <th>Notes</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -72,15 +73,26 @@
                         <tr>
                             <td>{{ waypoint.position }}</td>
                             <td>{{ waypoint.hex }}</td>
+                            <td>{{ waypoint.sector ?? '—' }}</td>
                             <td>{{ waypoint.world ?? '—' }}</td>
                             <td>{{ waypoint.uwp ?? '—' }}</td>
                             <td class="text-right">{{ waypoint.jumpDistance ?? '—' }}</td>
                             <td>{{ waypoint.notes ?? '—' }}</td>
+                            <td class="text-right">
+                                {% if waypoint.hex %}
+                                    <a class="btn btn-outline btn-info btn-xs"
+                                       href="{{ path('app_route_details', { id: route.id }) }}?marker_hex={{ waypoint.hex|url_encode }}{% if waypoint.sector %}&marker_sector={{ waypoint.sector|url_encode }}{% endif %}">
+                                        Map
+                                    </a>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                 {% else %}
                     <tr>
-                        <td colspan="6" class="text-center text-slate-400 py-6">No waypoints recorded.</td>
+                        <td colspan="8" class="text-center text-slate-400 py-6">No waypoints recorded.</td>
                     </tr>
                 {% endif %}
                 </tbody>

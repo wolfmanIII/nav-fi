@@ -111,7 +111,7 @@ final class RouteController extends BaseController
     }
 
     #[RouteAttr('/route/details/{id}', name: 'app_route_details', methods: ['GET'])]
-    public function details(int $id, EntityManagerInterface $em): Response
+    public function details(int $id, Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
@@ -124,10 +124,25 @@ final class RouteController extends BaseController
         }
 
         $startHex = $route->getStartHex();
-        if (!$startHex && $route->getWaypoints()->count() > 0) {
-            $startHex = $route->getWaypoints()->first()?->getHex();
+        $sector = null;
+        $queryHex = trim((string) $request->query->get('marker_hex'));
+        $querySector = trim((string) $request->query->get('marker_sector'));
+        if ($queryHex !== '') {
+            $startHex = $queryHex;
+            $sector = $querySector !== '' ? $querySector : null;
+        } elseif ($route->getWaypoints()->count() > 0) {
+            $firstWaypoint = $route->getWaypoints()->first() ?: null;
+            $startHex = $startHex ?: $firstWaypoint?->getHex();
+            $sector = $firstWaypoint?->getSector();
+        } else {
+            $sector = null;
         }
-        $mapUrl = $startHex ? 'https://travellermap.com/?p='.rawurlencode($startHex) : 'https://travellermap.com';
+        $mapUrl = 'https://travellermap.com/';
+        if ($startHex && $sector) {
+            $mapUrl .= 'go/'.rawurlencode($sector).'/'.rawurlencode($startHex);
+        } elseif ($startHex) {
+            $mapUrl .= '?marker_hex='.rawurlencode($startHex);
+        }
 
         return $this->render('route/details.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,

@@ -9,13 +9,13 @@ class RouteMathHelper
 {
     public function parseHex(string $hex): ?array
     {
-        $normalized = strtoupper(trim($hex));
-        if (!preg_match('/^[0-9A-F]{4}$/', $normalized)) {
+        $normalized = trim($hex);
+        if (!preg_match('/^\d{4}$/', $normalized)) {
             return null;
         }
 
-        $col = hexdec(substr($normalized, 0, 2));
-        $row = hexdec(substr($normalized, 2, 2));
+        $col = (int) substr($normalized, 0, 2);
+        $row = (int) substr($normalized, 2, 2);
 
         return [$col, $row];
     }
@@ -28,7 +28,14 @@ class RouteMathHelper
             return null;
         }
 
-        return abs($from[0] - $to[0]) + abs($from[1] - $to[1]);
+        [$x1, $y1, $z1] = $this->offsetToCube($from[0], $from[1]);
+        [$x2, $y2, $z2] = $this->offsetToCube($to[0], $to[1]);
+
+        return max(
+            abs($x1 - $x2),
+            abs($y1 - $y2),
+            abs($z1 - $z2)
+        );
     }
 
     /**
@@ -144,5 +151,17 @@ class RouteMathHelper
         }
 
         return null;
+    }
+
+    /**
+     * @return array{int, int, int}
+     */
+    private function offsetToCube(int $col, int $row): array
+    {
+        $x = $col;
+        $z = $row - intdiv($col + ($col & 1), 2);
+        $y = -$x - $z;
+
+        return [$x, $y, $z];
     }
 }

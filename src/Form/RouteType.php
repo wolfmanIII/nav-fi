@@ -16,6 +16,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -24,6 +25,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Count;
 
 class RouteType extends AbstractType
 {
@@ -94,13 +96,11 @@ class RouteType extends AbstractType
                     'data-campaign-ship-target' => 'ship',
                 ],
             ])
-            ->add('startHex', TextType::class, [
+            ->add('startHex', HiddenType::class, [
                 'required' => false,
-                'attr' => ['class' => 'input m-1 w-full uppercase', 'maxlength' => 4],
             ])
-            ->add('destHex', TextType::class, [
+            ->add('destHex', HiddenType::class, [
                 'required' => false,
-                'attr' => ['class' => 'input m-1 w-full uppercase', 'maxlength' => 4],
             ])
             ->add('startDate', ImperialDateType::class, [
                 'mapped' => false,
@@ -139,6 +139,12 @@ class RouteType extends AbstractType
                 'required' => false,
                 'label' => false,
                 'prototype' => true,
+                'constraints' => [
+                    new Count([
+                        'min' => 1,
+                        'minMessage' => 'Add at least one waypoint to define a route.',
+                    ]),
+                ],
             ])
         ;
 
@@ -173,6 +179,15 @@ class RouteType extends AbstractType
             }
 
             $waypoints = $route->getWaypoints();
+            if ($waypoints->count() === 0) {
+                $form->get('waypoints')->addError(new FormError('Add at least one waypoint to define a route.'));
+            }
+
+            $firstWaypoint = $waypoints->first() ?: null;
+            $lastWaypoint = $waypoints->last() ?: null;
+            $route->setStartHex($firstWaypoint?->getHex() ?: null);
+            $route->setDestHex($lastWaypoint?->getHex() ?: null);
+
             $hexes = [];
             $index = 0;
             foreach ($waypoints as $waypoint) {

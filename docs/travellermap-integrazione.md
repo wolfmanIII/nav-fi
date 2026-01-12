@@ -44,7 +44,7 @@ Obiettivo: tracciare e visualizzare rotte Traveller dentro Captain Log, sfruttan
 
 ## Integrazione TravellerMap
 ### Cosa possiamo fare sicuramente (senza API ufficiali)
-- Link esterni a TravellerMap con parametri `p`/`jump`/`path` (da confermare) per aprire la mappa in una nuova scheda.
+- Link esterni a TravellerMap con path `https://travellermap.com/go/{sector}/{hex}` per aprire la mappa in una nuova scheda.
 - Iframe embed con URL di TravellerMap per mostrare una vista statica del settore/hex.
 - Route planner lato UI: il percorso è costruito localmente e passato a TravellerMap come query string.
 
@@ -54,8 +54,8 @@ Obiettivo: tracciare e visualizzare rotte Traveller dentro Captain Log, sfruttan
 - Politiche CORS e rate limit per chiamate client-side.
 
 - **Embed (semplice, zero API key)**:
-  - Iframe con URL `https://travellermap.com/?p=<sector>/<hex>` o `.../jump?p=<hex>&j=<jump>` se disponibile.
-  - Link "Apri su TravellerMap" generato da controller: costruire query string con `s=<startHex>&d=<destHex>` o `jump=<rating>` se supportato.
+  - Iframe con URL `https://travellermap.com/go/<sector>/<hex>`.
+  - Link "Apri su TravellerMap" generato da controller: path con `<sector>/<hex>`.
 
 - **API Lookup (opzionale, con rete)**:
   - Endpoint TravellerMap JSON: `https://travellermap.com/api/sector/<sector>/hex/<hex>` o varianti (verificare doc ufficiale: https://travellermap.com/doc/api).

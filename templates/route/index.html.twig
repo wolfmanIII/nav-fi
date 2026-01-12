@@ -98,7 +98,7 @@
                                             {{ tooltip.link('Open on TravellerMap',
                                                             '',
                                                             'icons/routes.html.twig',
-                                                            'https://travellermap.com/?p=' ~ route.startHex,
+                                                            'https://travellermap.com/?marker_hex=' ~ route.startHex,
                                                             { dim: 14, linkClass: 'btn btn-outline btn-accent btn-xs', attrs: { target: '_blank', rel: 'noopener' } }) }}
                                         {% else %}
                                             {{ tooltip.button('No start hex for map',

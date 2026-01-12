@@ -25,6 +25,9 @@ class RouteWaypoint
     #[ORM\Column(length: 4)]
     private ?string $hex = null;
 
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $sector = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $world = null;
 
@@ -74,6 +77,18 @@ class RouteWaypoint
     public function setHex(string $hex): static
     {
         $this->hex = $hex;
+
+        return $this;
+    }
+
+    public function getSector(): ?string
+    {
+        return $this->sector;
+    }
+
+    public function setSector(?string $sector): static
+    {
+        $this->sector = $sector;
 
         return $this;
     }

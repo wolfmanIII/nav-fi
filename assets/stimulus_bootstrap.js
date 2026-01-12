@@ -15,6 +15,7 @@ import CrewStatusDateController from './controllers/crew_status_date_controller.
 import TomSelectController from './controllers/tom_select_controller.js';
 import HighlightController from './controllers/highlight_controller.js';
 import RouteWaypointsController from './controllers/route_waypoints_controller.js';
+import RouteMapController from './controllers/route_map_controller.js';
 
 const app = startStimulusApp();
 
@@ -34,3 +35,4 @@ app.register('crew-status-date', CrewStatusDateController);
 app.register('tom-select', TomSelectController);
 app.register('highlight', HighlightController);
 app.register('route-waypoints', RouteWaypointsController);
+app.register('route-map', RouteMapController);

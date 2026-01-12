@@ -7,8 +7,7 @@
     <div class="flex flex-col items-stretch gap-4">
         {{ form_start(form) }}
 
-        <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full"
-                 data-controller="route-waypoints">
+        <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
             <legend class="fieldset-legend">Route</legend>
 
             <div class="col-span-2">
@@ -28,6 +27,18 @@
                     </div>
                 </div>
             </div>
+            {% if form_errors(form) %}
+                <div class="col-span-2">
+                    <div class="alert alert-error alert-outline shadow-sm">
+                        <span class="flex items-center justify-center animate-spin-slow">
+                            {% include 'icons/radar.html.twig' %}
+                        </span>
+                        <div class="text-sm text-slate-200">
+                            {{ form_errors(form) }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
 
             {% if route.id %}
                 <div class="col-span-2">
@@ -80,53 +91,7 @@
                         {% include 'icons/radar.html.twig' %}
                     </span>
                     <div class="text-sm text-slate-200">
-                        If Start/Destination hex are left empty, the route will auto‑seal them from the first and last waypoint.
-                    </div>
-                </div>
-            </div>
-            <div>
-                {% set start_hex_help_id = form.startHex.vars.id ~ '-help' %}
-                <div class="flex items-center gap-2">
-                    {{ form_label(form.startHex) }}
-                    <label for="{{ start_hex_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
-                </div>
-                {{ form_widget(form.startHex) }}
-                {{ form_errors(form.startHex) }}
-                <p class="text-xs text-slate-400 mt-1">Traveller hex code, 4 digits (e.g. 0101).</p>
-                <input type="checkbox" id="{{ start_hex_help_id }}" class="modal-toggle hidden" />
-                <div class="modal" role="dialog">
-                    <div class="modal-box">
-                        <h3 class="font-bold">Start Hex</h3>
-                        <p class="py-2 text-sm">
-                            Enter the 4‑digit Traveller hex code for the departure world (sector grid coordinates).
-                            Example: <code>0101</code> or <code>1234</code>. Use only 0‑9 and A‑F.
-                        </p>
-                        <div class="modal-action">
-                            <label for="{{ start_hex_help_id }}" class="btn btn-primary">Close</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div>
-                {% set dest_hex_help_id = form.destHex.vars.id ~ '-help' %}
-                <div class="flex items-center gap-2">
-                    {{ form_label(form.destHex) }}
-                    <label for="{{ dest_hex_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
-                </div>
-                {{ form_widget(form.destHex) }}
-                {{ form_errors(form.destHex) }}
-                <p class="text-xs text-slate-400 mt-1">Traveller hex code, 4 digits (e.g. 1234).</p>
-                <input type="checkbox" id="{{ dest_hex_help_id }}" class="modal-toggle hidden" />
-                <div class="modal" role="dialog">
-                    <div class="modal-box">
-                        <h3 class="font-bold">Destination Hex</h3>
-                        <p class="py-2 text-sm">
-                            Enter the 4‑digit Traveller hex code for the arrival world (sector grid coordinates).
-                            Example: <code>0101</code> or <code>1234</code>. Use only 0‑9 and A‑F.
-                        </p>
-                        <div class="modal-action">
-                            <label for="{{ dest_hex_help_id }}" class="btn btn-primary">Close</label>
-                        </div>
+                        Start/Destination hex are auto‑sealed from the first and last waypoint. At least one waypoint is required to register the route.
                     </div>
                 </div>
             </div>
@@ -154,94 +119,113 @@
                 {{ form_widget(form.destDate.day) }}
                 {{ form_errors(form.destDate.display) }}
             </div>
-            <div class="col-span-2">
-                {{ form_label(form.description) }}
-                {{ form_widget(form.description) }}
-                {{ form_errors(form.description) }}
-            </div>
-            <div class="col-span-2">
-                {{ form_label(form.notes) }}
-                {{ form_widget(form.notes) }}
-                {{ form_errors(form.notes) }}
-            </div>
+        </fieldset>
 
-            <div class="col-span-2" data-route-waypoints-target="collection">
-                <div class="flex items-center justify-between">
-                    <h4 class="font-semibold text-cyan-100">Waypoints</h4>
-                    <button type="button" class="btn btn-outline btn-xs" data-action="route-waypoints#addItem">+ Add</button>
-                </div>
-                <div class="space-y-2 mt-2" data-route-waypoints-target="list">
-                    {% for child in form.waypoints %}
-                        <div class="collection-item border border-base-300 rounded p-3 bg-base-100 relative">
-                            <button type="button"
-                                    class="btn btn-ghost btn-xs absolute right-2 top-2"
-                                    data-action="route-waypoints#removeItem">&times;</button>
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                                <div>
-                                    {{ form_label(child.hex) }}
-                                    {{ form_widget(child.hex) }}
-                                    {{ form_errors(child.hex) }}
-                                </div>
-                                <div>
-                                    {{ form_label(child.world) }}
-                                    {{ form_widget(child.world) }}
-                                    {{ form_errors(child.world) }}
-                                </div>
-                                <div>
-                                    {{ form_label(child.uwp) }}
-                                    {{ form_widget(child.uwp) }}
-                                    {{ form_errors(child.uwp) }}
-                                </div>
-                                <div>
-                                    {{ form_label(child.jumpDistance) }}
-                                    {{ form_widget(child.jumpDistance) }}
-                                    {{ form_errors(child.jumpDistance) }}
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                {{ form_label(child.notes) }}
-                                {{ form_widget(child.notes) }}
-                                {{ form_errors(child.notes) }}
-                            </div>
-                            {{ form_widget(child.position) }}
-                        </div>
-                    {% endfor %}
-                </div>
-                <template data-route-waypoints-target="prototype">
+        <fieldset class="fieldset grid grid-cols-1 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full"
+                  data-controller="route-waypoints"
+                  data-route-waypoints-target="collection">
+            <legend class="fieldset-legend">Waypoints</legend>
+            <div class="flex items-center justify-between">
+                <h4 class="font-semibold text-cyan-100">Route waypoints</h4>
+                <button type="button" class="btn btn-outline btn-xs" data-action="route-waypoints#addItem">+ Add</button>
+            </div>
+            <div class="space-y-2" data-route-waypoints-target="list">
+                {% for child in form.waypoints %}
                     <div class="collection-item border border-base-300 rounded p-3 bg-base-100 relative">
                         <button type="button"
                                 class="btn btn-ghost btn-xs absolute right-2 top-2"
                                 data-action="route-waypoints#removeItem">&times;</button>
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
                             <div>
-                                {{ form_label(form.waypoints.vars.prototype.hex) }}
-                                {{ form_widget(form.waypoints.vars.prototype.hex) }}
-                                {{ form_errors(form.waypoints.vars.prototype.hex) }}
+                                {{ form_label(child.hex) }}
+                                {{ form_widget(child.hex) }}
+                                {{ form_errors(child.hex) }}
                             </div>
                             <div>
-                                {{ form_label(form.waypoints.vars.prototype.world) }}
-                                {{ form_widget(form.waypoints.vars.prototype.world) }}
-                                {{ form_errors(form.waypoints.vars.prototype.world) }}
+                                {{ form_label(child.sector) }}
+                                {{ form_widget(child.sector) }}
+                                {{ form_errors(child.sector) }}
+                                <p class="text-xs text-slate-400 mt-1">Sector name or T5SS abbreviation (e.g. Spinward Marches / SM).</p>
                             </div>
                             <div>
-                                {{ form_label(form.waypoints.vars.prototype.uwp) }}
-                                {{ form_widget(form.waypoints.vars.prototype.uwp) }}
-                                {{ form_errors(form.waypoints.vars.prototype.uwp) }}
+                                {{ form_label(child.world) }}
+                                {{ form_widget(child.world) }}
+                                {{ form_errors(child.world) }}
                             </div>
                             <div>
-                                {{ form_label(form.waypoints.vars.prototype.jumpDistance) }}
-                                {{ form_widget(form.waypoints.vars.prototype.jumpDistance) }}
-                                {{ form_errors(form.waypoints.vars.prototype.jumpDistance) }}
+                                {{ form_label(child.uwp) }}
+                                {{ form_widget(child.uwp) }}
+                                {{ form_errors(child.uwp) }}
+                            </div>
+                            <div>
+                                {{ form_label(child.jumpDistance) }}
+                                {{ form_widget(child.jumpDistance) }}
+                                {{ form_errors(child.jumpDistance) }}
                             </div>
                         </div>
                         <div class="mt-3">
-                            {{ form_label(form.waypoints.vars.prototype.notes) }}
-                            {{ form_widget(form.waypoints.vars.prototype.notes) }}
-                            {{ form_errors(form.waypoints.vars.prototype.notes) }}
+                            {{ form_label(child.notes) }}
+                            {{ form_widget(child.notes) }}
+                            {{ form_errors(child.notes) }}
                         </div>
-                        {{ form_widget(form.waypoints.vars.prototype.position) }}
+                        {{ form_widget(child.position) }}
                     </div>
-                </template>
+                {% endfor %}
+            </div>
+            <template data-route-waypoints-target="prototype">
+                <div class="collection-item border border-base-300 rounded p-3 bg-base-100 relative">
+                    <button type="button"
+                            class="btn btn-ghost btn-xs absolute right-2 top-2"
+                            data-action="route-waypoints#removeItem">&times;</button>
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                        <div>
+                            {{ form_label(form.waypoints.vars.prototype.hex) }}
+                            {{ form_widget(form.waypoints.vars.prototype.hex) }}
+                            {{ form_errors(form.waypoints.vars.prototype.hex) }}
+                        </div>
+                        <div>
+                            {{ form_label(form.waypoints.vars.prototype.sector) }}
+                            {{ form_widget(form.waypoints.vars.prototype.sector) }}
+                            {{ form_errors(form.waypoints.vars.prototype.sector) }}
+                            <p class="text-xs text-slate-400 mt-1">Sector name or T5SS abbreviation (e.g. Spinward Marches / SM).</p>
+                        </div>
+                        <div>
+                            {{ form_label(form.waypoints.vars.prototype.world) }}
+                            {{ form_widget(form.waypoints.vars.prototype.world) }}
+                            {{ form_errors(form.waypoints.vars.prototype.world) }}
+                        </div>
+                        <div>
+                            {{ form_label(form.waypoints.vars.prototype.uwp) }}
+                            {{ form_widget(form.waypoints.vars.prototype.uwp) }}
+                            {{ form_errors(form.waypoints.vars.prototype.uwp) }}
+                        </div>
+                        <div>
+                            {{ form_label(form.waypoints.vars.prototype.jumpDistance) }}
+                            {{ form_widget(form.waypoints.vars.prototype.jumpDistance) }}
+                            {{ form_errors(form.waypoints.vars.prototype.jumpDistance) }}
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        {{ form_label(form.waypoints.vars.prototype.notes) }}
+                        {{ form_widget(form.waypoints.vars.prototype.notes) }}
+                        {{ form_errors(form.waypoints.vars.prototype.notes) }}
+                    </div>
+                    {{ form_widget(form.waypoints.vars.prototype.position) }}
+                </div>
+            </template>
+        </fieldset>
+
+        <fieldset class="fieldset grid grid-cols-1 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
+            <legend class="fieldset-legend">Route Notes</legend>
+            <div>
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description) }}
+                {{ form_errors(form.description) }}
+            </div>
+            <div>
+                {{ form_label(form.notes) }}
+                {{ form_widget(form.notes) }}
+                {{ form_errors(form.notes) }}
             </div>
         </fieldset>
 
