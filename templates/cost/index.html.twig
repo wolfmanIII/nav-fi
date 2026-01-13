@@ -89,23 +89,21 @@
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
             {% if costs|length > 0 %}
                 {% for cost in costs %}
-                    <div class="group relative flex flex-col rounded-xl border border-amber-500/20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 shadow-lg transition-all hover:border-amber-500/50 hover:shadow-amber-500/10 hover:-translate-y-1">
-                        {# Card Actions: Top Row #}
-                        <div class="flex items-center justify-end mb-3">
+                    <div class="group relative flex flex-col rounded-xl border border-amber-500/20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 shadow-lg transition-all hover:border-amber-500/50 hover:shadow-amber-500/10 hover:-translate-y-1">
+                        {# Card Header: Actions & REF #}
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-2">
+                                <div class="px-2.5 py-1 rounded border border-amber-500/20 bg-amber-500/5 text-xs font-mono tracking-widest text-amber-400/80 uppercase">
+                                    REF: {{ cost.code }}
+                                </div>
+                                <span class="px-2.5 py-1 rounded bg-slate-800 text-xs font-bold tracking-tighter uppercase border border-slate-700 text-slate-400">
+                                    OUTFLOW
+                                </span>
+                            </div>
                             <div class="flex items-center gap-1">
-                                {{ tooltip.link('Edit', '', 'icons/action-edit.html.twig', path('app_cost_edit', {id: cost.id}), { dim: 18, linkClass: 'p-2.5 rounded-lg hover:bg-amber-500/20 text-amber-400' }) }}
-                                {{ tooltip.link('Delete', '', 'icons/action-trash.html.twig', path('app_cost_delete', {id: cost.id}), { dim: 18, linkClass: 'p-2.5 rounded-lg hover:bg-red-500/20 text-red-400' }) }}
+                                {{ tooltip.link('Edit', '', 'icons/action-edit.html.twig', path('app_cost_edit', {id: cost.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-amber-500/20 text-amber-400' }) }}
+                                {{ tooltip.link('Delete', '', 'icons/action-trash.html.twig', path('app_cost_delete', {id: cost.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' }) }}
                             </div>
-                        </div>
-
-                        {# Card Header: Code #}
-                        <div class="flex items-center gap-2 mb-4">
-                            <div class="px-2 py-0.5 rounded border border-amber-500/40 bg-amber-500/5 text-xs font-mono tracking-widest text-amber-400 uppercase">
-                                REF: {{ cost.code }}
-                            </div>
-                            <span class="px-2 py-0.5 rounded bg-slate-800 text-xs font-bold tracking-tighter uppercase border border-slate-700 text-slate-400">
-                                OUTFLOW
-                            </span>
                         </div>
 
                         {# Card Body: Main Content #}

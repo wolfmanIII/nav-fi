@@ -82,21 +82,17 @@
         <div class="grid grid-cols-1 gap-6 mb-8">
             {% if budgets|length > 0 %}
                 {% for budget in budgets %}
-                    <div class="group relative flex flex-col xl:flex-row gap-8 rounded-xl border border-teal-500/20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 shadow-lg transition-all hover:border-teal-500/50 hover:shadow-teal-500/10 hover:-translate-y-1">
+                    <div class="group relative flex flex-col xl:flex-row gap-8 rounded-xl border border-teal-500/20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 shadow-lg transition-all hover:border-teal-500/50 hover:shadow-teal-500/10 hover:-translate-y-1">
                         {# Left: Core Data #}
                         <div class="flex-1">
-                            {# Card Actions: Top Row #}
-                            <div class="flex items-center justify-end mb-3">
-                                <div class="flex items-center gap-1">
-                                    {{ tooltip.link('Edit', '', 'icons/action-edit.html.twig', path('app_annual_budget_edit', {id: budget.id}), { dim: 18, linkClass: 'p-2.5 rounded-lg hover:bg-teal-500/20 text-teal-400' }) }}
-                                    {{ tooltip.link('Delete', '', 'icons/action-trash.html.twig', path('app_annual_budget_delete', {id: budget.id}), { dim: 18, linkClass: 'p-2.5 rounded-lg hover:bg-red-500/20 text-red-400' }) }}
-                                </div>
-                            </div>
-
-                            {# Card Header: Metadata #}
-                            <div class="flex items-center gap-2 mb-4">
-                                <div class="px-2 py-0.5 rounded border border-teal-500/40 bg-teal-500/5 text-xs font-mono tracking-widest text-teal-400 uppercase">
+                            {# Card Header: Actions & Metadata #}
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="px-2.5 py-1 rounded border border-teal-500/20 bg-teal-500/5 text-xs font-mono tracking-widest text-teal-400/80 uppercase">
                                     CYCLE_LEDGER: {{ budget.code }}
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    {{ tooltip.link('Edit', '', 'icons/action-edit.html.twig', path('app_annual_budget_edit', {id: budget.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-teal-500/20 text-teal-400' }) }}
+                                    {{ tooltip.link('Delete', '', 'icons/action-trash.html.twig', path('app_annual_budget_delete', {id: budget.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' }) }}
                                 </div>
                             </div>
 

@@ -79,30 +79,28 @@
         <div class="grid grid-cols-1 gap-6 mb-8">
             {% if mortgages|length > 0 %}
                 {% for mortgage in mortgages %}
-                    <div class="group relative flex flex-col lg:flex-row gap-6 rounded-xl border border-cyan-500/20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 shadow-lg transition-all hover:border-cyan-500/50 hover:shadow-cyan-500/10 hover:-translate-y-1">
+                    <div class="group relative flex flex-col lg:flex-row gap-6 rounded-xl border border-cyan-500/20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 shadow-lg transition-all hover:border-cyan-500/50 hover:shadow-cyan-500/10 hover:-translate-y-1">
                         {# Left Section: Info & Title #}
                         <div class="flex-1">
-                            {# Card Actions: Top Row #}
-                            <div class="flex items-center justify-end mb-3">
+                            {# Card Header: Actions & REF #}
+                            <div class="flex items-center justify-between mb-4 lg:mb-6">
+                                <div class="flex items-center gap-2">
+                                    <div class="px-2.5 py-1 rounded border border-cyan-500/20 bg-cyan-500/5 text-xs font-mono tracking-widest text-cyan-400/80 uppercase">
+                                        REF: {{ mortgage.code }}
+                                    </div>
+                                    <span class="px-2.5 py-1 rounded bg-slate-800 text-xs font-bold tracking-tighter uppercase border border-slate-700 {{ mortgage.signed ? 'text-cyan-400 border-cyan-500/30' : 'text-amber-500 border-amber-500/30' }}">
+                                        {{ mortgage.signed ? 'S_AUTHORIZED' : 'P_UNSIGNED' }}
+                                    </span>
+                                </div>
                                 <div class="flex items-center gap-1">
-                                    {{ tooltip.link('Edit', '', 'icons/action-edit.html.twig', path('app_mortgage_edit', {id: mortgage.id}), { dim: 18, linkClass: 'p-2.5 rounded-lg hover:bg-cyan-500/20 text-cyan-400' }) }}
+                                    {{ tooltip.link('Edit', '', 'icons/action-edit.html.twig', path('app_mortgage_edit', {id: mortgage.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-cyan-500/20 text-cyan-400' }) }}
                                     {% set CAN_DELETE = constant('App\\Security\\Voter\\MortgageVoter::DELETE') %}
                                     {% set can_delete = is_granted(CAN_DELETE, mortgage) %}
                                     {{ tooltip.link('Delete', '', 'icons/action-trash.html.twig', path('app_mortgage_delete', {id: mortgage.id}), {
-                                        dim: 18,
-                                        linkClass: 'p-2.5 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none')
+                                        dim: 16,
+                                        linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none')
                                     }) }}
                                 </div>
-                            </div>
-
-                            {# Card Header: Code & Status #}
-                            <div class="flex items-center gap-2 mb-4 lg:mb-6">
-                                <div class="px-2 py-0.5 rounded border border-cyan-500/40 bg-cyan-500/5 text-sm font-mono tracking-widest text-cyan-400 uppercase">
-                                    REF: {{ mortgage.code }}
-                                </div>
-                                <span class="px-2 py-0.5 rounded bg-slate-800 text-sm font-bold tracking-tighter uppercase border border-slate-700 {{ mortgage.signed ? 'text-cyan-400 border-cyan-500/30' : 'text-amber-500 border-amber-500/30' }}">
-                                    {{ mortgage.signed ? 'S_AUTHORIZED' : 'P_UNSIGNED' }}
-                                </span>
                             </div>
 
                             <div class="mb-6">

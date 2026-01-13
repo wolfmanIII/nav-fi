@@ -100,7 +100,7 @@
                                                     'Edit company',
                                                     'icons/action-edit.html.twig',
                                                     path('app_company_edit', {id: company.id}),
-                                                    { dim: 14, linkClass: 'btn btn-outline btn-primary btn-xs' }) }}
+                                                    { dim: 14, linkClass: 'btn btn-outline btn-primary btn-xs', position: 'tooltip-left' }) }}
                                     {% set can_delete = is_granted('COMPANY_DELETE', company) %}
                                     {{ tooltip.link('Retire counterparty',
                                                     'Delete company',
@@ -109,7 +109,8 @@
                                                     {
                                                         dim: 14,
                                                         linkClass: 'btn btn-outline btn-error btn-xs' ~ (can_delete ? '' : ' opacity-50 pointer-events-none'),
-                                                        attrs: can_delete ? {} : {'aria-disabled': 'true'}
+                                                        attrs: can_delete ? {} : {'aria-disabled': 'true'},
+                                                        position: 'tooltip-left',
                                                     }) }}
                                 </td>
                             </tr>
