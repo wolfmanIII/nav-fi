@@ -53,46 +53,48 @@
             </iframe>
         </div>
 
-        <div class="overflow-x-auto overflow-y-visible rounded-box border border-base-content/5 bg-base-100">
-            <table class="table border-separate border-spacing-0 inner-bordered-table">
+        <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/40 shadow-inner">
+            <table class="table table-xs w-full border-separate border-spacing-0">
                 <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Hex</th>
-                    <th>Sector</th>
-                    <th>World</th>
-                    <th>UWP</th>
-                    <th class="text-right">Jump</th>
-                    <th>Notes</th>
-                    <th></th>
+                <tr class="border-b border-slate-800">
+                    <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">#</th>
+                    <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Hex</th>
+                    <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Sector</th>
+                    <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">World</th>
+                    <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">UWP</th>
+                    <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50 text-right">Jump</th>
+                    <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Notes</th>
+                    <th class="bg-slate-900/50"></th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-slate-800/50">
                 {% if route.waypoints|length > 0 %}
                     {% for waypoint in route.waypoints %}
-                        <tr>
-                            <td>{{ waypoint.position }}</td>
-                            <td>{{ waypoint.hex }}</td>
-                            <td>{{ waypoint.sector ?? '—' }}</td>
-                            <td>{{ waypoint.world ?? '—' }}</td>
-                            <td>{{ waypoint.uwp ?? '—' }}</td>
-                            <td class="text-right">{{ waypoint.jumpDistance ?? '—' }}</td>
-                            <td>{{ waypoint.notes ?? '—' }}</td>
-                            <td class="text-right">
+                        <tr class="hover:bg-emerald-500/5 transition-colors text-slate-300">
+                            <td class="font-mono text-xs p-2">{{ waypoint.position }}</td>
+                            <td class="font-mono text-xs p-2 border-r border-slate-800/50 font-bold text-emerald-400">{{ waypoint.hex }}</td>
+                            <td class="font-mono text-xs p-2">{{ waypoint.sector ?? '—' }}</td>
+                            <td class="font-mono text-xs p-2 font-bold">{{ waypoint.world ?? '—' }}</td>
+                            <td class="font-mono text-xs p-2">{{ waypoint.uwp ?? '—' }}</td>
+                            <td class="font-mono text-xs p-2 text-right text-emerald-300">{{ waypoint.jumpDistance ?? '—' }}</td>
+                            <td class="font-mono text-xs p-2 text-slate-500 italic">{{ waypoint.notes ?? '—' }}</td>
+                            <td class="text-right p-2">
                                 {% if waypoint.hex %}
-                                    <a class="btn btn-outline btn-info btn-xs"
+                                    <a class="btn btn-ghost btn-xs text-[10px] uppercase font-bold tracking-widest text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10"
                                        href="{{ path('app_route_details', { id: route.id }) }}?marker_hex={{ waypoint.hex|url_encode }}{% if waypoint.sector %}&marker_sector={{ waypoint.sector|url_encode }}{% endif %}">
                                         Map
                                     </a>
                                 {% else %}
-                                    —
+                                    <span class="opacity-30">—</span>
                                 {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
                 {% else %}
                     <tr>
-                        <td colspan="8" class="text-center text-slate-400 py-6">No waypoints recorded.</td>
+                        <td colspan="8" class="text-center text-slate-500 font-rajdhani uppercase tracking-widest text-xs py-8">
+                            // No waypoints mapped
+                        </td>
                     </tr>
                 {% endif %}
                 </tbody>
