@@ -45,13 +45,13 @@
 
         {% set filter_fields %}
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Title</label>
-                <input type="text" name="title" value="{{ filters.title }}" class="input m-1 w-full">
+                <label class="label text-[10px] uppercase tracking-[0.2em] text-cyan-500/60 font-bold">TITLE_DATA</label>
+                <input type="text" name="title" value="{{ filters.title }}" class="input w-full bg-slate-950/50 border-slate-800 text-cyan-100 placeholder:text-slate-600 focus:border-cyan-500/50" placeholder="Search by title...">
             </div>
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Category</label>
-                <select name="category" class="select m-1 w-full">
-                    <option value="">All categories</option>
+                <label class="label text-[10px] uppercase tracking-[0.2em] text-cyan-500/60 font-bold">CAT_ID</label>
+                <select name="category" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
+                    <option value="">ALL_SECTORS</option>
                     {% for category in categories %}
                         <option value="{{ category.id }}" {% if filters.category == category.id %}selected{% endif %}>
                             {{ category.description }}
@@ -60,18 +60,18 @@
                 </select>
             </div>
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Ship</label>
-                <select name="ship" class="select m-1 w-full">
-                    <option value="">All ships</option>
+                <label class="label text-[10px] uppercase tracking-[0.2em] text-cyan-500/60 font-bold">VESSEL_NAV</label>
+                <select name="ship" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
+                    <option value="">ANY_VESSEL</option>
                     {% for ship in ships %}
                         <option value="{{ ship.id }}" {% if filters.ship == ship.id %}selected{% endif %}>{{ ship.name }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Campaign</label>
-                <select name="campaign" class="select m-1 w-full">
-                    <option value="">All campaigns</option>
+                <label class="label text-[10px] uppercase tracking-[0.2em] text-cyan-500/60 font-bold">OPS_CAMPAIGN</label>
+                <select name="campaign" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
+                    <option value="">ALL_OPERATIONS</option>
                     {% for campaign in campaigns %}
                         <option value="{{ campaign.id }}" {% if filters.campaign == campaign.id %}selected{% endif %}>{{ campaign.title }}</option>
                     {% endfor %}
@@ -86,78 +86,99 @@
             is_filtered: filters.title or filters.category or filters.ship or filters.campaign
         } %}
 
-        <div class="flow-root">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+            {% if costs|length > 0 %}
+                {% for cost in costs %}
+                    <div class="group relative flex flex-col rounded-xl border border-amber-500/20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 shadow-lg transition-all hover:border-amber-500/50 hover:shadow-amber-500/10 hover:-translate-y-1">
+                        {# Card Header: Code #}
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-2">
+                                <div class="px-2 py-0.5 rounded border border-amber-500/40 bg-amber-500/5 text-[10px] font-mono tracking-widest text-amber-400 uppercase">
+                                    REF: {{ cost.code }}
+                                </div>
+                                <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-bold tracking-tighter uppercase border border-slate-700 text-slate-400">
+                                    OUTFLOW
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                {{ tooltip.link('Edit', '', 'icons/action-edit.html.twig', path('app_cost_edit', {id: cost.id}), { dim: 18, linkClass: 'p-2.5 rounded-lg hover:bg-amber-500/20 text-amber-400' }) }}
+                                {{ tooltip.link('Delete', '', 'icons/action-trash.html.twig', path('app_cost_delete', {id: cost.id}), { dim: 18, linkClass: 'p-2.5 rounded-lg hover:bg-red-500/20 text-red-400' }) }}
+                            </div>
+                        </div>
 
-            <div class="overflow-x-auto overflow-y-visible rounded-box border border-base-content/5 bg-base-100">
-                <table class="table border-separate border-spacing-0 inner-bordered-table">
-                    <thead>
-                    <tr>
-                        <th>Code</th>
-                        <th>Title</th>
-                        <th>Category</th>
-                        <th>Ship</th>
-                        <th class="text-right">Amount</th>
-                        <th class="text-right">Payment (Cr)</th>
-                        <th>Campaign</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% if costs|length > 0 %}
-                        {% for cost in costs %}
-                            <tr>
-                                <td>{% include 'components/code_with_copy.html.twig' with { code: cost.code } %}</td>
-                                <td>{{ cost.title }}</td>
-                                <td>{{ cost.costCategory.description }}</td>
-                                <td>{{ cost.ship.name }}</td>
-                                <td class="text-right">{{ cost.amount|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
-                                <td class="text-right">
-                                    {% if cost.paymentDay is not null and cost.paymentYear is not null %}
-                                        {{ (cost.paymentDay is not null and cost.paymentYear is not null) ? (cost.paymentDay|imperial_date(cost.paymentYear)) : '—' }}
-                                    {% else %}
-                                        <span class="opacity-60">—</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if cost.ship.campaign %}
-                                        <div class="flex items-center gap-2">
-                                            {% include 'icons/alien-structure-1.html.twig' %}
-                                            <span>{{ cost.ship.campaign.title }}</span>
-                                        </div>
-                                    {% else %}
-                                        <span class="opacity-60">—</span>
-                                    {% endif %}
-                                </td>
-                                <td class="flex items-center gap-2">
-                                    {{ tooltip.link('Adjust cost entry',
-                                                    'Edit cost',
-                                                    'icons/action-edit.html.twig',
-                                                    path('app_cost_edit', {id: cost.id}),
-                                                    { dim: 14, linkClass: 'btn btn-outline btn-primary btn-xs' }) }}
-                                    {{ tooltip.link('Void cost entry',
-                                                    'Delete cost',
-                                                    'icons/action-trash.html.twig',
-                                                    path('app_cost_delete', {id: cost.id}),
-                                                    { dim: 14, linkClass: 'btn btn-outline btn-error btn-xs' }) }}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="8">Insert a new Cost</td>
-                        </tr>
-                    {% endif %}
-                    </tbody>
-                </table>
-            </div>
+                        {# Card Body: Main Content #}
+                        <div class="mb-4 grow">
+                            <h3 class="text-xl font-bold text-amber-100 mb-1 group-hover:text-amber-400 transition-colors uppercase tracking-tight">
+                                {{ cost.title }}
+                            </h3>
+                            <div class="flex items-center gap-2 text-xs text-slate-400">
+                                {% include 'icons/cost.html.twig' with {'dim': 12} %}
+                                <span>{{ cost.costCategory.description }}</span>
+                            </div>
+                        </div>
 
-            {% include 'components/pagination.html.twig' with {
-                pagination: pagination,
-                route: 'app_cost_index',
-                query: app.request.query.all
-            } %}
+                        {# Amount Section #}
+                        <div class="mb-6 py-3 px-4 rounded-lg bg-amber-900/10 border-x-2 border-amber-500/30">
+                            <div class="flex items-end justify-between">
+                                <span class="text-[10px] uppercase tracking-widest text-amber-500/70 font-bold">Credits Deducted</span>
+                                <div class="text-2xl font-mono font-bold text-amber-400">
+                                    -{{ cost.amount|format_number({ min_fraction_digit: 2, max_fraction_digit: 2 }, 'decimal', 'default', locale) }}
+                                    <span class="text-xs ml-1 text-amber-600">Cr</span>
+                                </div>
+                            </div>
+                        </div>
 
+                        {# Vessel & Context #}
+                        <div class="grid grid-cols-2 gap-4 mb-4 text-[11px]">
+                            <div class="flex flex-col gap-1">
+                                <span class="uppercase tracking-tighter text-slate-500">Asset Linked</span>
+                                <div class="flex items-center gap-2 text-amber-100">
+                                    {% include 'icons/far-trader.html.twig' with {'dim': 14} %}
+                                    <span>{{ cost.ship.name }}</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <span class="uppercase tracking-tighter text-slate-500">Mission Record</span>
+                                <div class="flex items-center gap-2 text-slate-300">
+                                    {% include 'icons/alien-structure-1.html.twig' with {'dim': 14} %}
+                                    <span class="truncate">{{ cost.ship.campaign ? cost.ship.campaign.title : 'GENERAL_OPERATIONS' }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Payment Timeline #}
+                        <div class="pt-4 border-t border-slate-800">
+                            <div class="flex justify-between items-center text-[10px] font-mono">
+                                <div class="flex flex-col">
+                                    <span class="text-slate-500 uppercase">Settlement Date</span>
+                                    <span class="{{ cost.paymentDay ? 'text-amber-400' : 'text-slate-500' }}">
+                                        {{ (cost.paymentDay is not null and cost.paymentYear is not null) ? (cost.paymentDay|imperial_date(cost.paymentYear)) : 'UNCERTAIN' }}
+                                    </span>
+                                </div>
+                                <div class="flex flex-col text-right">
+                                    <span class="text-slate-500 uppercase">Status</span>
+                                    <span class="{{ cost.paymentDay ? 'text-emerald-400 uppercase font-bold' : 'text-amber-500 uppercase' }}">
+                                        {{ cost.paymentDay ? 'S_PAID' : 'A_PENDING' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-span-full py-20 flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
+                    <div class="text-slate-500 mb-2">{% include 'icons/cost.html.twig' with {'dim': 48} %}</div>
+                    <p class="text-slate-400 uppercase tracking-widest text-sm">No expenses detected in current cycle</p>
+                    <a href="{{ path('app_cost_new') }}" class="mt-4 text-amber-400 hover:text-amber-300 text-xs font-bold uppercase underline underline-offset-4 decoration-amber-500/30">Record initial outflow</a>
+                </div>
+            {% endif %}
         </div>
+
+        {% include 'components/pagination.html.twig' with {
+            pagination: pagination,
+            route: 'app_cost_index',
+            query: app.request.query.all
+        } %}
 
     </div>
 

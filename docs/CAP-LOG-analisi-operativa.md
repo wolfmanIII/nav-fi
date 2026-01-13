@@ -96,13 +96,14 @@ flowchart TB
 - `AssignUserSubscriber` assegna automaticamente l’utente in prePersist.
 - I voter bloccano edit/delete se non si è owner o se il mutuo è firmato.
 
-## UI e asset (operativa)
+## UI e UX Tattica (v2.0.x)
 
-- Asset via Asset Mapper + Tailwind v4 + DaisyUI.
-- Sidebar con badge “Beacon // Dock Ready” e separatori per sezioni.
-- Login con pannelli separati e immagine dedicata.
-- Liste con filtri sempre visibili e paginazione uniforme (10 risultati/pagina).
-- Session timeline Campaign con JSON formattato e highlight.
+- **Bridge Interface**: Asset caricati via Asset Mapper con Tailwind 4 e DaisyUI, ottimizzati per un'estetica sci-fi "Abyss" ad alto contrasto.
+- **Tactical Search Terminals**: Le liste (Ship, Crew, Financials) integrano moduli di ricerca con labeling tecnico (`TITLEDATA`, `VESSELNAV`) e design a terminale bridge.
+- **Nav-Ops Dashboard**: Sidebar con badge operativi (`Beacon // Dock Ready`) e separatori di sezione per una navigazione intuitiva tra i moduli missione.
+- **Data Telemetry Layouts**: Massimizzazione dello spazio orizzontale per i moduli critici (Mortgage, Annual Budget), permettendo la visualizzazione simultanea di metriche, grafici e log azioni.
+- **Unified Action Language**: Utilizzo della macro `_tooltip` per uniformare bottoni e interazioni, garantendo feedback visivo costante e assenza di artefatti grafici (protocollo `inline-flex`).
+- **Session Timeline**: Log delle modifiche alla Campaign formattato via Highlight.js per una facile lettura dei delta temporali della missione.
 
 ## Perché è “Traveller‑centric”
 

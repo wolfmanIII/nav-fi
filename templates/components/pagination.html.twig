@@ -1,28 +1,50 @@
 {% if pagination.total_pages > 1 %}
-    <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div class="text-xs uppercase tracking-[0.2em] text-slate-400">
-            Showing {{ pagination.from }}-{{ pagination.to }} of {{ pagination.total }}
+    <div class="mt-8 pt-6 border-t border-slate-800/50 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex items-center gap-3">
+            <div class="h-1.5 w-1.5 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.8)] animate-pulse"></div>
+            <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-slate-500">
+                LOG_SECTOR: <span class="text-cyan-400 font-bold">{{ pagination.from }}-{{ pagination.to }}</span> 
+                <span class="mx-2 text-slate-700">//</span> 
+                TOTAL_RECORDS: <span class="text-slate-300 font-bold">{{ pagination.total }}</span>
+            </div>
         </div>
-        <div class="join">
-            {% set queryParams = query ?? app.request.query.all %}
-            {% set routeParams = route_params ?? {} %}
-            {% set pageParam = page_param ?? 'page' %}
-            {% set baseParams = routeParams|merge(queryParams) %}
-            {% set prevPage = pagination.current > 1 ? pagination.current - 1 : 1 %}
-            {% set nextPage = pagination.current < pagination.total_pages ? pagination.current + 1 : pagination.total_pages %}
-            {% set route = route ?? app.request.attributes.get('_route') %}
-            <a class="join-item btn btn-sm btn-outline" href="{{ path(route, baseParams|merge({(pageParam): prevPage})) }}">&laquo;</a>
-            {% for page in pagination.pages %}
-                {% if page %}
-                    <a class="join-item btn btn-sm {% if page == pagination.current %}btn-primary{% else %}btn-outline{% endif %}"
-                       href="{{ path(route, baseParams|merge({(pageParam): page})) }}">
-                        {{ page }}
-                    </a>
-                {% else %}
-                    <span class="join-item btn btn-sm btn-ghost">…</span>
-                {% endif %}
-            {% endfor %}
-            <a class="join-item btn btn-sm btn-outline" href="{{ path(route, baseParams|merge({(pageParam): nextPage})) }}">&raquo;</a>
+        
+        <div class="flex items-center">
+            <div class="join border border-slate-800 p-1 bg-slate-950/50 rounded-xl overflow-hidden">
+                {% set queryParams = query ?? app.request.query.all %}
+                {% set routeParams = route_params ?? {} %}
+                {% set pageParam = page_param ?? 'page' %}
+                {% set baseParams = routeParams|merge(queryParams) %}
+                {% set prevPage = pagination.current > 1 ? pagination.current - 1 : 1 %}
+                {% set nextPage = pagination.current < pagination.total_pages ? pagination.current + 1 : pagination.total_pages %}
+                {% set route = route ?? app.request.attributes.get('_route') %}
+                
+                <a class="join-item btn btn-xs h-8 min-h-8 px-3 border-none bg-transparent hover:bg-cyan-500/10 text-slate-500 hover:text-cyan-400 transition-colors" 
+                   href="{{ path(route, baseParams|merge({(pageParam): prevPage})) }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </a>
+                
+                {% for page in pagination.pages %}
+                    {% if page %}
+                        <a class="join-item btn btn-xs h-8 min-h-8 px-4 border-none font-mono text-[11px] transition-all
+                           {% if page == pagination.current %}
+                               bg-cyan-500/20 text-cyan-400 font-bold shadow-[inset_0_0_10px_rgba(6,182,212,0.2)]
+                           {% else %}
+                               bg-transparent text-slate-600 hover:bg-cyan-500/10 hover:text-cyan-400
+                           {% endif %}"
+                           href="{{ path(route, baseParams|merge({(pageParam): page})) }}">
+                            {{ page|format_number({min_integer_digit: 2}) }}
+                        </a>
+                    {% else %}
+                        <span class="join-item btn btn-xs h-8 min-h-8 px-3 border-none bg-transparent text-slate-800 cursor-default">...</span>
+                    {% endif %}
+                {% endfor %}
+                
+                <a class="join-item btn btn-xs h-8 min-h-8 px-3 border-none bg-transparent hover:bg-cyan-500/10 text-slate-500 hover:text-cyan-400 transition-colors" 
+                   href="{{ path(route, baseParams|merge({(pageParam): nextPage})) }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </a>
+            </div>
         </div>
     </div>
 {% endif %}

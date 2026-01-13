@@ -2,158 +2,161 @@
     <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
 
     <div class="min-h-full w-64 bg-gradient-to-b from-slate-800 via-slate-900 to-slate-950 text-cyan-100 flex flex-col items-start border-r border-cyan-500/30">
-        <div class="w-full bg-gradient-to-r from-teal-600 via-slate-800 to-slate-900 text-cyan-100 flex items-center justify-center gap-2 py-2 px-3 text-xs uppercase tracking-[0.25em] border-b border-cyan-500/30">
+        <div class="w-full bg-gradient-to-r from-teal-600 via-slate-800 to-slate-900 text-cyan-100 flex items-center justify-center gap-2 py-2 px-3 text-xs uppercase tracking-[0.25em] border-b border-cyan-500/30 font-orbitron font-bold">
             <span class="flex items-center justify-center animate-spin-slow">
                 {% include 'icons/radar.html.twig' %}
             </span>
             <span>Beacon // Dock Ready</span>
         </div>
 
-        <ul class="menu w-full grow">
-
-            <li>
-                <a href="{{ path('app_profile') }}"
-                   class="{% if controller_name == 'ProfileController' %}menu-active{% endif %}">
-                    {% include 'icons/dossier.html.twig' with {'dim': '24'} %}
-                    <span>Dossier // 01</span>
-                </a>
+        <ul class="menu w-full grow px-2 pb-10">
+            {# COMMAND MODULE #}
+            <li class="menu-title mt-4">
+                <span class="text-xs uppercase tracking-[0.3em] text-cyan-500 font-bold opacity-80">Command Module</span>
             </li>
             <li>
-                <a href="{{ path('app_home') }}"
-                   class="{% if controller_name == constant('App\\Controller\\HomeController::CONTROLLER_NAME') %}menu-active{% endif %}"
-                >
-                    <!-- icona home -->
-                    {% include 'icons/bridge-panels.html.twig' %}
-                    <span>Bridge</span>
-                </a>
+                {% set current_route = app.request.attributes.get('_route') %}
+                {% set command_active = current_route in ['app_profile', 'app_home', 'app_bridge'] %}
+                <details {% if command_active %}open{% endif %} data-controller="sidebar-module" data-action="toggle->sidebar-module#toggle">
+                    <summary data-sidebar-module-target="summary" class="text-xs uppercase tracking-widest text-slate-400 hover:text-cyan-300 relative overflow-hidden">Vessel Control</summary>
+                    <ul data-sidebar-module-target="content">
+                        <li data-sidebar-module-target="item">
+                            <a href="{{ path('app_profile') }}"
+                               class="{% if current_route == 'app_profile' %}text-cyan-400 font-bold{% endif %}">
+                                {% include 'icons/dossier.html.twig' with {'dim': '18'} %}
+                                <span>Dossier // 01</span>
+                            </a>
+                        </li>
+                        <li data-sidebar-module-target="item">
+                            <a href="{{ path('app_home') }}"
+                               class="{% if current_route == 'app_home' or current_route == 'app_bridge' %}text-cyan-400 font-bold{% endif %}">
+                                {% include 'icons/bridge-panels.html.twig' with {'dim': '18'} %}
+                                <span>Bridge Control</span>
+                            </a>
+                        </li>
+                    </ul>
+                </details>
             </li>
 
-            <li class="menu-title">
-                <span class="text-cyan-200/70 text-xs uppercase tracking-[0.2em]">Operations</span>
+            {# OPS MODULE #}
+            <li class="menu-title mt-6">
+                <span class="text-xs uppercase tracking-[0.3em] text-cyan-500 font-bold opacity-80">Operations Control</span>
             </li>
             <li>
-                <a href="{{ path('app_operation_guide') }}"
-                   class="{% if controller_name == 'OperationGuideController' %}menu-active{% endif %}">
-                    {% include 'icons/operations-checklist.html.twig' %}
-                    <span>Checklist</span>
-                </a>
+                {% set tactical_active = current_route starts with 'app_campaign' 
+                    or current_route starts with 'app_company' 
+                    or current_route starts with 'app_ship' 
+                    or current_route starts with 'app_crew' 
+                    or current_route starts with 'app_route' %}
+                <details {% if tactical_active %}open{% endif %} data-controller="sidebar-module" data-action="toggle->sidebar-module#toggle">
+                    <summary data-sidebar-module-target="summary" class="text-xs uppercase tracking-widest text-slate-400 hover:text-cyan-300 relative overflow-hidden">Tactical & Logistics</summary>
+                    <ul data-sidebar-module-target="content">
+                        <li data-sidebar-module-target="item">
+                            <a href="{{ path('app_campaign_index') }}" class="{% if current_route == 'app_campaign_index' %}text-cyan-400 font-bold{% endif %}">
+                                {% include 'icons/alien-structure-1.html.twig' with {'dim': '18'} %}
+                                <span>Campaign Logs</span>
+                            </a>
+                        </li>
+                        <li data-sidebar-module-target="item">
+                            <a href="{{ path('app_company_index') }}" class="{% if current_route == 'app_company_index' %}text-cyan-400 font-bold{% endif %}">
+                                {% include 'icons/company.html.twig' with {'dim': '18'} %}
+                                <span>Company Index</span>
+                            </a>
+                        </li>
+                        <li data-sidebar-module-target="item">
+                            <a href="{{ path('app_ship_index') }}" class="{% if current_route == 'app_ship_index' %}text-cyan-400 font-bold{% endif %}">
+                                {% include 'icons/far-trader.html.twig' with {'dim': '18'} %}
+                                <span>Shipyard Manifest</span>
+                            </a>
+                        </li>
+                        <li data-sidebar-module-target="item">
+                            <a href="{{ path('app_crew_index') }}" class="{% if current_route == 'app_crew_index' %}text-cyan-400 font-bold{% endif %}">
+                                {% include 'icons/crew.html.twig' with {'dim': '18'} %}
+                                <span>Crew Registry</span>
+                            </a>
+                        </li>
+                        <li data-sidebar-module-target="item">
+                            <a href="{{ path('app_route_index') }}" class="{% if current_route == 'app_route_index' %}text-cyan-400 font-bold{% endif %}">
+                                {% include 'icons/routes.html.twig' with {'dim': '18'} %}
+                                <span>Navigation Routes</span>
+                            </a>
+                        </li>
+                    </ul>
+                </details>
             </li>
             <li>
-                <a href="{{ path('app_operations_flow') }}"
-                   class="{% if controller_name == 'OperationsFlowController' %}menu-active{% endif %}">
-                    {% include 'icons/operations-flow.html.twig' %}
-                    <span>Flow</span>
-                </a>
+                {% set manual_active = current_route starts with 'app_operation' %}
+                <details {% if manual_active %}open{% endif %} data-controller="sidebar-module" data-action="toggle->sidebar-module#toggle">
+                    <summary data-sidebar-module-target="summary" class="text-xs uppercase tracking-widest text-slate-400 hover:text-cyan-300 relative overflow-hidden">Manuals & Flows</summary>
+                    <ul data-sidebar-module-target="content">
+                        <li data-sidebar-module-target="item">
+                            <a href="{{ path('app_operation_guide') }}" class="{% if current_route == 'app_operation_guide' %}text-cyan-400 font-bold{% endif %}">
+                                {% include 'icons/operations-checklist.html.twig' with {'dim': '18'} %}
+                                <span>Ops Checklist</span>
+                            </a>
+                        </li>
+                        <li data-sidebar-module-target="item">
+                            <a href="{{ path('app_operations_flow') }}" class="{% if current_route == 'app_operations_flow' %}text-cyan-400 font-bold{% endif %}">
+                                {% include 'icons/operations-flow.html.twig' with {'dim': '18'} %}
+                                <span>Systems Flow</span>
+                            </a>
+                        </li>
+                    </ul>
+                </details>
             </li>
 
-            <li class="menu-title">
-                <span class="text-cyan-200/70 text-xs uppercase tracking-[0.2em]">Directory</span>
-            </li>
-
-            <li>
-                <a href="{{ path('app_campaign_index') }}"
-                   class="{% if controller_name == constant('App\\Controller\\CampaignController::CONTROLLER_NAME') %}menu-active{% endif %}"
-                >
-                    {% include 'icons/alien-structure-1.html.twig' %}
-                    <span>Campaign</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="{{ path('app_company_index') }}"
-                   class="{% if controller_name == constant('App\\Controller\\CompanyController::CONTROLLER_NAME') %}menu-active{% endif %}"
-                >
-                    {% include 'icons/company.html.twig' %}
-                    <span>Companies</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="{{ path('app_ship_index') }}"
-                   class="{% if controller_name == constant('App\\Controller\\ShipController::CONTROLLER_NAME') or controller_name == constant('App\\Controller\\ShipAmendmentController::CONTROLLER_NAME') %} menu-active {% endif %}"
-                >
-                    <!-- icona ships -->
-                    {% include 'icons/far-trader.html.twig' %}
-                    <span>Shipyard</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="{{ path('app_crew_index') }}"
-                   class="{% if controller_name == constant('App\\Controller\\CrewController::CONTROLLER_NAME') %}menu-active{% endif %}"
-                >
-                    <!-- icona crew -->
-                    {% include 'icons/crew.html.twig' with {'dim': '24'} %}
-                    <span>Crew</span>
-                </a>
-            </li>
-
-            <li class="menu-title">
-                <span class="text-cyan-200/70 text-xs uppercase tracking-[0.2em]">Nav</span>
+            {# FINANCE MODULE #}
+            <li class="menu-title mt-6">
+                <span class="text-xs uppercase tracking-[0.3em] text-cyan-500 font-bold opacity-80">Financial Core</span>
             </li>
             <li>
-                <a href="{{ path('app_route_index') }}"
-                   class="{% if controller_name == constant('App\\Controller\\RouteController::CONTROLLER_NAME') %}menu-active{% endif %}"
-                >
-                    {% include 'icons/routes.html.twig' %}
-                    <span>Routes</span>
-                </a>
+                {% set finance_active = current_route starts with 'app_income' 
+                    or current_route starts with 'app_cost' 
+                    or current_route starts with 'app_mortgage' 
+                    or current_route starts with 'app_annual_budget' %}
+                <details {% if finance_active %}open{% endif %} data-controller="sidebar-module" data-action="toggle->sidebar-module#toggle">
+                    <summary data-sidebar-module-target="summary" class="text-xs uppercase tracking-widest text-slate-400 hover:text-cyan-300 relative overflow-hidden">Credits & Debt</summary>
+                    <ul data-sidebar-module-target="content">
+                        <li data-sidebar-module-target="item">
+                            <a href="{{ path('app_income_index') }}" class="{% if current_route == 'app_income_index' %}text-cyan-400 font-bold{% endif %}">
+                                {% include 'icons/income.html.twig' with {'dim': '18'} %}
+                                <span>Credits Ledger</span>
+                            </a>
+                        </li>
+                        <li data-sidebar-module-target="item">
+                            <a href="{{ path('app_cost_index') }}" class="{% if current_route == 'app_cost_index' %}text-cyan-400 font-bold{% endif %}">
+                                {% include 'icons/cost.html.twig' with {'dim': '18'} %}
+                                <span>Expense Logs</span>
+                            </a>
+                        </li>
+                        <li data-sidebar-module-target="item">
+                            <a href="{{ path('app_mortgage_index') }}" class="{% if current_route == 'app_mortgage_index' %}text-cyan-400 font-bold{% endif %}">
+                                {% include 'icons/handbook.html.twig' with {'dim': '18'} %}
+                                <span>Debt Manifest</span>
+                            </a>
+                        </li>
+                        <li data-sidebar-module-target="item">
+                            <a href="{{ path('app_annual_budget_index') }}" class="{% if current_route == 'app_annual_budget_index' %}text-cyan-400 font-bold{% endif %}">
+                                {% include 'icons/annual-budget.html.twig' with {'dim': '18'} %}
+                                <span>Annual Projections</span>
+                            </a>
+                        </li>
+                    </ul>
+                </details>
             </li>
 
-            <li class="menu-title">
-                <span class="text-cyan-200/70 text-xs uppercase tracking-[0.2em]">Fund</span>
-            </li>
-
-            <li>
-                <a href="{{ path('app_mortgage_index') }}"
-                   class="{% if controller_name == constant('App\\Controller\\MortgageController::CONTROLLER_NAME') %}menu-active{% endif %}"
-                >
-                    <!-- icona mortgages -->
-                    {% include 'icons/handbook.html.twig' %}
-                    <span>Mortgages</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="{{ path('app_cost_index') }}"
-                   class="{% if controller_name == constant('App\\Controller\\CostController::CONTROLLER_NAME') %}menu-active{% endif %}"
-                >
-                    {% include 'icons/cost.html.twig' %}
-                    <span>Costs</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="{{ path('app_income_index') }}"
-                   class="{% if controller_name == constant('App\\Controller\\IncomeController::CONTROLLER_NAME') %}menu-active{% endif %}"
-                >
-                    {% include 'icons/income.html.twig' %}
-                    <span>Income</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="{{ path('app_annual_budget_index') }}"
-                   class="{% if controller_name == constant('App\\Controller\\AnnualBudgetController::CONTROLLER_NAME') %}menu-active{% endif %}"
-                >
-                    {% include 'icons/annual-budget.html.twig' %}
-                    <span>Annual Budget</span>
-                </a>
-            </li>
-
-            <li class="menu-title">
-                <span class="text-cyan-200/70 text-xs uppercase tracking-[0.2em]">— // —</span>
-            </li>
-
-            {% if is_granted('ROLE_ADMIN') %}
+            {# SYSTEM LEVEL #}
+            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_ALLOWED_TO_SWITCH') %}
+                <li class="menu-title mt-6">
+                    <span class="text-xs uppercase tracking-[0.3em] text-red-500 font-bold opacity-80">Core Overwrite</span>
+                </li>
                 <li>
-                    <a href="{{ path('admin') }}">
-                        {% include 'icons/admin.html.twig' %}
-                        <span>Admin</span>
+                    <a href="{{ path('admin') }}" class="hover:bg-red-500/10 hover:text-red-400 transition-all">
+                        {% include 'icons/admin.html.twig' with {'dim': '20'} %}
+                        <span>System Admin</span>
                     </a>
                 </li>
             {% endif %}
-
         </ul>
     </div>
 </div>

@@ -1,34 +1,32 @@
-# Tooltip & micro-copy guidelines
+## Implementazione Finale: `_tooltip.html.twig`
 
-## Obiettivo
+La macro è stata implementata e standardizzata per gestire sia bottoni (`<a>`, `<button>`) che badge, risolvendo bug di centratura e artefatti visivi.
 
-Standardizzare tooltip e micro-copy associati ai bottoni azione principali (pulsanti, icone in tabelle, badge interattivi e collegamenti di navigation) per mantenere tono sci-fi, ridurre ripetizioni e facilitare futuri refactor.
+### Struttura Macro
+```twig
+{# templates/_tooltip.html.twig #}
+{% macro button(label, content, icon, path, options) %}
+    <div class="tooltip" data-tip="{{ content }}">
+        <button type="submit" class="inline-flex items-center justify-center {{ options.class|default('btn btn-xs') }}">
+            {{ include(icon, { dim: options.dim|default(20) }) }}
+        </button>
+    </div>
+{% endmacro %}
 
-## Pattern proposto
+{% macro link(label, content, icon, path, options) %}
+    <div class="tooltip" data-tip="{{ content }}">
+        <a href="{{ path }}" class="inline-flex items-center justify-center {{ options.class|default('btn btn-xs') }}">
+            {{ include(icon, { dim: options.dim|default(20) }) }}
+        </a>
+    </div>
+{% endmacro %}
+```
 
-1. **Icona + tooltip preconfigurati**
-   - Creare un macro Twig (es. `templates/_tooltip.html.twig`) che accetta `label`, `content`, `icon` e `dim`, e genera:
-     ```twig
-     <div class="tooltip tooltip-bottom" data-tip="{{ content }}">
-         <button type="button" class="btn btn-xs btn-ghost" aria-label="{{ label }}">
-             {{ include(icon, { dim: dim|default(20) }) }}
-         </button>
-     </div>
-     ```
-   - Permette di limitare HTML duplicato e uniformare posizione/colori.
-
-2. **Linee guida copy**
-   - Frasi brevi, verbo al presente: "View crew", "Adjust session calendar", "Copy ship code".
-   - Indicazione di esclusivi vantaggi: "Launch mortgage PDF (draft)", "Track campaign budget".
-
-3. **Zero copy ripetuto**
-   - I tooltip non devono riportare lo stesso testo dei badge, ma ampliano il contesto (es. badge "Ops Guide" + tooltip "Open guided checklist").
-
-4. **Badge + tooltip**
-   - I badge esplicativi devono avere un tooltip solo quando sono cliccabili; usiamo la stessa macro per badge e bottoni con `class="badge"` e `data-tip`.
-
-5. **Delega futura**
-   - Includere il macro nei template chiave: sidebar, tabelle ship/crew/mortgage e homepage.
-   - Un futuro refactor può anche estrarre il macro in un componente Stimulus per tooltip dinamici (timeout, aria-live, ecc.).
-
-Torniamo domani: posso partire con il macro se lo confermi. Fammi sapere qualsiasi dettaglio extra prima di chiudere per la notte.
+### Regole Tattiche di Utilizzo
+1. **Centratura Forzata**: Tutte le macro utilizzano `inline-flex items-center justify-center` per prevenire artefatti a "capsula" dietro le icone.
+2. **Dimensionamento Icone**: Utilizzare `dim: 18` per le icone grid e `dim: 24` per le azioni principali di intestazione.
+3. **Micro-copy bridge**:
+   - `View details` → `INSPECT_DATA`
+   - `Edit record` → `CALIBRATE_SYSTEM`
+   - `Delete record` → `PURGE_LOG`
+4. **Tooltips non ridondanti**: Il `data-tip` deve aggiungere contesto operativo, non ripetere il nome del pulsante.

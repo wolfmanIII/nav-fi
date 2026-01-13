@@ -5,76 +5,67 @@
 {% block pageContent %}
 <div class="flex items-center justify-center min-h-[calc(100vh-3rem)]">
     <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
-        <!-- Panel: Login -->
-        <div class="card bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 border border-cyan-500/20 shadow-2xl overflow-hidden h-full">
-            <div class="relative flex flex-col gap-4 p-6 h-full justify-center">
-                <div class="absolute inset-0 opacity-20 pointer-events-none"
-                     style="background: radial-gradient(circle at 20% 20%, rgba(34,211,238,0.15), transparent 40%), radial-gradient(circle at 80% 30%, rgba(94,234,212,0.12), transparent 35%);">
+        <!-- Panel: Login Terminal -->
+        <div class="card bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 border border-cyan-500/20 shadow-2xl overflow-hidden h-full relative group">
+            <!-- Scanning Line Overlay -->
+            <div class="scanning-line opacity-20 group-hover:opacity-40 transition-opacity"></div>
+            
+            <div class="relative flex flex-col gap-6 p-8 h-full">
+                <div class="absolute inset-0 opacity-10 pointer-events-none"
+                     style="background: radial-gradient(circle at 20% 20%, rgba(34,211,238,0.1), transparent 40%), radial-gradient(circle at 80% 30%, rgba(94,234,212,0.1), transparent 35%);">
                 </div>
-                <div class="relative flex items-center gap-3">
-                    <img src="{{ asset('img/captain-log-logo.png') }}" alt="Captain Log" class="w-16 h-16">
+                
+                <div class="relative flex items-center gap-4">
+                    <img src="{{ asset('img/captain-log-logo.png') }}" alt="Captain Log" class="w-16 h-16 filter drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">
                     <div>
-                        <p class="text-lg font-semibold text-cyan-100">Captain Log</p>
-                        <p class="text-sm text-cyan-200/80 uppercase tracking-[0.25em]">Docking access</p>
+                        <p class="text-xl font-bold text-cyan-100 tracking-tight font-orbitron">ELaRA // UPLINK</p>
+                        <p class="text-[10px] text-cyan-400/60 uppercase tracking-[0.3em] font-mono">Unified Auth Terminal</p>
                     </div>
                 </div>
 
-                <p class="relative text-sm text-slate-200/90">
-                    Sign in to sync ships, crew, mortgages, and credits before you clear the next jump.
-                </p>
-
-                {% if error %}
-                    <div class="alert alert-error text-sm relative">
-                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                <!-- Diagnostic Terminal Area -->
+                <div class="flex-1 bg-black/40 border border-cyan-500/10 rounded-lg p-5 font-mono text-[11px] leading-relaxed relative overflow-hidden">
+                    <div class="absolute top-2 right-3 flex gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-500/40 animate-pulse"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-500/20"></span>
                     </div>
-                {% endif %}
-
-                <form method="post" class="relative flex flex-col gap-3">
-                    <div class="form-control w-full">
-                        <input
-                            type="email"
-                            name="email"
-                            value="{{ last_username }}"
-                            class="input input-bordered w-full"
-                            placeholder="Email (captain@imperial.mail)"
-                            required
-                            autofocus
-                        >
+                    
+                    <div class="space-y-1.5 text-cyan-200/40">
+                        <p class="text-cyan-400 animate-pulse">> INITIATING_BOOT_SEQUENCE</p>
+                        <p>> LOADING_OIDC_PROTOCOLS... [OK]</p>
+                        <p>> HANDSHAKING_GOOGLE_UPLINK... [PENDING]</p>
+                        <p>> ENCRYPTING_SESSION_KEYS... [ACTIVE]</p>
+                        <p>> PERIMETER_DEFENSE: ENGAGED</p>
+                        <p class="mt-4 text-emerald-500/60 font-bold">READY_FOR_COMMAND_INPUT</p>
                     </div>
 
-                    <div class="form-control w-full">
-                        <input
-                            type="password"
-                            name="password"
-                            class="input input-bordered w-full"
-                            placeholder="Access code"
-                            required
-                        >
-                    </div>
+                    {% if error %}
+                        <div class="mt-4 p-3 border border-red-500/30 bg-red-900/10 text-red-400 text-[10px] uppercase tracking-wider">
+                            ERROR: {{ error.messageKey|trans(error.messageData, 'security') }}
+                        </div>
+                    {% endif %}
+                </div>
 
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <div class="space-y-4 relative">
+                    <p class="text-[11px] text-slate-400 uppercase tracking-widest text-center font-bold">
+                        Authenticate via External Uplink
+                    </p>
+                    
+                    <a href="{{ path('connect_google') }}" class="group/btn relative btn btn-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-100 hover:bg-cyan-500/20 hover:border-cyan-500/60 w-full flex gap-4 items-center justify-center transition-all duration-300 shadow-[0_0_15px_rgba(6,182,212,0.1)] hover:shadow-[0_0_25px_rgba(6,182,212,0.2)]">
+                        <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 transition-transform group-hover/btn:scale-110">
+                            <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                                <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
+                                <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.059 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
+                                <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.734 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
+                                <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.424 44.599 -10.174 45.799 L -6.714 42.339 C -8.804 40.389 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
+                            </g>
+                        </svg>
+                        <span class="font-bold tracking-[0.2em] uppercase text-sm">Initiate Google Uplink</span>
+                    </a>
+                </div>
 
-                    <button class="btn btn-primary w-full" type="submit">
-                        Sign in
-                    </button>
-                </form>
-
-                <div class="divider text-slate-500 text-sm">Or</div>
-
-                <a href="{{ path('connect_google') }}" class="relative btn btn-neutral w-full flex gap-2 items-center justify-center border-slate-600 hover:bg-slate-700 hover:border-slate-500 text-white transition-all">
-                    <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
-                        <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
-                            <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
-                            <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.059 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
-                            <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.734 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
-                            <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.424 44.599 -10.174 45.799 L -6.714 42.339 C -8.804 40.389 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
-                        </g>
-                    </svg>
-                    Sign in with Google
-                </a>
-
-                <a href="{{ path('app_home') }}" class="relative btn btn-outline w-full mt-auto">
-                    Return to bridge
+                <a href="{{ path('app_home') }}" class="relative text-[10px] uppercase tracking-widest text-slate-500 hover:text-cyan-400 transition-colors text-center font-bold mt-auto">
+                    [ ABORT_SEQUENCE // RETURN_TO_BRIDGE ]
                 </a>
             </div>
         </div>

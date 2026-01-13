@@ -4,7 +4,7 @@
 {% set buttonClass = options.buttonClass|default('btn btn-xs btn-ghost') %}
 <div class="tooltip {{ tooltipPos }}" data-tip="{{ tip }}">
     <button type="button"
-            class="{{ buttonClass }}"
+            class="inline-flex items-center justify-center {{ buttonClass }}"
             aria-label="{{ label }}"
             {% for name, value in options.attrs|default({}) %}
                 {{ name }}="{{ value }}"
@@ -21,7 +21,7 @@
 <div class="tooltip {{ tooltipPos }}" data-tip="{{ tip }}">
     <a href="{{ href }}"
        role="{{ options.role|default('button') }}"
-       class="{{ linkClass }}"
+       class="inline-flex items-center justify-center {{ linkClass }}"
        aria-label="{{ label }}"
        {% for name, value in options.attrs|default({}) %}
            {{ name }}="{{ value }}"

@@ -45,26 +45,26 @@
 
         {% set filter_fields %}
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Ship</label>
-                <select name="ship" class="select m-1 w-full">
-                    <option value="">All ships</option>
+                <label class="label text-[10px] uppercase tracking-[0.2em] text-cyan-500/60 font-bold">VESSEL_NAV</label>
+                <select name="ship" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
+                    <option value="">ANY_VESSEL</option>
                     {% for ship in ships %}
                         <option value="{{ ship.id }}" {% if filters.ship == ship.id %}selected{% endif %}>{{ ship.name }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Start</label>
-                <input type="text" name="start" value="{{ filters.start }}" class="input m-1 w-full" placeholder="Start >= Day/Year or Year">
+                <label class="label text-[10px] uppercase tracking-[0.2em] text-cyan-500/60 font-bold">TEMPORAL_START</label>
+                <input type="text" name="start" value="{{ filters.start }}" class="input w-full bg-slate-950/50 border-slate-800 text-cyan-100 placeholder:text-slate-600 focus:border-cyan-500/50" placeholder="Day/Year or Year">
             </div>
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">End</label>
-                <input type="text" name="end" value="{{ filters.end }}" class="input m-1 w-full" placeholder="End <= Day/Year or Year">
+                <label class="label text-[10px] uppercase tracking-[0.2em] text-cyan-500/60 font-bold">TEMPORAL_END</label>
+                <input type="text" name="end" value="{{ filters.end }}" class="input w-full bg-slate-950/50 border-slate-800 text-cyan-100 placeholder:text-slate-600 focus:border-cyan-500/50" placeholder="Day/Year or Year">
             </div>
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Campaign</label>
-                <select name="campaign" class="select m-1 w-full">
-                    <option value="">All campaigns</option>
+                <label class="label text-[10px] uppercase tracking-[0.2em] text-cyan-500/60 font-bold">OPS_CAMPAIGN</label>
+                <select name="campaign" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
+                    <option value="">ALL_OPERATIONS</option>
                     {% for campaign in campaigns %}
                         <option value="{{ campaign.id }}" {% if filters.campaign == campaign.id %}selected{% endif %}>{{ campaign.title }}</option>
                     {% endfor %}
@@ -79,84 +79,93 @@
             is_filtered: filters.ship or filters.start or filters.end or filters.campaign
         } %}
 
-        <div class="flow-root">
+        <div class="grid grid-cols-1 gap-6 mb-8">
+            {% if budgets|length > 0 %}
+                {% for budget in budgets %}
+                    <div class="group relative flex flex-col xl:flex-row gap-8 rounded-xl border border-teal-500/20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 shadow-lg transition-all hover:border-teal-500/50 hover:shadow-teal-500/10 hover:-translate-y-1">
+                        {# Left: Core Data #}
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="px-2 py-0.5 rounded border border-teal-500/40 bg-teal-500/5 text-[10px] font-mono tracking-widest text-teal-400 uppercase">
+                                    CYCLE_LEDGER: {{ budget.code }}
+                                </div>
+                                <div class="flex items-center gap-1 xl:hidden">
+                                    {{ tooltip.link('Edit', '', 'icons/action-edit.html.twig', path('app_annual_budget_edit', {id: budget.id}), { dim: 18, linkClass: 'p-2.5 rounded-lg hover:bg-teal-500/20 text-teal-400' }) }}
+                                    {{ tooltip.link('Delete', '', 'icons/action-trash.html.twig', path('app_annual_budget_delete', {id: budget.id}), { dim: 18, linkClass: 'p-2.5 rounded-lg hover:bg-red-500/20 text-red-400' }) }}
+                                </div>
+                            </div>
 
-            <div class="overflow-x-auto overflow-y-visible rounded-box border border-base-content/5 bg-base-100">
-                <table class="table border-separate border-spacing-0 inner-bordered-table">
-                    <thead>
-                    <tr>
-                        <th>Code</th>
-                        <th>Ship</th>
-                        <th class="text-right">Start</th>
-                        <th class="text-right">End</th>
-                        <th class="text-right">Income(Cr)</th>
-                        <th class="text-right">Costs(Cr)</th>
-                        <th class="text-right">Annual Mortgage(Cr)</th>
-                        <th class="text-right">Budget(Cr)</th>
-                        <th>Chart</th>
-                        <th>Campaign</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% if budgets|length > 0 %}
-                        {% for budget in budgets %}
-                            <tr>
-                                <td>{% include 'components/code_with_copy.html.twig' with { code: budget.code } %}</td>
-                                <td>{{ budget.ship.name }}</td>
-                                <td class="text-right">{{ (budget.startDay is not null and budget.startYear is not null) ? (budget.startDay|imperial_date(budget.startYear)) : '—' }}</td>
-                                <td class="text-right">{{ (budget.endDay is not null and budget.endYear is not null) ? (budget.endDay|imperial_date(budget.endYear)) : '—' }}</td>
-                                <td class="text-right">{{ budget.totalIncomeAmount|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
-                                <td class="text-right">{{ budget.totalCostsAmount|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
-                                <td class="text-right">{{ budget.ship.mortgage.calculate.total_annual_payment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
-                                <td class="text-right">{{ budget.actualBudget|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
-                                <td>
-                                    {{ tooltip.link('Inspect budget timeline',
-                                                    'View chart',
-                                                    'icons/chart.html.twig',
-                                                    path('app_annual_budget_chart', {id: budget.id}),
-                                                    { dim: 14, linkClass: 'btn btn-outline btn-primary btn-xs' }) }}
-                                </td>
-                                <td>
-                                    {% if budget.ship.campaign %}
-                                        <div class="flex items-center gap-2">
-                                            {% include 'icons/alien-structure-1.html.twig' %}
-                                            <span>{{ budget.ship.campaign.title }}</span>
-                                        </div>
-                                    {% else %}
-                                        <span class="opacity-60">—</span>
-                                    {% endif %}
-                                </td>
-                                <td class="flex items-center gap-2">
-                                    {{ tooltip.link('Tune year ledger',
-                                                    'Edit annual budget',
-                                                    'icons/action-edit.html.twig',
-                                                    path('app_annual_budget_edit', {id: budget.id}),
-                                                    { dim: 14, linkClass: 'btn btn-outline btn-primary btn-xs' }) }}
-                                    {{ tooltip.link('Retire year ledger',
-                                                    'Delete annual budget',
-                                                    'icons/action-trash.html.twig',
-                                                    path('app_annual_budget_delete', {id: budget.id}),
-                                                    { dim: 14, linkClass: 'btn btn-outline btn-error btn-xs' }) }}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="11">Insert a new Annual Budget</td>
-                        </tr>
-                    {% endif %}
-                    </tbody>
-                </table>
-            </div>
+                            <div class="mb-6 flex items-start justify-between">
+                                <div>
+                                    <h3 class="text-2xl font-bold text-teal-100 group-hover:text-teal-400 transition-colors uppercase tracking-wider">
+                                        {{ budget.ship.name }}
+                                    </h3>
+                                    <p class="text-[10px] text-slate-500 font-mono mt-1">
+                                        SP_SYSTEM: {{ (budget.startDay is not null and budget.startYear is not null) ? (budget.startDay|imperial_date(budget.startYear)) : '???' }} 
+                                        <span class="mx-2 text-slate-700">>></span> 
+                                        {{ (budget.endDay is not null and budget.endYear is not null) ? (budget.endDay|imperial_date(budget.endYear)) : '???' }}
+                                    </p>
+                                </div>
+                                <div class="text-right">
+                                    {{ tooltip.link('Inspect Chart', '', 'icons/chart.html.twig', path('app_annual_budget_chart', {id: budget.id}), { dim: 20, linkClass: 'p-3 rounded-xl bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20' }) }}
+                                </div>
+                            </div>
 
-            {% include 'components/pagination.html.twig' with {
-                pagination: pagination,
-                route: 'app_annual_budget_index',
-                query: app.request.query.all
-            } %}
+                            {# Budget Matrix - Larger icons/fonts for full width #}
+                            <div class="grid grid-cols-3 gap-4 mb-2">
+                                <div class="p-6 rounded-lg bg-slate-950/50 border border-slate-800 flex flex-col items-center group/metric transition-colors hover:border-emerald-500/20">
+                                    <span class="text-[10px] uppercase text-emerald-500/70 font-bold mb-2 tracking-widest">Incomes</span>
+                                    <span class="text-xl font-mono text-emerald-400 font-bold">{{ budget.totalIncomeAmount|format_number({ max_fraction_digit: 0 }, 'decimal', 'default', locale) }}</span>
+                                </div>
+                                <div class="p-6 rounded-lg bg-slate-950/50 border border-slate-800 flex flex-col items-center group/metric transition-colors hover:border-amber-500/20">
+                                    <span class="text-[10px] uppercase text-amber-500/70 font-bold mb-2 tracking-widest">Costs</span>
+                                    <span class="text-xl font-mono text-amber-400 font-bold">{{ budget.totalCostsAmount|format_number({ max_fraction_digit: 0 }, 'decimal', 'default', locale) }}</span>
+                                </div>
+                                <div class="p-6 rounded-lg bg-slate-950/50 border border-slate-800 flex flex-col items-center group/metric transition-colors hover:border-red-500/20">
+                                    <span class="text-[10px] uppercase text-red-500/70 font-bold mb-2 tracking-widest">Mortgage</span>
+                                    <span class="text-xl font-mono text-red-400 font-bold">{{ budget.ship.mortgage.calculate.total_annual_payment|format_number({ max_fraction_digit: 0 }, 'decimal', 'default', locale) }}</span>
+                                </div>
+                            </div>
+                        </div>
 
+                        {# Right: Surplus & Actions #}
+                        <div class="xl:w-80 flex flex-col justify-between border-t xl:border-t-0 xl:border-l border-slate-800 pt-6 xl:pt-0 xl:pl-8">
+                            <div class="hidden xl:flex justify-end mb-6">
+                                <div class="flex items-center gap-2">
+                                    {{ tooltip.link('Edit', '', 'icons/action-edit.html.twig', path('app_annual_budget_edit', {id: budget.id}), { dim: 18, linkClass: 'p-2.5 rounded-lg hover:bg-teal-500/20 text-teal-400' }) }}
+                                    {{ tooltip.link('Delete', '', 'icons/action-trash.html.twig', path('app_annual_budget_delete', {id: budget.id}), { dim: 18, linkClass: 'p-2.5 rounded-lg hover:bg-red-500/20 text-red-400' }) }}
+                                </div>
+                            </div>
+
+                            <div class="mt-auto p-8 rounded-xl bg-teal-900/10 border-x-2 border-teal-500/40 flex items-center justify-between">
+                                <div class="flex flex-col">
+                                    <span class="text-[10px] uppercase font-bold text-teal-600 tracking-widest leading-none mb-1">Net Surplus</span>
+                                    <div class="text-3xl font-mono font-bold text-teal-300 {{ budget.actualBudget < 0 ? 'text-red-400' : 'text-teal-300' }}">
+                                        {{ budget.actualBudget|format_number({ min_fraction_digit: 0, max_fraction_digit: 0 }, 'decimal', 'default', locale) }}
+                                        <span class="text-sm text-teal-600 font-normal">Cr</span>
+                                    </div>
+                                </div>
+                                <div class="h-14 w-14 rounded-full border-[6px] border-slate-800 flex items-center justify-center bg-slate-950 shadow-inner">
+                                    <span class="text-[11px] font-bold {{ budget.actualBudget < 0 ? 'text-red-500' : 'text-teal-500' }}">%CY</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-span-full py-20 flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
+                    <div class="text-slate-500 mb-2">{% include 'icons/annual-budget.html.twig' with {'dim': 48} %}</div>
+                    <p class="text-slate-400 uppercase tracking-widest text-sm">No annual data modules found</p>
+                    <a href="{{ path('app_annual_budget_new') }}" class="mt-4 text-teal-400 hover:text-teal-300 text-xs font-bold uppercase underline underline-offset-4 decoration-teal-500/30">Initialize new cycle documentation</a>
+                </div>
+            {% endif %}
         </div>
+
+        {% include 'components/pagination.html.twig' with {
+            pagination: pagination,
+            route: 'app_annual_budget_index',
+            query: app.request.query.all
+        } %}
 
     </div>
 

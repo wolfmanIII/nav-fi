@@ -3,28 +3,28 @@
 Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, pensata per il gioco di ruolo **Traveller**. Include area amministrativa EasyAdmin, PDF per i contratti e comandi di import/export dei dati di contesto. Ogni Annual Budget è agganciato a una singola nave e ne aggrega entrate, costi e rate del mutuo.
 
 ## Caratteristiche principali
-- Navi, equipaggi, ruoli di bordo e mutui (rate, tassi, assicurazioni) con vincolo uno-a-uno nave↔mutuo; firma mutuo con data di sessione della Campaign + location richiesta via modale; stampa PDF della scheda nave e del mutuo (anche in modalità draft). I piani di pagamento usano il calendario Traveller a 13 periodi/anno.
-- Campagne con calendario di sessione (giorno/anno) e relazione 1–N con Ship: le date di sessione sono centralizzate su Campaign e usate ovunque (liste e PDF) tramite l’Imperial datepicker `DDD/YYYY` e il helper di normalizzazione.
-- Session timeline per Campaign: ogni cambio di session date genera un log con snapshot JSON della campagna (e delle ship collegate), leggibile in pagina con highlight.
-- Tipologie di spesa equipaggio (`CostCategory`) e anagrafiche di contesto (InterestRate, Insurance, ShipRole, CompanyRole, LocalLaw, IncomeCategory).
-- Company e CompanyRole come controparti contrattuali condivise: le companies sono disponibili cross-campaign e portano la propria LocalLaw/ disclaimer nei costi e nei contratti.
-- Entrate e costi legati alla nave con dettagli per categoria (es. Freight, Contract): form dinamiche e PDF contrattuali generati con wkhtmltopdf, con date rese via ImperialDateType + controller Stimulus `imperial-date` (popover con pulsanti di navigazione e tasto Clear per svuotare il giorno).
-- Income con status **Draft/Signed**: lo stato è impostato automaticamente dalla signing date (se completa → Signed).
-- Scheda dettagli nave salvata come JSON (`shipDetails`) con campi base e collezioni (weapons, craft, systems, staterooms, software) editabili da form dedicata.
-- Amendments nave post‑firma: `ShipAmendment` con `patchDetails` (stessa struttura di `shipDetails`) e **Cost reference obbligatoria** (categorie SHIP_GEAR/SHIP_SOFTWARE) con payment date valorizzata; la data effetto viene derivata dalla payment date del Cost e l’amendment compare nel PDF della nave.
-- La select Cost reference per gli amendments usa Tom Select con ricerca, inizializzato via Stimulus e asset locali in `assets/vendor/tom-select/`.
-- Tracciamento dell’utente proprietario su Ship, Crew, Mortgage, MortgageInstallment, Cost, Income e budget; i voter bloccano l’accesso se l’utente non coincide. Il PDF del mutuo può essere generato anche non firmato (marcato “Pro forma draft”).
-- PDF contratti/mutuo/schede con **template version** centralizzata (`config/template_versions.php`) per audit e tracciabilità.
-- Stato equipaggio con date operative: l’assegnazione da “unassigned crew” imposta `Active` + session date; lo sgancio azzera status e date operative (salvo `Missing (MIA)`/`Deceased`). Crew `Missing/Deceased` non compaiono tra gli unassigned e non vengono mostrati nei crew list del mutuo se non attivi alla data di firma.
-- Annual Budget per nave: calcolo riepilogativo di ricavi, costi e rate annuali del mutuo (su 13 periodi), più grafico temporale Income/Cost. Esempio: un mutuo di 100.000 Cr con duration 5 anni e multiplier 1.10 genera 13 rate/anno per 5 anni, non 12.
-- Cost detail items con amount auto‑calcolato: le righe dettaglio alimentano il totale e la stampa PDF del Cost.
-- Dashboard EasyAdmin personalizzata e CRUD dedicati alle entità di contesto.
-- Comandi di export/import JSON per ripristinare rapidamente i dati di contesto.
-- Liste principali con filtri di ricerca e paginazione (Ship, Crew, Mortgage, Cost, Income, Company, AnnualBudget, Campaign).
-- I controller e i repository filtrano le entità sull’utente proprietario restituendo 404 se non corrispondono, per difesa in profondità oltre ai voter.
-- I calcoli del mutuo usano BCMath e importi normalizzati a stringa per evitare drift tipici dei float; la formattazione numerica nelle liste/PDF è localizzata tramite `twig/intl-extra`.
-- I campi giorno/anno usano `ImperialDateType` (picker Stimulus `imperial-date` con formato `DDD/YYYY`) e limiti min/max: l’anno minimo è derivato dallo `startingYear` della Campaign selezionata (fallback `APP_YEAR_MIN`), applicato dinamicamente dal controller.
-- Rotte di navigazione con waypoints: la rotta è legata a Campaign + Ship, i waypoints includono `hex` e `sector` (nome o abbreviazione T5SS), e la mappa TravellerMap usa `https://travellermap.com/go/{sector}/{hex}`. Jump distance e fuel estimate sono calcolati dal helper `RouteMathHelper` con riferimento a `docs/Traveller-Fuel-Management.md`.
+
+### Tactical Bridge Interface (v2.0.x)
+- **Design System "Nav-Ops"**: Interfaccia ad alto contrasto basata su Tailwind 4 e DaisyUI, con palette cromatica dedicata (Abyss/Cyan/Teal) e animazioni responsive "scan-line".
+- **Tactical Search Terminals**: Filtri di ricerca centralizzati per i registri finanziari con labeling tecnico (`VESSEL_NAV`, `CAT_ID`, `DEBT_NAME`) e background semi-trasparente per una migliore leggibilità.
+- **Nav-Ops Pagination**: Sistema di navigazione tra i record con terminologia operativa (`LOG_SECTOR`, `TOTAL_RECORDS`) e pulse animato.
+- **Horizontal Data Architecture**: Ottimizzazione del layout a piena larghezza per i moduli complessi (Annual Budget, Mortgage), massimizzando lo spazio per telemetry e grafici.
+
+### Security & Access Control
+- **Perimeter Defense (MFA)**: Supporto nativo per Two-Factor Authentication (TOTP) con QR Code e gestione dispositivi autorizzati.
+- **External Uplink (Google OAuth)**: Integrazione sicura tramite Google Cloud Console per login rapido tramite account ufficiali.
+- **Ownership Lockdown**: Sistema granulare di Voter e Repository pattern che isola i dati (Ship, Crew, Financials) sull'utente proprietario, restituendo 404 in caso di tentata violazione di perimetro (ID enumeration).
+
+### Financial Core & Asset Management
+- **Vessel Liability (Mortgage)**: Gestione mutui uno-a-uno con piani di ammortamento a 13 periodi (calendario Traveller), tassi variabili e assicurazioni. Firma contrattuale legata alla sessione della Campaign.
+- **Full-Spectrum Ledger**: Tracciamento di entrate (`Income`) e uscite (`Cost`) con dettagli per categoria (Freight, Mail, Trade) e status dinamico **Draft/Signed**.
+- **Annual Projections**: Aggregazione automatica di cashflow per nave, con visualizzazione grafica della timeline finanziaria.
+- **Strategic Amendments**: Registro delle modifiche strutturali alla nave post-firma, collegate obbligatoriamente a un Cost reference per tracciabilità economica.
+
+### Operations & Navigation
+- **Campaign Sync**: Calendario di sessione centralizzato (`DDD/YYYY`) che propaga le date a tutti i moduli collegati e genera una sessione timeline con log JSON delle modifiche.
+- **Navigational Routes**: Calcolo di rotte tramite waypoints (Hex/Sector T5SS) con stima carburante (RouteMathHelper) e integrazione cartografica TravellerMap.
+- **Crew Registry**: Gestione status equipaggio (Active, MIA, Deceased) con assegnazione automatica alla sessione di bordo e validazione ruoli.
 
 ## Requisiti
 - PHP 8.2+

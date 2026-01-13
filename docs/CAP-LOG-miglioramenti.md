@@ -33,19 +33,18 @@ Documento di analisi tecnica con aree di miglioramento e funzionalità potenzial
 ## UX / UI (qualità d’uso)
 
 6) **Componente filtri riusabile [DONE]**
-   - Stato: creato il partial `templates/components/index_filters.html.twig` usato da tutte le index.
-   - Beneficio: layout coerente per label, griglie e pulsanti Search/Reset, con minori duplicazioni.
+   - Stato: creato il partial `templates/components/index_filters.html.twig` usato da tutte le index. Raffinato con stile "Tactical Search Terminal" in v2.0.5.
+   - Beneficio: layout coerente per label, griglie e pulsanti Search/Reset, con minori duplicazioni e look sci-fi integrato.
 
 7) **Feedback su filtri attivi [DONE]**
-   - Stato: badge “Filtered” mostrato nel legend quando almeno un filtro è valorizzato.
-   - Beneficio: i filtri attivi sono evidenti a colpo d’occhio.
+   - Stato: badge “STATUS_FILTERED” (Amber) mostrato nel legend della terminal bar quando almeno un filtro è valorizzato.
+   - Beneficio: i filtri attivi sono evidenti a colpo d’occhio nel contesto bridge.
 
 8) **Placeholder operativi coerenti [DONE]**
-   - Stato: placeholder uniformi applicati ai filtri day/year (Annual Budget: `Start >= Day/Year or Year`, `End <= Day/Year or Year`).
+   - Stato: placeholder uniformi applicati ai filtri day/year e campi di ricerca testo (es. `TITLE_DATA`, `TEMPORAL_START`).
 
-9) **Select con ricerca per Cost ref in Amendments — implementato**
-   - Stato: la select Cost degli Ship Amendments usa Tom Select con ricerca e filtri su SHIP_GEAR/SHIP_SOFTWARE.
-   - Beneficio: selezione rapida anche con liste lunghe di costi.
+9) **Select con ricerca per Cost ref in Amendments [DONE]**
+   - Stato: la select Cost degli Ship Amendments usa Tom Select con ricerca e filtri su SHIP_GEAR/SHIP_SOFTWARE. Raffinato con stile tactical in v2.0.x.
 
 ## Contratti e PDF
 

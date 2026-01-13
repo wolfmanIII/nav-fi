@@ -5,7 +5,8 @@ Applicazione Symfony dedicata alla gestione di navi, equipaggi, contratti e mutu
 Questo documento descrive in modo discorsivo l’architettura attuale di Captain Log Web, le sue dipendenze, i componenti applicativi principali e alcuni punti di attenzione operativi.
 
 ## Stack e infrastruttura
-- **Framework:** Symfony 7.3 (PHP ≥ 8.2), asset mapper, Stimulus, Twig, Tailwind + DaisyUI per la UI, Tom Select per le select con ricerca.
+- **Framework:** Symfony 7.3 (PHP ≥ 8.2), asset mapper, Stimulus, Twig, Tailwind 4 + DaisyUI per la UI (tema Abyss), Tom Select per le select con ricerca.
+- **Security & MFA:** Integrazione `scheb/2fa-bundle` per Two-Factor Authentication (Google Authenticator/TOTP) e `knpuniversity/oauth2-client-bundle` per Google Login integration.
 - **Date imperiali:** helper `ImperialDateHelper` + filtro Twig `imperial_date` per formattazione coerente `DDD/YYYY`.
 - **Tom Select (integrazione):** inizializzato via controller Stimulus `tom-select`; asset JS/CSS caricati da `assets/vendor/tom-select/` per evitare importmap bare‑module.
 - **Highlight.js:** usato per la formattazione dei JSON (session timeline Campaign) con asset locali in `assets/vendor/highlightjs/`.
@@ -13,6 +14,7 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 - **Admin:** EasyAdmin per le entità di contesto.
 - **PDF:** wkhtmltopdf via KnpSnappy (binario da `WKHTMLTOPDF_PATH`), template contratti in `templates/pdf/contracts` e scheda nave in `templates/pdf/ship/SHEET.html.twig`.
 - **Parametri day/year:** limiti configurabili via env (`APP_DAY_MIN/MAX`, `APP_YEAR_MIN/MAX`) e iniettati nei form IntegerType/ImperialDateType dedicati ai campi giorno/anno.
+- **Tactical UI Components:** macro `_tooltip.html.twig` per pulsanti azioni uniformati; sistema di filtri `index_filters.html.twig` con grid layout reattivo e design "Tactical Search Terminal".
 - **Stimulus form helpers:** controller `year-limit` applica il min anno derivato dallo `startingYear` della Campaign sulla Ship selezionata, con fallback ai limiti env.
 
 ## Dominio applicativo
@@ -48,13 +50,20 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Captain
 - CompanyRole 1–N Company.
 - Route 1–N RouteWaypoint.
 
-## Sicurezza e autorizzazioni
-- **Autenticazione:** form login (`/login`), CSRF abilitato, provider User (email). Access control su rotte principali con ruolo USER/ADMIN.
-- **Voter:** Ship/Crew/Mortgage/Cost/Income/AnnualBudget/Company vincolano l’accesso all’owner (`entity->getUser() === app.user`) e bloccano anonimi. Entità legacy senza `user` vengono rifiutate.
-- **Subscriber:** `AssignUserSubscriber` (Doctrine `prePersist`) assegna l’utente corrente se mancante.
-- **Filtro per ownership nei controller:** accesso alle entità tramite repository `findOneForUser`/`findAllForUser`, con 404 se l’utente non coincide (difesa in profondità oltre ai voter).
+## Sicurezza e perimetro tattico
+- **Autenticazione Multi-Livello:** Login standard Symfony integrato con **Two-Factor Authentication (2FA)** e supporto per **Google OAuth**.
+- **User Ownership Isolation:** FK `user` obbligatoria su tutte le entità core (`Ship`, `Crew`, `Mortgage`, `Cost`, `Income`, `AnnualBudget`). Il sistema garantisce l'isolamento dei dati tramite:
+  - **Voter dedicati** che verificano la proprietà prima di ogni operazione di edit/delete.
+  - **Ownership Repositories** (`findOneForUser`, `findAllForUser`) che filtrano alla sorgente, impedendo l'accesso via ID enumeration (404 se l'entità non appartiene all'utente).
+- **Session Protection:** CSRF abilitato su tutti i form e sessioni protette.
 - **Localizzazione numerica:** `twig/intl-extra` formatta importi in liste e PDF secondo la locale richiesta.
 - **Validazione day/year:** i form usano `IntegerType` e `DayYearLimits`; il min anno deriva dallo `startingYear` della Campaign della Ship selezionata (fallback `APP_YEAR_MIN`) ed è propagato lato client via Stimulus. Il validator `ImperialDateComplete` forza la compilazione completa day+year quando il campo è required.
+
+## Tactical UI Architecture (v2.0.x)
+- **Grid Strategy:** Utilizzo di grid layout dinamici per adattare la visualizzazione di tabellari complessi a formati a piena larghezza, garantendo spazio per la telemetria finanziaria.
+- **Search Terminal Pattern:** I filtri delle liste (`index_filters`) adottano un design "terminale" con background `bg-slate-950/40`, bordi `cyan-500/20` e labeling ad alto contrasto.
+- **Macro Standardization:** La macro `_tooltip.html.twig` centralizza il rendering di icone e azioni, forzando contenitori `inline-flex` per eliminare artefatti visivi e garantire centratura perfetta.
+- **Nav-Ops Pagination:** Paginazione custom che unisce estetica monospaced e terminologia Traveller per un'esperienza coerente col bridge di comando.
 
 ## EasyAdmin
 - Dashboard personalizzata (`templates/admin/dashboard.html.twig`) con card di link rapidi per le entità di contesto (InterestRate, Insurance, ShipRole, CostCategory, IncomeCategory, CompanyRole, LocalLaw, Company).

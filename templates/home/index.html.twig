@@ -4,13 +4,19 @@
 
 {% block pageContent %}
     <div class="min-h-[80vh] overflow-hidden">
-        <div class="relative isolate overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-emerald-900/30 to-cyan-800/20 p-10 shadow-xl">
+        <div class="relative isolate overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-950/20 p-10 shadow-2xl border border-cyan-500/10 group">
+            <!-- HUD Accent Line (Static) -->
+            <div class="absolute top-6 left-10 right-10 h-px bg-cyan-500/20 shadow-[0_0_10px_rgba(34,211,238,0.2)]"></div>
+            
+            <!-- Scanning Line Overlay (Animated) -->
+            <div class="scanning-line opacity-5 group-hover:opacity-10 transition-opacity"></div>
+            
             <div class="absolute inset-0 opacity-30" aria-hidden="true">
-                <div class="absolute -left-10 -top-10 h-64 w-64 rounded-full bg-cyan-500 blur-3xl"></div>
-                <div class="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-indigo-500 blur-3xl"></div>
+                <div class="absolute -left-10 -top-10 h-64 w-64 rounded-full bg-cyan-500/10 blur-3xl"></div>
+                <div class="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-indigo-500/10 blur-3xl"></div>
             </div>
 
-            <div class="relative grid gap-8 lg:grid-cols-2 items-center">
+            <div class="relative grid gap-8 lg:grid-cols-2 items-center mt-6">
                 <div class="space-y-6">
                     <div class="flex items-center gap-2 text-cyan-200/80">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-5 opacity-80">
@@ -19,10 +25,10 @@
                             <path d="M16 7l2 5-2 5"></path>
                             <circle cx="12" cy="12" r="3"></circle>
                         </svg>
-                        <p class="text-sm uppercase tracking-[0.3em]">Traveller // Imperial Drift Lane</p>
+                        <p class="text-sm uppercase tracking-[0.3em] font-orbitron font-bold">Traveller // Imperial Drift Lane</p>
                     </div>
-                    <h1 class="text-4xl md:text-5xl font-bold text-white leading-tight">
-                        Bridge-grade ops for ships, crew, credits and campaigns.
+                    <h1 class="text-4xl md:text-5xl font-bold text-white leading-tight tracking-tight">
+                        Bridge Operations
                     </h1>
                     <p class="text-lg text-slate-200/90 max-w-2xl">
                         Captain Log is the holo-console for your Traveller campaign: ships, crew, one-to-one mortgages per hull (sign with campaign session date + location, PDF anche in draft), contract & ship PDFs with counterparties and local law, Campaign calendars that drive year limits, and annual budgets to track routes, income, costs, and installments in real time. Session timeline logs capture each clock update with JSON snapshots for audit-grade continuity when the jump clock is ticking.
@@ -37,39 +43,39 @@
                     <p class="text-lg text-cyan-100 font-semibold">
                         First step: create a Campaign to set the session calendar—everything else hangs off it.
                     </p>
-                    <div class="flex flex-wrap gap-3">
-                        {% set drawer_btn = 'btn btn_success text-emerald-50 border-[2px] bg-gradient-to-r from-emerald-1000 via-emerald-900 to-emerald-700 hover:from-emerald-900 hover:via-emerald-800 hover:to-emerald-600 hover:border-emerald-300 shadow-lg shadow-emerald-950/60' %}
-                        <a href="{{ path('app_operation_guide') }}" class="{{ drawer_btn }} flex items-center gap-2">
-                            {% include 'icons/operations-checklist.html.twig' %}
-                            <span>Operations Checklist</span>
+                    <div class="flex flex-wrap gap-4">
+                        {% set drawer_btn = 'btn-tactical' %}
+                        <a href="{{ path('app_operation_guide') }}" class="{{ drawer_btn }}">
+                            {% include 'icons/operations-checklist.html.twig' with { dim: 18 } %}
+                            <span>OPS_CHECKLIST</span>
                         </a>
-                        <a href="{{ path('app_operations_flow') }}" class="{{ drawer_btn }} flex items-center gap-2">
-                            {% include 'icons/operations-flow.html.twig' %}
-                            <span>Operations Flow</span>
+                        <a href="{{ path('app_operations_flow') }}" class="{{ drawer_btn }}">
+                            {% include 'icons/operations-flow.html.twig' with { dim: 18 } %}
+                            <span>MISSION_FLOW</span>
                         </a>
-                        <a href="{{ path('app_campaign_index') }}" class="{{ drawer_btn }} flex items-center gap-2">
-                            {% include 'icons/alien-structure-1.html.twig' %}
-                            <span>Create Campaign</span>
+                        <a href="{{ path('app_campaign_index') }}" class="{{ drawer_btn }}">
+                            {% include 'icons/alien-structure-1.html.twig' with { dim: 18 } %}
+                            <span>INIT_CAMPAIGN</span>
                         </a>
-                        <a href="{{ path('app_ship_index') }}" class="{{ drawer_btn }} flex items-center gap-2">
-                            {% include 'icons/far-trader.html.twig' %}
-                            <span>Go to Shipyard</span>
+                        <a href="{{ path('app_ship_index') }}" class="{{ drawer_btn }}">
+                            {% include 'icons/far-trader.html.twig' with { dim: 18 } %}
+                            <span>SHIPYARD_DRY_DOCK</span>
                         </a>
-                        <a href="{{ path('app_route_index') }}" class="{{ drawer_btn }} flex items-center gap-2">
-                            {% include 'icons/routes.html.twig' %}
-                            <span>Plan Routes</span>
+                        <a href="{{ path('app_route_index') }}" class="{{ drawer_btn }}">
+                            {% include 'icons/routes.html.twig' with { dim: 18 } %}
+                            <span>CHART_ROUTES</span>
                         </a>
-                        <a href="{{ path('app_mortgage_index') }}" class="{{ drawer_btn }} flex items-center gap-2">
-                            {% include 'icons/handbook.html.twig' %}
-                            <span>Manage Mortgages</span>
+                        <a href="{{ path('app_mortgage_index') }}" class="{{ drawer_btn }}">
+                            {% include 'icons/handbook.html.twig' with { dim: 18 } %}
+                            <span>DEBT_MANIFEST</span>
                         </a>
-                        <a href="{{ path('app_annual_budget_index') }}" class="{{ drawer_btn }} flex items-center gap-2">
-                            {% include 'icons/annual-budget.html.twig' %}
-                            <span>Annual Budgets</span>
+                        <a href="{{ path('app_annual_budget_index') }}" class="{{ drawer_btn }}">
+                            {% include 'icons/annual-budget.html.twig' with { dim: 18 } %}
+                            <span>CYCLE_BUDGETS</span>
                         </a>
-                        <a href="{{ path('app_cost_index') }}" class="{{ drawer_btn }} flex items-center gap-2">
-                            {% include 'icons/cost.html.twig' %}
-                            <span>Track Costs</span>
+                        <a href="{{ path('app_cost_index') }}" class="{{ drawer_btn }}">
+                            {% include 'icons/cost.html.twig' with { dim: 18 } %}
+                            <span>MISSION_OUTFLOW</span>
                         </a>
                     </div>
                     <div class="flex flex-wrap gap-4 pt-4 text-xs uppercase tracking-[0.25em] text-cyan-200/70">
@@ -92,147 +98,161 @@
                     </div>
                 </div>
 
-                <div class="relative bg-slate-900/60 border border-white/10 rounded-2xl p-6 shadow-lg">
-                    <div class="grid grid-cols-2 gap-4 text-slate-100">
-                        <div class="rounded-xl bg-white/5 p-4 border border-white/10">
-                            <div class="flex items-center gap-2 text-cyan-200">
-                                {% include 'icons/far-trader.html.twig' %}
-                                <p class="text-xs uppercase tracking-widest text-cyan-200/80">Ships</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="rounded-xl border-tactical p-5 transition-all hover:bg-slate-900/60 group/card">
+                        <div class="flex items-center gap-3 text-cyan-400">
+                            <div class="group-hover/card:animate-pulse">
+                                {% include 'icons/far-trader.html.twig' with { dim: 18 } %}
                             </div>
-                            <p class="text-2xl font-bold mt-2">Fleets and classes</p>
-                            <p class="text-sm opacity-80 mt-1">Ship sheets, price, mortgage status, crew, and printable PDFs with structured details—plus amendment logs tied to upgrade costs.</p>
+                            <p class="text-[10px] uppercase tracking-[0.3em] font-orbitron opacity-60">REG_FLEET</p>
                         </div>
-                        <div class="rounded-xl bg-white/5 p-4 border border-white/10">
-                            <div class="flex items-center gap-2 text-cyan-200">
-                                {% include 'icons/crew.html.twig' %}
-                                <p class="text-xs uppercase tracking-widest text-cyan-200/80">Crew</p>
+                        <p class="text-xl font-bold mt-3 text-white">Vessel Assets</p>
+                        <p class="text-xs opacity-60 mt-2 leading-relaxed">Ship sheets, mortgage status, crew registers, and printable PDFs with amendment logs.</p>
+                    </div>
+                    <div class="rounded-xl border-tactical p-5 transition-all hover:bg-slate-900/60 group/card">
+                        <div class="flex items-center gap-3 text-cyan-400">
+                            <div class="group-hover/card:animate-pulse">
+                                {% include 'icons/crew.html.twig' with { dim: 18 } %}
                             </div>
-                            <p class="text-2xl font-bold mt-2">Roles and shifts</p>
-                            <p class="text-sm opacity-80 mt-1">Bridge roles, captain, and status timelines aligned to the session clock (active/leave/retired/MIA).</p>
+                            <p class="text-[10px] uppercase tracking-[0.3em] font-mono opacity-60">CREW_MANIFEST</p>
                         </div>
-                        <div class="rounded-xl bg-white/5 p-4 border border-white/10">
-                            <div class="flex items-center gap-2 text-cyan-200">
-                                {% include 'icons/handbook.html.twig' %}
-                                <p class="text-xs uppercase tracking-widest text-cyan-200/80">Mortgages</p>
+                        <p class="text-xl font-bold mt-3 text-white">Ops Personnel</p>
+                        <p class="text-xs opacity-60 mt-2 leading-relaxed">Bridge roles and status timelines aligned to the session jump clock.</p>
+                    </div>
+                    <div class="rounded-xl border-tactical p-5 transition-all hover:bg-slate-900/60 group/card">
+                        <div class="flex items-center gap-3 text-cyan-400">
+                            <div class="group-hover/card:animate-pulse">
+                                {% include 'icons/handbook.html.twig' with { dim: 18 } %}
                             </div>
-                            <p class="text-2xl font-bold mt-2">Rates and penalties</p>
-                            <p class="text-sm opacity-80 mt-1">See what the bank wants, what you already paid, and the signed sheets ready to flash in port.</p>
+                            <p class="text-[10px] uppercase tracking-[0.3em] font-mono opacity-60">CREDIT_DEBT</p>
                         </div>
-                        <div class="rounded-xl bg-white/5 p-4 border border-white/10">
-                            <div class="flex items-center gap-2 text-cyan-200">
-                                {% include 'icons/annual-budget.html.twig' %}
-                                <p class="text-xs uppercase tracking-widest text-cyan-200/80">Budgets</p>
+                        <p class="text-xl font-bold mt-3 text-white">Liabilities</p>
+                        <p class="text-xs opacity-60 mt-2 leading-relaxed">Track rates, penalties, and signed agreements ready for port flash.</p>
+                    </div>
+                    <div class="rounded-xl border-tactical p-5 transition-all hover:bg-slate-900/60 group/card">
+                        <div class="flex items-center gap-3 text-cyan-400">
+                            <div class="group-hover/card:animate-pulse">
+                                {% include 'icons/annual-budget.html.twig' with { dim: 18 } %}
                             </div>
-                            <p class="text-2xl font-bold mt-2">Per-ship balance</p>
-                            <p class="text-sm opacity-80 mt-1">What a hull earns and burns this year: income, upkeep, and debt on one strip.</p>
+                            <p class="text-[10px] uppercase tracking-[0.3em] font-mono opacity-60">PERF_MATRIX</p>
                         </div>
-                        <div class="rounded-xl bg-white/5 p-4 border border-white/10">
-                            <div class="flex items-center gap-2 text-cyan-200">
-                                {% include 'icons/holocron.html.twig' %}
-                                <p class="text-xs uppercase tracking-widest text-cyan-200/80">Context</p>
-                            </div>
-                            <p class="text-2xl font-bold mt-2">Catalogs</p>
-                            <p class="text-sm opacity-80 mt-1">Port laws, factions, and job types packed and ready: drop a new world flavor without pausing the table.</p>
-                        </div>
+                        <p class="text-xl font-bold mt-3 text-white">Cycle Balance</p>
+                        <p class="text-xs opacity-60 mt-2 leading-relaxed">Aggregated income, upkeep, and debt on a single mission strip.</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="mt-12 grid gap-6 md:grid-cols-3">
-            <div class="rounded-2xl border border-white/10 bg-base-200/80 p-6 shadow-sm">
-                <div class="flex items-center gap-2 text-cyan-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M2 12h2"></path>
-                        <path d="M20 12h2"></path>
-                        <path d="M7 12h10"></path>
-                        <circle cx="12" cy="12" r="7"></circle>
-                    </svg>
-                    <p class="text-xs uppercase tracking-[0.25em] text-cyan-400">Scenario</p>
+            <div class="rounded-xl border-tactical p-6 transition-all hover:bg-slate-900/60 group/feat">
+                <div class="flex items-center gap-3 text-cyan-400">
+                    <div class="group-hover/feat:animate-pulse">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M2 12h2"></path>
+                            <path d="M20 12h2"></path>
+                            <path d="M7 12h10"></path>
+                            <circle cx="12" cy="12" r="7"></circle>
+                        </svg>
+                    </div>
+                    <p class="text-[10px] uppercase tracking-[0.3em] font-mono opacity-60">SCEN_ARCH</p>
                 </div>
-                <h3 class="text-xl font-semibold mt-2 text-slate-100">Deep space, lean rules</h3>
-                <p class="text-sm text-slate-300 mt-2">Keep the table moving: few screens, the essentials only, and ready-made seeds to reboot a jump if cargo goes sideways.</p>
+                <h3 class="text-xl font-semibold mt-4 text-white">Deep Space, Lean Rules</h3>
+                <p class="text-sm text-slate-400 mt-2 leading-relaxed">Keep the table moving: essentials-only interfaces and ready-made seeds to reboot a mission if cargo goes sideways.</p>
             </div>
-            <div class="rounded-2xl border border-white/10 bg-base-200/80 p-6 shadow-sm">
-                <div class="flex items-center gap-2 text-cyan-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M12 3l7 4v6c0 4-3 6-7 8-4-2-7-4-7-8V7z"></path>
-                        <circle cx="12" cy="11" r="2.5"></circle>
-                    </svg>
-                    <p class="text-xs uppercase tracking-[0.25em] text-cyan-400">Control</p>
+            <div class="rounded-xl border-tactical p-6 transition-all hover:bg-slate-900/60 group/feat">
+                <div class="flex items-center gap-3 text-cyan-400">
+                    <div class="group-hover/feat:animate-pulse">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 3l7 4v6c0 4-3 6-7 8-4-2-7-4-7-8V7z"></path>
+                            <circle cx="12" cy="11" r="2.5"></circle>
+                        </svg>
+                    </div>
+                    <p class="text-[10px] uppercase tracking-[0.3em] font-mono opacity-60">SEC_UPLINK</p>
                 </div>
-                <h3 class="text-xl font-semibold mt-2 text-slate-100">Ownership & security</h3>
-                <p class="text-sm text-slate-300 mt-2">Your hulls stay yours: only your crew and ledgers show up, so every captain keeps their secrets docked.</p>
+                <h3 class="text-xl font-semibold mt-4 text-white">Ownership & Security</h3>
+                <p class="text-sm text-slate-400 mt-2 leading-relaxed">Your hulls stay yours: Only your crew and ledgers show up on your bridge.</p>
             </div>
-            <div class="rounded-2xl border border-white/10 bg-base-200/80 p-6 shadow-sm">
-                <div class="flex items-center gap-2 text-cyan-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M12 2l3 7 7 .5-5.5 4.5 1.8 7-6.3-4-6.3 4 1.8-7L2 9.5 9 9z"></path>
-                    </svg>
-                    <p class="text-xs uppercase tracking-[0.25em] text-cyan-400">Support</p>
+            <div class="rounded-xl border-tactical p-6 transition-all hover:bg-slate-900/60 group/feat">
+                <div class="flex items-center gap-3 text-cyan-400">
+                    <div class="group-hover/feat:animate-pulse">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2l3 7 7 .5-5.5 4.5 1.8 7-6.3-4-6.3 4 1.8-7L2 9.5 9 9z"></path>
+                        </svg>
+                    </div>
+                    <p class="text-[10px] uppercase tracking-[0.3em] font-mono opacity-60">MISSION_DEBRIEF</p>
                 </div>
-                <h3 class="text-xl font-semibold mt-2 text-slate-100">Crew briefing</h3>
-                <p class="text-sm text-slate-300 mt-2">Keep captains and crew aligned with a quick brief: what the job is, what the ship owes, and where the next jump heads.</p>
+                <h3 class="text-xl font-semibold mt-4 text-white">Crew Briefing</h3>
+                <p class="text-sm text-slate-400 mt-2 leading-relaxed">Keep captains and crew aligned: job specs, debt manifests, and jump coordinates in a single view.</p>
             </div>
-            <div class="rounded-2xl border border-white/10 bg-base-200/80 p-6 shadow-sm">
-                <div class="flex items-center gap-2 text-cyan-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M3 18v-2l5-4 4 3 4-6 5 4v5H3z"></path>
-                        <path d="M3 14v-1"></path>
-                        <path d="M3 22h18"></path>
-                    </svg>
-                    <p class="text-xs uppercase tracking-[0.25em] text-cyan-400">Economy</p>
+            <div class="rounded-xl border-tactical p-6 transition-all hover:bg-slate-900/60 group/feat">
+                <div class="flex items-center gap-3 text-cyan-400">
+                    <div class="group-hover/feat:animate-pulse">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M3 18v-2l5-4 4 3 4-6 5 4v5H3z"></path>
+                            <path d="M3 14v-1"></path>
+                            <path d="M3 22h18"></path>
+                        </svg>
+                    </div>
+                    <p class="text-[10px] uppercase tracking-[0.3em] font-mono opacity-60">ECON_ANALYSIS</p>
                 </div>
-                <h3 class="text-xl font-semibold mt-2 text-slate-100">Routes, risks, rewards</h3>
-                <p class="text-sm text-slate-300 mt-2">Jobs, upkeep, and cuts per ship: see what the route pays, what it burns, and how it shapes the campaign.</p>
+                <h3 class="text-xl font-semibold mt-4 text-white">Routes & Rewards</h3>
+                <p class="text-sm text-slate-400 mt-2 leading-relaxed">Jobs, upkeep, and fuel burns per vessel: visualize how every jump shapes the campaign economy.</p>
             </div>
-            <div class="rounded-2xl border border-white/10 bg-base-200/80 p-6 shadow-sm">
-                <div class="flex items-center gap-2 text-cyan-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M4 12h16"></path>
-                        <path d="M12 4v16"></path>
-                        <circle cx="12" cy="12" r="2"></circle>
-                    </svg>
-                    <p class="text-xs uppercase tracking-[0.25em] text-cyan-400">Signals</p>
+            <div class="rounded-xl border-tactical p-6 transition-all hover:bg-slate-900/60 group/feat">
+                <div class="flex items-center gap-3 text-cyan-400">
+                    <div class="group-hover/feat:animate-pulse">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M4 12h16"></path>
+                            <path d="M12 4v16"></path>
+                            <circle cx="12" cy="12" r="2"></circle>
+                        </svg>
+                    </div>
+                    <p class="text-[10px] uppercase tracking-[0.3em] font-mono opacity-60">TELE_SYNC</p>
                 </div>
-                <h3 class="text-xl font-semibold mt-2 text-slate-100">Telemetry at a glance</h3>
-                <p class="text-sm text-slate-300 mt-2">Follow each hull’s credits on a simple timeline: see when coffers swell and when fuel or debt bites back.</p>
+                <h3 class="text-xl font-semibold mt-4 text-white">Telemetry Sync</h3>
+                <p class="text-sm text-slate-400 mt-2 leading-relaxed">Follow fleet credits on a high-fidelity timeline: see coffers swell and debt bite back in real-time.</p>
             </div>
-            <div class="rounded-2xl border border-white/10 bg-base-200/80 p-6 shadow-sm">
-                <div class="flex items-center gap-2 text-cyan-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M5 5h14v14H5z"></path>
-                        <path d="M8 14l3-3 2 2 3-4"></path>
-                    </svg>
-                    <p class="text-xs uppercase tracking-[0.25em] text-cyan-400">Annual Budget</p>
+            <div class="rounded-xl border-tactical p-6 transition-all hover:bg-slate-900/60 group/feat">
+                <div class="flex items-center gap-3 text-cyan-400">
+                    <div class="group-hover/feat:animate-pulse">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M5 5h14v14H5z"></path>
+                            <path d="M8 14l3-3 2 2 3-4"></path>
+                        </svg>
+                    </div>
+                    <p class="text-[10px] uppercase tracking-[0.3em] font-mono opacity-60">BUDGET_CTRL</p>
                 </div>
-                <h3 class="text-xl font-semibold mt-2 text-slate-100">One hull, one window</h3>
-                <p class="text-sm text-slate-300 mt-2">Every ship has its own ledger: income, upkeep, and mortgage cuts in one place for the current year.</p>
+                <h3 class="text-xl font-semibold mt-4 text-white">One Hull, One Window</h3>
+                <p class="text-sm text-slate-400 mt-2 leading-relaxed">Every ship has its own tactical ledger: mission income, upkeep, and debt cuts in one place.</p>
             </div>
-            <div class="rounded-2xl border border-white/10 bg-base-200/80 p-6 shadow-sm">
-                <div class="flex items-center gap-2 text-cyan-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M4 12a8 8 0 0 1 16 0"></path>
-                        <path d="M4 12h16"></path>
-                        <path d="M9 12a3 3 0 0 1 6 0"></path>
-                    </svg>
-                    <p class="text-xs uppercase tracking-[0.25em] text-cyan-400">Bridge</p>
+            <div class="rounded-xl border-tactical p-6 transition-all hover:bg-slate-900/60 group/feat">
+                <div class="flex items-center gap-3 text-cyan-400">
+                    <div class="group-hover/feat:animate-pulse">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M4 12a8 8 0 0 1 16 0"></path>
+                            <path d="M4 12h16"></path>
+                            <path d="M9 12a3 3 0 0 1 6 0"></path>
+                        </svg>
+                    </div>
+                    <p class="text-[10px] uppercase tracking-[0.3em] font-mono opacity-60">BRIDGE_OPS</p>
                 </div>
-                <h3 class="text-xl font-semibold mt-2 text-slate-100">Ship & crew status</h3>
-                <p class="text-sm text-slate-300 mt-2">Bridge roles, captain, and signed mortgages: all synced with ship sheets.</p>
+                <h3 class="text-xl font-semibold mt-4 text-white">Vessel Status</h3>
+                <p class="text-sm text-slate-400 mt-2 leading-relaxed">Bridge roles, captain manifests, and authorized mortgages synced with live ship sheets.</p>
             </div>
-            <div class="rounded-2xl border border-white/10 bg-base-200/80 p-6 shadow-sm">
-                <div class="flex items-center gap-2 text-cyan-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M4 5h16"></path>
-                        <path d="M4 12h16"></path>
-                        <path d="M4 19h16"></path>
-                        <path d="M8 5v14"></path>
-                    </svg>
-                    <p class="text-xs uppercase tracking-[0.25em] text-cyan-400">Campaign</p>
+            <div class="rounded-xl border-tactical p-6 transition-all hover:bg-slate-900/60 group/feat">
+                <div class="flex items-center gap-3 text-cyan-400">
+                    <div class="group-hover/feat:animate-pulse">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M4 5h16"></path>
+                            <path d="M4 12h16"></path>
+                            <path d="M4 19h16"></path>
+                            <path d="M8 5v14"></path>
+                        </svg>
+                    </div>
+                    <p class="text-[10px] uppercase tracking-[0.3em] font-mono opacity-60">CAL_SYNC</p>
                 </div>
-                <h3 class="text-xl font-semibold mt-2 text-slate-100">Campaign calendar</h3>
-                <p class="text-sm text-slate-300 mt-2">Set session dates with the Traveller day-of-year picker (`DDD/YYYY`) and every sheet follows: ships, contracts, and budgets stay in sync with your table’s timeline.</p>
+                <h3 class="text-xl font-semibold mt-4 text-white">Imperial Calendar</h3>
+                <p class="text-sm text-slate-400 mt-2 leading-relaxed">Set session dates via `DDD/YYYY` and every sheet follows: ships, contracts, and budgets stay in sync.</p>
             </div>
         </div>
     </div>
