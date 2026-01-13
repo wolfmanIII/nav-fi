@@ -37,64 +37,30 @@
                         Tactical Command
                      </h2>
 
-                     <div class="space-y-3">
-                         {% set drawer_link = "flex items-center gap-3 p-3 rounded-lg border border-slate-800 bg-slate-900/50 hover:bg-cyan-950/30 hover:border-cyan-500/40 hover:text-cyan-200 text-slate-300 transition-all group/link" %}
-                         
-                         <a href="{{ path('app_operation_guide') }}" class="{{ drawer_link }}">
-                            <div class="p-2 rounded bg-slate-950 text-cyan-500 group-hover/link:text-cyan-300 transition-colors">
-                                {% include 'icons/operations-checklist.html.twig' with { dim: 18 } %}
-                            </div>
-                            <div class="flex-1">
-                                <span class="block text-sm font-bold tracking-wide">OPS_CHECKLIST</span>
-                                <span class="text-[10px] text-slate-500 uppercase tracking-wider group-hover/link:text-cyan-500/70">Missions & Prep</span>
-                            </div>
-                            <svg class="w-4 h-4 opacity-0 -translate-x-2 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                     <div class="grid grid-cols-2 gap-3">
+                         <a href="{{ path('app_operation_guide') }}" class="flex flex-col items-center justify-center p-4 rounded-lg bg-slate-950 border border-slate-800 hover:border-cyan-500/30 hover:bg-slate-900 transition-all text-center group">
+                            <div class="text-cyan-500 mb-2 group-hover:scale-110 transition-transform">{% include 'icons/operations-checklist.html.twig' with { dim: 20 } %}</div>
+                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">OPS CHECKLIST</span>
                         </a>
 
-                         <a href="{{ path('app_operations_flow') }}" class="{{ drawer_link }}">
-                            <div class="p-2 rounded bg-slate-950 text-cyan-500 group-hover/link:text-cyan-300 transition-colors">
-                                {% include 'icons/operations-flow.html.twig' with { dim: 18 } %}
-                            </div>
-                            <div class="flex-1">
-                                <span class="block text-sm font-bold tracking-wide">MISSION_FLOW</span>
-                                <span class="text-[10px] text-slate-500 uppercase tracking-wider group-hover/link:text-cyan-500/70">Standard Procedure</span>
-                            </div>
-                             <svg class="w-4 h-4 opacity-0 -translate-x-2 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                         <a href="{{ path('app_operations_flow') }}" class="flex flex-col items-center justify-center p-4 rounded-lg bg-slate-950 border border-slate-800 hover:border-cyan-500/30 hover:bg-slate-900 transition-all text-center group">
+                            <div class="text-cyan-500 mb-2 group-hover:scale-110 transition-transform">{% include 'icons/operations-flow.html.twig' with { dim: 20 } %}</div>
+                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">MISSION FLOW</span>
                         </a>
 
-                        <div class="h-px bg-slate-800 my-4"></div>
-
-                        <a href="{{ path('app_campaign_index') }}" class="{{ drawer_link }}">
-                            <div class="p-2 rounded bg-slate-950 text-purple-400 group-hover/link:text-purple-300 transition-colors">
-                                {% include 'icons/alien-structure-1.html.twig' with { dim: 18 } %}
-                            </div>
-                             <div class="flex-1">
-                                <span class="block text-sm font-bold tracking-wide">INIT_CAMPAIGN</span>
-                                <span class="text-[10px] text-slate-500 uppercase tracking-wider group-hover/link:text-cyan-500/70">Session Calendar</span>
-                            </div>
-                             <svg class="w-4 h-4 opacity-0 -translate-x-2 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        <a href="{{ path('app_campaign_index') }}" class="flex flex-col items-center justify-center p-4 rounded-lg bg-slate-950 border border-slate-800 hover:border-purple-500/30 hover:bg-slate-900 transition-all text-center group">
+                            <div class="text-purple-400 mb-2 group-hover:scale-110 transition-transform">{% include 'icons/alien-structure-1.html.twig' with { dim: 20 } %}</div>
+                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">INIT CAMPAIGN</span>
                         </a>
 
-                         <a href="{{ path('app_ship_index') }}" class="{{ drawer_link }}">
-                            <div class="p-2 rounded bg-slate-950 text-blue-400 group-hover/link:text-blue-300 transition-colors">
-                                {% include 'icons/far-trader.html.twig' with { dim: 18 } %}
-                            </div>
-                             <div class="flex-1">
-                                <span class="block text-sm font-bold tracking-wide">SHIPYARD</span>
-                                <span class="text-[10px] text-slate-500 uppercase tracking-wider group-hover/link:text-cyan-500/70">Dry Dock & Specs</span>
-                            </div>
-                             <svg class="w-4 h-4 opacity-0 -translate-x-2 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                         <a href="{{ path('app_ship_index') }}" class="flex flex-col items-center justify-center p-4 rounded-lg bg-slate-950 border border-slate-800 hover:border-blue-500/30 hover:bg-slate-900 transition-all text-center group">
+                            <div class="text-blue-400 mb-2 group-hover:scale-110 transition-transform">{% include 'icons/far-trader.html.twig' with { dim: 20 } %}</div>
+                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">SHIPYARD</span>
                         </a>
 
-                        <a href="{{ path('app_route_index') }}" class="{{ drawer_link }}">
-                            <div class="p-2 rounded bg-slate-950 text-emerald-400 group-hover/link:text-emerald-300 transition-colors">
-                                {% include 'icons/routes.html.twig' with { dim: 18 } %}
-                            </div>
-                             <div class="flex-1">
-                                <span class="block text-sm font-bold tracking-wide">CHART_ROUTES</span>
-                                <span class="text-[10px] text-slate-500 uppercase tracking-wider group-hover/link:text-cyan-500/70">Astro-Navigation</span>
-                            </div>
-                             <svg class="w-4 h-4 opacity-0 -translate-x-2 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                        <a href="{{ path('app_route_index') }}" class="col-span-2 flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-950 border border-slate-800 hover:border-emerald-500/30 hover:bg-slate-900 transition-all group">
+                             <div class="text-emerald-400 group-hover:text-white">{% include 'icons/routes.html.twig' with { dim: 16 } %}</div>
+                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">CHART ROUTES</span>
                         </a>
                      </div>
                 </div>
