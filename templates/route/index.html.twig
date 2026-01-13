@@ -64,75 +64,84 @@
             is_filtered: filters.name or filters.ship or filters.campaign
         } %}
 
-        <div class="flow-root">
-            <div class="overflow-x-auto overflow-y-visible rounded-box border border-base-content/5 bg-base-100">
-                <table class="table border-separate border-spacing-0 inner-bordered-table">
-                    <thead>
-                    <tr>
-                        <th>Code</th>
-                        <th>Name</th>
-                        <th>Ship</th>
-                        <th>Campaign</th>
-                        <th>Start</th>
-                        <th>Destination</th>
-                        <th class="text-right">Jump</th>
-                        <th class="text-right">Fuel</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% if routes|length > 0 %}
-                        {% for route in routes %}
-                            <tr>
-                                <td>{% include 'components/code_with_copy.html.twig' with { code: route.code } %}</td>
-                                <td>{{ route.name }}</td>
-                                <td>{{ route.ship.name }}</td>
-                                <td>{{ route.campaign ? route.campaign.title : '—' }}</td>
-                                <td>{{ route.startHex ?? '—' }}</td>
-                                <td>{{ route.destHex ?? '—' }}</td>
-                                <td class="text-right">{{ route.jumpRating ?? '—' }}</td>
-                                <td class="text-right">{{ route.fuelEstimate ?? '—' }}</td>
-                                <td>
-                                    <div class="flex items-center gap-2">
-                                        {% if route.startHex %}
-                                            {{ tooltip.link('Open on TravellerMap',
-                                                            '',
-                                                            'icons/routes.html.twig',
-                                                            'https://travellermap.com/?marker_hex=' ~ route.startHex,
-                                                            { dim: 14, linkClass: 'btn btn-outline btn-accent btn-xs', attrs: { target: '_blank', rel: 'noopener' } }) }}
-                                        {% else %}
-                                            {{ tooltip.button('No start hex for map',
-                                                              '',
-                                                              'icons/routes.html.twig',
-                                                              { dim: 14, buttonClass: 'btn btn-outline btn-accent btn-xs opacity-60 cursor-not-allowed', attrs: { disabled: 'disabled' } }) }}
-                                        {% endif %}
-                                        {{ tooltip.link('Inspect route',
-                                                        '',
-                                                        'icons/action-edit.html.twig',
-                                                        path('app_route_details', { id: route.id }),
-                                                        { dim: 14, linkClass: 'btn btn-outline btn-info btn-xs' }) }}
-                                        {{ tooltip.link('Edit route',
-                                                        '',
-                                                        'icons/action-edit.html.twig',
-                                                        path('app_route_edit', { id: route.id }),
-                                                        { dim: 14, linkClass: 'btn btn-outline btn-primary btn-xs' }) }}
-                                        {{ tooltip.link('Delete route',
-                                                        '',
-                                                        'icons/action-trash.html.twig',
-                                                        path('app_route_delete', { id: route.id }),
-                                                        { dim: 14, linkClass: 'btn btn-outline btn-error btn-xs' }) }}
-                                    </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="9" class="text-center text-slate-400 py-6">No routes logged.</td>
-                        </tr>
-                    {% endif %}
-                    </tbody>
-                </table>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {% if routes|length > 0 %}
+                {% for route in routes %}
+                    <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 shadow-lg transition-all hover:border-emerald-500/30 hover:shadow-emerald-500/10 hover:-translate-y-1">
+                        {# Card Header: Name & Actions #}
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-2">
+                                <div class="px-2 py-1 rounded border border-slate-700 bg-slate-800 text-xs font-mono tracking-widest text-slate-400 uppercase">
+                                    {% include 'components/code_with_copy.html.twig' with { code: route.code } %}
+                                </div>
+                                <h2 class="text-sm font-bold text-slate-200 group-hover:text-emerald-400 transition-colors uppercase tracking-tight truncate max-w-[150px]" title="{{ route.name }}">
+                                    {{ route.name }}
+                                </h2>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                {{ tooltip.link('Inspect route', '', 'icons/action-edit.html.twig', path('app_route_details', { id: route.id }), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400' }) }}
+                                {{ tooltip.link('Edit route', '', 'icons/action-edit.html.twig', path('app_route_edit', { id: route.id }), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400' }) }}
+                                {{ tooltip.link('Delete route', '', 'icons/action-trash.html.twig', path('app_route_delete', { id: route.id }), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' }) }}
+                            </div>
+                        </div>
+
+                        {# Card Body: Astrogation Flow #}
+                        <div class="flex items-center justify-between mb-4 p-3 bg-slate-900/50 rounded-lg border border-slate-800/50">
+                            <div class="text-center w-1/3">
+                                <div class="text-[10px] text-slate-500 uppercase tracking-widest font-rajdhani mb-0.5">Origin</div>
+                                <div class="font-mono text-emerald-400 font-bold text-sm">{{ route.startHex ?? '????' }}</div>
+                            </div>
+                            <div class="flex-grow border-t border-dashed border-slate-700 mx-2 relative h-px">
+                                 <div class="absolute -top-2 left-1/2 -ml-1 text-slate-600 text-xs">➤</div>
+                            </div>
+                            <div class="text-center w-1/3">
+                                 <div class="text-[10px] text-slate-500 uppercase tracking-widest font-rajdhani mb-0.5">Dest</div>
+                                <div class="font-mono text-emerald-400 font-bold text-sm">{{ route.destHex ?? '????' }}</div>
+                            </div>
+                        </div>
+
+                        {# Spec Grid #}
+                        <div class="grid grid-cols-2 gap-2 mb-4">
+                             <div class="p-2 rounded bg-slate-800/30 border border-slate-700/50 flex flex-col items-center">
+                                <span class="text-[9px] text-slate-500 uppercase tracking-widest">Jump Dist</span>
+                                <span class="text-slate-200 font-mono font-bold">{{ route.jumpRating ?? '-' }} <span class="text-[9px] text-slate-600">PC</span></span>
+                             </div>
+                             <div class="p-2 rounded bg-slate-800/30 border border-slate-700/50 flex flex-col items-center">
+                                <span class="text-[9px] text-slate-500 uppercase tracking-widest">Fuel Est</span>
+                                <span class="text-slate-200 font-mono font-bold">{{ route.fuelEstimate ?? '-' }} <span class="text-[9px] text-slate-600">TONS</span></span>
+                             </div>
+                        </div>
+
+                        {# Footer: Linkages #}
+                        <div class="mt-auto pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+                             <div class="flex items-center gap-2 overflow-hidden max-w-[60%]">
+                                {% if route.ship %}
+                                    <span class="text-cyan-500/50">{% include 'icons/far-trader.html.twig' with { dim: 12 } %}</span>
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider truncate" title="Assigned Ship">{{ route.ship.name }}</span>
+                                {% else %}
+                                     <span class="text-[10px] text-slate-600 uppercase italic">Unassigned</span>
+                                {% endif %}
+                             </div>
+                             
+                            {% if route.startHex %}
+                                <a href="https://travellermap.com/?marker_hex={{ route.startHex }}" target="_blank" rel="noopener" class="flex items-center gap-1.5 px-2 py-1 rounded bg-slate-800 hover:bg-emerald-950/30 border border-slate-700 hover:border-emerald-500/50 text-slate-400 hover:text-emerald-400 transition-all group/map" title="Open chart on TravellerMap">
+                                    <span class="text-[9px] font-bold uppercase tracking-wider">Map</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover/map:scale-110 transition-transform"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                 <div class="col-span-full py-16 text-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
+                    <p class="text-slate-500 font-rajdhani tracking-widest uppercase mb-6 text-sm">Nav computer empty // No routes plotted</p>
+                     {{ tooltip.link('Create a new route',
+                                    'Plot Course',
+                                    'icons/routes.html.twig',
+                                    path('app_route_new'),
+                                    { dim: 24, linkClass: 'btn btn-primary btn-outline' }) }}
+                </div>
+            {% endif %}
         </div>
 
         {% if pagination.total > 0 %}
