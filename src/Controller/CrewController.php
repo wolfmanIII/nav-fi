@@ -29,7 +29,7 @@ final class CrewController extends BaseController
             'campaign' => ['type' => 'int'],
         ]);
         $page = $listViewHelper->getPage($request);
-        $perPage = 10;
+        $perPage = 9;
 
         $crew = [];
         $total = 0;
@@ -86,7 +86,7 @@ final class CrewController extends BaseController
             $em->persist($crew);
 
             if (!$crew->getShip()) {
-                foreach($crew->getShipRoles() as $role) {
+                foreach ($crew->getShipRoles() as $role) {
                     $crew->removeShipRole($role);
                 }
             }
@@ -109,8 +109,7 @@ final class CrewController extends BaseController
         Request $request,
         EntityManagerInterface $em,
         \App\Service\CrewAssignmentService $crewAssignmentService
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
@@ -136,7 +135,7 @@ final class CrewController extends BaseController
             }
 
             if (!$crew->getShip()) {
-                foreach($crew->getShipRoles() as $role) {
+                foreach ($crew->getShipRoles() as $role) {
                     $crew->removeShipRole($role);
                 }
             }
@@ -158,8 +157,7 @@ final class CrewController extends BaseController
         Request $request,
         int $id,
         EntityManagerInterface $em
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
@@ -177,5 +175,4 @@ final class CrewController extends BaseController
 
         return $this->redirectToRoute('app_crew_index');
     }
-
 }

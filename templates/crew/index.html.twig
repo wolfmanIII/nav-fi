@@ -75,97 +75,93 @@
             is_filtered: filters.search or filters.ship or filters.campaign
         } %}
 
-        <div class="flow-root">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+            {% if crew|length > 0 %}
+                {% for member in crew %}
+                    <div class="group relative flex flex-col rounded-xl border border-indigo-500/20 bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 p-4 shadow-lg transition-all hover:border-indigo-500/50 hover:shadow-indigo-500/10 hover:-translate-y-1">
+                        {# Card Header: Actions & REF #}
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-2">
+                                <div class="px-2 py-1 rounded border border-indigo-500/20 bg-indigo-500/5 text-xs font-mono tracking-widest text-indigo-400/80 uppercase">
+                                    D_ID: {{ member.code }}
+                                </div>
+                                {% if member.mortgageSigned %}
+                                    <span class="px-2 py-1 rounded bg-cyan-500/10 text-xs font-bold tracking-tighter uppercase border border-cyan-500/30 text-cyan-400 flex items-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                        VERIFIED
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <div class="flex items-center gap-1">
+                                {{ tooltip.link('Update crew profile', '', 'icons/action-edit.html.twig', path('app_crew_edit', {id: member.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-indigo-500/20 text-indigo-400' }) }}
+                                {% set CAN_DELETE = constant('App\\Security\\Voter\\CrewVoter::DELETE') %}
+                                {% set can_delete = is_granted(CAN_DELETE, member) %}
+                                {{ tooltip.link('Release crew member', '', 'icons/action-trash.html.twig', path('app_crew_delete', {id: member.id}), {
+                                    dim: 16,
+                                    linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none')
+                                }) }}
+                            </div>
+                        </div>
 
-            <div class="overflow-x-auto overflow-y-visible rounded-box border border-base-content/5 bg-base-100">
-                <table class="table border-separate border-spacing-0 inner-bordered-table">
-                    <!-- head -->
-                    <thead>
-                    <tr>
-                        <th>Code</th>
-                        <th>Name</th>
-                        <th>Nickname</th>
-                        <th>Surname</th>
-                        <th>Ship</th>
-                        <th>Roles</th>
-                        <th>Mortgage Signed</th>
-                        <th>Campaign</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% if crew|length > 0 %}
-                        {% for member in crew %}
-                            <tr>
-                                <td>{% include 'components/code_with_copy.html.twig' with { code: member.code } %}</td>
-                                <td>{{ member.name }}</td>
-                                <td>{{ member.nickname }}</td>
-                                <td>{{ member.surname }}</td>
-                                <td>{% if member.ship %}{{ member.ship.name }}{% endif %}</td>
-                                <td>
-                                    {% for role in member.shipRoles %}
-                                        {{ role.name }}
-                                        {% if loop.index != loop.last %}
-                                            -
-                                        {% endif %}
-                                    {% endfor %}
-                                </td>
-                                <td>
-                                    <div class="flex justify-center">
-                                        {% if member.mortgageSigned %}
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
-                                        {% else %}
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                                            </svg>
-                                        {% endif %}
-                                    </div>
-                                </td>
-                                <td>
+                        {# Card Body: Identity #}
+                        <div class="mb-4">
+                            <h2 class="text-2xl font-bold text-indigo-100 group-hover:text-indigo-400 transition-colors uppercase tracking-tight font-orbitron">
+                                {{ member.name }} {{ member.surname }}
+                            </h2>
+                            {% if member.nickname %}
+                                <p class="text-sm font-medium text-indigo-300/60 font-rajdhani tracking-widest uppercase">
+                                    // CALLSIGN: {{ member.nickname }}
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        {# Card Detail: Roles #}
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            {% for role in member.shipRoles %}
+                                <span class="px-2 py-0.5 rounded-full bg-slate-800/80 border border-slate-700 text-[10px] font-bold text-slate-300 uppercase tracking-wider font-rajdhani">
+                                    {{ role.name }}
+                                </span>
+                            {% endfor %}
+                            {% if member.shipRoles|length == 0 %}
+                                <span class="px-2 py-0.5 rounded-full bg-slate-800/40 border border-slate-800 text-[10px] font-bold text-slate-500 uppercase tracking-wider font-rajdhani italic">
+                                    Unassigned
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        {# Card Footer: Assignment #}
+                        <div class="mt-auto pt-4 border-t border-indigo-500/10 flex flex-col gap-2">
+                            <div class="flex items-center justify-between text-xs font-rajdhani tracking-wider">
+                                <span class="text-slate-500 uppercase">Hull Assignment</span>
+                                <span class="text-indigo-300 font-bold uppercase">
+                                    {% if member.ship %}{{ member.ship.name }}{% else %}<span class="text-slate-600">N/A</span>{% endif %}
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-between text-xs font-rajdhani tracking-wider">
+                                <span class="text-slate-500 uppercase">Sector / Campaign</span>
+                                <span class="text-teal-400 font-bold uppercase flex items-center gap-1.5">
                                     {% if member.ship and member.ship.campaign %}
-                                        <div class="flex items-center gap-2">
-                                            {% include 'icons/alien-structure-1.html.twig' %}
-                                            <span>{{ member.ship.campaign.title }}</span>
-                                        </div>
+                                        {% include 'icons/alien-structure-1.html.twig' %}
+                                        {{ member.ship.campaign.title }}
                                     {% else %}
-                                        <span class="opacity-60">—</span>
+                                        <span class="text-slate-600">Deep Space</span>
                                     {% endif %}
-                                </td>
-                                <td class="flex items-center gap-2">
-                                    {{ tooltip.link('Update crew profile',
-                                                    'Edit crew member',
-                                                    'icons/action-edit.html.twig',
-                                                    path('app_crew_edit', {id: member.id}),
-                                                    { dim: 14, linkClass: 'btn btn-outline btn-primary btn-xs' }) }}
-                                    {% set CAN_DELETE = constant('App\\Security\\Voter\\CrewVoter::DELETE') %}
-                                    {% set can_delete = is_granted(CAN_DELETE, member) %}
-                                    {{ tooltip.link('Release crew member',
-                                                    'Delete crew member',
-                                                    'icons/action-trash.html.twig',
-                                                    path('app_crew_delete', {id: member.id}),
-                                                    {
-                                                        dim: 14,
-                                                        linkClass: 'btn btn-outline btn-error btn-xs' ~ (can_delete ? '' : ' opacity-50 pointer-events-none'),
-                                                        attrs: can_delete ? {} : {'aria-disabled': 'true'}
-                                                    }) }}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="9">Insert a new Crew Member</td>
-                        </tr>
-                    {% endif %}
-                    </tbody>
-                </table>
-            </div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-span-full py-12 text-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
+                    <p class="text-slate-500 font-rajdhani tracking-widest uppercase mb-4 text-sm">Manifest is empty // No personnel detected</p>
+                    {{ tooltip.link('Recruit crew member',
+                                    'Initialize Recruitment',
+                                    'icons/crew.html.twig',
+                                    path('app_crew_new'),
+                                    { dim: 20, linkClass: 'btn btn-primary btn-sm btn-outline' }) }}
+                </div>
+            {% endif %}
+        </div>
 
             {% include 'components/pagination.html.twig' with {
                 pagination: pagination,
@@ -174,7 +170,4 @@
             } %}
 
         </div>
-
-    </div>
-
 {% endblock %}
