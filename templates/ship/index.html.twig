@@ -75,95 +75,89 @@
             is_filtered: filters.campaign or filters.name or filters.type_class
         } %}
 
-        <div class="flow-root">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+            {% if ships|length > 0 %}
+                {% for ship in ships %}
+                    <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
+                        {# Card Header: Actions & REF #}
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-2">
+                                <div class="px-2 py-1 rounded border border-slate-700 bg-slate-800 text-xs font-mono tracking-widest text-slate-400 uppercase">
+                                    {% include 'components/code_with_copy.html.twig' with { code: ship.code } %}
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                {{ tooltip.link('Tune ship manifest', '', 'icons/action-edit.html.twig', path('app_ship_edit', {id: ship.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-400' }) }}
+                                {% set CAN_DELETE = constant('App\\Security\\Voter\\ShipVoter::DELETE') %}
+                                {% set can_delete = is_granted(CAN_DELETE, ship) %}
+                                {{ tooltip.link('Decommission hull', '', 'icons/action-trash.html.twig', path('app_ship_delete', {id: ship.id}), {
+                                    dim: 16,
+                                    linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none')
+                                }) }}
+                            </div>
+                        </div>
 
-            <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-                <table class="table border-separate border-spacing-0 inner-bordered-table">
-                    <!-- head -->
-                    <thead>
-                    <tr>
-                        <th>Code</th>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Class</th>
-                        <th class="text-right">Price(Cr)</th>
-                        <th>Crew</th>
-                        <th>Mortgage Signed</th>
-                        <th>Campaign</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {% if ships|length > 0 %}
-                            {% for ship in ships %}
-                            <tr>
-                                <td>{% include 'components/code_with_copy.html.twig' with { code: ship.code } %}</td>
-                                <td>{{ ship.name }}</td>
-                                <td>{{ ship.type }}</td>
-                                <td>{{ ship.class }}</td>
-                                <td class="text-right">{{ ship.price|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}</td>
-                                <td>
-                                    <a href="{{ path('app_ship_crew', {id: ship.id}) }}" role="button" class="btn btn-outline btn-primary btn-xs">
-                                        {% include 'icons/crew.html.twig' with {'dim': '14'} %}
-                                    </a>
-                                </td>
-                                <td>
-                                    <div class="flex justify-center">
-                                        {% if ship.mortgageSigned %}
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
-                                        {% else %}
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                                            </svg>
-                                        {% endif %}
+                        {# Card Body: Identity #}
+                        <div class="mb-4">
+                            <h2 class="text-2xl font-bold text-slate-200 group-hover:text-cyan-400 transition-colors uppercase tracking-tight font-orbitron truncate" title="{{ ship.name }}">
+                                {{ ship.name }}
+                            </h2>
+                            <p class="text-sm font-medium text-slate-500 font-rajdhani tracking-widest uppercase">
+                                {{ ship.type }} // {{ ship.class }}
+                            </p>
+                        </div>
+
+                        {# Card Detail: Tech Specs (Price & Mortgage) #}
+                        <div class="grid grid-cols-2 gap-2 mb-6 p-2 rounded-lg bg-slate-900/50 border border-slate-800/50">
+                            <div class="flex flex-col">
+                                <span class="text-[10px] text-slate-500 uppercase tracking-wider font-rajdhani">Hull Cost</span>
+                                <span class="text-cyan-300 font-mono text-sm tracking-tight">
+                                    {{ ship.price|format_number({ min_fraction_digit: 0, max_fraction_digit: 0, grouping_used: true }, 'decimal', 'default', locale) }} <span class="text-xs text-cyan-500/60">Cr</span>
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-end">
+                                {% if ship.mortgageSigned %}
+                                    <div class="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold tracking-wider text-slate-400 uppercase flex items-center gap-1.5 opacity-70" title="Mortgage Signed">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                        SECURED
                                     </div>
-                                </td>
-                                <td>
-                                    {% if ship.campaign %}
-                                        <div class="flex items-center gap-2">
-                                            {% include 'icons/alien-structure-1.html.twig' %}
-                                            <span>{{ ship.campaign.title }}</span>
-                                        </div>
-                                    {% else %}
-                                        <span class="opacity-60">—</span>
-                                    {% endif %}
-                                </td>
-                                <td class="flex items-center gap-2">
-                                    {{ tooltip.link('Tune ship manifest',
-                                                    'Edit ship',
-                                                    'icons/action-edit.html.twig',
-                                                    path('app_ship_edit', {id: ship.id}),
-                                                    { dim: 14, linkClass: 'btn btn-outline btn-primary btn-xs', position: 'tooltip-left' }) }}
-                                    {% set CAN_DELETE = constant('App\\Security\\Voter\\ShipVoter::DELETE') %}
-                                    {% set can_delete = is_granted(CAN_DELETE, ship) %}
-                                    {{ tooltip.link('Decommission hull',
-                                                    'Delete ship',
-                                                    'icons/action-trash.html.twig',
-                                                    path('app_ship_delete', {id: ship.id}),
-                                                    {
-                                                        dim: 14,
-                                                        linkClass: 'btn btn-outline btn-error btn-xs' ~ (can_delete ? '' : ' opacity-50 pointer-events-none'),
-                                                        attrs: can_delete ? {} : {'aria-disabled': 'true'},
-                                                        position: 'tooltip-left'
-                                                    }) }}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                               <td colspan="5">Insert a new ship</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
+                                {% else %}
+                                     <div class="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold tracking-wider text-slate-500 uppercase flex items-center gap-1.5 opacity-50" title="No Mortgage">
+                                        UNSECURED
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {# Card Footer: Campaign & Crew #}
+                        <div class="mt-auto pt-4 border-t border-slate-800 flex items-center justify-between gap-2">
+                             <div class="flex items-center gap-2 overflow-hidden">
+                                {% if ship.campaign %}
+                                    <div class="text-cyan-500/50">{% include 'icons/alien-structure-1.html.twig' with { dim: 14 } %}</div>
+                                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider truncate font-rajdhani">{{ ship.campaign.title }}</span>
+                                {% else %}
+                                     <span class="text-xs text-slate-600 uppercase tracking-wider font-rajdhani italic">No Campaign</span>
+                                {% endif %}
+                             </div>
+                             
+                             <a href="{{ path('app_ship_crew', {id: ship.id}) }}" class="flex items-center gap-2 px-3 py-1.5 rounded bg-slate-800 hover:bg-cyan-950/50 border border-slate-700 hover:border-cyan-500/50 text-slate-300 hover:text-cyan-300 transition-all group/btn">
+                                <span class="text-[10px] font-bold uppercase tracking-wider">Crew</span>
+                                {% include 'icons/crew.html.twig' with { dim: 14 } %}
+                             </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-span-full py-12 text-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
+                    <p class="text-slate-500 font-rajdhani tracking-widest uppercase mb-4 text-sm">Drydock is empty // No ships detected</p>
+                     {{ tooltip.link('Launch a new hull',
+                                    'Initialize Construction',
+                                    'icons/far-trader.html.twig',
+                                    path('app_ship_new'),
+                                    { dim: 20, linkClass: 'btn btn-primary btn-sm btn-outline' }) }}
+                </div>
+            {% endif %}
+        </div>
 
             {% include 'components/pagination.html.twig' with {
                 pagination: pagination,
