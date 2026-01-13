@@ -35,7 +35,7 @@ class DatabaseImportCommand extends Command
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Percorso del file di dump da importare (relativo alla root del progetto se non assoluto)',
-                'var/backup/captain_log.dump'
+                'var/backup/nav-fi.dump'
             )
             ->addOption(
                 'clean',
@@ -90,19 +90,19 @@ class DatabaseImportCommand extends Command
         if ($isSql) {
             $args = [
                 'psql',
-                '--host='.$db['host'],
-                '--port='.$db['port'],
-                '--username='.$db['user'],
-                '--dbname='.$db['dbname'],
-                '--file='.$sourcePath,
+                '--host=' . $db['host'],
+                '--port=' . $db['port'],
+                '--username=' . $db['user'],
+                '--dbname=' . $db['dbname'],
+                '--file=' . $sourcePath,
             ];
         } else {
             $args = [
                 'pg_restore',
-                '--host='.$db['host'],
-                '--port='.$db['port'],
-                '--username='.$db['user'],
-                '--dbname='.$db['dbname'],
+                '--host=' . $db['host'],
+                '--port=' . $db['port'],
+                '--username=' . $db['user'],
+                '--dbname=' . $db['dbname'],
             ];
 
             if ((bool) $input->getOption('clean')) {
@@ -186,12 +186,12 @@ class DatabaseImportCommand extends Command
             return $file;
         }
 
-        return $this->projectDir.'/'.ltrim($file, '/');
+        return $this->projectDir . '/' . ltrim($file, '/');
     }
 
     private function relativePath(string $path): string
     {
-        return str_starts_with($path, $this->projectDir.'/')
+        return str_starts_with($path, $this->projectDir . '/')
             ? substr($path, \strlen($this->projectDir) + 1)
             : $path;
     }

@@ -35,7 +35,7 @@ class DatabaseDumpCommand extends Command
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Percorso del file di dump (relativo alla root del progetto se non assoluto)',
-                'var/backup/captain_log.dump'
+                'var/backup/nav-fi.dump'
             )
             ->addOption(
                 'data-only',
@@ -79,10 +79,10 @@ class DatabaseDumpCommand extends Command
             '--format=custom',
             '--no-owner',
             '--no-privileges',
-            '--file='.$targetPath,
-            '--host='.$db['host'],
-            '--port='.$db['port'],
-            '--username='.$db['user'],
+            '--file=' . $targetPath,
+            '--host=' . $db['host'],
+            '--port=' . $db['port'],
+            '--username=' . $db['user'],
             $db['dbname'],
         ];
 
@@ -159,12 +159,12 @@ class DatabaseDumpCommand extends Command
             return $file;
         }
 
-        return $this->projectDir.'/'.ltrim($file, '/');
+        return $this->projectDir . '/' . ltrim($file, '/');
     }
 
     private function relativePath(string $path): string
     {
-        return str_starts_with($path, $this->projectDir.'/')
+        return str_starts_with($path, $this->projectDir . '/')
             ? substr($path, \strlen($this->projectDir) + 1)
             : $path;
     }

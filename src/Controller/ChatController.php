@@ -17,8 +17,8 @@ final class ChatController extends BaseController
     private string $navfiBaseUrl;
 
     public function __construct(
-        #[Autowire(env: 'ELARA_API_TOKEN')] private readonly string $navfiApiToken,
-        #[Autowire(env: 'ELARA_BASE_URL')] string $navfiBaseUrl,
+        #[Autowire(env: 'NAVFI_API_TOKEN')] private readonly string $navfiApiToken,
+        #[Autowire(env: 'NAVFI_BASE_URL')] string $navfiBaseUrl,
     ) {
         $this->navfiBaseUrl = rtrim($navfiBaseUrl, '/');
     }

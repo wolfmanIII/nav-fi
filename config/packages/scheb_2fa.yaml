@@ -3,5 +3,5 @@ scheb_two_factor:
         - Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken
     google:
         enabled: true
-        server_name: "Captain's Log"
-        issuer: "Captain's Log"
+        server_name: "Nav-Fi"
+        issuer: "Nav-Fi"
