@@ -30,7 +30,7 @@
                                     'Add ship',
                                     'icons/far-trader.html.twig',
                                     path('app_ship_new'),
-                                    { dim: 24, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
+                                    { position: 'tooltip-left', dim: 24, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
                 </div>
             </div>
         </div>
@@ -46,9 +46,9 @@
 
         {% set filter_fields %}
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Campaign</label>
+                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Mission</label>
                 <select name="campaign" class="select m-1 w-full">
-                    <option value="">All campaigns</option>
+                    <option value="">All missions</option>
                     {% for campaign in campaigns %}
                         <option value="{{ campaign.id }}" {% if filters.campaign == campaign.id %}selected{% endif %}>
                             {{ campaign.title }}
@@ -87,10 +87,11 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-1">
-                                {{ tooltip.link('Tune ship manifest', '', 'icons/action-edit.html.twig', path('app_ship_edit', {id: ship.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-400' }) }}
+                                {{ tooltip.link('Tune ship manifest', '', 'icons/action-edit.html.twig', path('app_ship_edit', {id: ship.id}), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-400' }) }}
                                 {% set CAN_DELETE = constant('App\\Security\\Voter\\ShipVoter::DELETE') %}
                                 {% set can_delete = is_granted(CAN_DELETE, ship) %}
                                 {{ tooltip.link('Decommission hull', '', 'icons/action-trash.html.twig', path('app_ship_delete', {id: ship.id}), {
+                                    position: 'tooltip-left',
                                     dim: 16,
                                     linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none')
                                 }) }}
@@ -136,7 +137,7 @@
                                     <div class="text-cyan-500/50">{% include 'icons/alien-structure-1.html.twig' with { dim: 14 } %}</div>
                                     <span class="text-xs font-bold text-slate-400 uppercase tracking-wider truncate font-rajdhani">{{ ship.campaign.title }}</span>
                                 {% else %}
-                                     <span class="text-xs text-slate-600 uppercase tracking-wider font-rajdhani italic">No Campaign</span>
+                                     <span class="text-xs text-slate-600 uppercase tracking-wider font-rajdhani italic">No Mission</span>
                                 {% endif %}
                              </div>
                              
@@ -154,7 +155,7 @@
                                     'Initialize Construction',
                                     'icons/far-trader.html.twig',
                                     path('app_ship_new'),
-                                    { dim: 20, linkClass: 'btn btn-primary btn-sm btn-outline' }) }}
+                                    { position: 'tooltip-left', dim: 20, linkClass: 'btn btn-primary btn-sm btn-outline' }) }}
                 </div>
             {% endif %}
         </div>

@@ -2,38 +2,142 @@
 
 {% block content %}
     <style>
-        .dashboard-card {
-            text-decoration: none;
-            color: inherit;
-            border: 1px solid #2b2f36;
-            border-radius: 0.75rem;
-            background: #1f2127;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-            min-height: 120px;
+        :root {
+            --body-bg: #0f172a; /* slate-950 */
+            --text-color: #94a3b8; /* slate-400 */
         }
+        .content-wrapper { background: transparent !important; }
+        
+        .nav-fi-dashboard {
+            font-family: 'Rajdhani', sans-serif;
+            color: #e2e8f0;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(to right, #0f172a, #1e293b, #164e63);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+        
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.15), transparent 35%), 
+                        radial-gradient(circle at 80% 30%, rgba(14,165,233,0.15), transparent 35%);
+            pointer-events: none;
+        }
+
+        .dashboard-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #cffafe; /* cyan-100 */
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .dashboard-header p {
+            color: rgba(207, 250, 254, 0.8);
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .dashboard-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #020617, #0f172a);
+            border: 1px solid #1e293b;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            color: #cbd5e1;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 0.75rem;
+            box-shadow: inset 0 0 0 1px rgba(6, 182, 212, 0);
+            transition: all 0.2s ease;
+        }
+
         .dashboard-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0.35rem 1rem rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #020617, #0f172a, #020617);
+            border-color: rgba(6, 182, 212, 0.3); /* cyan-500/30 */
+            box-shadow: 0 4px 6px -1px rgba(6, 182, 212, 0.1);
         }
-        .dashboard-card .cta { color: #60a5fa; }
+
+        .dashboard-card:hover::after {
+            box-shadow: inset 0 0 0 1px rgba(6, 182, 212, 0.1);
+        }
+
+        .dashboard-card span {
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .dashboard-card .cta {
+            color: #22d3ee; /* cyan-400 */
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            background: rgba(6, 182, 212, 0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            transition: all 0.2s ease;
+        }
+        
+        .dashboard-card:hover .cta {
+            background: rgba(6, 182, 212, 0.2);
+            color: #cffafe;
+            border-color: rgba(6, 182, 212, 0.5);
+        }
+
+        /* Override links inside card */
+        .dashboard-card:hover .cta {
+           text-decoration: none !important;
+        }
+        a:hover { text-decoration: none; }
+
     </style>
 
-    <div class="container-fluid px-2 px-lg-0 mt-1">
-        <div class="row mb-4">
-            <div class="col-12 col-lg-8">
-                <h1 class="h3 mb-1">Pannello di controllo</h1>
-                <p class="text-muted mb-0">Link rapidi alle entità di contesto</p>
+    <div class="nav-fi-dashboard container-fluid px-2 px-lg-0 mt-3">
+        <div class="dashboard-header">
+            <div>
+                <p>System Administration</p>
+                <h1>Command Console</h1>
+                <p style="margin-top: 0.5rem; color: #94a3b8; text-transform: none; letter-spacing: normal;">Low-level entity management and database oversight.</p>
             </div>
         </div>
 
-        <div class="row g-3">
+        <div class="dashboard-grid">
             {% for label, url in links %}
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                    <a href="{{ url }}" class="dashboard-card d-flex align-items-center justify-content-between p-3 h-100">
-                        <span class="fw-semibold">{{ label }}</span>
-                        <span class="cta fw-semibold">Apri</span>
-                    </a>
-                </div>
+                <a href="{{ url }}" class="dashboard-card">
+                    <span>{{ label }}</span>
+                    <span class="cta">ACCESS</span>
+                </a>
             {% endfor %}
         </div>
     </div>

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nav-Fi - Campaign Details{% endblock %}
+{% block title %}Nav-Fi - Mission Details{% endblock %}
 
 {% block pageContent %}
 
@@ -17,9 +17,9 @@
                         {% include 'icons/alien-structure-1.html.twig' %}
                     </div>
                     <div>
-                        <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Campaign tracking</p>
+                        <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Mission tracking</p>
                         <h1 class="text-3xl font-semibold text-cyan-100 leading-tight">{{ campaign.title }}</h1>
-                        <p class="text-sm text-cyan-100/80">Session clock, hull roster and campaign metadata in one view.</p>
+                        <p class="text-sm text-cyan-100/80">Session clock, hull roster and mission metadata in one view.</p>
                     </div>
                 </div>
                 <div class="flex gap-2">
@@ -28,7 +28,7 @@
                             {% include 'icons/calendar.html.twig' %}
                         </button>
                     </div>
-                    <div class="tooltip tooltip-left" data-tip="Dock ships to campaign">
+                    <div class="tooltip tooltip-left" data-tip="Dock ships to mission">
                         <button class="btn btn-outline btn-primary btn-md" onclick="m_ship_select.showModal()">
                             {% include 'icons/far-trader.html.twig' %}
                         </button>
@@ -124,7 +124,7 @@
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="6">No ships in this campaign.</td>
+                        <td colspan="6">No ships in this mission.</td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -290,7 +290,7 @@
                         <div>
                             <p class="uppercase text-xs tracking-[0.3em] text-cyan-300/70">Session archive</p>
                             <h2 class="text-xl font-semibold text-cyan-100">Session timeline</h2>
-                            <p class="text-sm text-cyan-100/70">Clock changes with full campaign snapshots.</p>
+                            <p class="text-sm text-cyan-100/70">Clock changes with full mission snapshots.</p>
                         </div>
                     </div>
                     <span class="badge badge-outline badge-sm text-cyan-100 border-cyan-400/60">{{ session_logs|length }}</span>

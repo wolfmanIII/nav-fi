@@ -33,9 +33,9 @@ class ShipType extends AbstractType
             ])
             ->add('campaign', EntityType::class, [
                 'class' => Campaign::class,
-                'placeholder' => '-- Select a Campaign --',
+                'placeholder' => '-- Select a Mission --',
                 'required' => false,
-                'choice_label' => fn (Campaign $c) => $c->getTitle(),
+                'choice_label' => fn(Campaign $c) => $c->getTitle(),
                 'query_builder' => function (CampaignRepository $repo) {
                     return $repo->createQueryBuilder('c')->orderBy('c.title', 'ASC');
                 },

@@ -17,17 +17,17 @@
                         {% include 'icons/alien-structure-1.html.twig' %}
                     </div>
                     <div>
-                        <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Campaign tracking</p>
-                        <h1 class="text-3xl font-semibold text-cyan-100 leading-tight">Campaigns</h1>
+                        <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Mission tracking</p>
+                        <h1 class="text-3xl font-semibold text-cyan-100 leading-tight">Missions</h1>
                         <p class="text-sm text-cyan-100/80">Titles, session dates and ship links to keep your voyages aligned.</p>
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    {{ tooltip.link('Create a new campaign',
-                                    'Add campaign',
+                    {{ tooltip.link('Create a new mission',
+                                    'Add mission',
                                     'icons/alien-structure-1.html.twig',
                                     path('app_campaign_new'),
-                                    { dim: 24, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
+                                    { position: 'tooltip-left', dim: 24, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@
         {% endset %}
         {% include 'components/index_filters.html.twig' with {
             action: path('app_campaign_index'),
-            legend: 'Campaign search',
+            legend: 'Mission search',
             grid_class: 'md:grid-cols-2',
             fields: filter_fields,
             reset_path: path('app_campaign_index'),
@@ -70,9 +70,10 @@
                                 {{ campaign.title }}
                             </h2>
                             <div class="flex items-center gap-1 ml-4 shrink-0">
-                                {{ tooltip.link('Refine session agenda', '', 'icons/action-edit.html.twig', path('app_campaign_edit', {id: campaign.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-amber-500/20 text-slate-400 hover:text-amber-400' }) }}
+                                {{ tooltip.link('Refine session agenda', '', 'icons/action-edit.html.twig', path('app_campaign_edit', {id: campaign.id}), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-amber-500/20 text-slate-400 hover:text-amber-400' }) }}
                                 {% set can_delete = is_granted('campaign_delete', campaign) %}
-                                {{ tooltip.link('Retire campaign', '', 'icons/action-trash.html.twig', path('app_campaign_delete', {id: campaign.id}), {
+                                {{ tooltip.link('Retire mission', '', 'icons/action-trash.html.twig', path('app_campaign_delete', {id: campaign.id}), {
+                                    position: 'tooltip-left',
                                     dim: 16,
                                     linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none')
                                 }) }}
@@ -119,12 +120,12 @@
                 {% endfor %}
             {% else %}
                  <div class="col-span-full py-16 text-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
-                    <p class="text-slate-500 font-rajdhani tracking-widest uppercase mb-6 text-sm">Archives empty // No campaigns running</p>
-                     {{ tooltip.link('Create a new campaign',
+                    <p class="text-slate-500 font-rajdhani tracking-widest uppercase mb-6 text-sm">Archives empty // No missions running</p>
+                     {{ tooltip.link('Create a new mission',
                                     'Initialize Protocol',
                                     'icons/alien-structure-1.html.twig',
                                     path('app_campaign_new'),
-                                    { dim: 24, linkClass: 'btn btn-primary btn-outline' }) }}
+                                    { position: 'tooltip-left', dim: 24, linkClass: 'btn btn-primary btn-outline' }) }}
                 </div>
             {% endif %}
         </div>

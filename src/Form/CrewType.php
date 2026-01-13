@@ -24,9 +24,7 @@ use App\Repository\ShipRepository;
 
 class CrewType extends AbstractType
 {
-    public function __construct(private readonly DayYearLimits $limits)
-    {
-    }
+    public function __construct(private readonly DayYearLimits $limits) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -52,6 +50,7 @@ class CrewType extends AbstractType
             ->add('nickname', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
                 'required' => false,
+                'label' => 'Callsign',
             ])
             ->add('birthDate', ImperialDateType::class, [
                 'mapped' => false,
@@ -122,7 +121,7 @@ class CrewType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'placeholder' => '-- Select a Campaign --',
-                'choice_label' => fn (Campaign $campaign) => $campaign->getTitle(),
+                'choice_label' => fn(Campaign $campaign) => $campaign->getTitle(),
                 'data' => $crew->getShip()?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
@@ -141,7 +140,7 @@ class CrewType extends AbstractType
                 'class' => Ship::class,
                 'required' => false,
                 'placeholder' => '-- Select a Ship --',
-                'choice_label' => fn (Ship $ship) => sprintf('%s - %s(%s)', $ship->getName(), $ship->getType(), $ship->getClass()),
+                'choice_label' => fn(Ship $ship) => sprintf('%s - %s(%s)', $ship->getName(), $ship->getType(), $ship->getClass()),
                 'choice_attr' => function (Ship $ship): array {
                     $start = $ship->getCampaign()?->getStartingYear();
                     $campaignId = $ship->getCampaign()?->getId();
@@ -169,7 +168,7 @@ class CrewType extends AbstractType
             ->add('shipRoles', EntityType::class, [
                 'class' => ShipRole::class,
                 'label' => 'Roles',
-                'choice_label' => fn (ShipRole $role) => sprintf('%s – %s', $role->getCode(), $role->getName()),
+                'choice_label' => fn(ShipRole $role) => sprintf('%s – %s', $role->getCode(), $role->getName()),
                 'multiple' => true,
                 'expanded' => false,
                 'required' => false,

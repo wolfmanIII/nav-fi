@@ -308,4 +308,16 @@ class Route
 
         return $this;
     }
+
+    public function getStartWorld(): ?string
+    {
+        $first = $this->waypoints->first();
+        return $first ? $first->getWorld() : null;
+    }
+
+    public function getDestWorld(): ?string
+    {
+        $last = $this->waypoints->last();
+        return $last ? $last->getWorld() : null;
+    }
 }

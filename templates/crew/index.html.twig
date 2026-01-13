@@ -56,9 +56,9 @@
                 </select>
             </div>
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Campaign</label>
+                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Mission</label>
                 <select name="campaign" class="select m-1 w-full">
-                    <option value="">All campaigns</option>
+                    <option value="">All missions</option>
                     {% for campaign in campaigns %}
                         <option value="{{ campaign.id }}" {% if filters.campaign == campaign.id %}selected{% endif %}>{{ campaign.title }}</option>
                     {% endfor %}
@@ -138,7 +138,7 @@
                                 </span>
                             </div>
                             <div class="flex items-center justify-between text-xs font-rajdhani tracking-wider">
-                                <span class="text-slate-500 uppercase">Sector / Campaign</span>
+                                <span class="text-slate-500 uppercase">Sector / Mission</span>
                                 <span class="text-teal-400 font-bold uppercase flex items-center gap-1.5">
                                     {% if member.ship and member.ship.campaign %}
                                         {% include 'icons/alien-structure-1.html.twig' %}

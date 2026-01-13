@@ -26,7 +26,7 @@
                                     'Add route',
                                     'icons/routes.html.twig',
                                     path('app_route_new'),
-                                    { dim: 24, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
+                                    { position: 'tooltip-left', dim: 24, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
                 </div>
             </div>
         </div>
@@ -79,9 +79,9 @@
                                 </h2>
                             </div>
                             <div class="flex items-center gap-1">
-                                {{ tooltip.link('Inspect route', '', 'icons/action-edit.html.twig', path('app_route_details', { id: route.id }), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400' }) }}
-                                {{ tooltip.link('Edit route', '', 'icons/action-edit.html.twig', path('app_route_edit', { id: route.id }), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400' }) }}
-                                {{ tooltip.link('Delete route', '', 'icons/action-trash.html.twig', path('app_route_delete', { id: route.id }), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' }) }}
+                                {{ tooltip.link('Inspect route', '', 'icons/search.html.twig', path('app_route_details', { id: route.id }), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400' }) }}
+                                {{ tooltip.link('Edit route', '', 'icons/action-edit.html.twig', path('app_route_edit', { id: route.id }), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400' }) }}
+                                {{ tooltip.link('Delete route', '', 'icons/action-trash.html.twig', path('app_route_delete', { id: route.id }), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' }) }}
                             </div>
                         </div>
 
@@ -89,14 +89,18 @@
                         <div class="flex items-center justify-between mb-4 p-3 bg-slate-900/50 rounded-lg border border-slate-800/50">
                             <div class="text-center w-1/3">
                                 <div class="text-[10px] text-slate-500 uppercase tracking-widest font-rajdhani mb-0.5">Origin</div>
-                                <div class="font-mono text-emerald-400 font-bold text-sm">{{ route.startHex ?? '????' }}</div>
+                                <div class="font-mono text-emerald-400 font-bold text-sm">
+                                    {{ route.startWorld ? route.startWorld ~ '(' ~ (route.startHex ?? '????') ~ ')' : (route.startHex ?? '????') }}
+                                </div>
                             </div>
                             <div class="flex-grow border-t border-dashed border-slate-700 mx-2 relative h-px">
                                  <div class="absolute -top-2 left-1/2 -ml-1 text-slate-600 text-xs">➤</div>
                             </div>
                             <div class="text-center w-1/3">
                                  <div class="text-[10px] text-slate-500 uppercase tracking-widest font-rajdhani mb-0.5">Dest</div>
-                                <div class="font-mono text-emerald-400 font-bold text-sm">{{ route.destHex ?? '????' }}</div>
+                                <div class="font-mono text-emerald-400 font-bold text-sm">
+                                    {{ route.destWorld ? route.destWorld ~ '(' ~ (route.destHex ?? '????') ~ ')' : (route.destHex ?? '????') }}
+                                </div>
                             </div>
                         </div>
 
@@ -139,7 +143,7 @@
                                     'Plot Course',
                                     'icons/routes.html.twig',
                                     path('app_route_new'),
-                                    { dim: 24, linkClass: 'btn btn-primary btn-outline' }) }}
+                                    { position: 'tooltip-left', dim: 24, linkClass: 'btn btn-primary btn-outline' }) }}
                 </div>
             {% endif %}
         </div>

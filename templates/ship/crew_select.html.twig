@@ -49,7 +49,7 @@
                     <tr class="border-b border-slate-800">
                         <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Code</th>
                         <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Name</th>
-                        <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Nickname</th>
+                        <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Callsign</th>
                         <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Surname</th>
                         <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Roles</th>
                         <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Captain</th>
@@ -91,6 +91,7 @@
                                         'Update roles',
                                         'icons/roles.html.twig',
                                         {
+                                            position: 'tooltip-left',
                                             dim: 14,
                                             buttonClass: 'btn btn-ghost btn-xs text-cyan-400 hover:bg-cyan-500/20',
                                             attrs: {
@@ -104,6 +105,7 @@
                                         'icons/action-trash.html.twig',
                                         path('app_ship_crew_remove', {id: member.id}),
                                         { 
+                                            position: 'tooltip-left',
                                             dim: 14,
                                             linkClass: 'btn btn-ghost btn-xs text-red-400 hover:bg-red-500/20' ~ (can_remove_crew ? '' : ' opacity-50 pointer-events-none'),
                                             attrs: can_remove_crew ? {} : {'aria-disabled': 'true'}
@@ -135,13 +137,13 @@
                         placeholder="Enter name or surname">
                 </div>
                 <div>
-                    <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Nickname</label>
+                    <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Callsign</label>
                     <input
                         type="text"
                         name="crew_nickname"
                         value="{{ crewFilters.nickname }}"
                         class="input m-1 w-full"
-                        placeholder="Enter nickname">
+                        placeholder="Enter callsign">
                 </div>
             {% endset %}
             {% set filter_hidden %}
@@ -174,7 +176,7 @@
 
                 <div class="flex items-center justify-between text-sm text-slate-500">
                     <span>Showing {{ crewPagination.from }}–{{ crewPagination.to }} of {{ crewPagination.total }} available crew</span>
-                    <div class="tooltip" data-tip="Assign the checked crew to this ship">
+                    <div class="tooltip tooltip-left" data-tip="Assign the checked crew to this ship">
                         <button type="submit" class="btn btn-outline btn-primary btn-xs">Add selected crew</button>
                     </div>
                 </div>
@@ -191,7 +193,7 @@
                             </th>
                             <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Code</th>
                             <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Name</th>
-                            <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Nickname</th>
+                            <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Callsign</th>
                         </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-800/50">

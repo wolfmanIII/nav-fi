@@ -3,10 +3,30 @@
 {% block title %}Nav-Fi - Annual Budget Chart{% endblock %}
 
 {% block pageContent %}
+    {% import '_tooltip.html.twig' as tooltip %}
+
     <div class="p-10">
-        <header class="prose">
-            <h1>Annual Budget – {{ budget.ship.name }}</h1>
-        </header>
+        <div class="relative overflow-hidden rounded-xl border border-indigo-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-900 shadow-lg mb-6">
+            <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
+                 style="background: radial-gradient(circle at 20% 20%, rgba(99,102,241,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(79,70,229,0.25), transparent 35%);">
+            </div>
+            <div class="relative p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 rounded-lg bg-indigo-500/10 border border-indigo-400/40 text-indigo-400">
+                        {% include 'icons/annual-budget.html.twig' %}
+                    </div>
+                    <div>
+                        <p class="uppercase text-xs tracking-[0.25em] text-indigo-300/70">Budget Analysis</p>
+                        <h1 class="text-3xl font-semibold text-indigo-100 leading-tight">{{ budget.ship.name }}</h1>
+                        <p class="text-sm text-indigo-100/80 font-mono">{{ budget.startYear }} — <span class="text-indigo-300">{{ budget.note|default('Budget') }}</span></p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    {{ tooltip.link('Return to budget list', 'Back', 'icons/action-back.html.twig', path('app_annual_budget_index'), { position: 'tooltip-left', dim: 20, linkClass: 'btn btn-square btn-ghost text-slate-400 hover:bg-slate-800' }) }}
+                    {{ tooltip.link('Edit budget parameters', 'Edit', 'icons/action-edit.html.twig', path('app_annual_budget_edit', {id: budget.id}), { position: 'tooltip-left', dim: 20, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
+                </div>
+            </div>
+        </div>
 
         <div class="alert alert-info alert-outline shadow-sm mb-6 mt-6">
             <div class="flex items-center gap-3">
