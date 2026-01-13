@@ -96,7 +96,7 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, 
    ```env
    APP_ENV=dev
    APP_SECRET=changeme
-   DATABASE_URL="postgresql://user:pass@127.0.0.1:5432/captain_log_web?serverVersion=16&charset=utf8"
+   DATABASE_URL="postgresql://user:pass@127.0.0.1:5432/nav_fi_web?serverVersion=16&charset=utf8"
    APP_DAY_MIN=1
    APP_DAY_MAX=365
    APP_YEAR_MIN=0
@@ -123,13 +123,13 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, 
   ```bash
   php bin/console app:db:dump
   # solo dati
-  php bin/console app:db:dump --data-only --file=var/backup/captain_log.dump
+  php bin/console app:db:dump --data-only --file=var/backup/nav_fi.dump
   ```
 - Import del database (Postgres):
   ```bash
-  php bin/console app:db:import --file=var/backup/captain_log.dump
+  php bin/console app:db:import --file=var/backup/nav_fi.dump
   # ripulisce e reimporta
-  php bin/console app:db:import --clean --file=var/backup/captain_log.dump
+  php bin/console app:db:import --clean --file=var/backup/nav_fi.dump
   ```
   Nota: il dump/import gestisce solo i dati. Esegui le migration **prima** dell’import per ricreare PK/FK/unique/index, oppure usa un dump schema+data.
 
@@ -152,4 +152,4 @@ Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, 
 - Le entità di contesto (InterestRate, Insurance, ShipRole, CostCategory, IncomeCategory, CompanyRole, LocalLaw) sono gestite via EasyAdmin o via comandi di import/export.
 - I contratti Income sono tipizzati per categoria con dettagli dedicati e possono essere stampati in PDF tramite i template in `templates/pdf/contracts`.
 - I campi anno usano `IntegerType` con min derivato dalla Campaign associata alla Ship selezionata; il controller Stimulus `year-limit` aggiorna dinamicamente il limite min per i dropdown nave.
-- Per un’analisi tecnica di alto livello (tech stack, entità, flussi e prossimi passi) consulta `docs/CAP-LOG-analisi-tecnica.md`.
+- Per un’analisi tecnica di alto livello (tech stack, entità, flussi e prossimi passi) consulta `docs/NAV-FI-analisi-tecnica.md`.

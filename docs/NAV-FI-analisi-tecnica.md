@@ -116,7 +116,7 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Nav-Fi 
 ## UX e documentazione
 
 - Sidebar e homepage enfatizzano le fasi chiave (campagna, shipyard, mortgage, budget) con badge, tooltip e icone scalabili (`icons/crew.html.twig` con `dim`).
-- Le guide `docs/*` coprono calendari imperiali (`traveller_imperial_calendar.md`), snippet contratti (`contract-placeholders.md`) e la documentazione operativa (`CAP-LOG-miglioramenti.md`).
+- Le guide `docs/*` coprono calendari imperiali (`traveller_imperial_calendar.md`), snippet contratti (`contract-placeholders.md`) e la documentazione operativa (`NAV-FI-miglioramenti.md`).
 - Il documento `docs/tooltip-guidelines.md` definisce come standardizzare tooltip/badge e preparare un macro `templates/_tooltip.html.twig`.
 - Ogni documento viene aggiornato contestualmente al codice (setup calcoli mutuo, PDF, Stimulus `imperial-date`, macros per `year-limit`).
 
@@ -124,7 +124,7 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Nav-Fi 
 
 1. **Tooltip & icone riutilizzabili:** implementare un macro Twig (es. `_tooltip.html.twig`) per uniformare i tooltip e ridurre la duplicazione di HTML e copy.
 2. **Test funzionali:** automatizzare i flussi critici (filtri/paginazione, ownership, PDF, login) per coprire i casi di uso del tavolo di gioco.
-3. **Documentazione vivente:** mantenere aggiornati README e doc `CAP-LOG-*` con i nuovi workflow (calendar, cross-campaign, ImperialDateType, tooltip macro).
+3. **Documentazione vivente:** mantenere aggiornati README e doc `NAV-FI-*` con i nuovi workflow (calendar, cross-campaign, ImperialDateType, tooltip macro).
 4. **Contesto multi-utente:** verificare l’impatto del filtro `Campaign.user` su eventuali scenari condivisi e considerare un sistema di Ownership più granulare o un’associazione esplicita per le ship condivise.
 
 ## Checklist rapida di setup
