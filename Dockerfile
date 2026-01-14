@@ -17,6 +17,10 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     nginx \
     supervisor \
+    # PostgreSQL client tools (pg_dump, pg_restore, psql)
+    postgresql-client \
+    # ImageMagick per generazione favicon
+    imagemagick \
     # Dipendenze grafiche per wkhtmltopdf
     libxrender1 \
     libfontconfig1 \
@@ -59,8 +63,28 @@ RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/w
 # STAGE 3: PHP Extensions & Configuration
 # ==============================================================================
 
-# 4. Estensioni PHP per Symfony e Postgres
-RUN docker-php-ext-install intl pdo_pgsql zip opcache
+# 4. Installazione dipendenze per estensioni PHP
+RUN apt-get update && apt-get install -y \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libxml2-dev \
+    libcurl4-openssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Configurazione e installazione estensioni PHP
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
+    intl \
+    pdo_pgsql \
+    zip \
+    opcache \
+    gd \
+    curl \
+    mbstring \
+    xml \
+    dom \
+    simplexml
 
 # 5. Copia configurazioni Nginx e Supervisor
 # Assicurati che questi file esistano nella root del progetto!
