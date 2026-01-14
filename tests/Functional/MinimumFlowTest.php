@@ -50,9 +50,7 @@ final class MinimumFlowTest extends WebTestCase
         $schemaTool->createSchema($this->em->getMetadataFactory()->getAllMetadata());
 
         static::getContainer()->set(PdfGenerator::class, new class extends PdfGenerator {
-            public function __construct()
-            {
-            }
+            public function __construct() {}
 
             public function render(string $template, array $context = [], array $options = []): string
             {
@@ -77,9 +75,10 @@ final class MinimumFlowTest extends WebTestCase
         $this->em->flush();
         $this->login($user);
 
-        $this->client->request('GET', '/ship/index?page=2');
+        $crawler = $this->client->request('GET', '/ship/index?page=2');
         self::assertResponseIsSuccessful();
-        self::assertStringContainsString('Showing 11-12 of 12', $this->client->getResponse()->getContent());
+        self::assertStringContainsString('LOG_SECTOR: 11-12', $crawler->filter('#pagination-metrics')->text());
+        self::assertStringContainsString('TOTAL_RECORDS: 12', $crawler->filter('#pagination-metrics')->text());
 
         $this->client->request('GET', '/ship/index?name=ISS Ship 03');
         self::assertResponseIsSuccessful();
@@ -108,9 +107,10 @@ final class MinimumFlowTest extends WebTestCase
         $this->em->flush();
         $this->login($user);
 
-        $this->client->request('GET', '/cost/index?page=2');
+        $crawler = $this->client->request('GET', '/cost/index?page=2');
         self::assertResponseIsSuccessful();
-        self::assertStringContainsString('Showing 11-12 of 12', $this->client->getResponse()->getContent());
+        self::assertStringContainsString('LOG_SECTOR: 11-12', $crawler->filter('#pagination-metrics')->text());
+        self::assertStringContainsString('TOTAL_RECORDS: 12', $crawler->filter('#pagination-metrics')->text());
 
         $this->client->request('GET', '/cost/index?title=Cost Entry 05');
         self::assertResponseIsSuccessful();
@@ -139,9 +139,10 @@ final class MinimumFlowTest extends WebTestCase
         $this->em->flush();
         $this->login($user);
 
-        $this->client->request('GET', '/income/index?page=2');
+        $crawler = $this->client->request('GET', '/income/index?page=2');
         self::assertResponseIsSuccessful();
-        self::assertStringContainsString('Showing 11-12 of 12', $this->client->getResponse()->getContent());
+        self::assertStringContainsString('LOG_SECTOR: 11-12', $crawler->filter('#pagination-metrics')->text());
+        self::assertStringContainsString('TOTAL_RECORDS: 12', $crawler->filter('#pagination-metrics')->text());
 
         $this->client->request('GET', '/income/index?title=Income Entry 04');
         self::assertResponseIsSuccessful();
@@ -163,9 +164,11 @@ final class MinimumFlowTest extends WebTestCase
         $this->em->flush();
         $this->login($user);
 
-        $this->client->request('GET', '/crew/index?page=2');
+        $crawler = $this->client->request('GET', '/crew/index?page=2');
         self::assertResponseIsSuccessful();
-        self::assertStringContainsString('Showing 11-12 of 12', $this->client->getResponse()->getContent());
+        // Crew perPage is 9, so page 2 of 12 is records 10-12
+        self::assertStringContainsString('LOG_SECTOR: 10-12', $crawler->filter('#pagination-metrics')->text());
+        self::assertStringContainsString('TOTAL_RECORDS: 12', $crawler->filter('#pagination-metrics')->text());
 
         $this->client->request('GET', '/crew/index?search=Crew 07');
         self::assertResponseIsSuccessful();

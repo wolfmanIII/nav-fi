@@ -231,7 +231,7 @@ class CrewPersistenceTest extends TestCase
 
     private function makeCrewRepository(): CrewRepository
     {
-        $registry = $this->createMock(ManagerRegistry::class);
+        $registry = $this->createStub(ManagerRegistry::class);
         $registry->method('getManagerForClass')
             ->with(Crew::class)
             ->willReturn($this->em);
