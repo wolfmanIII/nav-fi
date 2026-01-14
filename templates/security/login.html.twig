@@ -18,7 +18,7 @@
                 <div class="relative flex items-center gap-4">
                     <img src="{{ asset('img/nav-fi-logo.png') }}" alt="Nav-Fi" class="w-16 h-16 filter drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">
                     <div>
-                        <p class="text-xl font-bold text-cyan-100 tracking-tight font-orbitron">Nav-Fi // UPLINK</p>
+                        <p class="text-xl font-bold text-cyan-100 tracking-tight font-orbitron"><i>Nav-Fi</i> // UPLINK</p>
                         <p class="text-xs text-cyan-400/60 uppercase tracking-[0.3em] font-mono">Unified Auth Terminal</p>
                     </div>
                 </div>
@@ -30,13 +30,13 @@
                         <span class="w-1.5 h-1.5 rounded-full bg-cyan-500/20"></span>
                     </div>
                     
-                    <div class="space-y-1.5 text-cyan-200/40">
-                        <p class="text-cyan-400 animate-pulse">> INITIATING_BOOT_SEQUENCE</p>
-                        <p>> LOADING_OIDC_PROTOCOLS... [OK]</p>
-                        <p>> HANDSHAKING_GOOGLE_UPLINK... [PENDING]</p>
-                        <p>> ENCRYPTING_SESSION_KEYS... [ACTIVE]</p>
-                        <p>> PERIMETER_DEFENSE: ENGAGED</p>
-                        <p class="mt-4 text-emerald-500/60 font-bold">READY_FOR_COMMAND_INPUT</p>
+                    <div class="space-y-1.5 text-cyan-200/40" data-controller="typewriter">
+                        <p class="text-cyan-400 animate-pulse" style="visibility: hidden;" data-typewriter-target="line">> INITIATING_BOOT_SEQUENCE</p>
+                        <p style="visibility: hidden;" data-typewriter-target="line">> LOADING_OIDC_PROTOCOLS... [OK]</p>
+                        <p style="visibility: hidden;" data-typewriter-target="line">> HANDSHAKING_GOOGLE_UPLINK... [PENDING]</p>
+                        <p style="visibility: hidden;" data-typewriter-target="line">> ENCRYPTING_SESSION_KEYS... [ACTIVE]</p>
+                        <p style="visibility: hidden;" data-typewriter-target="line">> PERIMETER_DEFENSE: ENGAGED</p>
+                        <p class="mt-4 text-emerald-500/60 font-bold" style="visibility: hidden;" data-typewriter-target="line">READY_FOR_COMMAND_INPUT</p>
                     </div>
 
                     {% if error %}
@@ -77,10 +77,12 @@
                 <p class="text-slate-200/90">
                     This console is keyed to your crew and hulls. Secure your jump data: log off before leaving the bridge or sharing the terminal.
                 </p>
-                <div class="flex justify-center">
-                    <img src="{{ asset('img/iris-airlock.png') }}"
-                         alt="Iris airlock"
-                         class="max-w-[380px] object-contain">
+                <div class="flex justify-center relative h-64 bg-black/40 rounded-lg border border-cyan-500/10 overflow-hidden" data-controller="scrolling-code">
+                    <div class="absolute inset-0 p-4 space-y-1 text-cyan-500/50 font-mono text-[10px]" data-scrolling-code-target="output">
+                        <!-- Code lines will be injected here -->
+                    </div>
+                    <!-- Scanline overlay specifically for this box -->
+                    <div class="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] pointer-events-none opacity-20"></div>
                 </div>
             </div>
             <div class="mt-6 text-slate-300/80">
