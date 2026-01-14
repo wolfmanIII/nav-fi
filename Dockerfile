@@ -89,15 +89,19 @@ RUN npm run build
 # (Opzionale ma raccomandato per Symfony 7.4) Compila AssetMapper
 RUN php bin/console asset-map:compile
 
-# 9. Permessi finali (Cruciale per cache e log di Symfony)
-RUN chown -R www-data:www-data /var/www/html/var
+# Cache warmup per produzione
+ENV APP_ENV=prod
+RUN php bin/console cache:warmup --env=prod
+
+# 9. Permessi finali (Cruciale per cache, log e assets di Symfony)
+RUN chown -R www-data:www-data /var/www/html/var /var/www/html/public
 
 # ==============================================================================
 # STAGE 5: Entrypoint
 # ==============================================================================
 
-# Espone la porta 80 (standard per Cloud Run se non specificato diversamente)
-EXPOSE 80
+# Espone la porta 8080 (standard per Cloud Run)
+EXPOSE 8080
 
 # Avvia Supervisor che gestirà Nginx e PHP-FPM
 CMD ["/usr/bin/supervisord"]

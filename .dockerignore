@@ -1,0 +1,35 @@
+# Git
+.git
+.gitignore
+
+# Environment files
+.env.local
+.env.*.local
+
+# Symfony cache and logs
+var/cache/*
+var/log/*
+var/sessions/*
+
+# Dependencies (verranno reinstallate nel container)
+vendor/
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+
+# Docker
+compose.yaml
+compose.override.yaml
+
+# Tests
+tests/
+phpunit.dist.xml
+
+# Documentation
+docs/
+README.md
+
+# Build artifacts locali
+public/assets/*
