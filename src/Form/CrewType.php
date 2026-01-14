@@ -33,7 +33,7 @@ class CrewType extends AbstractType
         $user = $options['user'];
         $campaignStartYear = $crew?->getShip()?->getCampaign()?->getStartingYear();
         $minYear = 0;
-        $eventMinYear = $this->limits->getYearMin();
+        $eventMinYear = $campaignStartYear ?? $this->limits->getYearMin();
         $birthDate = new ImperialDate($crew?->getBirthYear(), $crew?->getBirthDay());
         $activeDate = new ImperialDate($crew?->getActiveYear(), $crew?->getActiveDay());
         $onLeaveDate = new ImperialDate($crew?->getOnLeaveYear(), $crew?->getOnLeaveDay());

@@ -148,6 +148,7 @@
             </div>
         </fieldset>
 
+        <turbo-frame id="income-details-frame">
         {% if form.charterDetails is defined %}{% include 'income/details/_charter.html.twig' with { detail_form: form.charterDetails } %}{% endif %}
         {% if form.subsidyDetails is defined %}{% include 'income/details/_subsidy.html.twig' with { detail_form: form.subsidyDetails } %}{% endif %}
         {% if form.freightDetails is defined %}{% include 'income/details/_freight.html.twig' with { detail_form: form.freightDetails } %}{% endif %}
@@ -160,6 +161,7 @@
         {% if form.salvageDetails is defined %}{% include 'income/details/_salvage.html.twig' with { detail_form: form.salvageDetails } %}{% endif %}
         {% if form.prizeDetails is defined %}{% include 'income/details/_prize.html.twig' with { detail_form: form.prizeDetails } %}{% endif %}
         {% if form.contractDetails is defined %}{% include 'income/details/_contract.html.twig' with { detail_form: form.contractDetails } %}{% endif %}
+        </turbo-frame>
 
         <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-slate-400 uppercase">Operational Notes</legend>

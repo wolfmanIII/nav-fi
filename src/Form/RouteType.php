@@ -45,7 +45,7 @@ class RouteType extends AbstractType
 
         $campaignStartYear = $route->getCampaign()?->getStartingYear()
             ?? $route->getShip()?->getCampaign()?->getStartingYear();
-        $minYear = max($this->limits->getYearMin(), $campaignStartYear ?? $this->limits->getYearMin());
+        $minYear = $campaignStartYear ?? $this->limits->getYearMin();
         $startDate = new ImperialDate($route->getStartYear(), $route->getStartDay());
         $destDate = new ImperialDate($route->getDestYear(), $route->getDestDay());
 

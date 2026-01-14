@@ -153,21 +153,22 @@ class AnnualBudget
 
     public function calculateBudget()
     {
-        $budget = 0.00; 
-        foreach($this->getShip()->getIncomes() as $income) {
+        $budget = 0.00;
+        foreach ($this->getShip()->getIncomes() as $income) {
             if (
                 is_null($income->getCancelDay())
+                && !is_null($income->getSigningYear())
                 && is_null($income->getCancelYear())
             ) {
                 $budget = bcadd($budget, $income->getAmount(), 6);
             }
         }
 
-        foreach($this->getShip()->getCosts() as $cost) {
+        foreach ($this->getShip()->getCosts() as $cost) {
             $budget = bcsub($budget, $cost->getAmount(), 6);
         }
 
-        foreach($this->getShip()->getMortgage()->getMortgageInstallments() as $payment) {
+        foreach ($this->getShip()->getMortgage()->getMortgageInstallments() as $payment) {
             $budget = bcsub($budget, $payment->getPayment(), 6);
         }
 
@@ -176,10 +177,11 @@ class AnnualBudget
 
     public function getTotalIncomeAmount()
     {
-        $incomeAmount = 0.00; 
-        foreach($this->getShip()->getIncomes() as $income) {
+        $incomeAmount = 0.00;
+        foreach ($this->getShip()->getIncomes() as $income) {
             if (
                 is_null($income->getCancelDay())
+                && !is_null($income->getSigningYear())
                 && is_null($income->getCancelYear())
             ) {
                 $incomeAmount = bcadd($incomeAmount, $income->getAmount(), 6);
@@ -191,7 +193,7 @@ class AnnualBudget
     public function getTotalCostsAmount()
     {
         $costAmount = 0.00;
-        foreach($this->getShip()->getCosts() as $cost) {
+        foreach ($this->getShip()->getCosts() as $cost) {
             $costAmount = bcadd($costAmount, $cost->getAmount(), 6);
         }
         return round($costAmount, 2, PHP_ROUND_HALF_DOWN);

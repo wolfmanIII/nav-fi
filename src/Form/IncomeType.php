@@ -31,8 +31,7 @@ class IncomeType extends AbstractType
     public function __construct(
         private readonly IncomeDetailsSubscriber $incomeDetailsSubscriber,
         private readonly DayYearLimits $dayYearLimits,
-    ) {
-    }
+    ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -40,7 +39,7 @@ class IncomeType extends AbstractType
         /** @var Income $income */
         $income = $builder->getData();
         $campaignStartYear = $income?->getShip()?->getCampaign()?->getStartingYear();
-        $minYear = max($this->dayYearLimits->getYearMin(), $campaignStartYear ?? $this->dayYearLimits->getYearMin());
+        $minYear = $campaignStartYear ?? $this->dayYearLimits->getYearMin();
 
         $signingDate = new ImperialDate($income?->getSigningYear(), $income?->getSigningDay());
         $paymentDate = new ImperialDate($income?->getPaymentYear(), $income?->getPaymentDay());
@@ -95,7 +94,7 @@ class IncomeType extends AbstractType
             ->add('incomeCategory', EntityType::class, [
                 'class' => IncomeCategory::class,
                 'placeholder' => '-- Select a Category --',
-                'choice_label' => fn (IncomeCategory $cat) => sprintf('%s - %s', $cat->getCode(), $cat->getDescription()),
+                'choice_label' => fn(IncomeCategory $cat) => sprintf('%s - %s', $cat->getCode(), $cat->getDescription()),
                 'attr' => [
                     'class' => 'select m-1 w-full',
                     'data-controller' => 'income-details',
@@ -118,7 +117,7 @@ class IncomeType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'placeholder' => '-- Select a Campaign --',
-                'choice_label' => fn (Campaign $campaign) => $campaign->getTitle(),
+                'choice_label' => fn(Campaign $campaign) => $campaign->getTitle(),
                 'data' => $income->getShip()?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
@@ -137,7 +136,7 @@ class IncomeType extends AbstractType
                 'class' => Ship::class,
                 'placeholder' => '-- Select a Ship --',
                 'required' => false,
-                'choice_label' => fn (Ship $ship) => sprintf('%s - %s(%s)', $ship->getName(), $ship->getType(), $ship->getClass()),
+                'choice_label' => fn(Ship $ship) => sprintf('%s - %s(%s)', $ship->getName(), $ship->getType(), $ship->getClass()),
                 'choice_attr' => function (Ship $ship): array {
                     $start = $ship->getCampaign()?->getStartingYear();
                     $campaignId = $ship->getCampaign()?->getId();
@@ -166,7 +165,7 @@ class IncomeType extends AbstractType
                 'class' => Company::class,
                 'placeholder' => '-- Select a Company --',
                 'required' => true,
-                'choice_label' => fn (Company $c) => sprintf('%s - %s', $c->getName(), $c->getCompanyRole()->getShortDescription()),
+                'choice_label' => fn(Company $c) => sprintf('%s - %s', $c->getName(), $c->getCompanyRole()->getShortDescription()),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.name', 'ASC');
                     if ($user) {

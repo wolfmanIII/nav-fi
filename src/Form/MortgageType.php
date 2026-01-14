@@ -26,9 +26,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MortgageType extends AbstractType
 {
-    public function __construct(private readonly DayYearLimits $limits)
-    {
-    }
+    public function __construct(private readonly DayYearLimits $limits) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -37,7 +35,7 @@ class MortgageType extends AbstractType
         $user = $options['user'];
         $currentShipId = $mortgage->getShip()?->getId();
         $campaignStartYear = $mortgage->getShip()?->getCampaign()?->getStartingYear();
-        $minYear = max($this->limits->getYearMin(), $campaignStartYear ?? $this->limits->getYearMin());
+        $minYear = $campaignStartYear ?? $this->limits->getYearMin();
         $startDate = new ImperialDate($mortgage?->getStartYear(), $mortgage?->getStartDay());
 
         $builder
@@ -61,14 +59,15 @@ class MortgageType extends AbstractType
             ])
             ->add('discount', IntegerType::class, [
                 'label' => 'Discount(%)',
-                'attr' => ['class' => 'input m-1 w-full'], 'required' => false,
+                'attr' => ['class' => 'input m-1 w-full'],
+                'required' => false,
             ])
             ->add('campaign', EntityType::class, [
                 'class' => Campaign::class,
                 'mapped' => false,
                 'required' => true,
                 'placeholder' => '-- Select a Campaign --',
-                'choice_label' => fn (Campaign $campaign) => $campaign->getTitle(),
+                'choice_label' => fn(Campaign $campaign) => $campaign->getTitle(),
                 'data' => $mortgage->getShip()?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
@@ -86,11 +85,12 @@ class MortgageType extends AbstractType
             ->add('ship', EntityType::class, [
                 'placeholder' => '-- Select a Ship --',
                 'class' => Ship::class,
-                'choice_label' => fn (Ship $ship) =>
-                    sprintf('%s - %s - %s',
-                        $ship->getName(),
-                        $ship->getType(),
-                        number_format((float) $ship->getPrice(), 2, ',', '.') . " Cr"
+                'choice_label' => fn(Ship $ship) =>
+                sprintf(
+                    '%s - %s - %s',
+                    $ship->getName(),
+                    $ship->getType(),
+                    number_format((float) $ship->getPrice(), 2, ',', '.') . " Cr"
                 ),
                 'choice_attr' => function (Ship $ship): array {
                     $start = $ship->getCampaign()?->getStartingYear();
@@ -127,23 +127,25 @@ class MortgageType extends AbstractType
             ])
             ->add('interestRate', EntityType::class, [
                 'class' => InterestRate::class,
-                'choice_label' => fn (InterestRate $rate) =>
-                    sprintf('%d years – x%s / %s – %s%%',
-                        $rate->getDuration(),
-                        $rate->getPriceMultiplier(),
-                        $rate->getPriceDivider(),
-                        $rate->getAnnualInterestRate()
-                    ),
+                'choice_label' => fn(InterestRate $rate) =>
+                sprintf(
+                    '%d years – x%s / %s – %s%%',
+                    $rate->getDuration(),
+                    $rate->getPriceMultiplier(),
+                    $rate->getPriceDivider(),
+                    $rate->getAnnualInterestRate()
+                ),
                 'multiple' => false,
                 'expanded' => false,
             ])
             ->add('insurance', EntityType::class, [
                 'class' => Insurance::class,
-                'choice_label' => fn (Insurance $insurance) =>
-                    sprintf('%s - %d%% Ship Price',
-                        $insurance->getName(),
-                        $insurance->getAnnualCost(),
-                    ),
+                'choice_label' => fn(Insurance $insurance) =>
+                sprintf(
+                    '%s - %d%% Ship Price',
+                    $insurance->getName(),
+                    $insurance->getAnnualCost(),
+                ),
                 'multiple' => false,
                 'expanded' => false,
             ])
@@ -151,7 +153,7 @@ class MortgageType extends AbstractType
                 'class' => Company::class,
                 'placeholder' => '-- Select a Company --',
                 'required' => true,
-                'choice_label' => fn (Company $c) => sprintf('%s - %s', $c->getName(), $c->getCompanyRole()->getShortDescription()),
+                'choice_label' => fn(Company $c) => sprintf('%s - %s', $c->getName(), $c->getCompanyRole()->getShortDescription()),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.name', 'ASC');
                     if ($user) {

@@ -15,9 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MortgageInstallmentType extends AbstractType
 {
-    public function __construct(private readonly DayYearLimits $limits)
-    {
-    }
+    public function __construct(private readonly DayYearLimits $limits) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -25,7 +23,7 @@ class MortgageInstallmentType extends AbstractType
         $installment = $options['data'];
         $summary = $installment->getMortgage()->calculate();
         $campaignStartYear = $installment->getMortgage()?->getShip()?->getCampaign()?->getStartingYear();
-        $minYear = max($this->limits->getYearMin(), $campaignStartYear ?? $this->limits->getYearMin());
+        $minYear = $campaignStartYear ?? $this->limits->getYearMin();
         $paymentDate = new ImperialDate($installment?->getPaymentYear(), $installment?->getPaymentDay());
 
         $builder

@@ -20,9 +20,7 @@ use App\Entity\Campaign;
 
 class AnnualBudgetType extends AbstractType
 {
-    public function __construct(private readonly DayYearLimits $limits)
-    {
-    }
+    public function __construct(private readonly DayYearLimits $limits) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -30,7 +28,7 @@ class AnnualBudgetType extends AbstractType
         /** @var AnnualBudget $budget */
         $budget = $builder->getData();
         $campaignStartYear = $budget?->getShip()?->getCampaign()?->getStartingYear();
-        $minYear = max($this->limits->getYearMin(), $campaignStartYear ?? $this->limits->getYearMin());
+        $minYear = $campaignStartYear ?? $this->limits->getYearMin();
         $startDate = new ImperialDate($budget?->getStartYear(), $budget?->getStartDay());
         $endDate = new ImperialDate($budget?->getEndYear(), $budget?->getEndDay());
 
@@ -56,7 +54,7 @@ class AnnualBudgetType extends AbstractType
                 'mapped' => false,
                 'required' => true,
                 'placeholder' => '-- Select a Campaign --',
-                'choice_label' => fn (Campaign $campaign) => $campaign->getTitle(),
+                'choice_label' => fn(Campaign $campaign) => $campaign->getTitle(),
                 'data' => $budget->getShip()?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
@@ -74,7 +72,7 @@ class AnnualBudgetType extends AbstractType
             ->add('ship', EntityType::class, [
                 'class' => Ship::class,
                 'placeholder' => '-- Select a Ship --',
-                'choice_label' => fn (Ship $ship) => sprintf('%s (%s)', $ship->getName(), $ship->getClass()),
+                'choice_label' => fn(Ship $ship) => sprintf('%s (%s)', $ship->getName(), $ship->getClass()),
                 'choice_attr' => function (Ship $ship): array {
                     $start = $ship->getCampaign()?->getStartingYear();
                     $campaignId = $ship->getCampaign()?->getId();
@@ -124,7 +122,6 @@ class AnnualBudgetType extends AbstractType
                 $budget->setEndYear($end->getYear());
             }
         });
-
     }
 
     public function configureOptions(OptionsResolver $resolver): void
