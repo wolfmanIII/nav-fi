@@ -54,15 +54,7 @@ class CostVoter extends Voter
 
     private function canEdit(Cost $cost, User $user): bool
     {
-        if (!$this->isOwner($cost, $user)) {
-            return false;
-        }
-
-        if ($cost->getPaymentDay() !== null || $cost->getPaymentYear() !== null) {
-            return false;
-        }
-
-        return true;
+        return $this->isOwner($cost, $user);
     }
 
     private function canDelete(Cost $cost, User $user): bool

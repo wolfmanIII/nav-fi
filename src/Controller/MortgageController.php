@@ -105,8 +105,7 @@ final class MortgageController extends BaseController
         int $id,
         Request $request,
         EntityManagerInterface $em
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
@@ -122,12 +121,7 @@ final class MortgageController extends BaseController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if (
-                !$this->isGranted(MortgageVoter::EDIT, $mortgage)
-            ) {
-                $this->addFlash('error', 'Mortgage Signed, Action Denied!');
-                return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
-            }
+
 
             $action = $request->request->get('action');
 
@@ -174,8 +168,7 @@ final class MortgageController extends BaseController
     public function delete(
         int $id,
         EntityManagerInterface $em
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
@@ -199,8 +192,7 @@ final class MortgageController extends BaseController
         int $id,
         Request $request,
         EntityManagerInterface $em
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();

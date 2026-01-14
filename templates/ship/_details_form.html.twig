@@ -139,7 +139,7 @@
                     {{ form_widget(item.child.description) }}
                     {{ form_errors(item.child.description) }}
                 </div>
-                {% set has_drive_extra = item.child.thrust is defined or item.child.jump is defined %}
+                {% set has_drive_extra = item.child.thrust is defined or item.child.jump is defined or item.child.power is defined %}
                 <div class="grid gap-2 mt-2 {{ has_drive_extra ? 'grid-cols-3' : 'grid-cols-2' }}">
                     {% if item.child.thrust is defined %}
                         <div>
@@ -152,6 +152,12 @@
                             {{ form_label(item.child.jump) }}
                             {{ form_widget(item.child.jump) }}
                             {{ form_errors(item.child.jump) }}
+                        </div>
+                    {% elseif item.child.power is defined %}
+                        <div>
+                            {{ form_label(item.child.power) }}
+                            {{ form_widget(item.child.power) }}
+                            {{ form_errors(item.child.power) }}
                         </div>
                     {% endif %}
                     <div>

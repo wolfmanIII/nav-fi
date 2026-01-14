@@ -35,7 +35,7 @@ class ShipType extends AbstractType
                 'class' => Campaign::class,
                 'placeholder' => '-- Select a Mission --',
                 'required' => false,
-                'choice_label' => fn(Campaign $c) => $c->getTitle(),
+                'choice_label' => fn(Campaign $c) => sprintf('%s (%03d/%04d)', $c->getTitle(), $c->getSessionDay(), $c->getSessionYear()),
                 'query_builder' => function (CampaignRepository $repo) {
                     return $repo->createQueryBuilder('c')->orderBy('c.title', 'ASC');
                 },

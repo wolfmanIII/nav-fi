@@ -62,24 +62,14 @@
     {% set summary = mortgage.calculate() %}
     {% set installments = mortgage.mortgageInstallments %}
     {% set crew = ship.crews %}
-    {% set signingYear = mortgage.signingYear %}
-    {% set signingDay = mortgage.signingDay %}
-    {% set hasSigning = signingYear is not null and signingDay is not null %}
-    {% set signingIndex = hasSigning ? (signingYear * 1000 + signingDay) : 0 %}
     {% set filteredCrew = [] %}
     {% set captain = null %}
     {% for member in crew %}
         {% if captain is null and member.isCaptain() %}
             {% set captain = member %}
         {% endif %}
-        {% set status = member.status ?? '' %}
-        {% set activeYear = member.activeYear ?? 0 %}
-        {% set activeDay = member.activeDay ?? 0 %}
-        {% set activeIndex = activeYear and activeDay ? (activeYear * 1000 + activeDay) : 0 %}
-        {% if status not in ['Missing (MIA)', 'Deceased'] %}
-            {% if not hasSigning or (activeIndex and activeIndex >= signingIndex) %}
-                {% set filteredCrew = filteredCrew|merge([member]) %}
-            {% endif %}
+        {% if member.isVisibleInMortgage(mortgage.signingYear, mortgage.signingDay) %}
+            {% set filteredCrew = filteredCrew|merge([member]) %}
         {% endif %}
     {% endfor %}
 

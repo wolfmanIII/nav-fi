@@ -236,7 +236,7 @@ class Crew
 
     public function isCaptain(): bool
     {
-        foreach($this->getShipRoles() as $role) {
+        foreach ($this->getShipRoles() as $role) {
             if ($role->getCode() === "CAP") {
                 return true;
             }
@@ -394,5 +394,51 @@ class Crew
         $this->deceasedYear = $deceasedYear;
 
         return $this;
+    }
+
+    /**
+     * Check if the crew member is currently displayable (not MIA or deceased).
+     */
+    public function isDisplayable(): bool
+    {
+        return !in_array($this->status, ['Missing (MIA)', 'Deceased'], true);
+    }
+
+    /**
+     * Check if the crew member was active at or after a specific date.
+     * 
+     * @param int|null $referenceYear The reference year
+     * @param int|null $referenceDay The reference day
+     * @return bool True if crew was active at or after the reference date
+     */
+    public function isActiveAtOrAfterDate(?int $referenceYear, ?int $referenceDay): bool
+    {
+        // If no reference date is provided, consider the crew as active
+        if (!$referenceYear || !$referenceDay) {
+            return true;
+        }
+
+        // If crew has no active date, they don't pass the filter
+        if (!$this->activeYear || !$this->activeDay) {
+            return false;
+        }
+
+        // Calculate date indices for comparison (year * 1000 + day)
+        $activeIndex = $this->activeYear * 1000 + $this->activeDay;
+        $referenceIndex = $referenceYear * 1000 + $referenceDay;
+
+        return $activeIndex >= $referenceIndex;
+    }
+
+    /**
+     * Check if the crew member should be visible in a mortgage context.
+     * 
+     * @param int|null $mortgageSigningYear The mortgage signing year
+     * @param int|null $mortgageSigningDay The mortgage signing day
+     * @return bool True if crew should be displayed in the mortgage
+     */
+    public function isVisibleInMortgage(?int $mortgageSigningYear, ?int $mortgageSigningDay): bool
+    {
+        return $this->isDisplayable() && $this->isActiveAtOrAfterDate($mortgageSigningYear, $mortgageSigningDay);
     }
 }

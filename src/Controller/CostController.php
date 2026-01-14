@@ -102,8 +102,7 @@ final class CostController extends BaseController
         int $id,
         Request $request,
         EntityManagerInterface $em
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
@@ -121,10 +120,7 @@ final class CostController extends BaseController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if ( $wasPaid && !$this->isGranted(CostVoter::EDIT, $cost) ) {
-                $this->addFlash('error', 'Cost payed, Action Denied!');
-                return $this->redirectToRoute('app_cost_edit', ['id' => $cost->getId()]);
-            }
+
 
             $em->flush();
 
@@ -142,8 +138,7 @@ final class CostController extends BaseController
     public function delete(
         int $id,
         EntityManagerInterface $em
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
@@ -201,5 +196,4 @@ final class CostController extends BaseController
             'Content-Disposition' => sprintf('inline; filename="cost-%s.pdf"', $cost->getCode()),
         ]);
     }
-
 }

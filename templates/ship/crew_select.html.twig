@@ -52,6 +52,7 @@
                         <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Callsign</th>
                         <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Surname</th>
                         <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Roles</th>
+                        <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Active Date</th>
                         <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Captain</th>
                         <th class="bg-slate-900/50"></th>
                     </tr>
@@ -71,6 +72,13 @@
                                         <span class="text-slate-600">/</span>
                                     {% endif %}
                                 {% endfor %}
+                            </td>
+                            <td class="font-mono text-xs p-2">
+                                {% if member.activeDay and member.activeYear %}
+                                    {{ member.activeDay|imperial_date(member.activeYear) }}
+                                {% else %}
+                                    <span class="text-slate-600">—</span>
+                                {% endif %}
                             </td>
                             <td class="p-2">
                                 {% if member.captain %}
@@ -117,7 +125,7 @@
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="7" class="text-center text-xs text-slate-500 font-rajdhani uppercase tracking-widest py-8">// No crew assigned</td>
+                            <td colspan="8" class="text-center text-xs text-slate-500 font-rajdhani uppercase tracking-widest py-8">// No crew assigned</td>
                         </tr>
                     {% endif %}
                     </tbody>

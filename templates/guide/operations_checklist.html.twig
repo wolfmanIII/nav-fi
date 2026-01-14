@@ -45,7 +45,7 @@
                 </div>
             </div>
             <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Spin up the Mission</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Name the op, drop a short brief, and set the session calendar (day/year). Keep the session date updated as in-game time advances: every downstream date (mortgage, PDFs, forms) syncs to this clock.</p>
+            <p class="text-sm text-slate-400 leading-relaxed">Name the op, drop a short brief, and set the session calendar (day/year). <strong class="text-amber-400/80">Referee Power:</strong> You have total control over the clock—dates are advisory and incoherence won't block your tactical saves.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
                 Mission Control
@@ -246,6 +246,15 @@
             </div>
         </div>
 
+    </div>
+
+    {# ADVISORY NOTE #}
+    <div class="mt-12 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-6 text-center">
+        <h3 class="text-sm font-bold text-amber-100 uppercase tracking-widest mb-2 font-orbitron">/// Advisory Protocol Enabled</h3>
+        <p class="text-xs text-slate-400 max-w-2xl mx-auto leading-relaxed italic">
+            Nav-Fi prioritizes narrative flexibility. Hard-locks on paid records and strict date validation are disabled. 
+            The Referee is responsible for data coherence; yellow alerts indicate potential timeline gaps without blocking tactical overrides.
+        </p>
     </div>
 </div>
 {% endblock %}

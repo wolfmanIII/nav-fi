@@ -22,6 +22,22 @@
                         <p class="uppercase text-[10px] tracking-[0.3em] text-amber-300/70 font-bold font-orbitron mb-0.5">Mission outflows // Expense Log</p>
                         <h1 class="text-2xl font-bold text-cyan-100 leading-tight font-orbitron uppercase">Costs</h1>
                         <p class="text-xs text-cyan-100/60 font-rajdhani tracking-widest uppercase">Maintenance, crew gear and travel: map every credit.</p>
+                        
+                        {# Session Date Modal Trigger #}
+                        {% if campaigns|length > 0 %}
+                            <div class="mt-3">
+                                <label for="session-dates-modal" class="badge badge-info gap-1.5 px-2.5 py-2.5 text-xs font-mono cursor-pointer hover:bg-info/80 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    <span class="font-semibold">View Mission Session Dates</span>
+                                    <span>({{ campaigns|length }})</span>
+                                </label>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="flex gap-2">
@@ -32,6 +48,41 @@
                                     { dim: 20, linkClass: 'btn btn-outline btn-primary btn-sm px-4', position: 'tooltip-left' }) }}
                 </div>
             </div>
+        </div>
+
+        {# Session Dates Modal #}
+        <input type="checkbox" id="session-dates-modal" class="modal-toggle" />
+        <div class="modal" role="dialog">
+            <div class="modal-box bg-slate-900 border border-slate-700 max-w-2xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-cyan-100 text-lg font-orbitron uppercase tracking-widest">Mission Session Dates</h3>
+                    <label for="session-dates-modal" class="btn btn-sm btn-circle btn-ghost">✕</label>
+                </div>
+                <div class="overflow-x-auto rounded-lg border border-slate-800 bg-slate-950/40">
+                    <table class="table table-xs w-full">
+                        <thead>
+                            <tr class="border-b border-slate-800">
+                                <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Mission / Campaign</th>
+                                <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50 text-right">Session Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/50">
+                            {% for campaign in campaigns %}
+                                <tr class="hover:bg-cyan-500/5 transition-colors">
+                                    <td class="p-3 font-semibold text-cyan-100">{{ campaign.title }}</td>
+                                    <td class="p-3 font-mono text-sm text-slate-300 text-right">
+                                        {{ campaign.sessionDay|imperial_date(campaign.sessionYear) }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-action">
+                    <label for="session-dates-modal" class="btn btn-outline btn-primary btn-sm font-orbitron uppercase text-[10px]">Close</label>
+                </div>
+            </div>
+            <label class="modal-backdrop" for="session-dates-modal"></label>
         </div>
 
         <div class="alert alert-info alert-outline shadow-sm mb-6">

@@ -16,42 +16,31 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-800/50">
-            {% set signingYear = mortgage.signingYear %}
-            {% set signingDay = mortgage.signingDay %}
-            {% set hasSigning = signingYear and signingDay %}
-            {% set signingIndex = hasSigning ? (signingYear * 1000 + signingDay) : 0 %}
-
             {% for member in mortgage.ship.crews %}
-                {% set status = member.status ?? '' %}
-                {% set activeYear = member.activeYear ?? 0 %}
-                {% set activeDay = member.activeDay ?? 0 %}
-                {% set activeIndex = activeYear and activeDay ? (activeYear * 1000 + activeDay) : 0 %}
-                {% if status not in ['Missing (MIA)', 'Deceased'] %}
-                    {% if not hasSigning or (activeIndex and activeIndex >= signingIndex) %}
-                        <tr class="hover:bg-cyan-500/5 transition-colors">
-                            <td class="p-2 font-mono text-xs text-cyan-400 font-bold uppercase">{{ member.code }}</td>
-                            <td class="p-2 font-rajdhani text-[13px] text-slate-300 uppercase tracking-wide">
-                                {{ member.name }} <span class="text-cyan-500/80 font-bold">"{{ member.nickname }}"</span> {{ member.surname }}
-                            </td>
-                            <td class="p-2 font-rajdhani text-xs text-slate-400 uppercase tracking-widest">
-                                {% for role in member.shipRoles %}
-                                    <span class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300">{{ role.name }}</span>
-                                    {% if not loop.last %}<span class="mx-1 text-slate-600">//</span>{% endif %}
-                                {% endfor %}
-                            </td>
-                            <td class="p-2">
-                                {% if member.captain %}
-                                    <div class="flex justify-center text-amber-500">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                             viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"
-                                             stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                        </svg>
-                                    </div>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endif %}
+                {% if member.isVisibleInMortgage(mortgage.signingYear, mortgage.signingDay) %}
+                    <tr class="hover:bg-cyan-500/5 transition-colors">
+                        <td class="p-2 font-mono text-xs text-cyan-400 font-bold uppercase">{{ member.code }}</td>
+                        <td class="p-2 font-rajdhani text-[13px] text-slate-300 uppercase tracking-wide">
+                            {{ member.name }} <span class="text-cyan-500/80 font-bold">"{{ member.nickname }}"</span> {{ member.surname }}
+                        </td>
+                        <td class="p-2 font-rajdhani text-xs text-slate-400 uppercase tracking-widest">
+                            {% for role in member.shipRoles %}
+                                <span class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300">{{ role.name }}</span>
+                                {% if not loop.last %}<span class="mx-1 text-slate-600">//</span>{% endif %}
+                            {% endfor %}
+                        </td>
+                        <td class="p-2">
+                            {% if member.captain %}
+                                <div class="flex justify-center text-amber-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                         viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"
+                                         stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                    </svg>
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
                 {% endif %}
             {% endfor %}
             </tbody>

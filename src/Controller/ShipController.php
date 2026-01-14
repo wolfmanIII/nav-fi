@@ -98,8 +98,7 @@ final class ShipController extends BaseController
         int $id,
         Request $request,
         EntityManagerInterface $em
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
@@ -130,10 +129,7 @@ final class ShipController extends BaseController
                 }
             }
 
-            if (!$this->isGranted(ShipVoter::EDIT, $ship)) {
-                $this->addFlash('error', 'Mortgage Signed, Action Denied!');
-                return $this->redirectToRoute('app_mortgage_edit', ['id' => $ship->getId()]);
-            }
+
 
             $em->persist($ship);
             $em->flush();
@@ -216,8 +212,7 @@ final class ShipController extends BaseController
         int $id,
         Request $request,
         EntityManagerInterface $em
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
@@ -401,8 +396,7 @@ final class ShipController extends BaseController
         Request $request,
         EntityManagerInterface $em,
         \App\Service\CrewAssignmentService $crewAssignmentService
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
@@ -428,5 +422,4 @@ final class ShipController extends BaseController
         $em->flush();
         return $this->redirectToRoute('app_ship_crew', ['id' => $ship->getId()]);
     }
-
 }

@@ -54,7 +54,7 @@ class AnnualBudgetType extends AbstractType
                 'mapped' => false,
                 'required' => true,
                 'placeholder' => '-- Select a Campaign --',
-                'choice_label' => fn(Campaign $campaign) => $campaign->getTitle(),
+                'choice_label' => fn(Campaign $campaign) => sprintf('%s (%03d/%04d)', $campaign->getTitle(), $campaign->getSessionDay(), $campaign->getSessionYear()),
                 'data' => $budget->getShip()?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');

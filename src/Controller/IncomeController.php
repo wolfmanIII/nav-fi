@@ -23,8 +23,7 @@ final class IncomeController extends BaseController
 
     public function __construct(
         private readonly ImperialDateHelper $imperialDateHelper
-    ) {
-    }
+    ) {}
 
     /**
      * @var array<string, string>
@@ -135,8 +134,7 @@ final class IncomeController extends BaseController
         int $id,
         Request $request,
         EntityManagerInterface $em
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
@@ -162,10 +160,7 @@ final class IncomeController extends BaseController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if ( $wasPaid && !$this->isGranted(IncomeVoter::EDIT, $income) ) {
-                $this->addFlash('error', 'Income payed, Action Denied!');
-                return $this->redirectToRoute('app_income_edit', ['id' => $income->getId()]);
-            }
+
 
             $this->clearUnusedDetails($income, $em);
             $em->flush();
@@ -184,8 +179,7 @@ final class IncomeController extends BaseController
     public function delete(
         int $id,
         EntityManagerInterface $em
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();

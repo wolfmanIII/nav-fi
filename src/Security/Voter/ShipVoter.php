@@ -20,8 +20,7 @@ final class ShipVoter extends Voter
 
     public function __construct(
         private AnnualBudgetRepository $annualBudgetRepository,
-    ) {
-    }
+    ) {}
 
     protected function supports(string $attribute, mixed $subject): bool
     {

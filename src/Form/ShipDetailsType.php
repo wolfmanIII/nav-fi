@@ -11,6 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form\MDriveDetailItemType;
 use App\Form\JDriveDetailItemType;
+use App\Form\PowerPlantDetailItemType;
 
 class ShipDetailsType extends AbstractType
 {
@@ -30,7 +31,7 @@ class ShipDetailsType extends AbstractType
             ->add('hull', ShipDetailItemType::class, ['label' => 'Hull'])
             ->add('mDrive', MDriveDetailItemType::class, ['label' => 'M-Drive'])
             ->add('jDrive', JDriveDetailItemType::class, ['label' => 'J-Drive'])
-            ->add('powerPlant', ShipDetailItemType::class, ['label' => 'Power Plant'])
+            ->add('powerPlant', PowerPlantDetailItemType::class, ['label' => 'Power Plant'])
             ->add('fuel', ShipDetailItemType::class, ['label' => 'Fuel Tanks'])
             ->add('bridge', ShipDetailItemType::class, ['label' => 'Bridge'])
             ->add('computer', ShipDetailItemType::class, ['label' => 'Computer'])

@@ -34,7 +34,6 @@ final class MortgageVoter extends Voter
             self::PAY_INSTALLMENT,
             self::CREATE_PDF,
         ], true);
-
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -70,7 +69,7 @@ final class MortgageVoter extends Voter
 
     private function canEdit(Mortgage $mortgage, ?UserInterface $user = null): bool
     {
-        return $this->isOwner($mortgage, $user) && !$mortgage->isSigned();
+        return $this->isOwner($mortgage, $user);
     }
 
     private function canDelete(Mortgage $mortgage, ?UserInterface $user = null): bool

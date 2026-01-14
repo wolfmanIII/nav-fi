@@ -10,7 +10,7 @@ class ShipDetailsData
     public ShipDetailItem $hull;
     public MDriveDetailItem $mDrive;
     public JDriveDetailItem $jDrive;
-    public ShipDetailItem $powerPlant;
+    public PowerPlantDetailItem $powerPlant;
     public ShipDetailItem $fuel;
     public ShipDetailItem $bridge;
     public ShipDetailItem $computer;
@@ -34,7 +34,7 @@ class ShipDetailsData
         $this->hull = new ShipDetailItem();
         $this->mDrive = new MDriveDetailItem();
         $this->jDrive = new JDriveDetailItem();
-        $this->powerPlant = new ShipDetailItem();
+        $this->powerPlant = new PowerPlantDetailItem();
         $this->fuel = new ShipDetailItem();
         $this->bridge = new ShipDetailItem();
         $this->computer = new ShipDetailItem();
@@ -59,7 +59,7 @@ class ShipDetailsData
         $dto->hull = ShipDetailItem::fromArray($data['hull'] ?? []);
         $dto->mDrive = MDriveDetailItem::fromArray($data['mDrive'] ?? []);
         $dto->jDrive = JDriveDetailItem::fromArray($data['jDrive'] ?? []);
-        $dto->powerPlant = ShipDetailItem::fromArray($data['powerPlant'] ?? []);
+        $dto->powerPlant = PowerPlantDetailItem::fromArray($data['powerPlant'] ?? []);
         $dto->fuel = ShipDetailItem::fromArray($data['fuel'] ?? []);
         $dto->bridge = ShipDetailItem::fromArray($data['bridge'] ?? []);
         $dto->computer = ShipDetailItem::fromArray($data['computer'] ?? []);
@@ -67,11 +67,11 @@ class ShipDetailsData
         $dto->commonAreas = ShipDetailItem::fromArray($data['commonAreas'] ?? []);
         $dto->cargo = ShipDetailItem::fromArray($data['cargo'] ?? []);
 
-        $dto->weapons = array_map(fn ($item) => ShipDetailItem::fromArray($item), $data['weapons'] ?? []);
-        $dto->craft = array_map(fn ($item) => ShipDetailItem::fromArray($item), $data['craft'] ?? []);
-        $dto->systems = array_map(fn ($item) => ShipDetailItem::fromArray($item), $data['systems'] ?? []);
-        $dto->staterooms = array_map(fn ($item) => ShipDetailItem::fromArray($item), $data['staterooms'] ?? []);
-        $dto->software = array_map(fn ($item) => ShipDetailItem::fromArray($item), $data['software'] ?? []);
+        $dto->weapons = array_map(fn($item) => ShipDetailItem::fromArray($item), $data['weapons'] ?? []);
+        $dto->craft = array_map(fn($item) => ShipDetailItem::fromArray($item), $data['craft'] ?? []);
+        $dto->systems = array_map(fn($item) => ShipDetailItem::fromArray($item), $data['systems'] ?? []);
+        $dto->staterooms = array_map(fn($item) => ShipDetailItem::fromArray($item), $data['staterooms'] ?? []);
+        $dto->software = array_map(fn($item) => ShipDetailItem::fromArray($item), $data['software'] ?? []);
 
         // Ensure at least one row per collection so the form renders inputs.
         if (count($dto->weapons) === 0) {
@@ -96,10 +96,10 @@ class ShipDetailsData
     public function toArray(): array
     {
         $mapCollection = function (array $items): array {
-            $filtered = array_filter($items, fn ($i) => $i instanceof ShipDetailItem);
+            $filtered = array_filter($items, fn($i) => $i instanceof ShipDetailItem);
 
             return array_values(array_map(
-                fn (ShipDetailItem $i) => $i->toArray(),
+                fn(ShipDetailItem $i) => $i->toArray(),
                 $filtered
             ));
         };

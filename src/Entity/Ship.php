@@ -63,26 +63,32 @@ class Ship
     /**
      * @var Collection<int, ShipAmendment>
      */
-    #[ORM\OneToMany(targetEntity: ShipAmendment::class, mappedBy: 'ship')]
+    #[ORM\OneToMany(targetEntity: ShipAmendment::class, mappedBy: 'ship', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $amendments;
 
     /**
      * @var Collection<int, Cost>
      */
-    #[ORM\OneToMany(targetEntity: Cost::class, mappedBy: 'ship')]
+    #[ORM\OneToMany(targetEntity: Cost::class, mappedBy: 'ship', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $costs;
 
     /**
      * @var Collection<int, Income>
      */
-    #[ORM\OneToMany(targetEntity: Income::class, mappedBy: 'ship')]
+    #[ORM\OneToMany(targetEntity: Income::class, mappedBy: 'ship', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $incomes;
 
     /**
      * @var Collection<int, Route>
      */
-    #[ORM\OneToMany(targetEntity: Route::class, mappedBy: 'ship')]
+    #[ORM\OneToMany(targetEntity: Route::class, mappedBy: 'ship', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $routes;
+
+    /**
+     * @var Collection<int, AnnualBudget>
+     */
+    #[ORM\OneToMany(targetEntity: AnnualBudget::class, mappedBy: 'ship', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $annualBudgets;
 
     public function __construct()
     {
@@ -92,6 +98,7 @@ class Ship
         $this->incomes = new ArrayCollection();
         $this->amendments = new ArrayCollection();
         $this->routes = new ArrayCollection();
+        $this->annualBudgets = new ArrayCollection();
     }
 
     public function getId(): ?int

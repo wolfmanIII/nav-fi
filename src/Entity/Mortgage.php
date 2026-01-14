@@ -82,7 +82,7 @@ class Mortgage
     /**
      * @var Collection<int, MortgageInstallment>
      */
-    #[ORM\OneToMany(targetEntity: MortgageInstallment::class, mappedBy: 'mortgage')]
+    #[ORM\OneToMany(targetEntity: MortgageInstallment::class, mappedBy: 'mortgage', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $mortgageInstallments;
 
     public function __construct()
