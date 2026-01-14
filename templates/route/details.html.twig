@@ -46,7 +46,12 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div class="rounded-xl border border-base-300 bg-base-200 p-4 h-full relative">
-                <div class="text-xs uppercase tracking-[0.2em] text-slate-400 mb-2">TravellerMap</div>
+                <div class="text-sm uppercase tracking-[0.2em] text-slate-400 mb-2">
+                    <span class="flex items-center gap-2">
+                        <img src="{{ asset('img/traveller-map.svg') }}" alt="TravellerMap" class="w-5 h-5">
+                        TravellerMap
+                    </span>
+                </div>
                 
                 <!-- Loading Overlay -->
                 <div data-route-map-target="overlay" 
@@ -91,7 +96,7 @@
             </div>
 
             <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/40 shadow-inner h-full">
-                <table class="table table-xs w-full border-separate border-spacing-0">
+                <table class="table table-sm w-full border-separate border-spacing-0">
                     <thead>
                     <tr class="border-b border-slate-800">
                         <th class="bg-slate-900/50 w-12"></th>
