@@ -7,7 +7,9 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "copy-libs": "mkdir -p assets/vendor/tom-select assets/vendor/highlightjs && cp node_modules/tom-select/dist/js/tom-select.complete.min.js assets/vendor/tom-select/ && cp node_modules/tom-select/dist/css/tom-select.css assets/vendor/tom-select/ && cp node_modules/highlight.js/styles/github-dark.css assets/vendor/highlightjs/",
+    "build": "npm run copy-libs"
   },
   "keywords": [],
   "author": "",
