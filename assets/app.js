@@ -7,4 +7,4 @@ import './stimulus_bootstrap.js';
  */
 import './styles/app.css';
 
-// App entrypoint (AssetMapper)
+console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
