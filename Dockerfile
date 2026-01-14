@@ -124,8 +124,12 @@ RUN chown -R www-data:www-data /var/www/html/var /var/www/html/public
 # STAGE 5: Entrypoint
 # ==============================================================================
 
+# Copy and set executable permissions for entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Espone la porta 8080 (standard per Cloud Run)
 EXPOSE 8080
 
-# Avvia Supervisor che gestirà Nginx e PHP-FPM
-CMD ["/usr/bin/supervisord"]
+# Avvia entrypoint che esegue migrations e poi supervisor
+CMD ["/usr/local/bin/docker-entrypoint.sh"]
