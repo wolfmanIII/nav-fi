@@ -45,10 +45,45 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div class="rounded-xl border border-base-300 bg-base-200 p-4 h-full">
+            <div class="rounded-xl border border-base-300 bg-base-200 p-4 h-full relative">
                 <div class="text-xs uppercase tracking-[0.2em] text-slate-400 mb-2">TravellerMap</div>
+                
+                <!-- Loading Overlay -->
+                <div data-route-map-target="overlay" 
+                     class="hidden absolute inset-0 z-10 flex items-center justify-center bg-slate-950/95 backdrop-blur-sm rounded-lg border-2 border-cyan-500/30">
+                    <div class="flex flex-col items-center gap-4 p-8">
+                        <!-- Animated radar/scanner -->
+                        <div class="relative w-24 h-24">
+                            <div class="absolute inset-0 rounded-full border-2 border-cyan-500/30 animate-ping"></div>
+                            <div class="absolute inset-2 rounded-full border-2 border-cyan-400/50 animate-pulse"></div>
+                            <div class="absolute inset-4 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 animate-spin" style="animation-duration: 3s;"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <svg class="w-12 h-12 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <!-- Loading text -->
+                        <div class="text-center space-y-2">
+                            <div class="font-orbitron uppercase tracking-[0.3em] text-cyan-400 text-lg font-bold animate-pulse">
+                                NAV SYNC
+                            </div>
+                            <div class="font-rajdhani uppercase tracking-[0.2em] text-cyan-300/70 text-sm">
+                                // Establishing jump coordinates
+                            </div>
+                            <div class="flex gap-1 justify-center mt-3">
+                                <div class="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" style="animation-delay: 0s;"></div>
+                                <div class="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" style="animation-delay: 0.2s;"></div>
+                                <div class="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" style="animation-delay: 0.4s;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <iframe
                     data-route-map-target="frame"
+                    data-action="load->route-map#hideOverlay"
                     src="{{ mapUrl }}"
                     class="w-full h-[600px] rounded-lg border border-base-300"
                     loading="lazy">
