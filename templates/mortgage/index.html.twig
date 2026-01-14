@@ -117,19 +117,19 @@
                             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                                 <div class="p-4 rounded-lg bg-slate-950/40 border border-slate-800 transition-colors hover:border-cyan-500/20">
                                     <span class="text-sm uppercase text-slate-500 font-semibold mb-1 block tracking-widest">Rate (Interests)</span>
-                                    <span class="text-xl font-mono text-cyan-100">{{ mortgage.interestRate.annualInterestRate|format_number({ max_fraction_digit: 1 }) }}%</span>
+                                    <span class="text-xl font-mono text-cyan-100">{{ mortgage.interestRate.annualInterestRate|format_number({ max_fraction_digit: 2 }) }}%</span>
                                 </div>
                                 <div class="p-4 rounded-lg bg-slate-950/40 border border-slate-800 transition-colors hover:border-cyan-500/20">
                                     <span class="text-sm uppercase text-slate-500 font-semibold mb-1 block tracking-widest">Duration</span>
-                                    <span class="text-xl font-mono text-cyan-100">{{ mortgage.interestRate.duration }}m</span>
+                                    <span class="text-xl font-mono text-cyan-100">{{ mortgage.interestRate.duration }}y</span>
                                 </div>
                                 <div class="p-4 rounded-lg bg-slate-950/40 border border-slate-800 transition-colors hover:border-cyan-500/20">
                                     <span class="text-sm uppercase text-slate-500 font-semibold mb-1 block tracking-widest">Principal</span>
-                                    <span class="text-xl font-mono text-cyan-300 font-bold">{{ mortgage.calculate.ship_cost|format_number({ max_fraction_digit: 0 }) }}</span>
+                                    <span class="text-xl font-mono text-cyan-300 font-bold">{{ mortgage.calculate.ship_cost|format_number({ max_fraction_digit: 0 }) }} Cr</span>
                                 </div>
                                 <div class="p-4 rounded-lg bg-slate-950/40 border border-slate-800 transition-colors hover:border-cyan-500/20">
                                     <span class="text-sm uppercase text-slate-500 font-bold mb-1 block tracking-widest">Per-Burn Cut</span>
-                                    <span class="text-xl font-mono text-cyan-400 font-bold">{{ mortgage.calculate.total_monthly_payment|format_number({ max_fraction_digit: 0 }) }}</span>
+                                    <span class="text-xl font-mono text-cyan-400 font-bold">{{ mortgage.calculate.total_monthly_payment|format_number({ max_fraction_digit: 0 }) }} Cr</span>
                                 </div>
                             </div>
 
