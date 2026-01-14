@@ -128,9 +128,9 @@
                              </div>
                              
                             {% if route.startHex %}
-                                <a href="https://travellermap.com/?marker_hex={{ route.startHex }}" target="_blank" rel="noopener" class="flex items-center gap-1.5 px-2 py-1 rounded bg-slate-800 hover:bg-emerald-950/30 border border-slate-700 hover:border-emerald-500/50 text-slate-400 hover:text-emerald-400 transition-all group/map" title="Open chart on TravellerMap">
-                                    <span class="text-[9px] font-bold uppercase tracking-wider">Map</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover/map:scale-110 transition-transform"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                <a href="https://travellermap.com/?marker_hex={{ route.startHex }}" target="_blank" rel="noopener" class="flex items-center gap-2 px-3 py-1.5 rounded bg-slate-800 hover:bg-emerald-950/30 border border-slate-700 hover:border-emerald-500/50 text-slate-400 hover:text-emerald-400 transition-all group/map" title="Open chart on TRAVELLERMAP.COM">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider">TRAVELLERMAP.COM</span>
+                                    {% include 'icons/travellermap.html.twig' with { dim: 14 } %}
                                 </a>
                             {% endif %}
                         </div>

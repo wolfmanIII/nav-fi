@@ -152,15 +152,17 @@ final class RouteController extends BaseController
         }
         $mapUrl = 'https://travellermap.com/';
         if ($startHex && $sector) {
-            $mapUrl .= 'go/'.rawurlencode($sector).'/'.rawurlencode($startHex);
+            $mapUrl .= 'go/' . rawurlencode($sector) . '/' . rawurlencode($startHex);
         } elseif ($startHex) {
-            $mapUrl .= '?marker_hex='.rawurlencode($startHex);
+            $mapUrl .= '?marker_hex=' . rawurlencode($startHex);
         }
 
         return $this->render('route/details.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'route' => $route,
             'mapUrl' => $mapUrl,
+            'currentHex' => $startHex,
+            'currentSector' => $sector,
         ]);
     }
 

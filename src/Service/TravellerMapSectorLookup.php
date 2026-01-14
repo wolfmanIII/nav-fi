@@ -14,8 +14,7 @@ class TravellerMapSectorLookup
     public function __construct(
         private readonly HttpClientInterface $client,
         private readonly CacheInterface $cache
-    ) {
-    }
+    ) {}
 
     public function lookupWorld(string $sector, string $hex): ?array
     {
@@ -31,7 +30,7 @@ class TravellerMapSectorLookup
 
     private function fetchSectorData(string $sector): string
     {
-        $cacheKey = 'travellermap_sector_'.sha1($sector);
+        $cacheKey = 'travellermap_sector_' . sha1($sector);
 
         return $this->cache->get($cacheKey, function (ItemInterface $item) use ($sector): string {
             $item->expiresAfter(self::CACHE_TTL);

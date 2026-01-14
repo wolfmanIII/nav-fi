@@ -4,7 +4,11 @@
 
 {% block pageContent %}
 
-    <div class="flex flex-col items-stretch gap-6" data-controller="route-map" data-route-map-base-url-value="https://travellermap.com">
+    <div class="flex flex-col items-stretch gap-6" 
+         data-controller="route-map" 
+         data-route-map-base-url-value="https://travellermap.com"
+         data-route-map-current-hex-value="{{ currentHex }}"
+         data-route-map-current-sector-value="{{ currentSector }}">
         <div class="relative rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
             <div class="absolute inset-0 rounded-xl opacity-30 mix-blend-screen pointer-events-none"
                  style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
@@ -22,7 +26,10 @@
                 </div>
                 <div class="flex gap-2">
                     <a href="{{ path('app_route_edit', { id: route.id }) }}" class="btn btn-outline btn-primary btn-sm">Edit</a>
-                    <a href="{{ mapUrl }}" target="_blank" rel="noopener" class="btn btn-outline btn-info btn-sm">Open TravellerMap</a>
+                    <a href="{{ mapUrl }}" target="_blank" rel="noopener" class="btn btn-outline btn-info btn-sm flex items-center gap-2">
+                        {% include 'icons/travellermap.html.twig' with { dim: 16 } %}
+                        TRAVELLERMAP.COM
+                    </a>
                 </div>
             </div>
         </div>
@@ -44,12 +51,27 @@
             </div>
         </div>
 
+        {# Gratitude Section #}
+        <div class="p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 flex items-start gap-4 shadow-inner">
+            <div class="p-2 rounded-lg bg-emerald-500/10 text-emerald-400">
+                {% include 'icons/travellermap.html.twig' with { dim: 20 } %}
+            </div>
+            <div class="flex-grow">
+                <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-emerald-500/60 mb-1">Incoming Transmission // Nav-Data Source</p>
+                <p class="text-sm text-slate-300 leading-relaxed italic">
+                    The cartographic data and sector coordinates that make this route possible are provided by the tireless work of the Imperial cartographers at <span class="text-emerald-400 font-bold">TRAVELLERMAP.COM</span>. Without their support, every jump would be a blind leap into the void of subspace.
+                    <br>
+                    <span class="text-xs text-emerald-400/80 mt-1 block">"From scout to scout, or rather from junior scouts to the greatest explorers of the galaxy, thank you so much!"</span>
+                </p>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div class="rounded-xl border border-base-300 bg-base-200 p-4 h-full relative">
                 <div class="text-sm uppercase tracking-[0.2em] text-slate-400 mb-2">
                     <span class="flex items-center gap-2">
-                        <img src="{{ asset('img/traveller-map.svg') }}" alt="TravellerMap" class="w-5 h-5">
-                        TravellerMap
+                        {% include 'icons/travellermap.html.twig' with { dim: 20 } %}
+                        TRAVELLERMAP.COM
                     </span>
                 </div>
                 
@@ -115,11 +137,13 @@
                                 <td class="text-center p-2">
                                     {% if waypoint.hex %}
                                         <button type="button"
-                                                class="btn btn-ghost btn-xs text-[10px] uppercase font-bold tracking-widest text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10"
+                                                class="btn btn-ghost btn-xs text-[10px] uppercase font-bold tracking-widest text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 flex items-center gap-1.5"
                                                 data-action="route-map#jump"
+                                                data-route-map-target="button"
                                                 data-hex="{{ waypoint.hex }}"
                                                 data-sector="{{ waypoint.sector }}">
-                                            Map
+                                            {% include 'icons/travellermap.html.twig' with { dim: 12 } %}
+                                            MAP
                                         </button>
                                     {% else %}
                                         <span class="opacity-30">—</span>

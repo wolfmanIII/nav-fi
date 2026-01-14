@@ -63,11 +63,14 @@
         {% if campaign and income.paymentDay is not null and income.paymentYear is not null %}
             {% set paymentIndex = income.paymentYear * 1000 + income.paymentDay %}
             {% set sessionIndex = campaign.sessionYear * 1000 + campaign.sessionDay %}
-            {% if paymentIndex < sessionIndex %}
-                <div class="alert alert-warning alert-outline shadow-sm mb-6 border-amber-500/50 bg-amber-500/5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6 text-amber-500" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 17c-.77 1.333.192 3 1.732 3z" /></svg>
-                    <div class="text-sm font-rajdhani uppercase tracking-widest font-bold text-amber-200">
-                        <span class="text-amber-500">Timeline Inconsistency</span>: Payment date ({{ income.paymentDay|imperial_date(income.paymentYear) }}) is earlier than current mission session ({{ campaign.sessionDay|imperial_date(campaign.sessionYear) }}).
+            
+            {% if paymentIndex != sessionIndex %}
+                <div class="alert alert-info alert-outline shadow-sm mb-6 border-cyan-500/50 bg-cyan-500/5">
+                    <div class="animate-spin-slow text-cyan-500">
+                        {% include 'icons/radar.html.twig' with { dim: 24 } %}
+                    </div>
+                    <div class="text-sm font-rajdhani uppercase tracking-widest font-bold text-cyan-200">
+                        <span class="text-cyan-500">Chronological Data Verification</span>: Ensure record timestamp aligns with active mission session coordinates.
                     </div>
                 </div>
             {% endif %}

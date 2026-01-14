@@ -246,7 +246,15 @@ final class RefereeFlexibilityTest extends WebTestCase
         $crawler = $this->client->request('GET', '/cost/edit/' . $cost->getId());
 
         self::assertResponseIsSuccessful();
-        self::assertStringContainsString('Timeline Inconsistency', $crawler->filter('.alert-warning')->text());
+        // Index != Session -> Chronological Data Verification
+        self::assertStringContainsString('Chronological Data Verification', $crawler->filter('body')->text());
+
+        // Test with another date discrepancy
+        $cost->setPaymentDay(15);
+        $this->em->flush();
+        $crawler = $this->client->request('GET', '/cost/edit/' . $cost->getId());
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('Chronological Data Verification', $crawler->filter('body')->text());
     }
 
     private function createUser(string $email): User
