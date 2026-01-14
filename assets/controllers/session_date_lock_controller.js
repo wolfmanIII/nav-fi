@@ -57,6 +57,18 @@ export default class extends Controller {
             }
         });
 
+        // Update min year for the year input based on startingYear
+        if (enabled && this.startingField) {
+            const startingYear = parseInt(this.startingField.value, 10);
+            if (!isNaN(startingYear)) {
+                this.yearInputTargets.forEach((el) => {
+                    el.setAttribute('data-min-year', startingYear);
+                    // Also update the min attribute for HTML5 validation
+                    el.setAttribute('min', startingYear);
+                });
+            }
+        }
+
         if (!enabled) {
             this.yearInputTargets.forEach((el) => el.value = '');
             this.dayInputTargets.forEach((el) => el.value = '');
