@@ -89,11 +89,10 @@ Applicazione **Symfony 7.4** per la gestione di navi, equipaggi, contratti e mut
    cp node_modules/tom-select/dist/js/tom-select.complete.min.js assets/vendor/tom-select/
    cp node_modules/tom-select/dist/css/tom-select.css assets/vendor/tom-select/
    ```
-5. Installa Highlight.js e copia lo stile `github-dark` nella cartella degli asset per renderlo importabile da Tailwind:
+5. Installa Highlight.js e copia lo stile `github-dark`, scaricando anche la libreria pre-compilata:
    ```bash
    npm install highlight.js
-   mkdir -p assets/vendor/highlightjs
-   cp node_modules/highlight.js/styles/github-dark.css assets/vendor/highlightjs/
+   npm run copy-libs
    ```
 5. Crea `.env.local` con le variabili minime:
    ```env
