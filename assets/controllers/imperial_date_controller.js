@@ -51,12 +51,24 @@ export default class extends Controller {
         this.updateDisplay();
 
         document.addEventListener('click', this.handleOutsideClick, true);
+
+        // Listen for year limits changes from year-limit controller
+        this.element.addEventListener('year-limits-changed', this.handleYearLimitsChanged);
     }
 
     disconnect() {
         document.removeEventListener('click', this.handleOutsideClick, true);
+        this.element.removeEventListener('year-limits-changed', this.handleYearLimitsChanged);
         this.closePopover();
     }
+
+    handleYearLimitsChanged = (event) => {
+        // Update year input in popover if it's open
+        if (this.yearInputEl) {
+            this.yearInputEl.min = event.detail.min || '';
+            this.yearInputEl.max = event.detail.max || '';
+        }
+    };
 
     toggle(event) {
         event.preventDefault();

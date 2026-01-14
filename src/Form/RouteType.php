@@ -71,7 +71,7 @@ class RouteType extends AbstractType
                     return $qb;
                 },
                 'attr' => [
-                    'class' => 'select m-1 w-full',
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-campaign-ship-target' => 'campaign',
                     'data-action' => 'change->campaign-ship#onCampaignChange',
                 ],
@@ -81,8 +81,10 @@ class RouteType extends AbstractType
                 'placeholder' => '-- Select a Ship --',
                 'choice_label' => fn(Ship $ship) => sprintf('%s - %s(%s)', $ship->getName(), $ship->getType(), $ship->getClass()),
                 'choice_attr' => function (Ship $ship): array {
+                    $start = $ship->getCampaign()?->getStartingYear();
                     $campaignId = $ship->getCampaign()?->getId();
                     return [
+                        'data-start-year' => $start ?? '',
                         'data-campaign' => $campaignId ? (string) $campaignId : '',
                     ];
                 },
@@ -94,8 +96,11 @@ class RouteType extends AbstractType
                     return $qb;
                 },
                 'attr' => [
-                    'class' => 'select m-1 w-full',
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-campaign-ship-target' => 'ship',
+                    'data-controller' => 'year-limit',
+                    'data-year-limit-default-value' => $this->limits->getYearMin(),
+                    'data-action' => 'change->year-limit#onShipChange',
                 ],
             ])
             ->add('startHex', HiddenType::class, [

@@ -74,7 +74,7 @@ class ShipAmendmentType extends AbstractType
                     return $qb;
                 },
                 'attr' => [
-                    'class' => 'select m-1 w-full',
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-controller' => 'tom-select',
                     'data-tom-select-placeholder-value' => 'Search cost reference…',
                 ],

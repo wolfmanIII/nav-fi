@@ -96,7 +96,7 @@ class IncomeType extends AbstractType
                 'placeholder' => '-- Select a Category --',
                 'choice_label' => fn(IncomeCategory $cat) => sprintf('%s - %s', $cat->getCode(), $cat->getDescription()),
                 'attr' => [
-                    'class' => 'select m-1 w-full',
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-controller' => 'income-details',
                     'data-action' => 'change->income-details#change',
                 ],
@@ -127,7 +127,7 @@ class IncomeType extends AbstractType
                     return $qb;
                 },
                 'attr' => [
-                    'class' => 'select m-1 w-full',
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-campaign-ship-target' => 'campaign',
                     'data-action' => 'change->campaign-ship#onCampaignChange',
                 ],
@@ -154,7 +154,7 @@ class IncomeType extends AbstractType
                     return $qb;
                 },
                 'attr' => [
-                    'class' => 'select m-1 w-full',
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-controller' => 'income-details year-limit',
                     'data-year-limit-default-value' => $this->dayYearLimits->getYearMin(),
                     'data-action' => 'change->year-limit#onShipChange',

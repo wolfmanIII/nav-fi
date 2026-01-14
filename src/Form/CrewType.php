@@ -131,7 +131,7 @@ class CrewType extends AbstractType
                     return $qb;
                 },
                 'attr' => [
-                    'class' => 'select m-1 w-full',
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-campaign-ship-target' => 'campaign',
                     'data-action' => 'change->campaign-ship#onCampaignChange',
                 ],
@@ -158,7 +158,7 @@ class CrewType extends AbstractType
                     return $qb;
                 },
                 'attr' => [
-                    'class' => 'select m-1 w-full',
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-controller' => 'year-limit',
                     'data-year-limit-default-value' => $this->limits->getYearMin(),
                     'data-action' => 'change->year-limit#onShipChange',

@@ -33,7 +33,7 @@ class CompanyType extends AbstractType
                 'class' => CompanyRole::class,
                 'choice_label' => fn (CompanyRole $role) => $role->getShortDescription() ?? $role->getCode(),
                 'attr' => [
-                    'class' => 'select m-1 w-full',
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-controller' => 'tom-select',
                     'data-tom-select-placeholder-value' => 'Search Company role reference…',
                 ],
