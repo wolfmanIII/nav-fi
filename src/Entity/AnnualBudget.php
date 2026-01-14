@@ -181,8 +181,9 @@ class AnnualBudget
         foreach ($this->getShip()->getIncomes() as $income) {
             if (
                 is_null($income->getCancelDay())
-                && !is_null($income->getSigningYear())
                 && is_null($income->getCancelYear())
+                && !is_null($income->getSigningDay())
+                && !is_null($income->getSigningYear())
             ) {
                 $incomeAmount = bcadd($incomeAmount, $income->getAmount(), 6);
             }
