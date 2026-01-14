@@ -1,35 +1,38 @@
 # Nav-Fi Web
+(formerly ELaRA / Captain Log)
 
-Applicazione Symfony 7.3 per la gestione di navi, equipaggi, contratti e mutui, pensata per il gioco di ruolo **Traveller**. Include area amministrativa EasyAdmin, PDF per i contratti e comandi di import/export dei dati di contesto. Ogni Annual Budget è agganciato a una singola nave e ne aggrega entrate, costi e rate del mutuo.
+Applicazione **Symfony 7.4** per la gestione di navi, equipaggi, contratti e mutui, pensata per il gioco di ruolo **Traveller**. Include area amministrativa EasyAdmin, PDF per i contratti e comandi di import/export dei dati di contesto. Ogni Annual Budget è agganciato a una singola nave e ne aggrega entrate, costi e rate del mutuo.
 
 ## Caratteristiche principali
 
-### Tactical Bridge Interface (v2.0.x)
-- **Design System "Nav-Ops"**: Interfaccia ad alto contrasto basata su Tailwind 4 e DaisyUI, con palette cromatica dedicata (Abyss/Cyan/Teal) e animazioni responsive "scan-line".
-- **Tactical Search Terminals**: Filtri di ricerca centralizzati per i registri finanziari con labeling tecnico (`VESSEL_NAV`, `CAT_ID`, `DEBT_NAME`) e background semi-trasparente per una migliore leggibilità.
-- **Nav-Ops Pagination**: Sistema di navigazione tra i record con terminologia operativa (`LOG_SECTOR`, `TOTAL_RECORDS`) e pulse animato.
-- **Horizontal Data Architecture**: Ottimizzazione del layout a piena larghezza per i moduli complessi (Annual Budget, Mortgage), massimizzando lo spazio per telemetry e grafici.
+### Command Deck (Homepage)
+- **Bento Grid Dashboard**: Interfaccia "Command Deck" ad alta densità con stato della flotta e feed tattico.
+- **Design System "Nav-Fi"**: Evoluzione dell'interfaccia "Nav-Ops" basata su Tailwind e DaisyUI, con palette cromatica dedicata (Abyss/Cyan/Teal/Emerald/Amber) differenziata per modulo.
+- **Tactical Sidebar**: Accesso rapido a moduli operativi (Checklist, Mission Flow) e link importanti.
+- **Responsive Animations**: Micro-interazioni e gradienti dinamici per un look "sci-fi interface".
 
 ### Security & Access Control
-- **Perimeter Defense (MFA)**: Supporto nativo per Two-Factor Authentication (TOTP) con QR Code e gestione dispositivi autorizzati.
-- **External Uplink (Google OAuth)**: Integrazione sicura tramite Google Cloud Console per login rapido tramite account ufficiali.
-- **Ownership Lockdown**: Sistema granulare di Voter e Repository pattern che isola i dati (Ship, Crew, Financials) sull'utente proprietario, restituendo 404 in caso di tentata violazione di perimetro (ID enumeration).
+- **Perimeter Defense (MFA)**: Supporto nativo per Two-Factor Authentication (TOTP).
+- **External Uplink (Google OAuth)**: Login rapido tramite account Google.
+- **Ownership Lockdown**: Sistema granulare che isola i dati (Ship, Crew, Financials) sull'utente proprietario.
 
 ### Financial Core & Asset Management
-- **Vessel Liability (Mortgage)**: Gestione mutui uno-a-uno con piani di ammortamento a 13 periodi (calendario Traveller), tassi variabili e assicurazioni. Firma contrattuale legata alla sessione della Campaign.
-- **Full-Spectrum Ledger**: Tracciamento di entrate (`Income`) e uscite (`Cost`) con dettagli per categoria (Freight, Mail, Trade) e status dinamico **Draft/Signed**.
-- **Annual Projections**: Aggregazione automatica di cashflow per nave, con visualizzazione grafica della timeline finanziaria.
-- **Strategic Amendments**: Registro delle modifiche strutturali alla nave post-firma, collegate obbligatoriamente a un Cost reference per tracciabilità economica.
+- **Vessel Liability (Mortgage)**: Gestione mutui con piani di ammortamento a 13 periodi, tassi variabili e assicurazioni.
+- **Full-Spectrum Ledger**: Tracciamento di entrate (`Income`) e uscite (`Cost`) con status dinamico **Draft/Signed**.
+- **Annual Projections**: Aggregazione automatica di cashflow per nave e grafici finanziari.
 
 ### Operations & Navigation
-- **Campaign Sync**: Calendario di sessione centralizzato (`DDD/YYYY`) che propaga le date a tutti i moduli collegati e genera una sessione timeline con log JSON delle modifiche.
-- **Navigational Routes**: Calcolo di rotte tramite waypoints (Hex/Sector T5SS) con stima carburante (RouteMathHelper) e integrazione cartografica TravellerMap.
-- **Crew Registry**: Gestione status equipaggio (Active, MIA, Deceased) con assegnazione automatica alla sessione di bordo e validazione ruoli.
+- **Mission Control**: Calendario di sessione centralizzato (`DDD/YYYY`) che propaga le date a tutti i moduli.
+- **Navigational Routes**:
+    - Calcolo di rotte tramite waypoints (Hex/Sector T5SS).
+    - **Fuel Math**: Stima carburante basata su tonnellaggio scafo e rating (`Hull * 0.1 * Rating * Jumps`).
+    - **Jump Logic**: Calcolo automatico distanze e validazione limiti drive.
+    - **Interactive Map**: Integrazione dinamica con TravellerMap (iframe senza reload).
+- **Crew Registry**: Gestione status equipaggio (Active, MIA, Deceased).
 
 ## Requisiti
 - PHP 8.2+
 - Composer
-- wkhtmltopdf disponibile e referenziato via variabile `WKHTMLTOPDF_PATH` (vedi `config/packages/knp_snappy.yaml`)
 - Database supportato da Doctrine (PostgreSQL/MySQL/SQLite)
 
 ## KnpSnappy e wkhtmltopdf (patched Qt)
