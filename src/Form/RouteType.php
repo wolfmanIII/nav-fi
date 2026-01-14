@@ -61,7 +61,7 @@ class RouteType extends AbstractType
                 'class' => Campaign::class,
                 'required' => true,
                 'placeholder' => '-- Select a Campaign --',
-                'choice_label' => fn (Campaign $campaign) => $campaign->getTitle(),
+                'choice_label' => fn(Campaign $campaign) => $campaign->getTitle(),
                 'data' => $route->getCampaign() ?? $route->getShip()?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
@@ -79,7 +79,7 @@ class RouteType extends AbstractType
             ->add('ship', EntityType::class, [
                 'class' => Ship::class,
                 'placeholder' => '-- Select a Ship --',
-                'choice_label' => fn (Ship $ship) => sprintf('%s - %s(%s)', $ship->getName(), $ship->getType(), $ship->getClass()),
+                'choice_label' => fn(Ship $ship) => sprintf('%s - %s(%s)', $ship->getName(), $ship->getType(), $ship->getClass()),
                 'choice_attr' => function (Ship $ship): array {
                     $campaignId = $ship->getCampaign()?->getId();
                     return [
@@ -194,7 +194,16 @@ class RouteType extends AbstractType
             }
 
             $distances = $this->routeMathHelper->segmentDistances($hexes);
-            $jumpRating = $this->routeMathHelper->resolveJumpRating($route);
+
+            // Auto-fill jump rating from ship if not specified
+            if ($route->getJumpRating() === null) {
+                $shipRating = $this->routeMathHelper->getShipJumpRating($route->getShip());
+                if ($shipRating !== null) {
+                    $route->setJumpRating($shipRating);
+                }
+            }
+
+            $jumpRating = $route->getJumpRating(); // Now strictly use what's on the route (or what we just filled)
 
             foreach ($waypoints as $idx => $waypoint) {
                 $distance = $distances[$idx] ?? null;
@@ -222,21 +231,23 @@ class RouteType extends AbstractType
                 }
             }
 
-            if ($route->getFuelEstimate() === null) {
-                $estimate = $this->routeMathHelper->estimateJumpFuel($route, $distances);
-                if ($estimate !== null) {
-                    $route->setFuelEstimate($estimate);
-                }
-            }
+            // Always calculate the required fuel based on current waypoints
+            $calculatedRequiredFuel = $this->routeMathHelper->estimateJumpFuel($route, $distances);
 
-            $capacity = $this->routeMathHelper->getShipFuelCapacity($route->getShip());
-            $estimateValue = $route->getFuelEstimate();
-            if ($capacity !== null && $estimateValue !== null && is_numeric($estimateValue)) {
-                if ((float) $estimateValue > $capacity) {
+            if ($route->getFuelEstimate() !== null && $calculatedRequiredFuel !== null) {
+                // Check if the estimated fuel is sufficient for the calculated requirement
+                if ((float) $route->getFuelEstimate() < (float) $calculatedRequiredFuel) {
                     $form->get('fuelEstimate')->addError(new FormError(
-                        'Estimated jump fuel exceeds ship fuel tankage.'
+                        sprintf(
+                            'Fuel estimate (%s tons) is insufficient. Minimum required: %s tons.',
+                            $route->getFuelEstimate(),
+                            $calculatedRequiredFuel
+                        )
                     ));
                 }
+            } elseif ($route->getFuelEstimate() === null && $calculatedRequiredFuel !== null) {
+                // Auto-fill if empty
+                $route->setFuelEstimate($calculatedRequiredFuel);
             }
         });
     }

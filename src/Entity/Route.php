@@ -320,4 +320,17 @@ class Route
         $last = $this->waypoints->last();
         return $last ? $last->getWorld() : null;
     }
+
+    public function getJumpDistance(): ?int
+    {
+        $jumpRating = $this->getJumpRating() ?? $this->getShip()?->getJumpDriveRating();
+
+        if ($jumpRating === null) {
+            return null;
+        }
+
+        $waypointCount = $this->waypoints->count();
+
+        return $waypointCount < 2 ? 0 : $jumpRating * ($waypointCount - 1);
+    }
 }

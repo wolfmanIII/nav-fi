@@ -419,4 +419,32 @@ class Ship
 
         return $this;
     }
+
+    public function getJumpDriveRating(): ?int
+    {
+        // Structure: shipDetails['jDrive']['jump']
+        $details = $this->getShipDetails();
+
+        if (isset($details['jDrive']) && is_array($details['jDrive'])) {
+            if (isset($details['jDrive']['jump'])) {
+                return (int) $details['jDrive']['jump'];
+            }
+        }
+
+        return null;
+    }
+
+    public function getHullTons(): ?float
+    {
+        // Structure: shipDetails['hull']['tons']
+        $details = $this->getShipDetails();
+
+        if (isset($details['hull']) && is_array($details['hull'])) {
+            if (isset($details['hull']['tons']) && is_numeric($details['hull']['tons'])) {
+                return (float) $details['hull']['tons'];
+            }
+        }
+
+        return null;
+    }
 }

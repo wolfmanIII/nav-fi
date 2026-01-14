@@ -86,18 +86,24 @@ class RouteMathHelper
             return null;
         }
 
-        $fuel = 0.0;
-        foreach ($distances as $distance) {
-            if ($distance === null || $distance <= 0) {
-                continue;
-            }
-            $effectiveJump = max(1, $distance);
-            $fuel += 0.1 * $hullTons * $effectiveJump;
-        }
-
-        if ($fuel <= 0) {
+        $jumpRating = $this->resolveJumpRating($route);
+        if ($jumpRating === null) {
             return null;
         }
+
+        $jumps = 0;
+        foreach ($distances as $distance) {
+            if ($distance !== null) {
+                $jumps++;
+            }
+        }
+
+        if ($jumps === 0) {
+            return null;
+        }
+
+        // Formula: 0.1 * Hull * JumpRating * Jumps
+        $fuel = 0.1 * $hullTons * $jumpRating * $jumps;
 
         return sprintf('%.2f', $fuel);
     }
