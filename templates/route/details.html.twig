@@ -44,9 +44,9 @@
                 <div class="text-lg text-cyan-100">{{ route.campaign ? route.campaign.title : '—' }}</div>
             </div>
             <div class="rounded-xl border border-base-300 bg-base-200 p-4">
-                <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Jump / Fuel</div>
+                <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Jump / Total Route Fuel</div>
                 <div class="text-lg text-cyan-100">
-                    {{ route.jumpRating ?? '—' }} / {{ route.fuelEstimate ?? '—' }}
+                    {{ route.jumpRating ?? '—' }} / {{ route_total_fuel(route) ?? '—' }}
                 </div>
             </div>
         </div>

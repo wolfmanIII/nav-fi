@@ -130,6 +130,7 @@ class RouteType extends AbstractType
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
             ->add('fuelEstimate', TextType::class, [
+                'label' => 'Fuel Estimate (per jump)',
                 'required' => false,
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
@@ -210,6 +211,9 @@ class RouteType extends AbstractType
 
             $jumpRating = $route->getJumpRating(); // Now strictly use what's on the route (or what we just filled)
 
+            $hullTons = $this->routeMathHelper->getShipHullTonnage($route->getShip());
+            $fuelCapacity = $this->routeMathHelper->getShipFuelCapacity($route->getShip());
+
             foreach ($waypoints as $idx => $waypoint) {
                 $distance = $distances[$idx] ?? null;
                 $waypoint->setJumpDistance($distance);
@@ -219,10 +223,21 @@ class RouteType extends AbstractType
                     continue;
                 }
 
+                // 1. Jump Rating check
                 if ($jumpRating !== null && $distance !== null && $distance > $jumpRating) {
                     $form->get('waypoints')->addError(new FormError(
                         sprintf('Jump %d exceeds rating %d on segment #%d.', $distance, $jumpRating, $idx + 1)
                     ));
+                }
+
+                // 2. Fuel Capacity check (Any single jump must fit in tanks)
+                if ($hullTons !== null && $fuelCapacity !== null && $distance !== null) {
+                    $requiredForJump = 0.1 * $hullTons * $distance;
+                    if ($requiredForJump > $fuelCapacity) {
+                        $form->get('waypoints')->addError(new FormError(
+                            sprintf('Segment #%d requires %.2f tons of fuel, exceeding ship tank capacity (%.2f tons).', $idx + 1, $requiredForJump, $fuelCapacity)
+                        ));
+                    }
                 }
 
                 $sector = trim((string) $waypoint->getSector());

@@ -69,7 +69,7 @@ final class ShipVoter extends Voter
 
     private function canEdit(Ship $ship, ?UserInterface $user = null): bool
     {
-        return $this->isOwner($ship, $user) && !$ship->hasMortgageSigned();
+        return $this->isOwner($ship, $user);
     }
 
     private function canDelete(Ship $ship, ?UserInterface $user = null): bool

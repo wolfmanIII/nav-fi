@@ -70,7 +70,7 @@
                         {% include 'icons/radar.html.twig' with { dim: 24 } %}
                     </div>
                     <div class="text-sm text-slate-200">
-                        Jump Rating and Fuel Estimate are sourced from the ship’s registered components. Fill them only if you need to override the ship‑details telemetry for this route.
+                        Jump Rating and <b>Single-jump Fuel</b> are sourced from the ship’s registered components. Fill them only if you need to override the ship‑details telemetry for this route.
                     </div>
                 </div>
             </div>
@@ -82,6 +82,7 @@
             <div>
                 {{ form_label(form.fuelEstimate) }}
                 {{ form_widget(form.fuelEstimate) }}
+                <p class="text-xs text-slate-400 mt-1 italic">Estimated fuel for the current/next jump segment.</p>
                 {{ form_errors(form.fuelEstimate) }}
             </div>
 

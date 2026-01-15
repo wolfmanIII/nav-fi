@@ -86,24 +86,52 @@ class RouteMathHelper
             return null;
         }
 
-        $jumpRating = $this->resolveJumpRating($route);
-        if ($jumpRating === null) {
-            return null;
-        }
-
-        $jumps = 0;
-        foreach ($distances as $distance) {
+        // We only care about the fuel for the LATEST jump segment added to the route,
+        // as per user requirement: "quanto serve per la prossimo waypoint dall l'ultimo waypoint inserito"
+        $lastDistance = null;
+        foreach (array_reverse($distances) as $distance) {
             if ($distance !== null) {
-                $jumps++;
+                $lastDistance = $distance;
+                break;
             }
         }
 
-        if ($jumps === 0) {
+        if ($lastDistance === null) {
             return null;
         }
 
-        // Formula: 0.1 * Hull * JumpRating * Jumps
-        $fuel = 0.1 * $hullTons * $jumpRating * $jumps;
+        // Formula: 0.1 * Hull * Last Segment Distance
+        // (10% of hull tonnage per Jump Number/Distance)
+        $fuel = 0.1 * $hullTons * $lastDistance;
+
+        return sprintf('%.2f', $fuel);
+    }
+
+    public function totalRequiredFuel(Route $route): ?string
+    {
+        $hullTons = $this->getShipHullTonnage($route->getShip());
+        if ($hullTons === null) {
+            return null;
+        }
+
+        $hexes = [];
+        foreach ($route->getWaypoints() as $waypoint) {
+            $hexes[] = (string) $waypoint->getHex();
+        }
+
+        $distances = $this->segmentDistances($hexes);
+        $totalJumpNumber = 0;
+        foreach ($distances as $distance) {
+            if ($distance !== null) {
+                $totalJumpNumber += $distance;
+            }
+        }
+
+        if ($totalJumpNumber === 0) {
+            return null;
+        }
+
+        $fuel = 0.1 * $hullTons * $totalJumpNumber;
 
         return sprintf('%.2f', $fuel);
     }

@@ -6,7 +6,7 @@
 <div class="flex items-center justify-center min-h-[calc(100vh-3rem)]">
     <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
         <!-- Panel: Login Terminal -->
-        <div class="card bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 border border-cyan-500/20 shadow-2xl overflow-hidden h-[650px] relative group">
+        <div class="card bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 border border-cyan-500/20 shadow-2xl overflow-hidden h-[586px] relative group">
             <div class="relative flex flex-col gap-6 p-8 h-full">
                 <div class="absolute inset-0 opacity-10 pointer-events-none"
                      style="background: radial-gradient(circle at 20% 20%, rgba(34,211,238,0.1), transparent 40%), radial-gradient(circle at 80% 30%, rgba(94,234,212,0.1), transparent 35%);">
@@ -45,7 +45,7 @@
                 </div>
 
                 <div class="relative space-y-6 mt-auto">
-                    <div class="space-y-4 min-h-[120px] flex flex-col justify-center">
+                    <div class="space-y-4 min-h-[100px] flex flex-col justify-center">
                         <p class="text-[10px] text-slate-400 uppercase tracking-widest text-center font-bold">
                             Authenticate via External Uplink
                         </p>
@@ -71,7 +71,7 @@
         </div>
 
         <!-- Panel: Brief -->
-        <div class="card bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 border border-cyan-500/20 shadow-2xl overflow-hidden h-[650px] relative group">
+        <div class="card bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 border border-cyan-500/20 shadow-2xl overflow-hidden h-[586px] relative group">
             <div class="relative flex flex-col gap-6 p-8 h-full">
                 <div class="absolute inset-0 opacity-10 pointer-events-none"
                      style="background: radial-gradient(circle at 20% 20%, rgba(34,211,238,0.1), transparent 40%), radial-gradient(circle at 80% 30%, rgba(94,234,212,0.1), transparent 35%);">
@@ -87,13 +87,9 @@
                     </div>
                 </div>
                 
-                <div class="flex-1 bg-black/40 border border-cyan-500/10 rounded-lg p-8 font-mono text-xs leading-relaxed relative overflow-hidden" data-controller="scrolling-code">
-                    <div class="absolute top-2 right-3 flex gap-1">
-                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-500/40 animate-pulse"></span>
-                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-500/20"></span>
-                    </div>
+                <div class="flex-1 bg-black/40 border border-cyan-500/10 rounded-lg pb-8 pt-4 font-mono text-xs leading-relaxed relative overflow-hidden" data-controller="scrolling-code">
                     
-                    <div class="absolute inset-0 p-8 space-y-1 text-cyan-500/50" data-scrolling-code-target="output">
+                    <div class="absolute inset-0 pb-8 space-y-1 text-cyan-500/50" data-scrolling-code-target="output">
                         <!-- Code lines will be injected here -->
                     </div>
                     <!-- Scanline overlay -->
@@ -101,7 +97,7 @@
                 </div>
                 
                 <div class="relative space-y-6 mt-auto">
-                    <div class="space-y-4 min-h-[120px] flex flex-col justify-center">
+                    <div class="space-y-4 min-h-[100px] flex flex-col justify-center">
                         <p class="text-slate-200/90 text-[10px] uppercase tracking-widest font-bold text-slate-400 text-center">
                             Operational Security
                         </p>

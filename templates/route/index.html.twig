@@ -111,8 +111,8 @@
                                 <span class="text-slate-200 font-mono font-bold">{{ route.jumpDistance ?? '-' }} <span class="text-[9px] text-slate-600">PC</span></span>
                              </div>
                              <div class="p-2 rounded bg-slate-800/30 border border-slate-700/50 flex flex-col items-center">
-                                <span class="text-[9px] text-slate-500 uppercase tracking-widest">Fuel Est</span>
-                                <span class="text-slate-200 font-mono font-bold">{{ route.fuelEstimate ?? '-' }} <span class="text-[9px] text-slate-600">TONS</span></span>
+                                <span class="text-[9px] text-slate-500 uppercase tracking-widest">Total Route Fuel</span>
+                                <span class="text-slate-200 font-mono font-bold">{{ route_total_fuel(route) ?? '-' }} <span class="text-[9px] text-slate-600">TONS</span></span>
                              </div>
                         </div>
 
