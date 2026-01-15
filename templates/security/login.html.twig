@@ -6,28 +6,29 @@
 <div class="flex items-center justify-center min-h-[calc(100vh-3rem)]">
     <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
         <!-- Panel: Login Terminal -->
-        <div class="card bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 border border-cyan-500/20 shadow-2xl overflow-hidden h-full relative group">
+        <div class="card bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 border border-cyan-500/20 shadow-2xl overflow-hidden h-[650px] relative group">
             <div class="relative flex flex-col gap-6 p-8 h-full">
                 <div class="absolute inset-0 opacity-10 pointer-events-none"
                      style="background: radial-gradient(circle at 20% 20%, rgba(34,211,238,0.1), transparent 40%), radial-gradient(circle at 80% 30%, rgba(94,234,212,0.1), transparent 35%);">
                 </div>
                 
-                <div class="relative flex items-center gap-4">
-                    <img src="{{ asset('img/nav-fi-logo.png') }}" alt="Nav-Fi" class="w-16 h-16 filter drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">
+                <div class="relative flex items-center gap-4 h-16">
+                    <div class="w-16 h-16 flex items-center justify-center flex-shrink-0">
+                        <img src="{{ asset('img/nav-fi-logo.png') }}" alt="Nav-Fi" class="w-16 h-16 filter drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">
+                    </div>
                     <div>
                         <p class="text-xl font-bold text-cyan-100 tracking-tight font-orbitron"><i>Nav-Fi</i> // UPLINK</p>
                         <p class="text-xs text-cyan-400/60 uppercase tracking-[0.3em] font-mono">Unified Auth Terminal</p>
                     </div>
                 </div>
 
-                <!-- Diagnostic Terminal Area -->
-                <div class="flex-1 bg-black/40 border border-cyan-500/10 rounded-lg p-8 font-mono text-xs leading-relaxed relative overflow-hidden min-h-[222px]">
+                <div class="flex-1 bg-black/40 border border-cyan-500/10 rounded-lg p-8 font-mono text-xs leading-relaxed relative overflow-hidden">
                     <div class="absolute top-2 right-3 flex gap-1">
                         <span class="w-1.5 h-1.5 rounded-full bg-cyan-500/40 animate-pulse"></span>
                         <span class="w-1.5 h-1.5 rounded-full bg-cyan-500/20"></span>
                     </div>
                     
-                    <div class="space-y-1.5 text-cyan-200/40" data-controller="typewriter">
+                    <div class="space-y-1.5 text-cyan-200/40 h-full" data-controller="typewriter">
                         <p class="text-cyan-400 animate-pulse" style="visibility: hidden;" data-typewriter-target="line">> INITIATING_BOOT_SEQUENCE</p>
                         <p style="visibility: hidden;" data-typewriter-target="line">> LOADING_OIDC_PROTOCOLS... [OK]</p>
                         <p style="visibility: hidden;" data-typewriter-target="line">> HANDSHAKING_GOOGLE_UPLINK... [PENDING]</p>
@@ -37,55 +38,83 @@
                     </div>
 
                     {% if error %}
-                        <div class="mt-4 p-3 border border-red-500/30 bg-red-900/10 text-red-400 text-xs uppercase tracking-wider">
-                            ERROR: {{ error.messageKey|trans(error.messageData, 'security') }}
+                        <div class="absolute bottom-4 left-8 right-8 p-3 border border-red-500/30 bg-red-900/10 text-red-100 text-[10px] uppercase tracking-wider leading-tight">
+                            ERROR_DETECTION: {{ error.messageKey|trans(error.messageData, 'security') }}
                         </div>
                     {% endif %}
                 </div>
 
-                <div class="space-y-4 relative">
-                    <p class="text-xs text-slate-400 uppercase tracking-widest text-center font-bold">
-                        Authenticate via External Uplink
-                    </p>
-                    
-                    <a href="{{ path('connect_google') }}" class="group/btn relative btn btn-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-100 hover:bg-cyan-500/20 hover:border-cyan-500/60 w-full flex gap-4 items-center justify-center transition-all duration-300 shadow-[0_0_15px_rgba(6,182,212,0.1)] hover:shadow-[0_0_25px_rgba(6,182,212,0.2)]">
-                        <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 transition-transform group-hover/btn:scale-110">
-                            <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
-                                <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
-                                <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.059 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
-                                <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.734 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
-                                <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.424 44.599 -10.174 45.799 L -6.714 42.339 C -8.804 40.389 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
-                            </g>
-                        </svg>
-                        <span class="font-bold tracking-[0.2em] uppercase text-sm">Initiate Google Uplink</span>
-                    </a>
+                <div class="relative space-y-6 mt-auto">
+                    <div class="space-y-4 min-h-[120px] flex flex-col justify-center">
+                        <p class="text-[10px] text-slate-400 uppercase tracking-widest text-center font-bold">
+                            Authenticate via External Uplink
+                        </p>
+                        <a href="{{ path('connect_google') }}" class="group/btn relative btn btn-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-100 hover:bg-cyan-500/20 hover:border-cyan-500/60 w-full flex gap-4 items-center justify-center transition-all duration-300 shadow-[0_0_15px_rgba(6,182,212,0.1)] hover:shadow-[0_0_25px_rgba(6,182,212,0.2)]">
+                            <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 transition-transform group-hover/btn:scale-110">
+                                <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                                    <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
+                                    <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.059 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
+                                    <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.734 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
+                                    <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.424 44.599 -10.174 45.799 L -6.714 42.339 C -8.804 40.389 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
+                                </g>
+                            </svg>
+                            <span class="font-bold tracking-[0.2em] uppercase text-sm">Initiate Google Uplink</span>
+                        </a>
+                    </div>
+                    <div class="flex justify-center border-t border-cyan-500/10 pt-4 h-12 items-center">
+                        <a href="{{ path('app_home') }}" class="text-[10px] uppercase tracking-widest text-slate-500 hover:text-cyan-400 transition-colors font-bold">
+                            [ ABORT_SEQUENCE // RETURN_TO_BRIDGE ]
+                        </a>
+                    </div>
                 </div>
-
-                <a href="{{ path('app_home') }}" class="relative text-xs uppercase tracking-widest text-slate-500 hover:text-cyan-400 transition-colors text-center font-bold mt-auto">
-                    [ ABORT_SEQUENCE // RETURN_TO_BRIDGE ]
-                </a>
             </div>
         </div>
 
         <!-- Panel: Brief -->
-        <div class="card bg-gradient-to-br from-slate-900 via-slate-800 to-cyan-900 p-6 shadow-2xl border border-cyan-500/20 flex flex-col justify-center text-sm h-full">
-            <div class="space-y-3">
-                <h2 class="font-semibold text-cyan-100 text-base uppercase tracking-[0.2em]">Traveller brief</h2>
-                <p class="text-slate-200/90">
-                    This console is keyed to your crew and hulls. Secure your jump data: log off before leaving the bridge or sharing the terminal.
-                </p>
-                <div class="flex justify-center relative h-64 bg-black/40 rounded-lg border border-cyan-500/10 overflow-hidden" data-controller="scrolling-code">
-                    <div class="absolute inset-0 p-4 space-y-1 text-cyan-500/50 font-mono text-[10px]" data-scrolling-code-target="output">
+        <div class="card bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 border border-cyan-500/20 shadow-2xl overflow-hidden h-[650px] relative group">
+            <div class="relative flex flex-col gap-6 p-8 h-full">
+                <div class="absolute inset-0 opacity-10 pointer-events-none"
+                     style="background: radial-gradient(circle at 20% 20%, rgba(34,211,238,0.1), transparent 40%), radial-gradient(circle at 80% 30%, rgba(94,234,212,0.1), transparent 35%);">
+                </div>
+                
+                <div class="relative flex items-center gap-4 h-16">
+                    <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40 text-cyan-400 flex items-center justify-center w-16 h-16 flex-shrink-0">
+                        {% include 'icons/dossier.html.twig' with { dim: 32 } %}
+                    </div>
+                    <div>
+                        <p class="text-xl font-bold text-cyan-100 tracking-tight font-orbitron"><i>BRIEF</i> // INTEL</p>
+                        <p class="text-xs text-cyan-400/60 uppercase tracking-[0.3em] font-mono">Mission Parameters</p>
+                    </div>
+                </div>
+                
+                <div class="flex-1 bg-black/40 border border-cyan-500/10 rounded-lg p-8 font-mono text-xs leading-relaxed relative overflow-hidden" data-controller="scrolling-code">
+                    <div class="absolute top-2 right-3 flex gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-500/40 animate-pulse"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-500/20"></span>
+                    </div>
+                    
+                    <div class="absolute inset-0 p-8 space-y-1 text-cyan-500/50" data-scrolling-code-target="output">
                         <!-- Code lines will be injected here -->
                     </div>
-                    <!-- Scanline overlay specifically for this box -->
+                    <!-- Scanline overlay -->
                     <div class="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] pointer-events-none opacity-20"></div>
                 </div>
-            </div>
-            <div class="mt-6 text-slate-300/80">
-                <p class="text-xs">
-                    By signing in, you confirm command over your credentials and agree to keep all ship, crew, and contract intel confidential.
-                </p>
+                
+                <div class="relative space-y-6 mt-auto">
+                    <div class="space-y-4 min-h-[120px] flex flex-col justify-center">
+                        <p class="text-slate-200/90 text-[10px] uppercase tracking-widest font-bold text-slate-400 text-center">
+                            Operational Security
+                        </p>
+                        <p class="text-slate-300/80 text-xs text-center">
+                            This console is keyed to your crew and hulls. Secure your jump data: log off before leaving the bridge or sharing the terminal.
+                        </p>
+                    </div>
+                    <div class="flex justify-center border-t border-cyan-500/10 pt-4 h-12 items-center">
+                        <p class="text-[10px] text-slate-500 leading-relaxed text-center">
+                            By signing in, you confirm command over your credentials and agree to keep all ship, crew, and contract intel confidential.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
