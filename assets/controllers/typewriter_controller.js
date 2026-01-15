@@ -29,9 +29,18 @@ export default class extends Controller {
         if (index >= this.queue.length) return;
 
         const line = this.queue[index];
-        // Add a blinking cursor class if desired? For now, simple typing.
 
         this.typeText(line.element, line.text, 0, () => {
+            // Se è la prima riga, rimuoviamo l'animazione pulse al termine
+            if (index === 0) {
+                line.element.classList.remove('animate-pulse');
+            }
+
+            // Se è l'ultima riga, aggiungiamo l'animazione pulse al termine
+            if (index === this.queue.length - 1) {
+                line.element.classList.add('animate-pulse');
+            }
+
             setTimeout(() => {
                 this.typeNextLine(index + 1);
             }, this.lineDelayValue);
