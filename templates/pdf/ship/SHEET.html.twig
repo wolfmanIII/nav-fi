@@ -4,29 +4,128 @@
 
 {% block stylesheets %}
     <style>
-        body { font-family: 'Inter', 'Segoe UI', sans-serif; font-size: 10px; color: #0f172a; background: #ffffff; }
+        /* Printer-friendly styles - Minimized ink usage */
+        body { 
+            font-family: 'Inter', 'Segoe UI', sans-serif; 
+            font-size: 10px; 
+            color: #1f2937; 
+            background: #ffffff; 
+        }
+        
         .page { padding: 12px; }
-        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        
+        /* Header table - White background */
+        .header-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 10px;
+            background: #ffffff;
+        }
+        
         .header-table td { vertical-align: middle; }
+        
         .logo { height: 64px; }
+        
         .grid { display: grid; }
         .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
         .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-        .card { background: #f8fafc; border: none; border-radius: 10px; padding: 10px; margin-bottom: 10px; position: relative; overflow: hidden; page-break-inside: avoid; break-inside: avoid; }
-        .card::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 15% 20%, rgba(59,130,246,0.08), transparent 40%), radial-gradient(circle at 75% 15%, rgba(14,165,233,0.1), transparent 35%); pointer-events: none; }
-        .card > * { position: relative; z-index: 1; }
-        .title { font-size: 16px; font-weight: 700; margin: 0 0 2px 0; color: #0f172a; letter-spacing: 0.02em; text-align: right; }
-        .subtitle { font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: #475569; margin: 0; text-align: right; }
-        .section-title { font-size: 12px; font-weight: 700; margin: 6px 0; color: #0f172a; }
-        .table { width: 100%; border-collapse: collapse; font-size: 9px; }
-        .table th, .table td { border: 1px solid #d1d5db; padding: 5px; vertical-align: top; }
-        .table th { background: #e2e8f0; color: #0f172a; text-align: left; }
-        .muted { color: #475569; font-size: 9px; }
-        .value { font-weight: 600; color: #0f172a; }
-        .summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
-        .summary .item { background: transparent; border: none; border-radius: 8px; padding: 6px; }
-        .summary .label { text-transform: uppercase; letter-spacing: 0.14em; font-size: 8px; color: #475569; }
-        .summary .val { font-weight: 700; font-size: 11px; color: #0f172a; }
+        
+        /* Card - Very light background, NO gradients */
+        .card { 
+            background: #f9fafb; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 6px; 
+            padding: 12px; 
+            margin-bottom: 10px; 
+            page-break-inside: avoid; 
+            break-inside: avoid; 
+        }
+        
+        .title { 
+            font-size: 16px; 
+            font-weight: 700; 
+            margin: 0 0 2px 0; 
+            color: #1f2937; 
+            letter-spacing: 0.02em; 
+            text-align: right; 
+        }
+        
+        .subtitle { 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.2em; 
+            color: #6b7280; 
+            margin: 0; 
+            text-align: right; 
+        }
+        
+        .section-title { 
+            font-size: 12px; 
+            font-weight: 700; 
+            margin: 6px 0; 
+            color: #374151; 
+        }
+        
+        /* Tables - White background, thin borders */
+        .table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 9px;
+            background: #ffffff;
+        }
+        
+        .table th, 
+        .table td { 
+            border: 1px solid #d1d5db; 
+            padding: 6px; 
+            vertical-align: top; 
+        }
+        
+        .table th { 
+            background: #f3f4f6; 
+            color: #374151; 
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .table td {
+            color: #1f2937;
+        }
+        
+        /* Alternate row colors */
+        .table tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+        
+        .muted { color: #6b7280; font-size: 9px; }
+        .value { font-weight: 600; color: #1f2937; }
+        
+        /* Summary grid - No background */
+        .summary { 
+            display: grid; 
+            grid-template-columns: repeat(3, minmax(0, 1fr)); 
+            gap: 8px; 
+            margin-top: 8px; 
+        }
+        
+        .summary .item { 
+            background: transparent; 
+            border: none; 
+            padding: 6px; 
+        }
+        
+        .summary .label { 
+            text-transform: uppercase; 
+            letter-spacing: 0.14em; 
+            font-size: 8px; 
+            color: #6b7280; 
+        }
+        
+        .summary .val { 
+            font-weight: 700; 
+            font-size: 11px; 
+            color: #1f2937; 
+        }
     </style>
 {% endblock %}
 {% block javascripts %}{% endblock %}

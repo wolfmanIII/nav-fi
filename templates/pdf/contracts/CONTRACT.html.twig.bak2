@@ -1,6 +1,6 @@
 {% extends 'base_plain.html.twig' %}
 
-{% block title %}Prize / Seizure Award{% endblock %}
+{% block title %}Mission / Job Agreement{% endblock %}
 {% block stylesheets %}
     <style>
         /* Printer-friendly styles - Minimized ink usage */
@@ -99,9 +99,8 @@
         .signature-table th:last-child, 
         .signature-table td:last-child { text-align: right; }
 
-                /* Center alignment ONLY for middle column in 3-column tables */
-        .signature-table th:nth-child(2):nth-last-child(2),
-        .signature-table td:nth-child(2):nth-last-child(2) { text-align: center; }
+        .signature-table th:nth-child(2),
+        .signature-table td:nth-child(2) { text-align: center; }
 
         /* For MORTGAGE sign-table with 3 columns */
         .sign-table {
@@ -157,11 +156,11 @@
                     <img src="{{ absolute_url(asset('img/nav-fi-logo.png')) }}" alt="Nav-Fi" class="logo">
                 </td>
                 <td class="text-right">
-                    <div class="text-2xl font-bold">Prize / Seizure Award</div>
-                    <div class="text-sm font-bold">Prize ID: {{ '{{PRIZE_ID}}' }}</div>
+                    <div class="text-2xl font-bold">Mission / Job Agreement</div>
+                    <div class="text-sm font-bold">Code: {{ '{{CONTRACT_ID}}' }}</div>
                     <div class="text-sm font-bold">Status: {{ '{{STATUS}}' }}</div>
                     <div class="text-sm">{{ '{{DATE}}' }}</div>
-                    <div class="text-sm">Template: {{ template_version('pdf/contracts/PRIZE.html.twig') }}</div>
+                    <div class="text-sm">Template: {{ template_version('pdf/contracts/CONTRACT.html.twig') }}</div>
                 </td>
             </tr>
         </table>
@@ -195,41 +194,54 @@
             <table class="table text-sm">
                 <thead>
                     <tr>
-                        <th>Capturing Party</th>
-                        <th>Adjudicating Authority</th>
-                        <th>Vessel / Team</th>
+                        <th>Patron (Client)</th>
+                        <th>Contractor</th>
+                        <th>Vessel/Team</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{ '{{CAPTOR_NAME}}' }}<br>Contact: {{ '{{CAPTOR_CONTACT}}' }}</td>
-                        <td>{{ '{{AUTHORITY_NAME}}' }}</td>
+                        <td>{{ '{{PATRON_NAME}}' }}<br>Contact: {{ '{{PATRON_CONTACT}}' }}</td>
+                        <td>{{ '{{CONTRACTOR_NAME}}' }}</td>
                         <td>{{ '{{VESSEL_NAME}}' }}</td>
                     </tr>
                 </tbody>
             </table>
-            <div class="text-sm mt-2">
-                Case Ref: {{ '{{CASE_REF}}' }} • Jurisdiction: {{ '{{JURISDICTION}}' }}
-            </div>
         </div>
     </div>
 
     <div class="card mb-4">
         <div class="card-body p-4">
-            <h2 class="card-title text-lg mb-2">Seizure</h2>
+            <h2 class="card-title text-lg mb-2">Job</h2>
             <table class="table text-sm">
                 <thead>
                     <tr>
-                        <th>Location</th>
-                        <th>Date</th>
-                        <th>Basis for Seizure</th>
+                        <th>Job Type</th>
+                        <th>Location / Area</th>
+                        <th>Objective</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{ '{{SEIZURE_LOCATION}}' }}</td>
-                        <td>{{ '{{SEIZURE_DATE}}' }}</td>
-                        <td>{{ '{{LEGAL_BASIS}}' }}</td>
+                        <td>{{ '{{JOB_TYPE}}' }}</td>
+                        <td>{{ '{{LOCATION}}' }}</td>
+                        <td>{{ '{{OBJECTIVE}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table text-sm mt-3">
+                <thead>
+                    <tr>
+                        <th>Start</th>
+                        <th>Deadline</th>
+                        <th>Success Condition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{START_DATE}}' }}</td>
+                        <td>{{ '{{DEADLINE}}' }}</td>
+                        <td>{{ '{{SUCCESS_CONDITION}}' }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -238,32 +250,51 @@
 
     <div class="card mb-4">
         <div class="card-body p-4">
-            <h2 class="card-title text-lg mb-2">Prize & Award</h2>
+            <h2 class="card-title text-lg mb-2">Payment</h2>
             <table class="table text-sm">
                 <thead>
                     <tr>
-                        <th>Description</th>
-                        <th>Estimated Value</th>
-                        <th>Disposition</th>
-                        <th>Award</th>
+                        <th>Pay</th>
                         <th>Payment Terms</th>
-                        <th>Shares</th>
+                        <th>Bonus</th>
+                        <th>Expenses</th>
+                        <th>Deposit</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{ '{{PRIZE_DESCRIPTION}}' }}</td>
-                        <td>{{ '{{ESTIMATED_VALUE}}' }}</td>
-                        <td>{{ '{{DISPOSITION}}' }}</td>
-                        <td>{{ '{{PRIZE_AWARD}}' }}</td>
+                        <td>{{ '{{PAY_AMOUNT}}' }}</td>
                         <td>{{ '{{PAYMENT_TERMS}}' }}</td>
-                        <td>{{ '{{SHARE_SPLIT}}' }}</td>
+                        <td>{{ '{{BONUS}}' }}</td>
+                        <td>{{ '{{EXPENSES_POLICY}}' }}</td>
+                        <td>{{ '{{DEPOSIT}}' }}</td>
                     </tr>
                 </tbody>
             </table>
-            <div class="mt-3 text-sm">
-                Award trigger: {{ '{{AWARD_TRIGGER}}' }}
-            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Terms & Notes</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Restrictions</th>
+                        <th>Confidentiality</th>
+                        <th>Failure handling</th>
+                        <th>Cancellation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{RESTRICTIONS}}' }}</td>
+                        <td>{{ '{{CONFIDENTIALITY_LEVEL}}' }}</td>
+                        <td>{{ '{{FAILURE_TERMS}}' }}</td>
+                        <td>{{ '{{CANCELLATION_TERMS}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -289,14 +320,14 @@
             <table class="signature-table text-sm">
                 <thead>
                     <tr>
-                        <th>Authority</th>
-                        <th>Captor</th>
+                        <th>Patron</th>
+                        <th>Contractor</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><em>{{ '{{AUTHORITY_SIGN}}' }}</em></td>
-                        <td><em>{{ '{{CAPTOR_SIGN}}' }}</em></td>
+                        <td><em>{{ '{{PATRON_SIGN}}' }}</em></td>
+                        <td><em>{{ '{{CONTRACTOR_SIGN}}' }}</em></td>
                     </tr>
                 </tbody>
             </table>

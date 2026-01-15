@@ -99,9 +99,8 @@
         .signature-table th:last-child, 
         .signature-table td:last-child { text-align: right; }
 
-                /* Center alignment ONLY for middle column in 3-column tables */
-        .signature-table th:nth-child(2):nth-last-child(2),
-        .signature-table td:nth-child(2):nth-last-child(2) { text-align: center; }
+        .signature-table th:nth-child(2),
+        .signature-table td:nth-child(2) { text-align: center; }
 
         /* For MORTGAGE sign-table with 3 columns */
         .sign-table {

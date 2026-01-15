@@ -1,6 +1,6 @@
 {% extends 'base_plain.html.twig' %}
 
-{% block title %}Prize / Seizure Award{% endblock %}
+{% block title %}Mail Run Receipt{% endblock %}
 {% block stylesheets %}
     <style>
         /* Printer-friendly styles - Minimized ink usage */
@@ -99,9 +99,8 @@
         .signature-table th:last-child, 
         .signature-table td:last-child { text-align: right; }
 
-                /* Center alignment ONLY for middle column in 3-column tables */
-        .signature-table th:nth-child(2):nth-last-child(2),
-        .signature-table td:nth-child(2):nth-last-child(2) { text-align: center; }
+        .signature-table th:nth-child(2),
+        .signature-table td:nth-child(2) { text-align: center; }
 
         /* For MORTGAGE sign-table with 3 columns */
         .sign-table {
@@ -157,11 +156,11 @@
                     <img src="{{ absolute_url(asset('img/nav-fi-logo.png')) }}" alt="Nav-Fi" class="logo">
                 </td>
                 <td class="text-right">
-                    <div class="text-2xl font-bold">Prize / Seizure Award</div>
-                    <div class="text-sm font-bold">Prize ID: {{ '{{PRIZE_ID}}' }}</div>
+                    <div class="text-2xl font-bold">Mail Run Receipt</div>
+                    <div class="text-sm font-bold">Run Id: {{ '{{RUN_ID}}' }}</div>
                     <div class="text-sm font-bold">Status: {{ '{{STATUS}}' }}</div>
                     <div class="text-sm">{{ '{{DATE}}' }}</div>
-                    <div class="text-sm">Template: {{ template_version('pdf/contracts/PRIZE.html.twig') }}</div>
+                    <div class="text-sm">Template: {{ template_version('pdf/contracts/MAIL.html.twig') }}</div>
                 </td>
             </tr>
         </table>
@@ -191,45 +190,38 @@
 
     <div class="card mb-4">
         <div class="card-body p-4">
-            <h2 class="card-title text-lg mb-2">Parties</h2>
+            <h2 class="card-title text-lg mb-2">Carrier & Vessel</h2>
             <table class="table text-sm">
                 <thead>
                     <tr>
-                        <th>Capturing Party</th>
-                        <th>Adjudicating Authority</th>
-                        <th>Vessel / Team</th>
+                        <th>Carrier</th>
+                        <th>Vessel</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{ '{{CAPTOR_NAME}}' }}<br>Contact: {{ '{{CAPTOR_CONTACT}}' }}</td>
-                        <td>{{ '{{AUTHORITY_NAME}}' }}</td>
+                        <td>{{ '{{CARRIER_NAME}}' }}</td>
                         <td>{{ '{{VESSEL_NAME}}' }}</td>
                     </tr>
                 </tbody>
             </table>
-            <div class="text-sm mt-2">
-                Case Ref: {{ '{{CASE_REF}}' }} • Jurisdiction: {{ '{{JURISDICTION}}' }}
-            </div>
         </div>
     </div>
 
     <div class="card mb-4">
         <div class="card-body p-4">
-            <h2 class="card-title text-lg mb-2">Seizure</h2>
+            <h2 class="card-title text-lg mb-2">Authority Ref.</h2>
             <table class="table text-sm">
                 <thead>
                     <tr>
-                        <th>Location</th>
-                        <th>Date</th>
-                        <th>Basis for Seizure</th>
+                        <th>Authority</th>
+                        <th>Account Ref.</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{ '{{SEIZURE_LOCATION}}' }}</td>
-                        <td>{{ '{{SEIZURE_DATE}}' }}</td>
-                        <td>{{ '{{LEGAL_BASIS}}' }}</td>
+                        <td>{{ '{{AUTHORITY_NAME}}' }}</td>
+                        <td><em>{{ '{{AUTHORITY_SIGN}}' }}</em></td>
                     </tr>
                 </tbody>
             </table>
@@ -238,32 +230,107 @@
 
     <div class="card mb-4">
         <div class="card-body p-4">
-            <h2 class="card-title text-lg mb-2">Prize & Award</h2>
+            <h2 class="card-title text-lg mb-2">Route & Schedule</h2>
             <table class="table text-sm">
                 <thead>
                     <tr>
-                        <th>Description</th>
-                        <th>Estimated Value</th>
-                        <th>Disposition</th>
-                        <th>Award</th>
-                        <th>Payment Terms</th>
-                        <th>Shares</th>
+                        <th>Origin</th>
+                        <th>Destination</th>
+                        <th>Dispatch</th>
+                        <th>Delivery ETA</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{ '{{PRIZE_DESCRIPTION}}' }}</td>
-                        <td>{{ '{{ESTIMATED_VALUE}}' }}</td>
-                        <td>{{ '{{DISPOSITION}}' }}</td>
-                        <td>{{ '{{PRIZE_AWARD}}' }}</td>
+                        <td>{{ '{{ORIGIN}}' }}</td>
+                        <td>{{ '{{DESTINATION}}' }}</td>
+                        <td>{{ '{{DISPATCH_DATE}}' }}</td>
+                        <td>{{ '{{DELIVERY_DATE}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Delivery Proof</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Confirmation Date</th>
+                        <th>Received By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{DELIVERY_PROOF_REF}}' }}</td>
+                        <td>{{ '{{DELIVERY_PROOF_DATE}}' }}</td>
+                        <td>{{ '{{DELIVERY_PROOF_RECEIVED_BY}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Mail Details</h2>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Mail Type</th>
+                        <th>Package Count</th>
+                        <th>Total Mass</th>
+                        <th>Security Level</th>
+                        <th>Seal Codes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{MAIL_TYPE}}' }}</td>
+                        <td>{{ '{{PACKAGE_COUNT}}' }}</td>
+                        <td>{{ '{{TOTAL_MASS}}' }}</td>
+                        <td>{{ '{{SECURITY_LEVEL}}' }}</td>
+                        <td>{{ '{{SEAL_CODES}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Payment & Terms</h2>
+            <table class="table text-sm mb-6">
+                <thead>
+                    <tr>
+                        <th>Terms</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
                         <td>{{ '{{PAYMENT_TERMS}}' }}</td>
-                        <td>{{ '{{SHARE_SPLIT}}' }}</td>
                     </tr>
                 </tbody>
             </table>
-            <div class="mt-3 text-sm">
-                Award trigger: {{ '{{AWARD_TRIGGER}}' }}
-            </div>
+            <table class="table text-sm">
+                <thead>
+                    <tr>
+                        <th>Fee</th>
+                        <th>Liability Limit</th>
+                        <th>Proof of Delivery</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ '{{MAIL_FEE}}' }}</td>
+                        <td>{{ '{{LIABILITY_LIMIT}}' }}</td>
+                        <td>{{ '{{PROOF_OF_DELIVERY}}' }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -289,16 +356,16 @@
             <table class="signature-table text-sm">
                 <thead>
                     <tr>
+                        <th>Carrier</th>
                         <th>Authority</th>
-                        <th>Captor</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td><em>{{ '{{AUTHORITY_SIGN}}' }}</em></td>
-                        <td><em>{{ '{{CAPTOR_SIGN}}' }}</em></td>
-                    </tr>
-                </tbody>
+            <tbody>
+                <tr>
+                    <td><em>{{ '{{CARRIER_SIGN}}' }}</em></td>
+                    <td>{{ '{{AUTHORITY_SIGN}}' }}</td>
+                </tr>
+            </tbody>
             </table>
         </div>
     </div>
