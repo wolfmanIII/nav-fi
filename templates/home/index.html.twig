@@ -183,6 +183,98 @@
             </div>
         </div>
 
+        {# FINANCIAL CORE USAGE GUIDE #}
+        <div class="mt-12 rounded-2xl bg-gradient-to-br from-amber-950/20 via-slate-900 to-slate-950 border border-amber-500/20 p-8 shadow-xl relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
+            
+            <div class="relative">
+                <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                    <span class="text-amber-400">///</span> Financial Core Usage Guide
+                </h2>
+                <p class="text-xs text-amber-400/60 uppercase tracking-widest mb-6">When to use each module</p>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    {# Full Campaign #}
+                    <div class="rounded-xl bg-slate-900/60 border border-emerald-500/20 p-6">
+                        <div class="flex items-center gap-2 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2l3 7 7 .5-5.5 4.5 1.8 7-6.3-4-6.3 4 1.8-7L2 9.5 9 9z"></path>
+                            </svg>
+                            <h3 class="text-lg font-bold text-emerald-100 font-orbitron uppercase">Full Campaigns</h3>
+                        </div>
+                        <p class="text-sm text-slate-400 mb-4">
+                            For ongoing campaigns, the <strong class="text-white">Financial Core</strong> shines when used in its entirety:
+                        </p>
+                        <ul class="space-y-2 text-xs text-slate-400">
+                            <li class="flex items-start gap-2">
+                                <span class="mt-1 w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0"></span>
+                                <span><strong class="text-emerald-300">Mortgage:</strong> Track ship financing over years</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="mt-1 w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0"></span>
+                                <span><strong class="text-emerald-300">Income & Costs:</strong> Log every credit in/out</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="mt-1 w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0"></span>
+                                <span><strong class="text-emerald-300">Annual Budget:</strong> Project yearly cash flow</span>
+                            </li>
+                        </ul>
+                        <div class="mt-4 pt-4 border-t border-emerald-500/10">
+                            <p class="text-xs text-emerald-400/80 italic">
+                                Recommended for campaigns spanning multiple sessions and in-game years
+                            </p>
+                        </div>
+                    </div>
+
+                    {# Oneshot / Short Adventures #}
+                    <div class="rounded-xl bg-slate-900/60 border border-amber-500/20 p-6">
+                        <div class="flex items-center gap-2 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                            </svg>
+                            <h3 class="text-lg font-bold text-amber-100 font-orbitron uppercase">Oneshots & Short Adventures</h3>
+                        </div>
+                        <p class="text-sm text-slate-400 mb-4">
+                            For single-session or short adventures, you can <strong class="text-white">skip or simplify</strong>:
+                        </p>
+                        <ul class="space-y-2 text-xs text-slate-400">
+                            <li class="flex items-start gap-2">
+                                <span class="mt-1 w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0"></span>
+                                <span><strong class="text-amber-300">Mortgage:</strong> Skip entirely unless narrative-driven</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="mt-1 w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0"></span>
+                                <span><strong class="text-amber-300">Annual Budget:</strong> Not needed for short timeframes</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="mt-1 w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0"></span>
+                                <span><strong class="text-amber-300">Income & Costs:</strong> Track only if relevant to the story</span>
+                            </li>
+                        </ul>
+                        <div class="mt-4 pt-4 border-t border-amber-500/10">
+                            <p class="text-xs text-amber-400/80 italic">
+                                Use only what serves your narrative—Nav-Fi adapts to your table's needs
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                {# CTA to Full Guide #}
+                <div class="mt-8 pt-6 border-t border-amber-500/10 text-center">
+                    <p class="text-sm text-slate-400 mb-4">Want to learn more about when and how to use each module?</p>
+                    <a href="{{ path('app_financial_core_guide') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500/50 transition-all font-orbitron uppercase text-xs tracking-widest font-bold">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        Read Full Guide
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+
         {# BOTTOM GRID: FEATURES (Tighter) #}
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-slate-800/50 mt-8">
              {% for feature in [

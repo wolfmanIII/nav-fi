@@ -37,6 +37,13 @@
                                     <span class="font-semibold">{{ campaign.title }}:</span>
                                     <span>{{ campaign.sessionDay|imperial_date(campaign.sessionYear) }}</span>
                                 </div>
+                                <div class="badge badge-outline border-amber-500/30 bg-amber-500/5 gap-1.5 px-2.5 py-2.5 text-xs font-mono text-amber-400">
+                                    <div class="animate-spin-slow">
+                                        {% include 'icons/radar.html.twig' with { dim: 12 } %}
+                                    </div>
+                                    <span class="font-semibold uppercase tracking-wider">Chronological Verification:</span>
+                                    <span class="text-amber-300/80">Ensure dates align with session</span>
+                                </div>
                             </div>
                         {% endif %}
                     </div>
@@ -60,23 +67,7 @@
             </div>
         {% endif %}
 
-        {# Soft Warning for inconsistent dates #}
-        {% set campaign = cost.campaign ?? (cost.ship.campaign ?? null) %}
-        {% if campaign and cost.paymentDay is not null and cost.paymentYear is not null %}
-            {% set paymentIndex = cost.paymentYear * 1000 + cost.paymentDay %}
-            {% set sessionIndex = campaign.sessionYear * 1000 + campaign.sessionDay %}
-            
-            {% if paymentIndex != sessionIndex %}
-                <div class="alert alert-info alert-outline shadow-sm mb-6 border-cyan-500/50 bg-cyan-500/5">
-                    <div class="animate-spin-slow text-cyan-500">
-                        {% include 'icons/radar.html.twig' with { dim: 24 } %}
-                    </div>
-                    <div class="text-sm font-rajdhani uppercase tracking-widest font-bold text-cyan-200">
-                        <span class="text-cyan-500">Chronological Data Verification</span>: Ensure record timestamp aligns with active mission session coordinates.
-                    </div>
-                </div>
-            {% endif %}
-        {% endif %}
+
 
         {{ form_start(form) }}
         {{ form_widget(form._token) }}
