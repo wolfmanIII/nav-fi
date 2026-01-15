@@ -148,10 +148,10 @@ class RouteType extends AbstractType
                 'label' => false,
                 'prototype' => true,
                 'constraints' => [
-                    new Count([
-                        'min' => 1,
-                        'minMessage' => 'Add at least one waypoint to define a route.',
-                    ]),
+                    new Count(
+                        min: 1,
+                        minMessage: 'Add at least one waypoint to define a route.',
+                    ),
                 ],
             ])
         ;
