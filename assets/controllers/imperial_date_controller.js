@@ -220,16 +220,27 @@ export default class extends Controller {
         this.titleEl.textContent = `${this.currentMonth.label}`;
         this.gridEl.innerHTML = '';
 
+        // Read day limits from hidden year input attributes
+        const minDay = parseInt(this.yearTarget.dataset.minDay || '1', 10);
+        const maxDay = parseInt(this.yearTarget.dataset.maxDay || '365', 10);
+
         for (let day = this.currentMonth.start; day <= this.currentMonth.end; day += 1) {
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'btn btn-xs btn-outline';
             btn.textContent = String(day).padStart(3, '0');
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.selectDay(day);
-            });
+
+            if (day < minDay || day > maxDay) {
+                btn.disabled = true;
+                btn.classList.add('opacity-25', 'cursor-not-allowed');
+            } else {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.selectDay(day);
+                });
+            }
+
             if (Number(this.dayTarget.value) === day) {
                 btn.classList.add('btn-primary');
             }
