@@ -51,7 +51,9 @@
 
         {% if income.paymentDay is not null and income.paymentYear is not null %}
             <div class="alert alert-info alert-outline shadow-sm mb-6 border-cyan-500/50 bg-cyan-500/5">
-                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6 text-cyan-500" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <div class="animate-spin-slow text-cyan-500">
+                    {% include 'icons/radar.html.twig' with { dim: 24 } %}
+                </div>
                 <div class="text-sm font-rajdhani uppercase tracking-widest font-bold text-cyan-200">
                     Income is marked as <span class="text-cyan-500">PAID</span>. Handle modifications with tactical caution to maintain log integrity.
                 </div>
@@ -82,7 +84,9 @@
         {% if income.id %}
             <div class="alert alert-warning bg-amber-500/10 border-amber-500/30 text-amber-500 text-xs rounded-lg mb-6 py-2">
                 <div class="flex gap-2 items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-4 w-4" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    <div class="animate-spin-slow text-current">
+                        {% include 'icons/radar.html.twig' with { dim: 16 } %}
+                    </div>
                     <span class="font-bold font-rajdhani tracking-widest uppercase">Warning: Changing category will overwrite specific detail items.</span>
                 </div>
             </div>

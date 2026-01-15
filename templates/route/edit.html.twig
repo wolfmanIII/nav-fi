@@ -30,9 +30,9 @@
             {% if form_errors(form) %}
                 <div class="col-span-2">
                     <div class="alert alert-error alert-outline shadow-sm">
-                        <span class="flex items-center justify-center animate-spin-slow">
-                            {% include 'icons/radar.html.twig' %}
-                        </span>
+                        <div class="animate-spin-slow text-current">
+                            {% include 'icons/radar.html.twig' with { dim: 24 } %}
+                        </div>
                         <div class="text-sm text-slate-200">
                             {{ form_errors(form) }}
                         </div>
@@ -66,9 +66,9 @@
             </div>
             <div class="col-span-2">
                 <div class="alert alert-info alert-outline shadow-sm">
-                    <span class="flex items-center justify-center animate-spin-slow">
-                        {% include 'icons/radar.html.twig' %}
-                    </span>
+                    <div class="animate-spin-slow text-current">
+                        {% include 'icons/radar.html.twig' with { dim: 24 } %}
+                    </div>
                     <div class="text-sm text-slate-200">
                         Jump Rating and Fuel Estimate are sourced from the ship’s registered components. Fill them only if you need to override the ship‑details telemetry for this route.
                     </div>

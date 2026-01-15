@@ -33,7 +33,10 @@
             {% for label, messages in app.flashes %}
                 {% for message in messages %}
                     <div role="alert" class="alert alert-{{ label }} alert-outline mb-3 w-full">
-                        {{ message|raw }}
+                        <div class="animate-spin-slow text-current">
+                            {% include 'icons/radar.html.twig' with { dim: 24 } %}
+                        </div>
+                        <div>{{ message|raw }}</div>
                     </div>
                 {% endfor %}
             {% endfor %}

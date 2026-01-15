@@ -133,10 +133,10 @@
                             <fieldset class="fieldset bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
                                 {% for message in messages %}
                                     <div role="alert" class="alert alert-{{ label }} alert-outline w-full">
-                                        <span class="animate-spin-slow">
-                                            {% include 'icons/radar.html.twig' %}
-                                        </span>
-                                        {{ message }}
+                                        <div class="animate-spin-slow text-current">
+                                            {% include 'icons/radar.html.twig' with { dim: 24 } %}
+                                        </div>
+                                        <div>{{ message }}</div>
                                     </div>
                                 {% endfor %}
                             </fieldset>

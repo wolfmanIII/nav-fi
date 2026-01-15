@@ -7,6 +7,7 @@ use App\Validator\ImperialDateComplete;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -15,10 +16,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ImperialDateType extends AbstractType
 {
+    public function __construct(
+        private readonly int $minYear,
+        private readonly int $maxYear,
+        private readonly int $minDay,
+        private readonly int $maxDay,
+    ) {}
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var ImperialDate|null $data */
-        $data = $options['data'] instanceof ImperialDate ? $options['data'] : null;
+        $data = ($options['data'] ?? null) instanceof ImperialDate ? $options['data'] : null;
         $initialDay = $data?->getDay();
         $initialYear = $data?->getYear();
 
@@ -48,6 +56,8 @@ class ImperialDateType extends AbstractType
                     'data-imperial-date-target' => 'year',
                     'data-min-year' => $options['min_year'],
                     'data-max-year' => $options['max_year'],
+                    'data-min-day' => $this->minDay,
+                    'data-max-day' => $this->maxDay,
                 ],
                 'data' => $initialYear,
             ])
@@ -55,6 +65,13 @@ class ImperialDateType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'data-imperial-date-target' => 'day',
+                ],
+                'constraints' => [
+                    new Range(
+                        min: $this->minDay,
+                        max: $this->maxDay,
+                        notInRangeMessage: 'Day must be between {{ min }} and {{ max }}.',
+                    ),
                 ],
                 'data' => $initialDay,
             ])
@@ -103,8 +120,8 @@ class ImperialDateType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ImperialDate::class,
-            'min_year' => 1105,
-            'max_year' => 9999,
+            'min_year' => $this->minYear,
+            'max_year' => $this->maxYear,
             'error_bubbling' => false,
             'error_mapping' => ['.' => 'display'],
             'constraints' => static function (Options $options): array {

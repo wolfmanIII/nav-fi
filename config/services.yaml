@@ -28,6 +28,13 @@ services:
             $yearMin: "%app.year_min%"
             $yearMax: "%app.year_max%"
 
+    App\Form\Type\ImperialDateType:
+        arguments:
+            $minYear: "%app.year_min%"
+            $maxYear: "%app.year_max%"
+            $minDay: "%app.day_min%"
+            $maxDay: "%app.day_max%"
+
     App\Service\TemplateVersionRegistry:
         arguments:
             $projectDir: "%kernel.project_dir%"

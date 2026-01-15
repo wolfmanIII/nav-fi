@@ -31,9 +31,9 @@
 
             <div class="col-span-2">
                 <div class="alert alert-info alert-outline shadow-sm mt-2">
-                    <span class="flex items-center justify-center animate-spin-slow">
-                        {% include 'icons/radar.html.twig' %}
-                    </span>
+                    <div class="animate-spin-slow text-current">
+                        {% include 'icons/radar.html.twig' with { dim: 24 } %}
+                    </div>
                     <div class="text-sm text-slate-200">
                         <span class="block">Establish the mission year-zero to enable the session timestamp.</span>
                     </div>
