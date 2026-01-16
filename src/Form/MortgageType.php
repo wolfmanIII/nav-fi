@@ -34,20 +34,9 @@ class MortgageType extends AbstractType
         $mortgage = $options['data'];
         $user = $options['user'];
         $currentShipId = $mortgage->getShip()?->getId();
-        $campaignStartYear = $mortgage->getShip()?->getCampaign()?->getStartingYear();
-        $minYear = $campaignStartYear ?? $this->limits->getYearMin();
-        $startDate = new ImperialDate($mortgage?->getStartYear(), $mortgage?->getStartDay());
-
         $builder
             //->add('name', TextType::class, ['attr' => ['class' => 'input m-1 w-full'],])
-            ->add('startDate', ImperialDateType::class, [
-                'mapped' => false,
-                'label' => 'Start date',
-                'required' => true,
-                'data' => $startDate,
-                'min_year' => $minYear,
-                'max_year' => $this->limits->getYearMax(),
-            ])
+
             ->add('shipShares', IntegerType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
                 'required' => false,
@@ -179,13 +168,6 @@ class MortgageType extends AbstractType
             /** @var Mortgage $mortgage */
             $mortgage = $event->getData();
             $form = $event->getForm();
-
-            /** @var ImperialDate|null $start */
-            $start = $form->get('startDate')->getData();
-            if ($start instanceof ImperialDate) {
-                $mortgage->setStartDay($start->getDay());
-                $mortgage->setStartYear($start->getYear());
-            }
         });
     }
 

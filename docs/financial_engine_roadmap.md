@@ -36,22 +36,25 @@ L'autorità centrale per la logica monetaria.
 - `getBalance(Ship $ship): Money`
 - `recalculateBalance(Ship $ship)`: Riproduce tutte le transazioni per garantire l'integrità.
 
-### C. Integrazione Event-Driven
-Sostituire l'accoppiamento diretto con Eventi Symfony per mantenere il sistema modulare.
+### C. Integrazione Event-Driven (Modello Pending vs Posted)
+Il sistema determina se una transazione è **CONFERMATA** (incide sul saldo) o **PIANIFICATA** (previsione) basandosi sulla Data della Sessione.
 
-#### 1. Eventi `Income`
-- **Trigger**: Quando lo stato di `Income` passa a `SIGNED`.
-- **Azione**: L'EventSubscriber chiama `LedgerService->deposit()`.
-- **Logica**: Aggiunge l'`advance_payment` (se presente) o l'intero importo ai crediti della Nave.
+#### 1. Regola Aurea Temporale
+- **Data Operazione <= Data Sessione**: Transazione **POSTED**. `Ship.credits` viene aggiornato immediatamente.
+- **Data Operazione > Data Sessione**: Transazione **PENDING**. Nessun effetto sul saldo, visibile solo come budget.
 
-#### 2. Eventi `Cost`
-- **Trigger**: Quando un `Cost` viene creato/aggiornato.
-- **Azione**: Se `paymentDate` <= `DataSessioneCorrente`, l'EventSubscriber chiama `LedgerService->withdraw()`.
-- **Logica**: I costi vengono detratti immediatamente se sono nel "passato" rispetto alla sessione.
+#### 2. Eventi `Income` & `Cost`
+- **Trigger**: Creazione/Modifica entità.
+- **Azione**: `FinancialEventSubscriber` confronta la data dell'operazione con `Campaign.sessionDate`.
+  - Se *Passato/Presente*: Chiama `LedgerService->deposit()` o `withdraw()`.
+  - Se *Futuro*: Non fa nulla (o crea un record "Previsione" se necessario per UI avanzate).
+  - **Nota**: Se un utente modifica una data spostandola dal Futuro al Passato, il sistema deve "realizzare" la transazione retroattivamente.
 
-#### 3. Eventi `Mortgage`
-- **Trigger**: Nuova azione specifica "Paga Rata".
-- **Azione**: `LedgerService->withdraw()` -> `Mortgage->addInstallment()`.
+#### 3. Processor Avanzamento Tempo ("The Daily Batch")
+Quando la Data Sessione avanza (es. l'Arbitro clicca "Next Day" o "End Week"):
+- **Azione**: Il sistema cerca tutte le entità (`Cost`, `Income`, `Mortgage Installment`) con data compresa tra la *Vecchia Session Date* e la *Nuova Session Date*.
+- **Logica**: Per ogni entità trovata, esegue la transazione finanziaria corrispondente ("Realizza" le spese pianificate).
+- **Automazione**: Calcola ratei giornalieri (Stipendi, Life Support) e li addebita automaticamente.
 
 ### D. Miglioramenti Interfaccia Utente
 

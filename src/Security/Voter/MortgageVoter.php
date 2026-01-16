@@ -17,6 +17,7 @@ final class MortgageVoter extends Voter
     public const DELETE = 'MORTGAGE_DELETE';
     public const PAY_INSTALLMENT = 'MORTGAGE_PAY_INSTALLMENT';
     public const CREATE_PDF = 'MORTGAGE_CREATE_PDF';
+    public const SET_START_DATE = 'MORTGAGE_SET_START_DATE';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -33,6 +34,7 @@ final class MortgageVoter extends Voter
             self::DELETE,
             self::PAY_INSTALLMENT,
             self::CREATE_PDF,
+            self::SET_START_DATE,
         ], true);
     }
 
@@ -53,6 +55,7 @@ final class MortgageVoter extends Voter
             self::DELETE      => $this->canDelete($subject, $user),
             self::PAY_INSTALLMENT => $this->canPayInstallment($subject, $user),
             self::CREATE_PDF  => $this->canCreatePdf($subject, $user),
+            self::SET_START_DATE => $this->canSetStartDate($subject, $user),
             default           => false,
         };
     }
@@ -79,7 +82,13 @@ final class MortgageVoter extends Voter
 
     private function canSign(Mortgage $mortgage, ?UserInterface $user = null): bool
     {
-        return $this->isOwner($mortgage, $user) && !$mortgage->isSigned() && $mortgage->getId();
+        $ship = $mortgage->getShip();
+
+        return $this->isOwner($mortgage, $user)
+            && !$mortgage->isSigned()
+            && $mortgage->getId()
+            && $ship
+            && $ship->hasCaptain();
     }
 
     private function canPayInstallment(Mortgage $mortgage, ?UserInterface $user = null): bool
@@ -90,6 +99,11 @@ final class MortgageVoter extends Voter
     private function canCreatePdf(Mortgage $mortgage, ?UserInterface $user = null): bool
     {
         return $this->isOwner($mortgage, $user);
+    }
+
+    private function canSetStartDate(Mortgage $mortgage, ?UserInterface $user = null): bool
+    {
+        return $this->isOwner($mortgage, $user) && $mortgage->isSigned();
     }
 
     private function isOwner(Mortgage $mortgage, UserInterface $user): bool

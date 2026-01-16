@@ -16,6 +16,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Form\Type\ImperialDateType;
+use App\Model\ImperialDate;
+use App\Form\Config\DayYearLimits;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 final class MortgageController extends BaseController
 {
@@ -104,7 +109,8 @@ final class MortgageController extends BaseController
     public function edit(
         int $id,
         Request $request,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        DayYearLimits $limits
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
@@ -123,25 +129,7 @@ final class MortgageController extends BaseController
 
 
 
-            $action = $request->request->get('action');
 
-            if ($action === 'sign') {
-                $signingLocation = trim((string)$request->request->get('signing_location'));
-                if ($signingLocation === '') {
-                    $this->addFlash('error', 'Signing location is required to sign.');
-                    return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
-                }
-
-                $mortgage->setSigned(true);
-
-                $campaign = $mortgage->getShip()?->getCampaign();
-                if ($campaign) {
-                    $mortgage->setSigningDay($campaign->getSessionDay());
-                    $mortgage->setSigningYear($campaign->getSessionYear());
-                }
-
-                $mortgage->setSigningLocation($signingLocation ?: null);
-            }
 
             $em->persist($mortgage);
             $em->flush();
@@ -154,12 +142,46 @@ final class MortgageController extends BaseController
         $payment->setMortgage($mortgage);
         $paymentForm = $this->createForm(MortgageInstallmentType::class, $payment, ['summary' => $summary]);
 
+        // Sign Form (Integrated with Start Date)
+        $signForm = $this->createFormBuilder()
+            ->setAction($this->generateUrl('app_mortgage_sign', ['id' => $mortgage->getId()]))
+            ->setMethod('POST')
+            ->add('signingLocation', TextType::class, [
+                'required' => false,
+                'label' => 'Signing Location (Orbit/Station)',
+            ])
+            ->add('startDate', ImperialDateType::class, [
+                'label' => 'First Installment Date (Optional)',
+                'min_year' => $limits->getYearMin(),
+                'max_year' => $limits->getYearMax(),
+                'required' => false,
+            ])
+            ->getForm();
+
+        // Start Date Form for Modal (Keep for standalone edits if needed, or remove if fully replaced)
+        // Keeping it allows editing date after signing without unsigning?
+        // Plan says: "Set First Installment Date" workflow accessible only AFTER signing (via separate button).
+        // But we are adding it to SIGN modal too.
+        $startImperialDate = new ImperialDate($mortgage->getStartYear(), $mortgage->getStartDay());
+        $startDateForm = $this->createFormBuilder(['startDate' => $startImperialDate])
+            ->setAction($this->generateUrl('app_mortgage_set_start_date', ['id' => $mortgage->getId()]))
+            ->setMethod('POST')
+            ->add('startDate', ImperialDateType::class, [
+                'label' => false,
+                'min_year' => $limits->getYearMin(),
+                'max_year' => $limits->getYearMax(),
+                'required' => false,
+            ])
+            ->getForm();
+
         return $this->renderTurbo('mortgage/edit.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'mortgage' => $mortgage,
             'summary' => $summary,
             'form' => $form,
             'payment_form' => $paymentForm->createView(),
+            'start_date_form' => $startDateForm->createView(),
+            'sign_form' => $signForm->createView(),
             'last_payment' => $mortgage->getMortgageInstallments()->last(),
         ]);
     }
@@ -211,6 +233,144 @@ final class MortgageController extends BaseController
         if ($paymentForm->isSubmitted() && $paymentForm->isValid()) {
             $em->persist($payment);
             $em->flush();
+        }
+
+        return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
+    }
+
+    #[Route('/mortgage/{id}/sign', name: 'app_mortgage_sign', methods: ['POST'])]
+    public function sign(
+        int $id,
+        Request $request,
+        EntityManagerInterface $em,
+        DayYearLimits $limits
+    ): Response {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $mortgage = $em->getRepository(Mortgage::class)->findOneForUser($id, $user);
+        if (!$mortgage) {
+            throw new NotFoundHttpException();
+        }
+
+        $form = $this->createFormBuilder()
+            ->add('signingLocation', TextType::class)
+            ->add('startDate', ImperialDateType::class, [
+                'min_year' => $limits->getYearMin(),
+                'max_year' => $limits->getYearMax(),
+                'required' => false,
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $campaign = $mortgage->getShip()?->getCampaign();
+
+            if (!$campaign) {
+                $this->addFlash('error', 'Ship is not assigned to a campaign.');
+                return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
+            }
+
+            // Set Signing Date from Session
+            $mortgage->setSigningDay($campaign->getSessionDay());
+            $mortgage->setSigningYear($campaign->getSessionYear());
+
+            if (!empty($data['signingLocation'])) {
+                $mortgage->setSigningLocation($data['signingLocation']);
+            }
+
+            // Handle Optional Start Date
+            /** @var ImperialDate|null $startDate */
+            $startDate = $data['startDate'];
+            if ($startDate && $startDate->getDay() && $startDate->getYear()) {
+                // Validate StartDate >= SigningDate
+                $startDay = $startDate->getDay();
+                $startYear = $startDate->getYear();
+                $signingDay = $mortgage->getSigningDay();
+                $signingYear = $mortgage->getSigningYear();
+
+                if ($startYear < $signingYear || ($startYear === $signingYear && $startDay < $signingDay)) {
+                    $this->addFlash('error', 'Mortgage Signed, BUT Start Date ignored (must be on or after Signing Date).');
+                } else {
+                    $mortgage->setStartDay($startDay);
+                    $mortgage->setStartYear($startYear);
+                }
+            }
+
+            $em->flush();
+            $this->addFlash('success', 'Mortgage signed successfully.');
+        } else {
+            $this->addFlash('error', 'Form invalid.');
+        }
+
+        return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
+    }
+
+    #[Route('/mortgage/{id}/set-start-date', name: 'app_mortgage_set_start_date', methods: ['POST'])]
+    public function setStartDate(
+        int $id,
+        Request $request,
+        EntityManagerInterface $em,
+        DayYearLimits $limits
+    ): Response {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $mortgage = $em->getRepository(Mortgage::class)->findOneForUser($id, $user);
+        if (!$mortgage) {
+            throw new NotFoundHttpException();
+        }
+
+        $this->denyAccessUnlessGranted(MortgageVoter::SET_START_DATE, $mortgage);
+
+        $startDateForm = $this->createFormBuilder()
+            ->add('startDate', ImperialDateType::class, [
+                'min_year' => $limits->getYearMin(),
+                'max_year' => $limits->getYearMax(),
+                'required' => false,
+            ])
+            ->getForm();
+
+        $startDateForm->handleRequest($request);
+
+        if ($startDateForm->isSubmitted() && $startDateForm->isValid()) {
+            $data = $startDateForm->getData();
+            /** @var ImperialDate|null $date */
+            $date = $data['startDate'];
+
+            if ($date && $date->getDay() && $date->getYear()) {
+                $startDay = $date->getDay();
+                $startYear = $date->getYear();
+
+                // Validation: Start Date >= Signing Date
+                $signingDay = $mortgage->getSigningDay();
+                $signingYear = $mortgage->getSigningYear();
+
+                if ($signingYear !== null && $signingDay !== null) {
+                    if ($startYear < $signingYear || ($startYear === $signingYear && $startDay < $signingDay)) {
+                        $this->addFlash('error', 'Start Date must be on or after the Signing Date.');
+                        return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
+                    }
+                }
+
+                $mortgage->setStartDay($startDay);
+                $mortgage->setStartYear($startYear);
+                $this->addFlash('success', 'First installment date set successfully.');
+            } else {
+                $mortgage->setStartDay(null);
+                $mortgage->setStartYear(null);
+                $this->addFlash('info', 'First installment date cleared.');
+            }
+
+            $em->flush();
+        } else {
+            $this->addFlash('error', 'Invalid date provided.');
         }
 
         return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
@@ -286,9 +446,8 @@ final class MortgageController extends BaseController
         ]);
     }
 
-    #[Route('/mortgage/{id}/unsigned', name: 'app_mortgage_unsigned', methods: ['GET'])]
-    #[IsGranted('ROLE_ADMIN')]
-    public function unsigned(
+    #[Route('/mortgage/{id}/unsign', name: 'app_mortgage_unsign', methods: ['GET'])]
+    public function unsign(
         int $id,
         EntityManagerInterface $em
     ): Response {
@@ -297,12 +456,12 @@ final class MortgageController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $mortgage = $em->getRepository(Mortgage::class)->find($id);
+        $mortgage = $em->getRepository(Mortgage::class)->findOneForUser($id, $user);
         if (!$mortgage) {
             throw new NotFoundHttpException();
         }
 
-        $mortgage->setSigned(false);
+
         $mortgage->setSigningDay(null);
         $mortgage->setSigningYear(null);
         $mortgage->setSigningLocation(null);

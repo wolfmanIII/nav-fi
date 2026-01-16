@@ -439,6 +439,8 @@ class Crew
      */
     public function isVisibleInMortgage(?int $mortgageSigningYear, ?int $mortgageSigningDay): bool
     {
-        return $this->isDisplayable() && $this->isActiveAtOrAfterDate($mortgageSigningYear, $mortgageSigningDay);
+        // Show all currently displayable crew members (Active, Retired, etc.)
+        // Ignore the signing date constraint so new crew are visible on existing mortgages.
+        return $this->isDisplayable();
     }
 }

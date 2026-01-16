@@ -130,16 +130,24 @@
                 <div class="w-full">
                     <div class="flex flex-col items-stretch gap-4">
                         {% for label, messages in app.flashes %}
-                            <fieldset class="fieldset bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-                                {% for message in messages %}
-                                    <div role="alert" class="alert alert-{{ label }} alert-outline w-full">
-                                        <div class="animate-spin-slow text-current">
-                                            {% include 'icons/radar.html.twig' with { dim: 24 } %}
-                                        </div>
-                                        <div>{{ message }}</div>
+                            {% for message in messages %}
+                                {% set alertClass = 'border-cyan-500/50 bg-cyan-500/5 text-cyan-200' %}
+                                {% set iconDim = 24 %}
+                                {% if label == 'success' %}
+                                    {% set alertClass = 'border-emerald-500/50 bg-emerald-500/5 text-emerald-200' %}
+                                {% elseif label == 'error' or label == 'danger' %}
+                                    {% set alertClass = 'border-rose-500/50 bg-rose-500/5 text-rose-200' %}
+                                {% elseif label == 'warning' %}
+                                    {% set alertClass = 'border-amber-500/50 bg-amber-500/5 text-amber-200' %}
+                                {% endif %}
+                                
+                                <div role="alert" class="alert shadow-sm mb-4 {{ alertClass }} rounded-lg border flex items-start gap-4">
+                                    <div class="animate-spin-slow text-current pt-1">
+                                        {% include 'icons/radar.html.twig' with { dim: iconDim } %}
                                     </div>
-                                {% endfor %}
-                            </fieldset>
+                                    <div class="font-rajdhani uppercase tracking-wide font-semibold text-sm pt-0.5">{{ message|raw }}</div>
+                                </div>
+                            {% endfor %}
                         {% endfor %}
                     </div>
 

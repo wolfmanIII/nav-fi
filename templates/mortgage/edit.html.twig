@@ -10,6 +10,7 @@
 {% set can_sign = is_granted(CAN_SIGN, mortgage) %}
 {% set can_pay = is_granted(CAN_PAY, mortgage) %}
 {% set can_pdf = is_granted(CAN_PDF, mortgage) %}
+{% set can_set_start_date = is_granted(constant('App\\Security\\Voter\\MortgageVoter::SET_START_DATE'), mortgage) %}
 {% import '_tooltip.html.twig' as tooltip %}
 
 {% block title %}Nav-Fi - Mortgage{% endblock %}
@@ -70,6 +71,11 @@
                 </div>
                 <div class="text-sm font-rajdhani uppercase tracking-widest font-bold text-cyan-200">
                     Mortgage is <span class="text-cyan-500">SIGNED</span>. Handle modifications with tactical caution to maintain log integrity.
+                    {% if not mortgage.startDay %}
+                        <div class="mt-2 text-warning font-extrabold animate-pulse">
+                            ⚠ ATTENTION: First Installment Date not finalized. Please schedule it.
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         {% endif %}
@@ -91,12 +97,21 @@
                 {{ form_errors(form.ship) }}
             </div>
 
-            <div class="col-span-2 md:col-span-1" data-controller="imperial-date">
-                {{ form_label(form.startDate) }}
-                {{ form_widget(form.startDate.display, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700', 'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
-                {{ form_widget(form.startDate.year) }}
-                {{ form_widget(form.startDate.day) }}
-                {{ form_errors(form.startDate.display) }}
+            <div class="col-span-2 md:col-span-1">
+                <label class="label">
+                    <span class="label-text">First Installment Date</span>
+                </label>
+                <div class="flex items-center gap-2">
+                    <input type="text" readonly disabled
+                        class="input input-bordered w-full bg-slate-950/50 border-slate-700 text-slate-400"
+                        value="{{ mortgage.startDay ? (mortgage.startDay ~ '/' ~ mortgage.startYear) : 'Not Scheduled' }}">
+                    
+                    {% if can_set_start_date %}
+                        <button type="button" class="btn btn-square btn-outline btn-warning" onclick="document.getElementById('start_date_modal').showModal();" title="Set First Installment Date">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        </button>
+                    {% endif %}
+                </div>
             </div>
 
             <div class="col-span-2 md:col-span-1">
@@ -154,9 +169,16 @@
         <div class="flex items-center justify-end gap-3 mb-10">
             <a href="{{ path('app_mortgage_index') }}" class="btn btn-ghost font-orbitron uppercase text-[10px] tracking-widest text-slate-500 hover:text-slate-300 font-bold">Abort Session</a>
 
-            {% if mortgage.id and is_granted('ROLE_ADMIN') %}
+            {% if mortgage.id %}
                 {% set disabledClass = mortgage.signed ? '' : ' opacity-60 pointer-events-none' %}
-                <a href="{{ path('app_mortgage_unsigned', {id: mortgage.id}) }}" class="btn btn-outline btn-error btn-sm font-orbitron uppercase text-[10px] tracking-widest {{ disabledClass }}">Unsign Hull</a>
+                <a href="{{ path('app_mortgage_unsign', {id: mortgage.id}) }}" class="btn btn-outline btn-error btn-sm font-orbitron uppercase text-[10px] tracking-widest {{ disabledClass }}">Unsign Hull</a>
+            {% endif %}
+
+            {% if not mortgage.signed and mortgage.ship and not mortgage.ship.hasCaptain %}
+                 <div class="flex items-center gap-2 bg-red-500/10 border border-red-500/20 px-4 py-2 rounded text-red-400 text-[10px] font-orbitron uppercase tracking-widest font-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    Warning: Active Captain Required for Authorization
+                </div>
             {% endif %}
 
             <button type="button" class="btn btn-outline btn-warning btn-sm px-6 font-orbitron uppercase text-[10px] tracking-widest font-bold" {% if not can_sign %} disabled {% endif %} onclick="document.getElementById('sign_modal').showModal();">
@@ -255,35 +277,110 @@
         {% set sessionYear = ship ? (ship.campaign ? ship.campaign.sessionYear : ship.sessionYear) : null %}
         {% set sessionValue = (sessionDay is not null and sessionYear is not null) ? (sessionDay|imperial_date(sessionYear)) : '—' %}
         <dialog id="sign_modal" class="modal">
+            <div class="modal-box w-11/12 max-w-xl border border-primary/20 shadow-[0_0_15px_rgba(59,130,246,0.3)] bg-slate-900">
+                <header class="mb-6 border-b border-primary/10 pb-4">
+                    <h3 class="font-bold text-cyan-100 text-lg font-orbitron uppercase tracking-widest flex items-center gap-2">
+                         <div class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></div>
+                        Confirm Authorization
+                    </h3>
+                    <p class="text-xs text-amber-200/70 font-rajdhani tracking-widest uppercase mt-1">Target Session: <b class="text-warning text-sm">{{ sessionValue }}</b></p>
+                </header>
+                
+                {{ form_start(sign_form, {'attr': {'class': 'space-y-6'}}) }}
+                    
+                    <fieldset class="bg-slate-950/40 border border-slate-800 p-4 rounded-xl shadow-inner relative group hover:border-cyan-500/30 transition-colors duration-300">
+                        <legend class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-[9px] font-bold font-orbitron tracking-[0.2em] text-cyan-500/80 uppercase mb-2">Location Data</legend>
+                        <div class="form-control gap-1">
+                            {{ form_label(sign_form.signingLocation, null, {'label_attr': {'class': 'text-[10px] font-bold font-rajdhani tracking-widest text-slate-400 uppercase'}}) }}
+                            {{ form_widget(sign_form.signingLocation, {'attr': {'class': 'input input-bordered w-full bg-slate-950/80 border-slate-700/50 focus:border-cyan-500/50 focus:bg-slate-900 font-rajdhani text-sm py-2 h-10 transition-all placeholder:text-slate-700'}}) }}
+                            {{ form_errors(sign_form.signingLocation) }}
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="bg-slate-950/40 border border-slate-800 p-4 rounded-xl shadow-inner relative group hover:border-amber-500/30 transition-colors duration-300">
+                        <legend class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-[9px] font-bold font-orbitron tracking-[0.2em] text-amber-500/80 uppercase mb-2">Payment Schedule [Optional]</legend>
+                         
+                        <div class="form-control" data-controller="imperial-date">
+                             <div class="flex justify-between items-center mb-2">
+                                {{ form_label(sign_form.startDate, null, {'label_attr': {'class': 'text-[10px] font-bold font-rajdhani tracking-widest text-slate-400 uppercase'}}) }}
+                                <span class="badge badge-xs badge-ghost text-[9px] uppercase tracking-widest opacity-50">Manual Override</span>
+                             </div>
+                             
+                            <div class="flex items-center gap-3">
+                                 <div class="flex-1">
+                                    {{ form_widget(sign_form.startDate.display, {'attr': {'class': 'input input-bordered w-full bg-slate-950/80 border-slate-700/50 focus:border-amber-500/50 focus:bg-slate-900 font-mono text-sm py-2 h-10 text-center tracking-wider text-amber-100 placeholder:text-slate-800', 'placeholder': 'YYYY-DDD'}}) }}
+                                </div>
+                                {{ form_widget(sign_form.startDate.year) }}
+                                {{ form_widget(sign_form.startDate.day) }}
+                            </div>
+                            {{ form_errors(sign_form.startDate.display) }}
+
+                            <div class="mt-4 flex items-center gap-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                                <div class="text-amber-500 animate-spin-slow shrink-0">
+                                    {% include 'icons/radar.html.twig' with { dim: 20 } %}
+                                </div>
+                                <p class="text-xs text-amber-100/80 leading-snug font-rajdhani tracking-wide">
+                                    <strong class="text-amber-400 block mb-0.5">Start Date Rule:</strong>
+                                    If specified, the first installment will be scheduled for this date.<br>
+                                    Target Date must be on or after <strong>{{ sessionValue }}</strong>.
+                                </p>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="modal-action mt-6 gap-3 pt-4 border-t border-slate-800">
+                        <button type="button" class="btn btn-ghost btn-sm font-orbitron uppercase text-[10px] tracking-widest font-bold text-slate-500 hover:text-slate-200" onclick="document.getElementById('sign_modal').close();">Abort Session</button>
+                        <button type="submit" class="btn btn-warning btn-sm px-6 font-orbitron uppercase text-[10px] tracking-widest font-bold shadow-lg shadow-amber-500/10 hover:shadow-amber-500/30 hover:bg-amber-500 hover:text-slate-900 border-amber-600">
+                            Confirm Authorization
+                        </button>
+                    </div>
+                {{ form_end(sign_form) }}
+            </div>
+            <form method="dialog" class="modal-backdrop">
+                <button>close</button>
+            </form>
+        </dialog>
+
+        <dialog id="start_date_modal" class="modal">
             <div class="modal-box w-11/12 max-w-xl">
                 <header class="mb-6">
-                    <h3 class="font-bold text-cyan-100 text-lg font-orbitron uppercase tracking-widest">Confirm Authorization</h3>
-                    <p class="text-[10px] text-cyan-100/60 font-rajdhani tracking-widest uppercase">Target Session: <b class="text-cyan-400">{{ sessionValue }}</b></p>
+                    <h3 class="font-bold text-cyan-100 text-lg font-orbitron uppercase tracking-widest">Schedule First Installment</h3>
+                    <p class="text-xs text-amber-200/70 font-rajdhani tracking-widest uppercase">Target Session: <b class="text-warning text-sm">{{ sessionValue }}</b></p>
                 </header>
-                <fieldset class="bg-slate-900/40 border border-slate-800 gap-4 p-4 rounded-xl shadow-inner w-full mb-6">
-                    <div class="form-control gap-1">
-                        <label class="text-[10px] font-bold font-rajdhani tracking-widest text-slate-400 uppercase mb-1">Authorization Location</label>
-                        <input
-                            type="text"
-                            name="signing_location"
-                            form="mortgage_form"
-                            class="input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 font-rajdhani text-sm"
-                            placeholder="Enter deployment sector..."
+                {{ form_start(start_date_form) }}
+                    <fieldset class="bg-slate-900/40 border border-slate-800 gap-4 p-4 rounded-xl shadow-inner w-full mb-6 relative">
+                         {% if mortgage.signingYear is defined and mortgage.signingYear is not null %}
+                            <div class="alert alert-info py-2 px-3 mb-4 rounded border-cyan-500/30 bg-cyan-900/20 text-xs">
+                                <span class="font-semibold text-cyan-200">Signed Date:</span> {{ mortgage.signingDay }}/{{ mortgage.signingYear }}
+                            </div>
+                        {% endif %}
+
+                        <div class="col-span-2" data-controller="imperial-date">
+                            {{ form_label(start_date_form.startDate) }}
+                            {{ form_widget(start_date_form.startDate.display, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50', 'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                            {{ form_widget(start_date_form.startDate.year) }}
+                            {{ form_widget(start_date_form.startDate.day) }}
+                            {{ form_errors(start_date_form.startDate.display) }}
+                        </div>
+                        <div class="mt-4 flex items-center gap-3 p-3 rounded-lg bg-slate-800/50 border border-slate-700">
+                             <div class="text-slate-500 animate-spin-slow shrink-0">
+                                {% include 'icons/radar.html.twig' with { dim: 16 } %}
+                            </div>
+                            <p class="text-xs text-slate-400 leading-snug font-rajdhani tracking-wide">
+                                <strong>Constraint:</strong> Date must be on or after the Signing Date.
+                            </p>
+                        </div>
+                    </fieldset>
+                    <div class="modal-action mt-6 gap-3">
+                        <button type="button" class="btn btn-ghost btn-sm font-orbitron uppercase text-[10px] tracking-widest font-bold" onclick="document.getElementById('start_date_modal').close();">Cancel</button>
+                        <button
+                            type="submit"
+                            class="btn btn-warning btn-sm px-6 font-orbitron uppercase text-[10px] tracking-widest font-bold shadow-lg shadow-amber-500/10"
                         >
+                            Set Schedule
+                        </button>
                     </div>
-                </fieldset>
-                <div class="modal-action mt-6 gap-3">
-                    <button type="button" class="btn btn-ghost btn-sm font-orbitron uppercase text-[10px] tracking-widest font-bold" onclick="document.getElementById('sign_modal').close();">Abort Session</button>
-                    <button
-                        type="submit"
-                        form="mortgage_form"
-                        name="action"
-                        value="sign"
-                        class="btn btn-warning btn-sm px-6 font-orbitron uppercase text-[10px] tracking-widest font-bold shadow-lg shadow-amber-500/10"
-                    >
-                        Confirm Authorization
-                    </button>
-                </div>
+                {{ form_end(start_date_form) }}
             </div>
         </dialog>
 

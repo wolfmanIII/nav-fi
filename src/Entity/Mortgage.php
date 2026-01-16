@@ -32,10 +32,10 @@ class Mortgage
     #[ORM\JoinColumn(nullable: false, unique: true)]
     private ?Ship $ship = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $startDay = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $startYear = null;
 
     #[ORM\Column(nullable: true)]
@@ -55,8 +55,7 @@ class Mortgage
     #[ORM\JoinColumn(nullable: true)]
     private ?Insurance $insurance = null;
 
-    #[ORM\Column(type: 'boolean', options: ['default' => false])]
-    private ?bool $signed = null;
+
 
     #[ORM\Column(nullable: true)]
     private ?int $signingDay = null;
@@ -88,7 +87,7 @@ class Mortgage
     public function __construct()
     {
         $this->setCode(Uuid::v7());
-        $this->setSigned(0);
+
         $this->mortgageInstallments = new ArrayCollection();
     }
 
@@ -143,7 +142,7 @@ class Mortgage
         return $this->startDay;
     }
 
-    public function setStartDay(int $startDay): static
+    public function setStartDay(?int $startDay): static
     {
         $this->startDay = $startDay;
 
@@ -155,7 +154,7 @@ class Mortgage
         return $this->startYear;
     }
 
-    public function setStartYear(int $startYear): static
+    public function setStartYear(?int $startYear): static
     {
         $this->startYear = $startYear;
 
@@ -380,16 +379,9 @@ class Mortgage
         ];
     }
 
-    public function isSigned(): ?bool
+    public function isSigned(): bool
     {
-        return $this->signed;
-    }
-
-    public function setSigned(bool $signed): static
-    {
-        $this->signed = $signed;
-
-        return $this;
+        return $this->signingDay !== null && $this->signingYear !== null;
     }
 
     /**
