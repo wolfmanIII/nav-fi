@@ -34,6 +34,9 @@ class Ship
     #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2)]
     private ?string $price = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, options: ['default' => '0.00'])]
+    private ?string $credits = '0.00';
+
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
@@ -90,6 +93,13 @@ class Ship
     #[ORM\OneToMany(targetEntity: AnnualBudget::class, mappedBy: 'ship', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $annualBudgets;
 
+
+    /**
+     * @var Collection<int, Transaction>
+     */
+    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'ship', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $transactions;
+
     public function __construct()
     {
         $this->setCode(Uuid::v7());
@@ -99,6 +109,7 @@ class Ship
         $this->amendments = new ArrayCollection();
         $this->routes = new ArrayCollection();
         $this->annualBudgets = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -162,6 +173,18 @@ class Ship
     public function setPrice(string $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getCredits(): ?string
+    {
+        return $this->credits;
+    }
+
+    public function setCredits(string $credits): static
+    {
+        $this->credits = $credits;
 
         return $this;
     }
@@ -453,5 +476,13 @@ class Ship
         }
 
         return null;
+    }
+
+    /**
+     * @return Collection<int, Transaction>
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
     }
 }

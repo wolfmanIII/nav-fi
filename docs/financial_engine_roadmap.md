@@ -69,7 +69,7 @@ Quando la Data Sessione avanza (es. l'Arbitro clicca "Next Day" o "End Week"):
 ## 3. Piano di Implementazione (Prossimi Passi)
 
 ### Fase 1: Fondamenta
-1.  [ ] Creare migrazione per `Ship.credits` e tabella `Transaction`.
+1.  [x] Creare migrazione per `Ship.credits` e tabella `Transaction`.
 2.  [ ] Implementare `LedgerService` (Deposito/Prelievo base).
 3.  [ ] Aggiungere visualizzazione `credits` al layout principale (`base.html.twig`).
 
