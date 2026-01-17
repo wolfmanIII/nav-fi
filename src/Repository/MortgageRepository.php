@@ -42,28 +42,28 @@ class MortgageRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param array{name?: string, ship?: int, campaign?: int} $filters
+     * @param array{name?: string, asset?: int, campaign?: int} $filters
      *
      * @return array{items: Mortgage[], total: int}
      */
     public function findForUserWithFilters(User $user, array $filters, int $page, int $limit): array
     {
         $qb = $this->createQueryBuilder('m')
-            ->leftJoin('m.ship', 's')
-            ->leftJoin('s.campaign', 'c')
-            ->addSelect('s', 'c')
+            ->leftJoin('m.asset', 'a')
+            ->leftJoin('a.campaign', 'c')
+            ->addSelect('a', 'c')
             ->andWhere('m.user = :user')
             ->setParameter('user', $user);
 
         if (!empty($filters['name'])) {
-            $name = '%'.strtolower($filters['name']).'%';
+            $name = '%' . strtolower($filters['name']) . '%';
             $qb->andWhere('LOWER(m.name) LIKE :name')
                 ->setParameter('name', $name);
         }
 
-        if ($filters['ship'] !== null) {
-            $qb->andWhere('s.id = :ship')
-                ->setParameter('ship', (int) $filters['ship']);
+        if ($filters['asset'] !== null) {
+            $qb->andWhere('a.id = :asset')
+                ->setParameter('asset', (int) $filters['asset']);
         }
 
         if ($filters['campaign'] !== null) {

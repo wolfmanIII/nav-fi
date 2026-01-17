@@ -8,11 +8,11 @@ use App\Entity\Income;
 use App\Entity\Mortgage;
 use App\Entity\MortgageInstallment;
 use App\Entity\AnnualBudget;
-use App\Entity\Ship;
+use App\Entity\Asset;
 use App\Entity\Company;
 use App\Entity\User;
 use App\Entity\Campaign;
-use App\Entity\ShipAmendment;
+use App\Entity\AssetAmendment;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -20,9 +20,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 #[AsDoctrineListener(event: 'prePersist')]
 class AssignUserSubscriber
 {
-    public function __construct(private readonly Security $security)
-    {
-    }
+    public function __construct(private readonly Security $security) {}
 
     public function prePersist(PrePersistEventArgs $args): void
     {
@@ -35,7 +33,7 @@ class AssignUserSubscriber
 
         if (
             $entity instanceof Crew
-            || $entity instanceof Ship
+            || $entity instanceof Asset
             || $entity instanceof Mortgage
             || $entity instanceof MortgageInstallment
             || $entity instanceof Cost
@@ -43,7 +41,7 @@ class AssignUserSubscriber
             || $entity instanceof AnnualBudget
             || $entity instanceof Company
             || $entity instanceof Campaign
-            || $entity instanceof ShipAmendment
+            || $entity instanceof AssetAmendment
         ) {
             if (method_exists($entity, 'getUser') && method_exists($entity, 'setUser') && $entity->getUser() === null) {
                 $entity->setUser($user);

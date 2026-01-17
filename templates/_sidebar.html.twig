@@ -45,7 +45,7 @@
             <li>
                 {% set tactical_active = current_route starts with 'app_campaign' 
                     or current_route starts with 'app_company' 
-                    or current_route starts with 'app_ship' 
+                    or current_route starts with 'app_asset' 
                     or current_route starts with 'app_crew' 
                     or current_route starts with 'app_route' %}
                 <details {% if tactical_active %}open{% endif %} data-controller="sidebar-module" data-action="toggle->sidebar-module#toggle">

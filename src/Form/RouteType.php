@@ -72,8 +72,8 @@ class RouteType extends AbstractType
                 },
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
-                    'data-campaign-ship-target' => 'campaign',
-                    'data-action' => 'change->campaign-ship#onCampaignChange',
+                    'data-campaign-asset-target' => 'campaign',
+                    'data-action' => 'change->campaign-asset#onCampaignChange',
                 ],
             ])
             ->add('asset', EntityType::class, [
@@ -97,7 +97,7 @@ class RouteType extends AbstractType
                 },
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
-                    'data-campaign-ship-target' => 'ship',
+                    'data-campaign-asset-target' => 'asset',
                     'data-controller' => 'year-limit',
                     'data-year-limit-default-value' => $this->limits->getYearMin(),
                     'data-action' => 'change->year-limit#onAssetChange',
@@ -203,9 +203,9 @@ class RouteType extends AbstractType
 
             // Auto-fill jump rating from asset if not specified
             if ($route->getJumpRating() === null) {
-                $shipRating = $this->routeMathHelper->getAssetJumpRating($route->getAsset());
-                if ($shipRating !== null) {
-                    $route->setJumpRating($shipRating);
+                $assetRating = $this->routeMathHelper->getAssetJumpRating($route->getAsset());
+                if ($assetRating !== null) {
+                    $route->setJumpRating($assetRating);
                 }
             }
 

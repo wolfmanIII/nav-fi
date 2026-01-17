@@ -333,7 +333,7 @@ class Mortgage
         $assetPrice = $this->normalizeAmount($this->getAsset()?->getPrice());
         $rate = $this->getInterestRate();
 
-        // 1. Calculate Base (1% of Ship Price)
+        // 1. Calculate Base (1% of Asset Price)
         $base = bcdiv($assetPrice, '100', 6);
 
         // 2. Adjust Base with Multiplier/Divider
@@ -366,10 +366,10 @@ class Mortgage
 
     public function calculateInsuranceCost(): string
     {
-        $shipPrice = $this->normalizeAmount($this->getAsset()?->getPrice());
+        $assetPrice = $this->normalizeAmount($this->getAsset()?->getPrice());
         $annualCost = $this->normalizeAmount($this->getInsurance()?->getAnnualCost());
 
-        $base = bcdiv($shipPrice, '100', 6);
+        $base = bcdiv($assetPrice, '100', 6);
         $annualPayment = bcmul($base, $annualCost, 6);
 
         return bcdiv($annualPayment, '13', 6);
@@ -377,13 +377,13 @@ class Mortgage
 
     public function calculate(): array
     {
-        $shipCost = $this->calculateAssetCost();
+        $assetCost = $this->calculateAssetCost();
         $multiplier = $this->normalizeAmount($this->getInterestRate()?->getPriceMultiplier());
         $duration = $this->getInterestRate()?->getDuration() ?? 1;
 
         $monthlyPayment = bcdiv(
             bcdiv(
-                bcmul($shipCost, $multiplier, 6),
+                bcmul($assetCost, $multiplier, 6),
                 (string)$duration,
                 6
             ),
@@ -403,7 +403,7 @@ class Mortgage
         $totalMonthlyPayment = bcadd($monthlyPayment, $insuranceMonthlyPayment, 6);
         $totalAnnualPayment = bcadd($annualPayment, $insuranceAnnualPayment, 6);
 
-        $totalMortgage = bcmul($shipCost, $multiplier, 6);
+        $totalMortgage = bcmul($assetCost, $multiplier, 6);
 
         $totalMortgagePaid = '0.00';
         foreach ($this->getMortgageInstallments() as $installment) {
@@ -415,7 +415,7 @@ class Mortgage
         }
 
         return [
-            'ship_cost' => $this->roundAmount($shipCost),
+            'asset_cost' => $this->roundAmount($assetCost),
             'mortgage_monthly' => $this->roundAmount($monthlyPayment),
             'mortgage_annual' => $this->roundAmount($annualPayment),
             'insurance_monthly' => $this->roundAmount($insuranceMonthlyPayment),

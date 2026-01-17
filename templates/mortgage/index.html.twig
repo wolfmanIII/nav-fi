@@ -102,10 +102,10 @@
             </div>
             <div>
                 <label class="label text-xs uppercase tracking-[0.2em] text-cyan-500/60 font-bold">ASSET_NAV</label>
-                <select name="ship" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
-                    <option value="">ANY_ASSET</option>
-                    {% for ship in ships %}
-                        <option value="{{ ship.id }}" {% if filters.asset == ship.id %}selected{% endif %}>{{ ship.name }}</option>
+                <select name="asset" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
+                    <option value="">ANY_VESSEL</option>
+                    {% for asset in assets %}
+                        <option value="{{ asset.id }}" {% if filters.asset == asset.id %}selected{% endif %}>{{ asset.name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -177,7 +177,7 @@
                                 </div>
                                 <div class="p-4 rounded-lg bg-slate-950/40 border border-slate-800 transition-colors hover:border-cyan-500/20">
                                     <span class="text-sm uppercase text-slate-500 font-semibold mb-1 block tracking-widest">Principal</span>
-                                    <span class="text-xl font-mono text-cyan-300 font-bold">{{ mortgage.calculate.ship_cost|format_number({ max_fraction_digit: 0 }) }} Cr</span>
+                                    <span class="text-xl font-mono text-cyan-300 font-bold">{{ mortgage.calculate.asset_cost|format_number({ max_fraction_digit: 0 }) }} Cr</span>
                                 </div>
                                 <div class="p-4 rounded-lg bg-slate-950/40 border border-slate-800 transition-colors hover:border-cyan-500/20">
                                     <span class="text-sm uppercase text-slate-500 font-bold mb-1 block tracking-widest">Per-Burn Cut</span>
@@ -228,7 +228,7 @@
                                 <div class="py-6 px-8 rounded-lg bg-cyan-900/10 border-x-2 border-cyan-500/20 flex items-center justify-between">
                                     <span class="text-xs uppercase tracking-widest text-cyan-500/70 font-bold">Total Liability</span>
                                     <div class="text-xl font-mono font-bold text-cyan-300">
-                                        {{ mortgage.calculateShipCost|format_number({ max_fraction_digit: 0 }, 'decimal', 'default', locale) }}
+                                        {{ mortgage.calculate.asset_cost|number_format(2) }}
                                         <span class="text-xs text-cyan-600">Cr</span>
                                     </div>
                                 </div>

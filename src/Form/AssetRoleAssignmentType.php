@@ -14,7 +14,7 @@ class AssetRoleAssignmentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('shipRoles', EntityType::class, [
+            ->add('assetRoles', EntityType::class, [
                 'class' => AssetRole::class,
                 'choice_label' => fn(AssetRole $role) => sprintf('%s – %s', $role->getCode(), $role->getName()),
                 'multiple' => true,
@@ -32,7 +32,7 @@ class AssetRoleAssignmentType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'ship' => null,
+            'asset' => null,
             'user' => null,
         ]);
     }

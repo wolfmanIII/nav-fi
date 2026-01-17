@@ -29,25 +29,25 @@ class CaptainValidator extends ConstraintValidator
             return;
         }
 
-        $ship = $value->getShip();
+        $asset = $value->getAsset();
 
-        if ($ship === null) {
+        if ($asset === null) {
             return;
         }
 
         // Cerca se esiste già un capitano su quella nave
-        $existingCaptain = $this->crewRepository->findOneByCaptainOnShip($ship, $value);
+        $existingCaptain = $this->crewRepository->findOneByCaptainOnAsset($asset, $value);
 
         if ($existingCaptain !== null) {
 
-            $shipName = $ship->getName() ?? ('ID '.$ship->getId());
+            $assetName = $asset->getName() ?? ('ID ' . $asset->getId());
             $captainName = trim(($existingCaptain->getName() ?? '') . ' ' . ($existingCaptain->getSurname() ?? ''));
 
             $this->context
                 ->buildViolation($constraint->message)
-                ->setParameter('{{ ship }}', $shipName)
+                ->setParameter('{{ asset }}', $assetName)
                 ->setParameter('{{ name }}', $captainName)
-                ->atPath('shipRoles')
+                ->atPath('assetRoles')
                 ->addViolation();
         }
     }

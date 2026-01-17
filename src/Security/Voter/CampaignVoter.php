@@ -63,7 +63,7 @@ final class CampaignVoter extends Voter
             return false;
         }
 
-        return $campaign->getShips()->count() === 0;
+        return $campaign->getAssets()->count() === 0;
     }
 
     private function isOwner(Campaign $campaign, User $user): bool

@@ -29,7 +29,7 @@
                         </button>
                     </div>
                     <div class="tooltip tooltip-left" data-tip="Assign assets to mission">
-                        <button class="btn btn-outline btn-primary btn-md" onclick="m_ship_select.showModal()">
+                        <button class="btn btn-outline btn-primary btn-md" onclick="m_asset_select.showModal()">
                             {% include 'icons/far-trader.html.twig' %}
                         </button>
                     </div>
@@ -91,7 +91,7 @@
                         <p class="text-sm text-cyan-100/70">Roster locked to this operation docket.</p>
                     </div>
                 </div>
-                <span class="badge badge-outline badge-sm text-cyan-100 border-cyan-400/60">{{ campaign.ships|length }}</span>
+                <span class="badge badge-outline badge-sm text-cyan-100 border-cyan-400/60">{{ campaign.assets|length }}</span>
             </div>
         </div>
 
@@ -106,31 +106,31 @@
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-800/50">
-                {% for ship in campaign.ships %}
+                {% for asset in campaign.assets %}
                     <tr class="hover:bg-cyan-500/5 transition-colors text-slate-300">
-                        <td class="font-mono text-xs p-2">{% include 'components/code_with_copy.html.twig' with { code: ship.code } %}</td>
-                        <td class="font-mono text-xs p-2 font-bold text-cyan-100">{{ ship.name }} — {{ ship.type }} — {{ ship.class }}</td>
+                        <td class="font-mono text-xs p-2">{% include 'components/code_with_copy.html.twig' with { code: asset.code } %}</td>
+                        <td class="font-mono text-xs p-2 font-bold text-cyan-100">{{ asset.name }} — {{ asset.type }} — {{ asset.class }}</td>
                         <td class="font-mono text-xs p-2 text-emerald-400">
-                            {{ ship.credits|format_number({ min_fraction_digit: 0, max_fraction_digit: 0, grouping_used: true }, 'decimal', 'default', locale) }} <span class="text-[10px] text-slate-500">Cr</span>
+                            {{ asset.credits|format_number({ min_fraction_digit: 0, max_fraction_digit: 0, grouping_used: true }, 'decimal', 'default', locale) }} <span class="text-[10px] text-slate-500">Cr</span>
                         </td>
                         <td>
                             <div class="tooltip tooltip-left" data-tip="View crew">
                                 <button type="button"
                                         class="btn btn-outline btn-info btn-xs"
-                                        onclick="document.getElementById('crew_{{ ship.id }}').showModal()">
+                                        onclick="document.getElementById('crew_{{ asset.id }}').showModal()">
                                     {% include 'icons/crew.html.twig' with { dim: 14 } %}
                                 </button>
                             </div>
                             <div class="tooltip tooltip-left" data-tip="View Ledger">
-                                <a href="{{ path('app_asset_ledger', {id: ship.id}) }}"
+                                <a href="{{ path('app_asset_ledger', {id: asset.id}) }}"
                                    role="button"
                                    class="btn btn-outline btn-warning btn-xs text-amber-400">
                                     {% include 'icons/handbook.html.twig' with { dim: 14 } %}
                                 </a>
                             </div>
-                            {% set can_remove = is_granted('SHIP_CAMPAIGN_REMOVE', ship) %}
-                            <div class="tooltip tooltip-left" data-tip="{{ can_remove ? 'Remove ship' : 'Blocked by linked records' }}">
-                                <a href="{{ path('app_campaign_ship_remove', {id: ship.id}) }}"
+                            {% set can_remove = is_granted('ASSET_CAMPAIGN_REMOVE', asset) %}
+                            <div class="tooltip tooltip-left" data-tip="{{ can_remove ? 'Remove asset' : 'Blocked by linked records' }}">
+                                <a href="{{ path('app_campaign_asset_remove', {id: asset.id}) }}"
                                    role="button"
                                    class="btn btn-outline btn-error btn-xs{{ can_remove ? '' : ' opacity-50 pointer-events-none' }}"
                                    {% if not can_remove %}aria-disabled="true"{% endif %}>
@@ -148,11 +148,11 @@
             </table>
         </div>
 
-        {# Crew modals per ship #}
-        {% for ship in campaign.ships %}
-            <dialog id="crew_{{ ship.id }}" class="modal">
+        {# Crew modals per asset #}
+        {% for asset in campaign.assets %}
+            <dialog id="crew_{{ asset.id }}" class="modal">
                 <div class="modal-box w-full max-w-3xl">
-                    <h3 class="text-lg font-bold mb-4">Personnel — {{ ship.name }}</h3>
+                    <h3 class="text-lg font-bold mb-4">Personnel — {{ asset.name }}</h3>
                     <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/40 shadow-inner">
                         <table class="table table-xs w-full border-separate border-spacing-0">
                             <thead>
@@ -162,16 +162,16 @@
                             </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-800/50">
-                            {% if ship.crews is defined and ship.crews|length > 0 %}
-                                {% for crew in ship.crews %}
+                            {% if asset.crews is defined and asset.crews|length > 0 %}
+                                {% for crew in asset.crews %}
                                     <tr class="hover:bg-cyan-500/5 transition-colors text-slate-300">
                                         <td class="font-mono text-xs p-2">
                                             {% if crew.isCaptain() %}<span class="text-amber-400">★</span> {% endif %}
                                             <span class="font-bold text-cyan-100">{{ crew.name }} {{ crew.surname }}</span>
                                         </td>
                                         <td class="font-mono text-xs p-2">
-                                            {% if crew.shipRoles is defined and crew.shipRoles|length > 0 %}
-                                                {{ crew.shipRoles|map(r => r.name)|join(', ') }}
+                                            {% if crew.assetRoles is defined and crew.assetRoles|length > 0 %}
+                                                {{ crew.assetRoles|map(r => r.name)|join(', ') }}
                                             {% else %}
                                                 —
                                             {% endif %}
@@ -187,7 +187,7 @@
                         </table>
                     </div>
                     <div class="modal-action">
-                        <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('crew_{{ ship.id }}').close()">Close</button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('crew_{{ asset.id }}').close()">Close</button>
                     </div>
                 </div>
                 <form method="dialog" class="modal-backdrop">
@@ -196,7 +196,7 @@
             </dialog>
         {% endfor %}
 
-        <dialog id="m_ship_select" class="modal">
+        <dialog id="m_asset_select" class="modal">
             <div class="modal-box w-full max-w-5xl">
                 <h3 class="text-lg font-bold mb-4">Select Assets</h3>
 
@@ -219,10 +219,10 @@
                         </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-800/50">
-                            {% if form.shipSelections|length > 0 %}
-                                {% for row in form.shipSelections %}
+                            {% if form.assetSelections|length > 0 %}
+                                {% for row in form.assetSelections %}
                                     {% set selection = row.vars.data %}
-                                    {% set ship = selection.ship %}
+                                    {% set asset = selection.asset %}
                                     <tr class="hover:bg-cyan-500/5 transition-colors text-slate-300">
                                         <td class="p-2 text-center">
                                             {{ form_widget(row.selected, {
@@ -232,9 +232,9 @@
                                                 }
                                             }) }}
                                         </td>
-                                        <td class="font-mono text-xs p-2">{% include 'components/code_with_copy.html.twig' with { code: ship.code } %}</td>
-                                        <td class="font-mono text-xs p-2 font-bold text-cyan-100">{{ ship.name }} — {{ ship.type }} — {{ ship.class }}</td>
-                                        <td class="font-mono text-xs p-2">{{ ship.captain }}</td>
+                                        <td class="font-mono text-xs p-2">{% include 'components/code_with_copy.html.twig' with { code: asset.code } %}</td>
+                                        <td class="font-mono text-xs p-2 font-bold text-cyan-100">{{ asset.name }} — {{ asset.type }} — {{ asset.class }}</td>
+                                        <td class="font-mono text-xs p-2">{{ asset.captain }}</td>
                                     </tr>
                                 {% endfor %}
                             {% else %}
@@ -248,7 +248,7 @@
 
                 <div class="modal-action">
                     <button type="submit" class="btn btn-outline btn-primary btn-sm">Save</button>
-                    <button type="button" class="btn btn-outline btn-sm" onclick="m_ship_select.close()">Close</button>
+                    <button type="button" class="btn btn-outline btn-sm" onclick="m_asset_select.close()">Close</button>
                 </div>
                 {{ form_end(form) }}
             </div>
@@ -345,7 +345,7 @@
                                 <td class="font-mono text-xs p-2">{{ log.user ? log.user.email : 'System' }}</td>
                                 <td>
                                     <div class="flex items-center gap-2">
-                                        <span class="badge badge-outline badge-sm">Assets {{ ships_count }}</span>
+                                        <span class="badge badge-outline badge-sm">Assets {{ assets_count }}</span>
                                         <button type="button" class="btn btn-outline btn-info btn-xs" onclick="document.getElementById('{{ log_id }}').showModal()">
                                             View snapshot
                                         </button>

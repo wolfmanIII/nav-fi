@@ -57,7 +57,7 @@ class AssetAmendmentType extends AbstractType
                         ->andWhere('c.paymentYear IS NOT NULL')
                         ->andWhere('sa.id IS NULL' . ($amendmentId ? ' OR sa.id = :amendmentId' : ''))
                         ->setParameter('asset', $asset)
-                        ->setParameter('codes', ['SHIP_GEAR', 'SHIP_SOFTWARE'])
+                        ->setParameter('codes', ['ASSET_GEAR', 'ASSET_SOFTWARE'])
                         ->orderBy('c.paymentYear', 'DESC')
                         ->addOrderBy('c.paymentDay', 'DESC');
 

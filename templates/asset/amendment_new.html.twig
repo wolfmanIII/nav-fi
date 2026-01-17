@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nav-Fi - Ship Amendment{% endblock %}
+{% block title %}Nav-Fi - Asset Amendment{% endblock %}
 
 {% block pageContent %}
     <div class="flex flex-col items-stretch gap-4">
@@ -51,7 +51,7 @@
             </div>
         </fieldset>
 
-        {% include 'ship/_details_form.html.twig' with { detailsForm: form.patchDetails, is_amendment: true } %}
+        {% include 'asset/_details_form.html.twig' with { detailsForm: form.patchDetails, is_amendment: true } %}
 
         <div class="flex gap-4">
             <button type="submit" class="btn btn-outline btn-primary mt-4 mb-4">Save amendment</button>

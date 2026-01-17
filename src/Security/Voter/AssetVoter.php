@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 final class AssetVoter extends Voter
 {
-    public const CREATE = 'SHIP_CREATE'; // Keep these strings? Or rename to ASSET_CREATE? A lot of templates use them. I'll stick to 'SHIP_' for now or SEARCH REPLACE ALL templates? Plan said SEARCH & REPLACE Templates. So I should rename these too.
+    public const CREATE = 'ASSET_CREATE';
     // Let's rename them to ASSET_
     public const VIEW = 'ASSET_VIEW';
     public const EDIT = 'ASSET_EDIT';

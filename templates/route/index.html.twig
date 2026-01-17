@@ -18,7 +18,7 @@
                     <div>
                         <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Navigation lanes</p>
                         <h1 class="text-3xl font-semibold text-cyan-100 leading-tight">Routes</h1>
-                        <p class="text-sm text-cyan-100/80">Plan your jumps and keep each ship aligned with the session timeline.</p>
+                        <p class="text-sm text-cyan-100/80">Plan your jumps and keep each asset aligned with the session timeline.</p>
                     </div>
                 </div>
                 <div class="flex gap-2">
@@ -121,7 +121,7 @@
                              <div class="flex items-center gap-2 overflow-hidden max-w-[60%]">
                                 {% if route.asset %}
                                     <span class="text-cyan-500/50">{% include 'icons/far-trader.html.twig' with { dim: 12 } %}</span>
-                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider truncate" title="Assigned Ship">{{ route.asset.name }}</span>
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider truncate" title="Assigned Asset">{{ route.asset.name }}</span>
                                 {% else %}
                                      <span class="text-[10px] text-slate-600 uppercase italic">Unassigned</span>
                                 {% endif %}

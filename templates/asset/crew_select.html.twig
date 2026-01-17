@@ -3,7 +3,7 @@
 {% set CAN_CREW_REMOVE = constant('App\\Security\\Voter\\AssetVoter::CREW_REMOVE') %}
 {% set can_remove_crew = is_granted(CAN_CREW_REMOVE, asset) %}
 
-{% block title %}Nav-Fi - Ship Crew{% endblock %}
+{% block title %}Nav-Fi - Asset Crew{% endblock %}
 
 {% import '_tooltip.html.twig' as tooltip %}
 
@@ -21,7 +21,7 @@
                         {% include 'icons/crew.html.twig' %}
                     </div>
                     <div>
-                        <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Ship crew roster</p>
+                        <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Asset crew roster</p>
                         <h1 class="text-3xl font-semibold text-cyan-100 leading-tight">{{ asset.name }}</h1>
                         <p class="text-sm text-cyan-100/80 font-mono break-all">Code: {{ asset.code }}</p>
                         <p class="text-sm text-cyan-100/80">{{ asset.type }} — {{ asset.class }}</p>
@@ -36,7 +36,7 @@
                     <span class="flex items-center justify-center animate-spin-slow">
                         {% include 'icons/radar.html.twig' %}
                     </span>
-                    <span>The Ship has Mortgage signed! Crew members can not be removed.</span>
+                    <span>The Asset has Mortgage signed! Crew members can not be removed.</span>
                 </div>
             </div>
         {% endif %}
@@ -66,7 +66,7 @@
                             <td class="font-mono text-xs p-2 text-slate-500 italic">{{ member.nickname }}</td>
                             <td class="font-mono text-xs p-2">{{ member.surname }}</td>
                             <td class="font-mono text-xs p-2">
-                                {% for role in member.shipRoles %}
+                                {% for role in member.assetRoles %}
                                     <span class="text-cyan-400">{{ role.name }}</span>
                                     {% if loop.index != loop.last %}
                                         <span class="text-slate-600">/</span>
@@ -95,7 +95,7 @@
                                 <div class="flex gap-2 justify-end">
 
                                     {{ tooltip.button(
-                                        "Update the crew member's ship roles",
+                                        "Update the crew member's asset roles",
                                         'Update roles',
                                         'icons/roles.html.twig',
                                         {
@@ -108,8 +108,8 @@
                                         }
                                     ) }}
 
-                                    {{ tooltip.link('Remove this crew member from the ship',
-                                        'Edit ship',
+                                    {{ tooltip.link('Remove this crew member from the asset',
+                                        'Remove crew',
                                         'icons/action-trash.html.twig',
                                         path('app_asset_crew_remove', {id: member.id}),
                                         { 
@@ -184,7 +184,7 @@
 
                 <div class="flex items-center justify-between text-sm text-slate-500">
                     <span>Showing {{ crewPagination.from }}–{{ crewPagination.to }} of {{ crewPagination.total }} available crew</span>
-                    <div class="tooltip tooltip-left" data-tip="Assign the checked crew to this ship">
+                    <div class="tooltip tooltip-left" data-tip="Assign the checked crew to this asset">
                         <button type="submit" class="btn btn-outline btn-primary btn-xs">Add selected crew</button>
                     </div>
                 </div>
@@ -254,7 +254,7 @@
                     <div class="modal-box w-full max-w-3xl">
                         <h3 class="font-semibold text-cyan-100 text-lg mb-2">Assign Roles — {{ member.name }} {{ member.surname }}</h3>
                         {{ form_start(roleForm, {
-                            action: path('app_asset_crew_assign_roles', {shipId: asset.id, crewId: member.id}),
+                            action: path('app_asset_crew_assign_roles', {assetId: asset.id, crewId: member.id}),
                             method: 'POST',
                             attr: { autocomplete: 'off' }
                         }) }}
@@ -265,7 +265,7 @@
                             <div class="text-xs">Select one or more bridge roles and confirm to update the crew profile.</div>
                         </div>
                         <div>
-                        {{ form_widget(roleForm.shipRoles, {
+                        {{ form_widget(roleForm.assetRoles, {
                             attr: {
                                 class: 'hidden',
                                 'data-role-selector-target': 'select',

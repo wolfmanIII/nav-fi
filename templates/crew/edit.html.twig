@@ -30,7 +30,7 @@
                         <div>
                             <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Crew sheet</p>
                             <h3 class="font-semibold text-cyan-100 text-xl leading-tight">Bridge roles</h3>
-                            <p class="text-sm text-cyan-100/80">Define bridge roles and captain before departure: the crew is the heart of your ship.</p>
+                            <p class="text-sm text-cyan-100/80">Define bridge roles and captain before departure: the crew is the heart of your asset.</p>
                         </div>
                     </div>
                 </div>
@@ -110,8 +110,8 @@
                         {% include 'icons/radar.html.twig' %}
                     </span>
                     <div class="text-sm text-slate-200">
-                        <span class="block">Select a campaign to establish a secure link to the fleet registry and reveal available ships.</span>
-                        <span class="block opacity-80">This is a navigation filter only—if no ship is selected, the campaign choice is ignored and no assignment will be recorded.</span>
+                        <span class="block">Select a campaign to establish a secure link to the fleet registry and reveal available assets.</span>
+                        <span class="block opacity-80">This is a navigation filter only—if no asset is selected, the campaign choice is ignored and no assignment will be recorded.</span>
                         <span class="block opacity-80">The crew record will still be saved, ready for a future assignment.</span>
                     </div>
                 </div>
@@ -152,7 +152,7 @@
                                 </div>
                             </div>
                             <div class="space-y-2">
-                                {{ form_widget(form.shipRoles, {
+                                {{ form_widget(form.assetRoles, {
                                     attr: {
                                         class: 'hidden',
                                         'data-role-selector-target': 'select',
@@ -161,11 +161,11 @@
                                     }
                                 }) }}
                                 <div class="flex items-center gap-2">
-                                    {{ form_label(form.shipRoles) }}
+                                    {{ form_label(form.assetRoles) }}
                                     <span class="badge badge-outline badge-info badge-xs">tap to toggle</span>
                                 </div>
                                 <div class="flex flex-wrap gap-2" data-role-selector-target="chips"></div>
-                                {{ form_errors(form.shipRoles) }}
+                                {{ form_errors(form.assetRoles) }}
                             </div>
                         </div>
                     </div>

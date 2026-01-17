@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraint;
 class Captain extends Constraint
 {
     public string $message =
-        'La nave "{{ ship }}" ha già un capitano assegnato: {{ name }}.';
+    'L\'asset "{{ asset }}" ha già un capitano assegnato: {{ name }}.';
 
     public function getTargets(): string
     {

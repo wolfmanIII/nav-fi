@@ -1,6 +1,6 @@
 {% extends 'base_plain.html.twig' %}
 
-{% block title %}Ship Sheet{% endblock %}
+{% block title %}Asset Sheet{% endblock %}
 
 {% block stylesheets %}
     <style>
@@ -235,7 +235,7 @@
                     <img src="{{ absolute_url(asset('img/nav-fi-logo.png')) }}" alt="Nav-Fi" class="logo">
                 </td>
                 <td style="text-align: right; width: 60%;">
-                    <div class="subtitle">Ship sheet</div>
+                    <div class="subtitle">Asset sheet</div>
                     <div class="title">Nav-Fi — {{ asset.name }}</div>
                     <div class="muted">Template: {{ template_version('pdf/asset/SHEET.html.twig') }}</div>
                 </td>
@@ -285,7 +285,7 @@
                         {% endif %}
                     </div>
                     <div class="muted" style="font-size: 8px; margin-top: 2px;">
-                        Total Cost is auto-calculated and stored with the ship details, but it does not affect the Ship Price.
+                        Total Cost is auto-calculated and stored with the asset details, but it does not affect the Asset Price.
                     </div>
                 </div>
             </div>

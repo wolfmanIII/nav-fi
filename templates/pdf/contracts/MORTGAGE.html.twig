@@ -1,6 +1,6 @@
 {% extends 'base_plain.html.twig' %}
 
-{% block title %}Ship Mortgage Agreement{% endblock %}
+{% block title %}Asset Mortgage Agreement{% endblock %}
 {% block stylesheets %}
     <style>
         /* Printer-friendly styles - Minimized ink usage */
@@ -153,7 +153,7 @@
     {% set locale = locale ?? 'en' %}
     {% set summary = mortgage.calculate() %}
     {% set installments = mortgage.mortgageInstallments %}
-    {% set crew = ship.crews %}
+    {% set crew = asset.crews %}
     {% set filteredCrew = [] %}
     {% set captain = null %}
     {% for member in crew %}
@@ -172,12 +172,12 @@
                     <img src="{{ absolute_url(asset('img/nav-fi-logo.png')) }}" alt="Nav-Fi" class="logo">
                 </td>
                 <td class="text-right">
-                    <div class="text-2xl font-bold">Ship Mortgage Agreement</div>
+                    <div class="text-2xl font-bold">Asset Mortgage Agreement</div>
                     <div class="text-sm font-bold">
                         Code: {{ mortgage.code }}{% if mortgage.signed %} • Signed{% else %} • Pro forma draft{% endif %}
                     </div>
-                    {% set sessionDay = ship.campaign ? ship.campaign.sessionDay : ship.sessionDay %}
-                    {% set sessionYear = ship.campaign ? ship.campaign.sessionYear : ship.sessionYear %}
+                    {% set sessionDay = asset.campaign ? asset.campaign.sessionDay : null %}
+                    {% set sessionYear = asset.campaign ? asset.campaign.sessionYear : null %}
                     {% set sessionValue = (sessionDay is not null and sessionYear is not null) ? (sessionDay|imperial_date(sessionYear)) : '—' %}
                     <div class="text-sm">Generated on: {{ sessionValue }}</div>
                     <div class="text-sm">Template: {{ template_version('pdf/contracts/MORTGAGE.html.twig') }}</div>
@@ -259,9 +259,9 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="px-2">{{ ship.name }}</td>
-                            <td class="px-2">{{ ship.type }} / {{ ship.class }}</td>
-                            <td class="text-right px-2">{{ ship.price|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
+                            <td class="px-2">{{ asset.name }}</td>
+                            <td class="px-2">{{ asset.type }} / {{ asset.class }}</td>
+                            <td class="text-right px-2">{{ asset.price|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
                         </tr>
                     </tbody>
                 </table>
@@ -313,7 +313,7 @@
                     <tr>
                         {% set startValue3 = (mortgage.startDay is not null and mortgage.startYear is not null) ? (mortgage.startDay|imperial_date(mortgage.startYear)) : '—' %}
                         <td class="px-2">{{ startValue3 }}</td>
-                        <td class="px-2">{{ mortgage.shipShares ?? 0 }}</td>
+                        <td class="px-2">{{ mortgage.assetShares ?? 0 }}</td>
                         <td class="text-right px-2">{{ mortgage.advancePayment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
                         <td class="px-2">{{ mortgage.discount ?? 0 }} %</td>
                         <td class="px-2">
@@ -323,7 +323,7 @@
                         </td>
                         <td class="px-2">
                             {% if mortgage.insurance %}
-                                {{ mortgage.insurance.name }} ({{ mortgage.insurance.annualCost }}% ship price)
+                                {{ mortgage.insurance.name }} ({{ mortgage.insurance.annualCost }}% asset price)
                             {% else %}
                                 None
                             {% endif %}
@@ -341,7 +341,7 @@
                 <table class="table text-sm">
                     <thead>
                         <tr>
-                            <th class="text-left px-2">Ship cost</th>
+                            <th class="text-left px-2">Asset cost</th>
                             <th class="text-left px-2">Monthly</th>
                             <th class="text-left px-2">Annual</th>
                             <th class="text-left px-2">Total</th>
@@ -349,7 +349,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="text-right px-2">{{ summary.ship_cost|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
+                            <td class="text-right px-2">{{ summary.asset_cost|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
                             <td class="text-right px-2">{{ summary.mortgage_monthly|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
                             <td class="text-right px-2">{{ summary.mortgage_annual|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
                             <td class="text-right px-2">{{ summary.total_mortgage|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }} Cr</td>
@@ -418,7 +418,7 @@
     {% if filteredCrew|length > 0 %}
         <div class="card mb-4">
             <div class="card-body p-4">
-                <h2 class="card-title text-lg mb-3">Ship crew</h2>
+                <h2 class="card-title text-lg mb-3">Asset crew</h2>
                 <table class="table text-sm">
                     <thead>
                         <tr>
@@ -435,7 +435,7 @@
                                 <td class="px-2">{{ member.surname }}</td>
                                 <td class="px-2">{{ member.nickname ?? '-' }}</td>
                                 <td class="px-2">
-                                    {% for role in member.shipRoles %}
+                                    {% for role in member.assetRoles %}
                                         {{ role.name }}{% if not loop.last %}, {% endif %}
                                     {% endfor %}
                                 </td>

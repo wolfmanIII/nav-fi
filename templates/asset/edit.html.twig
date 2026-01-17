@@ -69,7 +69,7 @@
                                                 path('app_asset_ledger', { id: asset.id }),
                                                 { dim: 16, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
                                 
-                                {{ tooltip.link('Open ship PDF',
+                                {{ tooltip.link('Open asset PDF',
                                                 'Asset PDF',
                                                 'icons/ship-pdf.html.twig',
                                                 path('app_asset_pdf', { id: asset.id }),
@@ -160,7 +160,7 @@
                 const selected = document.querySelector('input[name="asset[category]"]:checked')?.value;
                 
                 // Logic:
-                // SHIP: Show Everything
+                // ASSET: Show Everything
                 // BASE: Show Everything (maybe hide drives in future, but for now Base has structure/hull)
                 // TEAM: Hide Technical Details Wrapper completely
                 
@@ -174,7 +174,7 @@
                 }
 
                 // Update Header Labels dynamically?
-                // Example: Change "Ship Details" to "Unit Details" or hide Hull/Drive specific fields within the wrapper
+                // Example: Change "Asset Details" to "Unit Details" or hide Hull/Drive specific fields within the wrapper
                 // For now, the request specifically asked to hide technical fits for Teams.
             }
 

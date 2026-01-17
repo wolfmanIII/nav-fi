@@ -27,7 +27,7 @@ class CampaignLifecycleSubscriber
         // 2. Sync existing/new items based on date (Time Travel logic)
         $this->ledgerService->processCampaignSync($campaign);
 
-        // 3. Flush changes (Ship credits, Transactions, Installments)
+        // 3. Flush changes (Asset credits, Transactions, Installments)
         // Safe provided we didn't modify Campaign itself.
         $event->getObjectManager()->flush();
     }

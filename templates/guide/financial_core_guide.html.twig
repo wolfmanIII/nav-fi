@@ -32,7 +32,7 @@
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
                 <a href="#core-concepts" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                    <span>1. Core Concepts & " The Ship"</span>
+                    <span>1. Core Concepts & "The Asset"</span>
                 </a>
                 <a href="#time-cursor" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
@@ -53,7 +53,7 @@
         <section id="core-concepts" class="mb-12 scroll-mt-6">
             <div class="rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-cyan-950/10 border border-slate-800 p-8">
                 <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2 font-orbitron">
-                    <span class="text-cyan-400">01 ///</span> Core Concepts & The Entity of "The Ship"
+                    <span class="text-cyan-400">01 ///</span> Core Concepts & The Entity of "The Asset"
                 </h2>
                 
                 <div class="space-y-6">
@@ -63,40 +63,40 @@
                         </p>
                         
                         <div class="grid lg:grid-cols-2 gap-8 mt-6">
-                            {# The Ship Anchor #}
+                            {# The Asset Anchor #}
                             <div class="rounded-lg bg-cyan-950/20 border border-cyan-500/20 p-5">
                                 <h3 class="text-lg font-bold text-cyan-100 mb-3 flex items-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20h20"/><path d="M5 20v-8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8"/><path d="M12 10V4"/></svg>
-                                    The "Ship" is Mandatory
+                                    The "Asset" is Mandatory
                                 </h3>
                                 <p class="text-slate-400 text-sm mb-4">
-                                    In Nav-Fi, the <strong>Ship</strong> is the fundamental accounting unit. All Incomes, Costs, Mortgages, and Budgets <em>must</em> belong to a Ship. 
+                                    In Nav-Fi, the <strong>Asset</strong> is the fundamental accounting unit. All Incomes, Costs, Mortgages, and Budgets <em>must</em> belong to an Asset. 
                                 </p>
                                 <div class="alert alert-info bg-cyan-950/30 border-cyan-500/30 text-cyan-200 text-xs">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                     <span>
-                                        <strong>For Players:</strong> A Ship entity is <strong>REQUIRED</strong>. You cannot track player finances without it.<br/>
-                                        <strong>For NPCs/Adversaries:</strong> Optional. You can create fully detailed ships with fits/crew for combat, but you can skip the <em>Financial Core</em> tracking unless you specifically want to simulate their economy.
+                                        <strong>For Players:</strong> An Asset entity is <strong>REQUIRED</strong>. You cannot track player finances without it.<br/>
+                                        <strong>For NPCs/Adversaries:</strong> Optional. You can create fully detailed assets with fits/crew for combat, but you can skip the <em>Financial Core</em> tracking unless you specifically want to simulate their economy.
                                     </span>
                                 </div>
                             </div>
 
-                            {# Logic for No Ship #}
+                            {# Logic for No Asset #}
                             <div class="rounded-lg bg-emerald-950/20 border border-emerald-500/20 p-5">
                                 <h3 class="text-lg font-bold text-emerald-100 mb-3 flex items-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                    No Ship? Use a "Team"
+                                    No Starship? Use a "Team"
                                 </h3>
                                 <p class="text-slate-400 text-sm mb-3">
-                                    Running a mercenary campaign? Or a ground-based trade company? The "Ship" entity is flexible.
+                                    Running a mercenary campaign? Or a ground-based trade company? The "Asset" entity is flexible.
                                 </p>
                                 <ul class="text-slate-300 text-sm space-y-2 list-disc pl-4">
-                                    <li>Create a Ship named <strong>"Alpha Squad"</strong> or <strong>"Trade Corp"</strong>.</li>
+                                    <li>Create an Asset named <strong>"Alpha Squad"</strong> or <strong>"Trade Corp"</strong>.</li>
                                     <li>Leave the <strong>Components/Fit</strong> empty (it's optional!).</li>
-                                    <li>Use this abstract "Ship" to track all your team's credits, contracts, and salary costs.</li>
+                                    <li>Use this abstract "Asset" to track all your te am's credits, contracts, and salary costs.</li>
                                 </ul>
                                 <p class="text-xs text-emerald-400/80 mt-3 italic">
-                                    The Financial Core works perfectly for any organization by treating it as a "Ship" container.
+                                    The Financial Core works perfectly for any organization by treating it as an "Asset" container.
                                 </p>
                             </div>
                         </div>
@@ -305,7 +305,7 @@
                                 <strong>Start Session:</strong> Check the <em>Mission Date</em>. Update it to "Now".
                             </li>
                             <li>
-                                <strong>Check Ledger:</strong> Look at the Ship's Ledger. Did any automated payments (Mortgage, Salaries) trigger when you advanced the date?
+                                <strong>Check Ledger:</strong> Look at the Asset's Ledger. Did any automated payments (Mortgage, Salaries) trigger when you advanced the date?
                             </li>
                             <li>
                                 <strong>Log Activity:</strong> Add new Incomes (Contracts) and Costs (Fuel, Repairs) as they happen at the table.
@@ -321,7 +321,7 @@
                         <h3 class="text-lg font-bold text-emerald-100 mb-4 font-orbitron uppercase">Workflow: The Ground Unit (No Ship)</h3>
                         <ol class="space-y-4 text-sm text-slate-300 list-decimal pl-4 marker:text-emerald-500 font-medium">
                             <li>
-                                <strong>Create "Team":</strong> Create a Ship entity named "Bravo Company". Leave fittings blank.
+                                <strong>Create "Team":</strong> Create an Asset entity named "Bravo Company". Leave fittings blank.
                             </li>
                             <li>
                                 <strong>Log Logistics:</strong> Use "Costs" to track ammo, rations, and bribes. Categorize them under "Maintenance" or "Life Support".

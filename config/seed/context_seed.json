@@ -232,23 +232,23 @@
             "description": "Crew gear cost"
         },
         {
-            "code": "SHIP_GEAR",
+            "code": "ASSET_GEAR",
             "description": "Ship gear cost"
         },
         {
-            "code": "SHIP_SOFTWARE",
+            "code": "ASSET_SOFTWARE",
             "description": "Ship software cost"
         },
         {
-            "code": "SHIP_MAINT",
+            "code": "ASSET_MAINT",
             "description": "Ship maintenance cost"
         },
         {
-            "code": "SHIP_REPAIR",
+            "code": "ASSET_REPAIR",
             "description": "Ship repair cost"
         },
         {
-            "code": "SHIP_RESUPPLY",
+            "code": "ASSET_RESUPPLY",
             "description": "Ship resupply cost"
         },
         {

@@ -45,22 +45,22 @@ class AnnualBudgetRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param array{ship?: int, start?: string, end?: string, campaign?: int} $filters
+     * @param array{asset?: int, start?: string, end?: string, campaign?: int} $filters
      *
      * @return array{items: AnnualBudget[], total: int}
      */
     public function findForUserWithFilters(User $user, array $filters, int $page, int $limit): array
     {
         $qb = $this->createQueryBuilder('b')
-            ->leftJoin('b.ship', 's')
-            ->leftJoin('s.campaign', 'c')
-            ->addSelect('s', 'c')
+            ->leftJoin('b.asset', 'a')
+            ->leftJoin('a.campaign', 'c')
+            ->addSelect('a', 'c')
             ->andWhere('b.user = :user')
             ->setParameter('user', $user);
 
-        if ($filters['ship'] !== null) {
-            $qb->andWhere('s.id = :ship')
-                ->setParameter('ship', (int) $filters['ship']);
+        if ($filters['asset'] !== null) {
+            $qb->andWhere('a.id = :asset')
+                ->setParameter('asset', (int) $filters['asset']);
         }
 
         $startKey = $this->dateHelper->parseFilter($filters['start'] ?? '', false);
