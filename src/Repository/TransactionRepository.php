@@ -51,4 +51,36 @@ class TransactionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Finds all transactions for a ship with pagination support.
+     * @param \App\Entity\Ship $ship
+     * @param int $page
+     * @param int $limit
+     * @return array{'items': Transaction[], 'total': int}
+     */
+    public function findForShip(\App\Entity\Ship $ship, int $page = 1, int $limit = 20): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->where('t.ship = :ship')
+            ->setParameter('ship', $ship)
+            ->orderBy('t.sessionYear', 'DESC')
+            ->addOrderBy('t.sessionDay', 'DESC')
+            ->addOrderBy('t.createdAt', 'DESC')
+            ->addOrderBy('t.id', 'DESC');
+
+        $query = $qb->getQuery();
+
+        $paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($query);
+        $total = count($paginator);
+
+        $paginator->getQuery()
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+
+        return [
+            'items' => iterator_to_array($paginator),
+            'total' => $total,
+        ];
+    }
 }

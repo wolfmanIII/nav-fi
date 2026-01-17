@@ -422,4 +422,40 @@ final class ShipController extends BaseController
         $em->flush();
         return $this->redirectToRoute('app_ship_crew', ['id' => $ship->getId()]);
     }
+
+    #[Route('/ship/{id}/ledger', name: 'app_ship_ledger')]
+    public function ledger(
+        int $id,
+        Request $request,
+        EntityManagerInterface $em,
+        ListViewHelper $listViewHelper
+    ): Response {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $ship = $em->getRepository(Ship::class)->findOneForUser($id, $user);
+        if (!$ship) {
+            throw new NotFoundHttpException();
+        }
+
+        $page = $listViewHelper->getPage($request);
+        $perPage = 20;
+
+        $transactionRepo = $em->getRepository(\App\Entity\Transaction::class);
+        $result = $transactionRepo->findForShip($ship, $page, $perPage);
+
+        $transactions = $result['items'];
+        $total = $result['total'];
+
+        $pagination = $listViewHelper->buildPaginationPayload($page, $perPage, $total);
+
+        return $this->renderTurbo('ship/ledger.html.twig', [
+            'ship' => $ship,
+            'transactions' => $transactions,
+            'pagination' => $pagination,
+            'controller_name' => self::CONTROLLER_NAME,
+        ]);
+    }
 }

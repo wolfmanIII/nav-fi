@@ -80,6 +80,7 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-1">
+                                {{ tooltip.link('View Financial Ledger', '', 'icons/handbook.html.twig', path('app_ship_ledger', {id: ship.id}), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-400' }) }}
                                 {{ tooltip.link('Tune ship manifest', '', 'icons/action-edit.html.twig', path('app_ship_edit', {id: ship.id}), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-400' }) }}
                                 {% set CAN_DELETE = constant('App\\Security\\Voter\\ShipVoter::DELETE') %}
                                 {% set can_delete = is_granted(CAN_DELETE, ship) %}

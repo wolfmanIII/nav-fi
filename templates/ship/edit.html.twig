@@ -63,6 +63,12 @@
                         </div>
                         {% if ship.id %}
                             <div class="flex items-start gap-2">
+                                {{ tooltip.link('Open financial ledger',
+                                                'View Ledger',
+                                                'icons/handbook.html.twig',
+                                                path('app_ship_ledger', { id: ship.id }),
+                                                { dim: 16, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
+                                
                                 {{ tooltip.link('Open ship PDF',
                                                 'Ship PDF',
                                                 'icons/ship-pdf.html.twig',

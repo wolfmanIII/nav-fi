@@ -121,6 +121,13 @@
                                     {% include 'icons/crew.html.twig' with { dim: 14 } %}
                                 </button>
                             </div>
+                            <div class="tooltip tooltip-left" data-tip="View Ledger">
+                                <a href="{{ path('app_ship_ledger', {id: ship.id}) }}"
+                                   role="button"
+                                   class="btn btn-outline btn-warning btn-xs text-amber-400">
+                                    {% include 'icons/handbook.html.twig' with { dim: 14 } %}
+                                </a>
+                            </div>
                             {% set can_remove = is_granted('SHIP_CAMPAIGN_REMOVE', ship) %}
                             <div class="tooltip tooltip-left" data-tip="{{ can_remove ? 'Remove ship' : 'Blocked by linked records' }}">
                                 <a href="{{ path('app_campaign_ship_remove', {id: ship.id}) }}"

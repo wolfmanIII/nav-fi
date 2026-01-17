@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nav-Fi - Transaction Ledger{% endblock %}
+
+{% import '_tooltip.html.twig' as tooltip %}
+
+{% block pageContent %}
+    <div class="p-10">
+
+        {# SHIP HEADER (Reused style) #}
+        <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-6">
+            <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
+                 style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
+            </div>
+            <div class="relative p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
+                        {# Reuse Handbook Icon for Ledger #}
+                        {% include 'icons/handbook.html.twig' %}
+                    </div>
+                    <div>
+                        <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Financial Ledger</p>
+                        <h1 class="text-3xl font-semibold text-cyan-100 leading-tight">{{ ship.name }}</h1>
+                        <p class="text-sm text-cyan-100/80 font-mono break-all">Code: {{ ship.code }}</p>
+                    </div>
+                </div>
+                <div>
+                     <a href="{{ path('app_ship_edit', { id: ship.id }) }}" class="btn btn-outline btn-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                        Back to Ship
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {# LEDGER TABLE #}
+        <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/40 shadow-inner">
+            <table class="table table-sm w-full border-separate border-spacing-0">
+                <thead>
+                <tr class="border-b border-slate-800 bg-slate-900/50">
+                    <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 py-3">Effective Date</th>
+                    <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 py-3">Recorded</th>
+                    <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 py-3">Description</th>
+                    <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 py-3 text-right">Amount</th>
+                    <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 py-3 text-center">Status</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/50">
+                {% if transactions|length > 0 %}
+                    {% for transaction in transactions %}
+                        <tr class="hover:bg-cyan-500/5 transition-colors group">
+                            {# Effective Date #}
+                            <td class="font-mono text-xs p-3 align-top whitespace-nowrap">
+                                <span class="font-bold text-slate-200">
+                                    {{ transaction.sessionDay|imperial_date(transaction.sessionYear) }}
+                                </span>
+                            </td>
+
+                            {# Recorded At #}
+                             <td class="font-mono text-[10px] p-3 align-top text-slate-500 whitespace-nowrap">
+                                {{ transaction.createdAt|date('Y-m-d H:i') }}
+                            </td>
+
+                            {# Description #}
+                            <td class="text-sm p-3 align-top text-slate-300">
+                                <div class="font-medium">{{ transaction.description }}</div>
+                                {% if transaction.relatedEntityType %}
+                                    <div class="text-[10px] uppercase tracking-wider text-slate-500 mt-1">
+                                        Ref: {{ transaction.relatedEntityType|split('\\')|last }} #{{ transaction.relatedEntityId }}
+                                    </div>
+                                {% endif %}
+                            </td>
+
+                            {# Amount #}
+                            <td class="font-mono text-sm p-3 align-top text-right font-bold">
+                                {% if transaction.amount > 0 %}
+                                    <span class="text-emerald-400">+{{ transaction.amount|number_format(0, '.', ',') }}</span>
+                                {% elseif transaction.amount < 0 %}
+                                    <span class="text-red-400">{{ transaction.amount|number_format(0, '.', ',') }}</span>
+                                {% else %}
+                                    <span class="text-slate-500">0</span>
+                                {% endif %}
+                            </td>
+
+                            {# Status #}
+                            <td class="p-3 align-top text-center">
+                                {% if transaction.status == constant('App\\Entity\\Transaction::STATUS_POSTED') %}
+                                    <span class="badge badge-xs badge-success gap-1 bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+                                        POSTED
+                                    </span>
+                                {% else %}
+                                    <div class="tooltip" data-tip="Future Transaction - pending date arrival">
+                                        <span class="badge badge-xs badge-warning gap-1 bg-amber-500/10 text-amber-400 border-amber-500/20 cursor-help">
+                                            PENDING
+                                        </span>
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-xs text-slate-500 font-rajdhani uppercase tracking-widest py-12">
+                            No financial history found.
+                        </td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="mt-4">
+             {% include 'components/pagination.html.twig' with {
+                pagination: pagination,
+                route: 'app_ship_ledger',
+                route_params: { id: ship.id }
+            } %}
+        </div>
+
+    </div>
+{% endblock %}
