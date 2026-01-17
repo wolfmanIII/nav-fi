@@ -294,7 +294,7 @@ final class MortgageController extends BaseController
             // Handle Optional Start Date
             /** @var ImperialDate|null $startDate */
             $startDate = $data['startDate'];
-            if ($startDate && $startDate->getDay() && $startDate->getYear()) {
+            if ($startDate instanceof ImperialDate && $startDate->getDay() !== null && $startDate->getYear() !== null) {
                 // Validate StartDate >= SigningDate
                 $startDay = $startDate->getDay();
                 $startYear = $startDate->getYear();
@@ -302,10 +302,11 @@ final class MortgageController extends BaseController
                 $signingYear = $mortgage->getSigningYear();
 
                 if ($startYear < $signingYear || ($startYear === $signingYear && $startDay < $signingDay)) {
-                    $this->addFlash('error', 'Mortgage Signed, BUT Start Date ignored (must be on or after Signing Date).');
+                    $this->addFlash('error', 'Mortgage Signed, BUT Start Date was invalid (must be on or after Signing Date ' . sprintf('%03d/%s', $signingDay, $signingYear) . ').');
                 } else {
                     $mortgage->setStartDay($startDay);
                     $mortgage->setStartYear($startYear);
+                    $this->addFlash('success', 'First installment date set correctly: ' . sprintf('%03d/%s', $startDay, $startYear));
                 }
             }
 
@@ -352,30 +353,30 @@ final class MortgageController extends BaseController
             /** @var ImperialDate|null $date */
             $date = $data['startDate'];
 
-            if ($date && $date->getDay() && $date->getYear()) {
+            if ($date instanceof ImperialDate && $date->getDay() !== null && $date->getYear() !== null) {
                 $startDay = $date->getDay();
                 $startYear = $date->getYear();
 
-                // Validation: Start Date >= Signing Date
                 $signingDay = $mortgage->getSigningDay();
                 $signingYear = $mortgage->getSigningYear();
 
                 if ($signingYear !== null && $signingDay !== null) {
                     if ($startYear < $signingYear || ($startYear === $signingYear && $startDay < $signingDay)) {
-                        $this->addFlash('error', 'Start Date must be on or after the Signing Date.');
+                        $this->addFlash('error', 'Start Date must be on or after the Signing Date (' . sprintf('%03d/%s', $signingDay, $signingYear) . ').');
                         return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
                     }
                 }
 
                 $mortgage->setStartDay($startDay);
                 $mortgage->setStartYear($startYear);
-                $this->addFlash('success', 'First installment date set successfully.');
+                $this->addFlash('success', 'First installment date set correctly: ' . sprintf('%03d/%s', $startDay, $startYear));
             } else {
                 $mortgage->setStartDay(null);
                 $mortgage->setStartYear(null);
-                $this->addFlash('info', 'First installment date cleared.');
+                $this->addFlash('info', 'First installment date has been cleared.');
             }
 
+            $em->persist($mortgage);
             $em->flush();
         } else {
             $this->addFlash('error', 'Invalid date provided.');

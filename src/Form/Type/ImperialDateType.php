@@ -77,16 +77,16 @@ class ImperialDateType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($initialDay, $initialYear, $displayValue): void {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
+            $data = $event->getData();
+            if (!$data instanceof ImperialDate) {
+                return;
+            }
             $form = $event->getForm();
-            if ($initialDay !== null) {
-                $form->get('day')->setData($initialDay);
-            }
-            if ($initialYear !== null) {
-                $form->get('year')->setData($initialYear);
-            }
-            if ($displayValue !== '') {
-                $form->get('display')->setData($displayValue);
+            $day = $data->getDay();
+            $year = $data->getYear();
+            if ($day !== null && $year !== null) {
+                $form->get('display')->setData(sprintf('%03d/%s', $day, $year));
             }
         });
 
