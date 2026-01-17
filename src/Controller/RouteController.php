@@ -102,7 +102,7 @@ final class RouteController extends BaseController
             'controller_name' => self::CONTROLLER_NAME,
             'route' => $route,
             'form' => $form,
-            'ship' => $route->getAsset(), // Pass context (legacy)
+
             'asset' => $route->getAsset(),
         ]);
     }
@@ -138,7 +138,6 @@ final class RouteController extends BaseController
             'controller_name' => self::CONTROLLER_NAME,
             'route' => $route,
             'form' => $form,
-            'ship' => $route->getAsset(), // Pass context (legacy)
             'asset' => $route->getAsset(),
         ]);
     }
@@ -183,7 +182,6 @@ final class RouteController extends BaseController
             'mapUrl' => $mapUrl,
             'currentHex' => $startHex,
             'currentSector' => $sector,
-            'ship' => $route->getAsset(), // Pass context (legacy)
             'asset' => $route->getAsset(),
         ]);
     }

@@ -27,7 +27,7 @@ final class AnnualBudgetController extends BaseController
     {
         $user = $this->getUser();
         $filters = $listViewHelper->collectFilters($request, [
-            'ship' => ['type' => 'int'],
+            'asset' => ['type' => 'int'],
             'start',
             'end',
             'campaign' => ['type' => 'int'],
@@ -38,7 +38,7 @@ final class AnnualBudgetController extends BaseController
         $budgets = [];
         $total = 0;
         $totalPages = 1;
-        $ships = [];
+        $assets = [];
         $campaigns = [];
 
         if ($user instanceof \App\Entity\User) {

@@ -58,7 +58,7 @@ class AssetType extends AbstractType
                 'label' => 'Price(Cr)',
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('shipDetails', AssetDetailsType::class, [
+            ->add('assetDetails', AssetDetailsType::class, [
                 'mapped' => false,
                 'data' => $detailsData,
                 'label' => 'Asset Details',

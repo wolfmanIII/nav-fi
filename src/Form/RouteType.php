@@ -100,7 +100,7 @@ class RouteType extends AbstractType
                     'data-campaign-ship-target' => 'ship',
                     'data-controller' => 'year-limit',
                     'data-year-limit-default-value' => $this->limits->getYearMin(),
-                    'data-action' => 'change->year-limit#onShipChange',
+                    'data-action' => 'change->year-limit#onAssetChange',
                 ],
             ])
             ->add('startHex', HiddenType::class, [

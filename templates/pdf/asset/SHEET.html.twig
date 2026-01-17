@@ -131,8 +131,8 @@
 {% block javascripts %}{% endblock %}
 
 {% block pageContent %}
-    {% set details = ship.shipDetails ?? {} %}
-    {% set amendments = ship.amendments ?? [] %}
+    {% set details = asset.assetDetails ?? {} %}
+    {% set amendments = asset.amendments ?? [] %}
     {% set techLevel = details.techLevel ?? '—' %}
     {% set singleItems = [
         { label: 'Hull', item: details.hull ?? {}, spec: null, specLabel: null },
@@ -236,8 +236,8 @@
                 </td>
                 <td style="text-align: right; width: 60%;">
                     <div class="subtitle">Ship sheet</div>
-                    <div class="title">Nav-Fi — {{ ship.name }}</div>
-                    <div class="muted">Template: {{ template_version('pdf/ship/SHEET.html.twig') }}</div>
+                    <div class="title">Nav-Fi — {{ asset.name }}</div>
+                    <div class="muted">Template: {{ template_version('pdf/asset/SHEET.html.twig') }}</div>
                 </td>
             </tr>
         </table>
@@ -246,24 +246,24 @@
             <div class="summary">
                 <div class="item">
                     <div class="label">Code</div>
-                    <div class="val">{{ ship.code }}</div>
+                    <div class="val">{{ asset.code }}</div>
                 </div>
                 <div class="item">
                     <div class="label">Class / Type</div>
-                    <div class="val">{{ ship.class }} — {{ ship.type }}</div>
+                    <div class="val">{{ asset.class }} — {{ asset.type }}</div>
                 </div>
                 <div class="item">
                     <div class="label">Campaign</div>
-                    <div class="val">{{ ship.campaign ? ship.campaign.title : '—' }}</div>
+                    <div class="val">{{ asset.campaign ? asset.campaign.title : '—' }}</div>
                 </div>
                 <div class="item">
                     <div class="label">Price (Cr)</div>
-                    <div class="val">{{ ship.price is not null
-                        ? ship.price|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale ?? 'en')
+                    <div class="val">{{ asset.price is not null
+                        ? asset.price|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale ?? 'en')
                         : '—' }}</div>
                 </div>
-                {% set sessionDay = ship.campaign ? ship.campaign.sessionDay : ship.sessionDay %}
-                {% set sessionYear = ship.campaign ? ship.campaign.sessionYear : ship.sessionYear %}
+                {% set sessionDay = asset.campaign ? asset.campaign.sessionDay : null %}
+                {% set sessionYear = asset.campaign ? asset.campaign.sessionYear : null %}
                 {% set sessionValue = (sessionDay is not null and sessionYear is not null) ? (sessionDay|imperial_date(sessionYear)) : '—' %}
                 <div class="item">
                     <div class="label">Session</div>

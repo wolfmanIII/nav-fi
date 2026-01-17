@@ -2,8 +2,8 @@
 
 {% set CAN_EDIT = constant('App\\Security\\Voter\\AssetVoter::EDIT') %}
 {% set CAN_CREATE = constant('App\\Security\\Voter\\AssetVoter::CREATE') %}
-{% set can_edit = is_granted(CAN_EDIT, ship) %}
-{% set can_create = is_granted(CAN_CREATE, ship) %}
+{% set can_edit = is_granted(CAN_EDIT, asset) %}
+{% set can_create = is_granted(CAN_CREATE, asset) %}
 {% import '_tooltip.html.twig' as tooltip %}
 
 {% block title %}Nav-Fi - Asset{% endblock %}
@@ -17,7 +17,7 @@
         <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
             <legend class="fieldset-legend">Asset</legend>
 
-            {% if ship.mortgageSigned %}
+            {% if asset.mortgageSigned %}
                 <div class="col-span-2">
                     <div class="alert alert-info alert-outline border-cyan-500/50 bg-cyan-500/5 mb-4">
                         <div class="animate-spin-slow text-cyan-500">
@@ -45,7 +45,7 @@
                             <p class="text-sm text-cyan-100/80">Update class and price before mortgages and embarkations: every jump starts with an aligned bridge.</p>
 
                             {# Session Date Indicator #}
-                            {% set campaign = ship.campaign ?? null %}
+                            {% set campaign = asset.campaign ?? null %}
                             {% if campaign %}
                                 <div class="flex flex-wrap gap-2 mt-3">
                                     <div class="badge badge-info gap-1.5 px-2.5 py-2.5 text-xs font-mono">
@@ -61,24 +61,24 @@
                                 </div>
                             {% endif %}
                         </div>
-                        {% if ship.id %}
+                        {% if asset.id %}
                             <div class="flex items-start gap-2">
                                 {{ tooltip.link('Open financial ledger',
                                                 'View Ledger',
                                                 'icons/handbook.html.twig',
-                                                path('app_asset_ledger', { id: ship.id }),
+                                                path('app_asset_ledger', { id: asset.id }),
                                                 { dim: 16, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
                                 
                                 {{ tooltip.link('Open ship PDF',
                                                 'Asset PDF',
                                                 'icons/ship-pdf.html.twig',
-                                                path('app_asset_pdf', { id: ship.id }),
+                                                path('app_asset_pdf', { id: asset.id }),
                                                 { dim: 16, linkClass: 'btn btn-outline btn-secondary btn-sm', attrs: { target: '_blank', rel: 'noopener' } }) }}
-                                {% if ship.mortgageSigned %}
+                                {% if asset.mortgageSigned %}
                                     {{ tooltip.link('Log amendments',
                                                     'Amendments',
                                                     'icons/ship-amendment.html.twig',
-                                                    path('app_asset_amendment_new', { id: ship.id }),
+                                                    path('app_asset_amendment_new', { id: asset.id }),
                                                     { dim: 16, linkClass: 'btn btn-outline btn-info btn-sm' }) }}
                                 {% endif %}
                             </div>
@@ -87,10 +87,10 @@
                 </div>
             </div>
 
-            {% if ship.id %}
+{% if asset.id %}
                 <div class="col-span-2">
                     <label class="block text-slate-300">Code</label>
-                    <div class="m-1 w-full"><b>{{ ship.code }}</b></div>
+                    <div class="m-1 w-full"><b>{{ asset.code }}</b></div>
                 </div>
             {% endif %}
 
@@ -100,7 +100,7 @@
                 {{ form_errors(form.category) }}
             </div>
 
-            <div data-ship-target="nameField">
+            <div data-asset-target="nameField">
                 {{ form_label(form.name) }}
                 {{ form_widget(form.name) }}
                 {{ form_errors(form.name) }}
@@ -133,13 +133,13 @@
        </fieldset>
 
         <div id="technical-details-wrapper">
-            {% include 'ship/_details_form.html.twig' with { detailsForm: form.shipDetails } %}
+            {% include 'asset/_details_form.html.twig' with { detailsForm: form.assetDetails } %}
         </div>
 
         <div class="flex gap-4">
             <button type="submit"
                     class="btn btn-outline btn-primary mt-4 mb-4"
-                    {% if not (ship.id ? can_edit : can_create) %} disabled {% endif %}
+                    {% if not (asset.id ? can_edit : can_create) %} disabled {% endif %}
             >
                 Save
             </button>
@@ -151,13 +151,13 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const categoryInputs = document.querySelectorAll('input[name="ship[category]"]');
+            const categoryInputs = document.querySelectorAll('input[name="asset[category]"]');
             const technicalWrapper = document.getElementById('technical-details-wrapper');
             const shipDetailsControllers = document.querySelectorAll('[data-controller="asset-details"]');
             const technicalInputs = technicalWrapper.querySelectorAll('input, select, textarea');
 
             function updateVisibility() {
-                const selected = document.querySelector('input[name="ship[category]"]:checked')?.value;
+                const selected = document.querySelector('input[name="asset[category]"]:checked')?.value;
                 
                 // Logic:
                 // SHIP: Show Everything

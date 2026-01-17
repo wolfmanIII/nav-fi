@@ -203,7 +203,6 @@ class Crew
      */
     public function getAssetRoles(): Collection
     {
-        // Legacy methods getShipRoles, addShipRole, removeShipRole removed. Use getAssetRoles etc.
         return $this->assetRoles;
     }
 

@@ -60,7 +60,6 @@ final class AssetController extends BaseController
 
         return $this->render('asset/index.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
-            'ships' => $assets, // Keeping variable name 'ships' in template for now to minimize template churn, or should I rename? I should rename in template too. Let's send as 'assets' and update template.
             'assets' => $assets,
             'filters' => $filters,
             'campaigns' => $campaigns,
@@ -89,7 +88,6 @@ final class AssetController extends BaseController
 
         return $this->renderTurbo('asset/edit.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
-            'ship' => $asset, // Template probably expects 'ship', let's pass both or rename in template.
             'asset' => $asset,
             'form' => $form,
         ]);
@@ -138,7 +136,6 @@ final class AssetController extends BaseController
 
         return $this->renderTurbo('asset/edit.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
-            'ship' => $asset,
             'asset' => $asset,
             'form' => $form,
         ]);
@@ -173,19 +170,9 @@ final class AssetController extends BaseController
             'enable-local-file-access' => true,
         ];
 
-        // Ensure template path is correct. If we renamed templates/ship to templates/asset, then:
-        $templatePath = 'pdf/ship/SHEET.html.twig';
-        // Note: I didn't rename pdf templates yet in the plan! Only templates/ship. 
-        // Let's assume pdf/ship/SHEET.html.twig still exists or I should rename it too?
-        // The plan said: mv templates/ship templates/asset.
-        // It didn't mention templates/pdf/ship.
-        // I will keep the path as is if I didn't move it, or update if I did. 
-        // The `mv templates/ship templates/asset` only affected `templates/ship`. 
-        // `templates/pdf` is a separate folder.
-        // So `pdf/ship/SHEET.html.twig` is likely still there.
+        $templatePath = 'pdf/asset/SHEET.html.twig';
 
-        $pdfContent = $pdfGenerator->render('pdf/ship/SHEET.html.twig', [
-            'ship' => $asset, // Template likely expects 'ship'
+        $pdfContent = $pdfGenerator->render($templatePath, [
             'asset' => $asset,
             'user' => $user,
             'locale' => $request->getLocale(),
@@ -213,8 +200,7 @@ final class AssetController extends BaseController
             throw new NotFoundHttpException();
         }
 
-        return $this->render('pdf/ship/SHEET.html.twig', [
-            'ship' => $asset,
+        return $this->render('pdf/asset/SHEET.html.twig', [
             'asset' => $asset,
             'user' => $user,
             'locale' => $request->getLocale(),
@@ -273,9 +259,6 @@ final class AssetController extends BaseController
         $crewPage = $listViewHelper->getPage($request, 'crew_page');
 
         $perPage = 10;
-        // Updating findUnassignedForShip to findUnassignedForAsset if method exists, else assume it works on relation
-        // Actually I need to check CrewRepository. It likely has 'findUnassignedForShip'. I should rename that too.
-        // For now, I'll pass 'asset' assuming I updated Crew Entity related queries.
         $crewResult = $em->getRepository(Crew::class)
             ->findUnassignedForAsset($user, $crewFilters, $crewPage, $perPage, $needCaptain); // TODO: Rename this method in CrewRepo
 
@@ -334,7 +317,6 @@ final class AssetController extends BaseController
         }
 
         return $this->renderTurbo('asset/crew_select.html.twig', [
-            'ship' => $asset,
             'asset' => $asset,
             'form' => $form,
             'roleForms' => $roleForms,
@@ -362,7 +344,7 @@ final class AssetController extends BaseController
         }
 
         $crew = $em->getRepository(Crew::class)->findOneForUser($crewId, $user);
-        if (!$crew || $crew->getAsset()?->getId() !== $asset->getId()) { // Changed getShip to getAsset
+        if (!$crew || $crew->getAsset()?->getId() !== $asset->getId()) {
             throw new NotFoundHttpException();
         }
 
@@ -427,7 +409,7 @@ final class AssetController extends BaseController
             throw new NotFoundHttpException();
         }
 
-        $asset = $crew->getAsset(); // Changed getShip to getAsset
+        $asset = $crew->getAsset();
         if (!$asset) {
             throw new NotFoundHttpException();
         }
@@ -464,7 +446,7 @@ final class AssetController extends BaseController
         $perPage = 20;
 
         $transactionRepo = $em->getRepository(\App\Entity\Transaction::class);
-        $result = $transactionRepo->findForAsset($asset, $page, $perPage); // TODO: Rename findForShip in TransactionRepo
+        $result = $transactionRepo->findForAsset($asset, $page, $perPage);
 
         $transactions = $result['items'];
         $total = $result['total'];
@@ -472,7 +454,6 @@ final class AssetController extends BaseController
         $pagination = $listViewHelper->buildPaginationPayload($page, $perPage, $total);
 
         return $this->renderTurbo('asset/ledger.html.twig', [
-            'ship' => $asset,
             'asset' => $asset,
             'transactions' => $transactions,
             'pagination' => $pagination,

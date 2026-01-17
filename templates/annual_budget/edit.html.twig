@@ -19,7 +19,7 @@
                         <p class="text-xs text-cyan-100/60 font-rajdhani tracking-widest uppercase">Set window: plan credits and missions on the imperial calendar.</p>
 
                         {# Session Date Indicator #}
-                        {% set campaign = budget.ship.campaign ?? (budget.campaign ?? null) %}
+                        {% set campaign = budget.asset.campaign ?? (budget.campaign ?? null) %}
                         {% if campaign %}
                             <div class="flex flex-wrap gap-2 mt-3">
                                 <div class="badge badge-info gap-1.5 px-2.5 py-2.5 text-xs font-mono">
@@ -88,9 +88,9 @@
             </div>
 
             <div class="col-span-2 md:col-span-1">
-                {{ form_label(form.ship) }}
-                {{ form_widget(form.ship) }}
-                {{ form_errors(form.ship) }}
+                {{ form_label(form.asset) }}
+                {{ form_widget(form.asset) }}
+                {{ form_errors(form.asset) }}
             </div>
         </fieldset>
 

@@ -9,7 +9,7 @@ export default class extends Controller {
         this.apply();
     }
 
-    onShipChange() {
+    onAssetChange() {
         this.apply();
     }
 

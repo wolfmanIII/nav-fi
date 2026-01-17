@@ -20,12 +20,12 @@
                     </div>
                     <div>
                         <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Financial Ledger</p>
-                        <h1 class="text-3xl font-semibold text-cyan-100 leading-tight">{{ ship.name }}</h1>
-                        <p class="text-sm text-cyan-100/80 font-mono break-all">Code: {{ ship.code }}</p>
+                        <h1 class="text-3xl font-semibold text-cyan-100 leading-tight">{{ asset.name }}</h1>
+                        <p class="text-sm text-cyan-100/80 font-mono break-all">Code: {{ asset.code }}</p>
                     </div>
                 </div>
                 <div>
-                     <a href="{{ path('app_asset_edit', { id: ship.id }) }}" class="btn btn-outline btn-sm">
+                     <a href="{{ path('app_asset_edit', { id: asset.id }) }}" class="btn btn-outline btn-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                         Back to Asset
                     </a>
@@ -113,7 +113,7 @@
              {% include 'components/pagination.html.twig' with {
                 pagination: pagination,
                 route: 'app_asset_ledger',
-                route_params: { id: ship.id }
+                route_params: { id: asset.id }
             } %}
         </div>
 

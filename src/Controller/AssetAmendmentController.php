@@ -56,13 +56,6 @@ final class AssetAmendmentController extends BaseController
             return $this->redirectToRoute('app_asset_edit', ['id' => $asset->getId()]);
         }
 
-        // findForShip likely needs renaming to findForAsset in repository
-        // Assuming I haven't added that method yet to the new repo.
-        // Let's implement finding logic directly here or use findBy if standard.
-        // The original repo called `findForShip`.
-        // Let's use standard findBy for now or add the method.
-        // Given I just created the repo, it's empty.
-        // I'll use findBy.
         $existing = $repository->findBy(['asset' => $asset, 'user' => $user], ['effectiveYear' => 'DESC', 'effectiveDay' => 'DESC']);
 
         return $this->renderTurbo('asset/amendment_new.html.twig', [
