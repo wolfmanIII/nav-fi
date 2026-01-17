@@ -233,23 +233,23 @@
         },
         {
             "code": "ASSET_GEAR",
-            "description": "Ship gear cost"
+            "description": "Asset gear cost"
         },
         {
             "code": "ASSET_SOFTWARE",
-            "description": "Ship software cost"
+            "description": "Asset software cost"
         },
         {
             "code": "ASSET_MAINT",
-            "description": "Ship maintenance cost"
+            "description": "Asset maintenance cost"
         },
         {
             "code": "ASSET_REPAIR",
-            "description": "Ship repair cost"
+            "description": "Asset repair cost"
         },
         {
             "code": "ASSET_RESUPPLY",
-            "description": "Ship resupply cost"
+            "description": "Asset resupply cost"
         },
         {
             "code": "MEDICAL",
