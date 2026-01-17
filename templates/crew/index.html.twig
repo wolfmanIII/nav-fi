@@ -36,22 +36,22 @@
 
         {% set filter_fields %}
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Name / Surname</label>
-                <input type="text" name="search" value="{{ filters.search }}" class="input m-1 w-full">
+                <label class="label text-xs uppercase tracking-[0.2em] text-cyan-500/60 font-bold">CREW_NAME</label>
+                <input type="text" name="search" value="{{ filters.search }}" class="input w-full bg-slate-950/50 border-slate-800 text-cyan-100 placeholder:text-slate-600 focus:border-cyan-500/50" placeholder="Search by name...">
             </div>
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Asset</label>
-                <select name="asset" class="select m-1 w-full">
-                    <option value="">All assets</option>
+                <label class="label text-xs uppercase tracking-[0.2em] text-cyan-500/60 font-bold">VESSEL_NAV</label>
+                <select name="asset" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
+                    <option value="">ANY_VESSEL</option>
                     {% for asset in assets %}
                         <option value="{{ asset.id }}" {% if filters.asset == asset.id %}selected{% endif %}>{{ asset.name }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Mission</label>
-                <select name="campaign" class="select m-1 w-full">
-                    <option value="">All missions</option>
+                <label class="label text-xs uppercase tracking-[0.2em] text-cyan-500/60 font-bold">OPS_CAMPAIGN</label>
+                <select name="campaign" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
+                    <option value="">ALL_OPERATIONS</option>
                     {% for campaign in campaigns %}
                         <option value="{{ campaign.id }}" {% if filters.campaign == campaign.id %}selected{% endif %}>{{ campaign.title }}</option>
                     {% endfor %}

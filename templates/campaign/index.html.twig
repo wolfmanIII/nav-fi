@@ -36,12 +36,12 @@
 
         {% set filter_fields %}
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Title</label>
-                <input type="text" name="title" value="{{ filters.title }}" class="input m-1 w-full">
+                <label class="label text-xs uppercase tracking-[0.2em] text-cyan-500/60 font-bold">MISSION_TITLE</label>
+                <input type="text" name="title" value="{{ filters.title }}" class="input w-full bg-slate-950/50 border-slate-800 text-cyan-100 placeholder:text-slate-600 focus:border-cyan-500/50" placeholder="Search by title...">
             </div>
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Starting year (exact)</label>
-                <input type="text" name="starting_year" value="{{ filters.starting_year }}" class="input m-1 w-full" placeholder="Year">
+                <label class="label text-xs uppercase tracking-[0.2em] text-cyan-500/60 font-bold">START_YEAR</label>
+                <input type="text" name="starting_year" value="{{ filters.starting_year }}" class="input w-full bg-slate-950/50 border-slate-800 text-cyan-100 placeholder:text-slate-600 focus:border-cyan-500/50" placeholder="Year...">
             </div>
         {% endset %}
         {% include 'components/index_filters.html.twig' with {
