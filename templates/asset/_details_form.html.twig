@@ -44,32 +44,49 @@
 <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full"
          data-controller="asset-details">
     <legend class="fieldset-legend">Asset Technical Details</legend>
-    
-    <div>
-        {{ form_label(detailsForm.techLevel) }}
-        {{ form_widget(detailsForm.techLevel) }}
-        {{ form_errors(detailsForm.techLevel) }}
-    </div>
-    
-    <div>
-        {{ form_label(detailsForm.totalCost) }}
-        <input type="text"
-               class="input m-1 w-full"
-               data-asset-details-target="totalDisplay"
-               readonly
-               value="">
-        {{ form_widget(detailsForm.totalCost, { attr: { class: 'hidden', 'data-asset-details-target': 'totalInput' } }) }}
-        {{ form_errors(detailsForm.totalCost) }}
-        {% set total_help_id = detailsForm.totalCost.vars.id ~ '-help' %}
-        <input type="checkbox" id="{{ total_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box">
-                <h3 class="font-bold">Total Cost</h3>
-                <p class="py-2 text-sm">Auto-calculated from the component rows. If the total is 0, the field stays empty.</p>
-                <div class="modal-action">
-                    <label for="{{ total_help_id }}" class="btn btn-primary">Close</label>
+    <div class="col-span-2">
+        <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-4">
+            <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
+                 style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
+            </div>
+            <div class="relative p-4 flex items-start gap-3">
+                <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
+                    {% include 'icons/ship-components.html.twig' %}
+                </div>
+                <div>
+                    <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Asset details</p>
+                    <h3 class="font-semibold text-cyan-100 text-xl leading-tight">Layout & components</h3>
+                    <p class="text-sm text-cyan-100/80">Insert hull, drives, systems and payload in a structured way; data will be stored as JSON.</p>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="col-span-2">
+        <div class="alert alert-info flex items-start gap-2">
+            <div class="pt-0.5 animate-spin-slow">
+                {% include 'icons/radar.html.twig' %}
+            </div>
+            <div>
+                Total Cost is auto-calculated and stored with the asset details, but it does not affect the Asset Price field: set your asset price independently.
+            </div>
+        </div>
+    </div>
+
+    <div class="col-span-2 grid grid-cols-3 gap-4">
+        <div>
+            {{ form_label(detailsForm.techLevel) }}
+            {{ form_widget(detailsForm.techLevel) }}
+            {{ form_errors(detailsForm.techLevel) }}
+        </div>
+        <div>
+            {{ form_label(detailsForm.totalCost) }}
+            <input type="text"
+                   class="input m-1 w-full"
+                   data-asset-details-target="totalDisplay"
+                   readonly
+                   value="">
+            {{ form_widget(detailsForm.totalCost, { attr: { class: 'hidden', 'data-asset-details-target': 'totalInput' } }) }}
+            {{ form_errors(detailsForm.totalCost) }}
         </div>
     </div>
 
