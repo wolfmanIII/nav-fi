@@ -58,11 +58,9 @@ final class RouteController extends BaseController
             'controller_name' => self::CONTROLLER_NAME,
             'routes' => $routes,
             'filters' => $filters,
-            'ships' => $assets,
             'assets' => $assets,
             'campaigns' => $campaigns,
             'pagination' => $pagination,
-            'ship' => $asset, // Pass context (legacy)
             'asset' => $asset, // Pass context
         ]);
     }

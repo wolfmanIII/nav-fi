@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Entity\Campaign;
 use App\Entity\Route;
-use App\Entity\Ship;
+use App\Entity\Asset;
 use App\Form\Config\DayYearLimits;
 use App\Form\RouteWaypointType;
 use App\Form\Type\ImperialDateType;
@@ -12,7 +12,7 @@ use App\Model\ImperialDate;
 use App\Service\ImperialDateHelper;
 use App\Service\RouteMathHelper;
 use App\Service\TravellerMapSectorLookup;
-use App\Repository\ShipRepository;
+use App\Repository\AssetRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -44,7 +44,7 @@ class RouteType extends AbstractType
         $route = $builder->getData();
 
         $campaignStartYear = $route->getCampaign()?->getStartingYear()
-            ?? $route->getShip()?->getCampaign()?->getStartingYear();
+            ?? $route->getAsset()?->getCampaign()?->getStartingYear();
         $minYear = $campaignStartYear ?? $this->limits->getYearMin();
         $startDate = new ImperialDate($route->getStartYear(), $route->getStartDay());
         $destDate = new ImperialDate($route->getDestYear(), $route->getDestDay());
@@ -62,7 +62,7 @@ class RouteType extends AbstractType
                 'required' => true,
                 'placeholder' => '-- Select a Campaign --',
                 'choice_label' => fn(Campaign $campaign) => $campaign->getTitle(),
-                'data' => $route->getCampaign() ?? $route->getShip()?->getCampaign(),
+                'data' => $route->getCampaign() ?? $route->getAsset()?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
                     if ($user) {
@@ -76,22 +76,22 @@ class RouteType extends AbstractType
                     'data-action' => 'change->campaign-ship#onCampaignChange',
                 ],
             ])
-            ->add('ship', EntityType::class, [
-                'class' => Ship::class,
-                'placeholder' => '-- Select a Ship --',
-                'choice_label' => fn(Ship $ship) => sprintf('%s - %s(%s)', $ship->getName(), $ship->getType(), $ship->getClass()),
-                'choice_attr' => function (Ship $ship): array {
-                    $start = $ship->getCampaign()?->getStartingYear();
-                    $campaignId = $ship->getCampaign()?->getId();
+            ->add('asset', EntityType::class, [
+                'class' => Asset::class,
+                'placeholder' => '-- Select an Asset --',
+                'choice_label' => fn(Asset $asset) => sprintf('%s - %s(%s)', $asset->getName(), $asset->getType(), $asset->getClass()),
+                'choice_attr' => function (Asset $asset): array {
+                    $start = $asset->getCampaign()?->getStartingYear();
+                    $campaignId = $asset->getCampaign()?->getId();
                     return [
                         'data-start-year' => $start ?? '',
                         'data-campaign' => $campaignId ? (string) $campaignId : '',
                     ];
                 },
-                'query_builder' => function (ShipRepository $repo) use ($user) {
-                    $qb = $repo->createQueryBuilder('s')->orderBy('s.name', 'ASC');
+                'query_builder' => function (AssetRepository $repo) use ($user) {
+                    $qb = $repo->createQueryBuilder('a')->orderBy('a.name', 'ASC');
                     if ($user) {
-                        $qb->andWhere('s.user = :user')->setParameter('user', $user);
+                        $qb->andWhere('a.user = :user')->setParameter('user', $user);
                     }
                     return $qb;
                 },
@@ -201,9 +201,9 @@ class RouteType extends AbstractType
 
             $distances = $this->routeMathHelper->segmentDistances($hexes);
 
-            // Auto-fill jump rating from ship if not specified
+            // Auto-fill jump rating from asset if not specified
             if ($route->getJumpRating() === null) {
-                $shipRating = $this->routeMathHelper->getShipJumpRating($route->getShip());
+                $shipRating = $this->routeMathHelper->getAssetJumpRating($route->getAsset());
                 if ($shipRating !== null) {
                     $route->setJumpRating($shipRating);
                 }
@@ -211,8 +211,8 @@ class RouteType extends AbstractType
 
             $jumpRating = $route->getJumpRating(); // Now strictly use what's on the route (or what we just filled)
 
-            $hullTons = $this->routeMathHelper->getShipHullTonnage($route->getShip());
-            $fuelCapacity = $this->routeMathHelper->getShipFuelCapacity($route->getShip());
+            $hullTons = $this->routeMathHelper->getAssetHullTonnage($route->getAsset());
+            $fuelCapacity = $this->routeMathHelper->getAssetFuelCapacity($route->getAsset());
 
             foreach ($waypoints as $idx => $waypoint) {
                 $distance = $distances[$idx] ?? null;

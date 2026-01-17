@@ -393,7 +393,7 @@ final class AssetController extends BaseController
                         continue;
                     }
 
-                    foreach ($otherCrew->getShipRoles() as $otherRole) {
+                    foreach ($otherCrew->getAssetRoles() as $otherRole) {
                         if ($otherRole->getCode() === 'CAP') {
                             $this->addFlash('error', 'Another crew member already holds the captain role. Remove that role first.');
                             return $this->redirectToRoute('app_asset_crew', ['id' => $asset->getId()]);

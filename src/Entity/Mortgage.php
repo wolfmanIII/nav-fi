@@ -15,7 +15,7 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Index(name: 'idx_mortgage_asset', columns: ['asset_id'])]
 class Mortgage
 {
-    private const SHIP_SHARE_VALUE = 1000000; // Keeping constant name for business rule compatibility
+    public const ASSET_SHARE_VALUE = 1000000; // Keeping constant name for business rule compatibility
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -39,7 +39,7 @@ class Mortgage
     private ?int $startYear = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $shipShares = null; // Keeping field name
+    private ?int $assetShares = null; // Keeping field name
 
     #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2, nullable: true)]
     private ?string $advancePayment = null;
@@ -50,6 +50,9 @@ class Mortgage
 
     #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2, nullable: true)]
     private ?string $discount = null;
+
+    #[ORM\Column(options: ['default' => false])]
+    private ?bool $discountIsPercentage = false;
 
     #[ORM\ManyToOne(inversedBy: 'mortgages')]
     #[ORM\JoinColumn(nullable: true)]
@@ -159,14 +162,14 @@ class Mortgage
         return $this;
     }
 
-    public function getShipShares(): ?int
+    public function getAssetShares(): ?int
     {
-        return $this->shipShares;
+        return $this->assetShares;
     }
 
-    public function setShipShares(?int $shipShares): static
+    public function setAssetShares(?int $assetShares): static
     {
-        $this->shipShares = $shipShares;
+        $this->assetShares = $assetShares;
 
         return $this;
     }
@@ -203,6 +206,18 @@ class Mortgage
     public function setDiscount(?string $discount): static
     {
         $this->discount = $discount;
+
+        return $this;
+    }
+
+    public function getDiscountIsPercentage(): ?bool
+    {
+        return $this->discountIsPercentage;
+    }
+
+    public function setDiscountIsPercentage(bool $discountIsPercentage): static
+    {
+        $this->discountIsPercentage = $discountIsPercentage;
 
         return $this;
     }
@@ -291,26 +306,62 @@ class Mortgage
         return $this;
     }
 
-    public function calculateShipCost(): string
+    public function calculateAssetCost(): string
     {
-        $shipPrice = $this->normalizeAmount($this->getAsset()?->getPrice());
-        $shipSharesValue = bcmul((string)($this->getShipShares() ?? 0), (string)self::SHIP_SHARE_VALUE, 4);
+        $assetPrice = $this->normalizeAmount($this->getAsset()?->getPrice());
+        $assetSharesValue = bcmul((string)($this->getAssetShares() ?? 0), (string)self::ASSET_SHARE_VALUE, 4);
 
-        $shipCost = bcsub($shipPrice, $shipSharesValue, 6);
+        $assetCost = bcsub($assetPrice, $assetSharesValue, 6);
+
         if ($this->getAdvancePayment()) {
-            $shipCost = bcsub($shipCost, $this->normalizeAmount($this->getAdvancePayment()), 6);
+            $assetCost = bcsub($assetCost, $this->normalizeAmount($this->getAdvancePayment()), 6);
         }
 
         if ($this->getDiscount()) {
-            $discount = bcdiv(
-                bcmul($shipPrice, $this->normalizeAmount($this->getDiscount()), 6),
-                '100',
-                6
-            );
-            $shipCost = bcsub($shipCost, $discount, 6);
+            $discount = $this->getDiscountIsPercentage() ?
+                bcmul($assetPrice, $this->normalizeAmount($this->getDiscount()), 6) : // Percentage of full price
+                $this->normalizeAmount($this->getDiscount());
+
+            $assetCost = bcsub($assetCost, $discount, 6);
         }
 
-        return bcadd($shipCost, '0', 6);
+        return bcadd($assetCost, '0', 6);
+    }
+
+    public function calculateMonthlyPayment(): string
+    {
+        $assetPrice = $this->normalizeAmount($this->getAsset()?->getPrice());
+        $rate = $this->getInterestRate();
+
+        // 1. Calculate Base (1% of Ship Price)
+        $base = bcdiv($assetPrice, '100', 6);
+
+        // 2. Adjust Base with Multiplier/Divider
+        // Formula: Base * Multiplier / Divider
+        if ($rate) {
+            $multiplier = $rate->getPriceMultiplier() ?? '1.0';
+            $divider = $rate->getPriceDivider() ?? 1;
+
+            if ($divider == 0) $divider = 1;
+
+            // TODO: If we want to use the "financed amount" instead of "full price" for interest calculations:
+            $assetCost = $this->calculateAssetCost();
+            // But standard Traveller rules often base recurring costs on the HULL price, not the financed amount.
+            // However, "Subsidized Merchant" example implies the cost is based on the remaining debt or special terms.
+            // For now, let's assume the interest rate structure given applies to the adjusted cost if multiplier is involved.
+            // OR strictly follow standard: Standard Mortgage is 1/240th of Cash Price per month for 480 months. (approx 0.41% pm)
+
+            // Let's use the rate entity logic:
+            $totalMortgage = bcmul($assetCost, $multiplier, 6);
+            $totalMortgage = bcdiv($totalMortgage, (string)$divider, 6);
+
+            $duration = $rate->getDuration() ?? 240;
+            if ($duration <= 0) $duration = 1;
+
+            return bcdiv($totalMortgage, (string)$duration, 6);
+        }
+
+        return '0.00';
     }
 
     public function calculateInsuranceCost(): string
@@ -326,7 +377,7 @@ class Mortgage
 
     public function calculate(): array
     {
-        $shipCost = $this->calculateShipCost();
+        $shipCost = $this->calculateAssetCost();
         $multiplier = $this->normalizeAmount($this->getInterestRate()?->getPriceMultiplier());
         $duration = $this->getInterestRate()?->getDuration() ?? 1;
 

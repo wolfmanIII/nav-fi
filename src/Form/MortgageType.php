@@ -37,7 +37,7 @@ class MortgageType extends AbstractType
         $builder
             //->add('name', TextType::class, ['attr' => ['class' => 'input m-1 w-full'],])
 
-            ->add('shipShares', IntegerType::class, [
+            ->add('assetShares', IntegerType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
                 'required' => false,
             ])

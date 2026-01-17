@@ -313,7 +313,7 @@ final class CampaignController extends BaseController
             'signingDay' => $mortgage->getSigningDay(),
             'signingYear' => $mortgage->getSigningYear(),
             'signingLocation' => $mortgage->getSigningLocation(),
-            'shipShares' => $mortgage->getShipShares(),
+            'assetShares' => $mortgage->getAssetShares(),
             'advancePayment' => $mortgage->getAdvancePayment(),
             'discount' => $mortgage->getDiscount(),
             'interestRate' => $interestRate ? [

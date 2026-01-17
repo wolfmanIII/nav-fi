@@ -3,11 +3,11 @@
 namespace App\Form;
 
 use App\Entity\AnnualBudget;
-use App\Entity\Ship;
+use App\Entity\Asset;
 use App\Form\Config\DayYearLimits;
 use App\Form\Type\ImperialDateType;
 use App\Model\ImperialDate;
-use App\Repository\ShipRepository;
+use App\Repository\AssetRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -27,7 +27,7 @@ class AnnualBudgetType extends AbstractType
         $user = $options['user'];
         /** @var AnnualBudget $budget */
         $budget = $builder->getData();
-        $campaignStartYear = $budget?->getShip()?->getCampaign()?->getStartingYear();
+        $campaignStartYear = $budget?->getAsset()?->getCampaign()?->getStartingYear();
         $minYear = $campaignStartYear ?? $this->limits->getYearMin();
         $startDate = new ImperialDate($budget?->getStartYear(), $budget?->getStartDay());
         $endDate = new ImperialDate($budget?->getEndYear(), $budget?->getEndDay());
@@ -55,7 +55,7 @@ class AnnualBudgetType extends AbstractType
                 'required' => true,
                 'placeholder' => '-- Select a Campaign --',
                 'choice_label' => fn(Campaign $campaign) => sprintf('%s (%03d/%04d)', $campaign->getTitle(), $campaign->getSessionDay(), $campaign->getSessionYear()),
-                'data' => $budget->getShip()?->getCampaign(),
+                'data' => $budget->getAsset()?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
                     if ($user) {
@@ -69,24 +69,24 @@ class AnnualBudgetType extends AbstractType
                     'data-action' => 'change->campaign-ship#onCampaignChange',
                 ],
             ])
-            ->add('ship', EntityType::class, [
-                'class' => Ship::class,
-                'placeholder' => '-- Select a Ship --',
-                'choice_label' => fn(Ship $ship) => sprintf('%s (%s)', $ship->getName(), $ship->getClass()),
-                'choice_attr' => function (Ship $ship): array {
-                    $start = $ship->getCampaign()?->getStartingYear();
-                    $campaignId = $ship->getCampaign()?->getId();
+            ->add('asset', EntityType::class, [
+                'class' => Asset::class,
+                'placeholder' => '-- Select an Asset --',
+                'choice_label' => fn(Asset $asset) => sprintf('%s (%s)', $asset->getName(), $asset->getClass()),
+                'choice_attr' => function (Asset $asset): array {
+                    $start = $asset->getCampaign()?->getStartingYear();
+                    $campaignId = $asset->getCampaign()?->getId();
                     return [
                         'data-start-year' => $start ?? '',
                         'data-campaign' => $campaignId ? (string) $campaignId : '',
                     ];
                 },
-                'query_builder' => function (ShipRepository $repo) use ($user) {
-                    $qb = $repo->createQueryBuilder('s')->orderBy('s.name', 'ASC');
+                'query_builder' => function (AssetRepository $repo) use ($user) {
+                    $qb = $repo->createQueryBuilder('a')->orderBy('a.name', 'ASC');
                     if ($user) {
-                        $qb->andWhere('s.user = :user')->setParameter('user', $user);
+                        $qb->andWhere('a.user = :user')->setParameter('user', $user);
                     }
-                    $qb->andWhere('s.campaign IS NOT NULL');
+                    $qb->andWhere('a.campaign IS NOT NULL');
                     return $qb;
                 },
                 'attr' => [

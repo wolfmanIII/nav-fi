@@ -7,7 +7,7 @@
         {{ form_start(form) }}
 
         <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-            <legend class="fieldset-legend">Ship Amendment</legend>
+            <legend class="fieldset-legend">Asset Amendment</legend>
 
             <div class="col-span-2">
                 <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
@@ -28,8 +28,8 @@
             </div>
 
             <div class="col-span-2">
-                <label class="block text-slate-300">Ship</label>
-                <div class="m-1 w-full"><b>{{ ship.name }} — {{ ship.type }} ({{ ship.class }})</b></div>
+                <label class="block text-slate-300">Asset</label>
+                <div class="m-1 w-full"><b>{{ asset.name }} — {{ asset.type }} ({{ asset.class }})</b></div>
             </div>
 
             <div>
@@ -55,7 +55,7 @@
 
         <div class="flex gap-4">
             <button type="submit" class="btn btn-outline btn-primary mt-4 mb-4">Save amendment</button>
-            <a href="{{ path('app_asset_edit', { id: ship.id }) }}" role="button" class="btn btn-outline btn-default mt-4 mb-4">Back to ship</a>
+            <a href="{{ path('app_asset_edit', { id: asset.id }) }}" role="button" class="btn btn-outline btn-default mt-4 mb-4">Back to asset</a>
         </div>
 
         {{ form_end(form) }}

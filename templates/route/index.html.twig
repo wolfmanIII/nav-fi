@@ -37,11 +37,11 @@
                 <input type="text" name="name" value="{{ filters.name }}" class="input m-1 w-full">
             </div>
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Ship</label>
-                <select name="ship" class="select m-1 w-full">
-                    <option value="">All ships</option>
-                    {% for ship in ships %}
-                        <option value="{{ ship.id }}" {% if filters.asset == ship.id %}selected{% endif %}>{{ ship.name }}</option>
+                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Asset</label>
+                <select name="asset" class="select m-1 w-full">
+                    <option value="">All assets</option>
+                    {% for asset in assets %}
+                        <option value="{{ asset.id }}" {% if filters.asset == asset.id %}selected{% endif %}>{{ asset.name }}</option>
                     {% endfor %}
                 </select>
             </div>

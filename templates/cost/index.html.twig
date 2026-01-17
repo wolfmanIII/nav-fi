@@ -113,10 +113,10 @@
             </div>
             <div>
                 <label class="label text-xs uppercase tracking-[0.2em] text-cyan-500/60 font-bold">VESSEL_NAV</label>
-                <select name="ship" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
+                <select name="asset" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
                     <option value="">ANY_VESSEL</option>
-                    {% for ship in ships %}
-                        <option value="{{ ship.id }}" {% if filters.asset == ship.id %}selected{% endif %}>{{ ship.name }}</option>
+                    {% for asset in assets %}
+                        <option value="{{ asset.id }}" {% if filters.asset == asset.id %}selected{% endif %}>{{ asset.name }}</option>
                     {% endfor %}
                 </select>
             </div>

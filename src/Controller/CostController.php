@@ -64,7 +64,6 @@ final class CostController extends BaseController
             'costs' => $costs,
             'filters' => $filters,
             'categories' => $categories,
-            'ships' => $assets,
             'assets' => $assets,
             'campaigns' => $campaigns,
             'pagination' => $pagination,
@@ -124,9 +123,9 @@ final class CostController extends BaseController
 
         return $this->renderTurbo('cost/edit.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
+            'controller_name' => self::CONTROLLER_NAME,
             'cost' => $cost,
             'form' => $form,
-            'ship' => $cost->getAsset(),
             'asset' => $cost->getAsset(),
         ]);
     }

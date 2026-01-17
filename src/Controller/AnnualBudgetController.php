@@ -7,7 +7,7 @@ use App\Entity\Campaign;
 use App\Entity\Cost;
 use App\Entity\Income;
 use App\Entity\MortgageInstallment;
-use App\Entity\Ship;
+use App\Entity\Asset;
 use App\Form\AnnualBudgetType;
 use App\Security\Voter\AnnualBudgetVoter;
 use App\Service\ImperialDateHelper;
@@ -54,7 +54,7 @@ final class AnnualBudgetController extends BaseController
                 $budgets = $result['items'];
             }
 
-            $ships = $em->getRepository(Ship::class)->findAllForUser($user);
+            $assets = $em->getRepository(Asset::class)->findAllForUser($user);
             $campaigns = $em->getRepository(Campaign::class)->findAllForUser($user);
         }
 
@@ -64,7 +64,7 @@ final class AnnualBudgetController extends BaseController
             'controller_name' => self::CONTROLLER_NAME,
             'budgets' => $budgets,
             'filters' => $filters,
-            'ships' => $ships,
+            'assets' => $assets,
             'campaigns' => $campaigns,
             'pagination' => $pagination,
         ]);
@@ -126,9 +126,8 @@ final class AnnualBudgetController extends BaseController
         return $this->renderTurbo('annual_budget/edit.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'budget' => $budget,
-            'budget' => $budget,
             'form' => $form,
-            'ship' => $budget->getShip(),
+            'asset' => $budget->getAsset(),
         ]);
     }
 
@@ -181,9 +180,12 @@ final class AnnualBudgetController extends BaseController
             'budget' => $budget,
             'labels' => $labels,
             'incomeSeries' => $incomeSeries,
+            'costSeries' => $costSeries,
+            'budget' => $budget,
+            'labels' => $labels,
             'incomeSeries' => $incomeSeries,
             'costSeries' => $costSeries,
-            'ship' => $budget->getShip(),
+            'asset' => $budget->getAsset(),
         ]);
     }
 
@@ -201,7 +203,7 @@ final class AnnualBudgetController extends BaseController
         $costMap = [];
 
         foreach ($incomes as $income) {
-            if ($income->getShip()?->getId() !== $budget->getShip()?->getId()) {
+            if ($income->getAsset()?->getId() !== $budget->getAsset()?->getId()) {
                 continue;
             }
             $day = $income->getPaymentDay() ?? $income->getSigningDay();
@@ -215,7 +217,7 @@ final class AnnualBudgetController extends BaseController
         }
 
         foreach ($costs as $cost) {
-            if ($cost->getShip()?->getId() !== $budget->getShip()?->getId()) {
+            if ($cost->getAsset()?->getId() !== $budget->getAsset()?->getId()) {
                 continue;
             }
             $day = $cost->getPaymentDay() ?? null;
@@ -232,7 +234,7 @@ final class AnnualBudgetController extends BaseController
         }
 
         foreach ($installments as $installment) {
-            if ($installment->getMortgage()?->getShip()?->getId() !== $budget->getShip()?->getId()) {
+            if ($installment->getMortgage()?->getAsset()?->getId() !== $budget->getAsset()?->getId()) {
                 continue;
             }
             $day = $installment->getPaymentDay();

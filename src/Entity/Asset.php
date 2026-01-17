@@ -56,7 +56,7 @@ class Asset
     private ?Mortgage $mortgage = null;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $shipDetails = null; // Keeping field name for now to avoid drastic data structure change, or could rename to details? Let's keep shipDetails but maybe getter getDetails? Or rename field. The plan said rename references. I'll stick to shipDetails for internal data if I want to be safe, OR rename it to details. Let's rename to details for cleanliness.
+    private ?array $assetDetails = null;
 
     /**
      * @var Collection<int, Crew>
@@ -65,10 +65,10 @@ class Asset
     private Collection $crews;
 
     /**
-     * @var Collection<int, ShipAmendment>
+     * @var Collection<int, AssetAmendment>
      */
     #[ORM\OneToMany(targetEntity: AssetAmendment::class, mappedBy: 'asset', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    private Collection $amendments; // Note: Need to verify if ShipAmendment entity is renamed. For now referring to ShipAmendment but mappedBy 'asset'. Wait, if I rename Ship->Asset, I should update relation in ShipAmendment too.
+    private Collection $amendments;
 
     /**
      * @var Collection<int, Cost>
@@ -429,12 +429,12 @@ class Asset
 
     public function getAssetDetails(): ?array
     {
-        return $this->shipDetails;
+        return $this->assetDetails;
     }
 
-    public function setAssetDetails(?array $shipDetails): static
+    public function setAssetDetails(?array $assetDetails): static
     {
-        $this->shipDetails = $shipDetails;
+        $this->assetDetails = $assetDetails;
 
         return $this;
     }
@@ -442,7 +442,7 @@ class Asset
     // Retaining legacy getters but updating logic
     public function getJumpDriveRating(): ?int
     {
-        $details = $this->getShipDetails();
+        $details = $this->getAssetDetails();
         if (isset($details['jDrive']['jump'])) {
             return (int) $details['jDrive']['jump'];
         }
@@ -451,7 +451,7 @@ class Asset
 
     public function getHullTons(): ?float
     {
-        $details = $this->getShipDetails();
+        $details = $this->getAssetDetails();
         if (isset($details['hull']['tons']) && is_numeric($details['hull']['tons'])) {
             return (float) $details['hull']['tons'];
         }

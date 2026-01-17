@@ -3,7 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Crew;
-use App\Entity\ShipRole;
+use App\Entity\Asset;
+use App\Entity\AssetRole;
 use App\Form\Config\DayYearLimits;
 use App\Form\Type\ImperialDateType;
 use App\Model\ImperialDate;
@@ -17,10 +18,9 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Entity\Ship;
 use App\Entity\Campaign;
 use Doctrine\ORM\EntityRepository;
-use App\Repository\ShipRepository;
+use App\Repository\AssetRepository;
 
 class CrewType extends AbstractType
 {
@@ -31,7 +31,7 @@ class CrewType extends AbstractType
         /** @var Crew $crew */
         $crew = $options['data'];
         $user = $options['user'];
-        $campaignStartYear = $crew?->getShip()?->getCampaign()?->getStartingYear();
+        $campaignStartYear = $crew?->getAsset()?->getCampaign()?->getStartingYear();
         $minYear = 0;
         $eventMinYear = $campaignStartYear ?? $this->limits->getYearMin();
         $birthDate = new ImperialDate($crew?->getBirthYear(), $crew?->getBirthDay());
@@ -122,7 +122,7 @@ class CrewType extends AbstractType
                 'required' => false,
                 'placeholder' => '-- Select a Campaign --',
                 'choice_label' => fn(Campaign $campaign) => $campaign->getTitle(),
-                'data' => $crew->getShip()?->getCampaign(),
+                'data' => $crew->getAsset()?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
                     if ($user) {
@@ -132,24 +132,24 @@ class CrewType extends AbstractType
                 },
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
-                    'data-campaign-ship-target' => 'campaign',
-                    'data-action' => 'change->campaign-ship#onCampaignChange',
+                    'data-campaign-asset-target' => 'campaign',
+                    'data-action' => 'change->campaign-asset#onCampaignChange',
                 ],
             ])
-            ->add('ship', EntityType::class, [
-                'class' => Ship::class,
+            ->add('asset', EntityType::class, [
+                'class' => Asset::class,
                 'required' => false,
-                'placeholder' => '-- Select a Ship --',
-                'choice_label' => fn(Ship $ship) => sprintf('%s - %s(%s)', $ship->getName(), $ship->getType(), $ship->getClass()),
-                'choice_attr' => function (Ship $ship): array {
-                    $start = $ship->getCampaign()?->getStartingYear();
-                    $campaignId = $ship->getCampaign()?->getId();
+                'placeholder' => '-- Select an Asset --',
+                'choice_label' => fn(Asset $asset) => sprintf('%s - %s(%s)', $asset->getName(), $asset->getType(), $asset->getClass()),
+                'choice_attr' => function (Asset $asset): array {
+                    $start = $asset->getCampaign()?->getStartingYear();
+                    $campaignId = $asset->getCampaign()?->getId();
                     return [
                         'data-start-year' => $start ?? '',
                         'data-campaign' => $campaignId ? (string) $campaignId : '',
                     ];
                 },
-                'query_builder' => function (ShipRepository $repo) use ($user) {
+                'query_builder' => function (AssetRepository $repo) use ($user) {
                     $qb = $repo->createQueryBuilder('s')->orderBy('s.name', 'ASC');
                     if ($user) {
                         $qb->andWhere('s.user = :user')->setParameter('user', $user);
@@ -161,14 +161,14 @@ class CrewType extends AbstractType
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-controller' => 'year-limit',
                     'data-year-limit-default-value' => $this->limits->getYearMin(),
-                    'data-action' => 'change->year-limit#onShipChange',
-                    'data-campaign-ship-target' => 'ship',
+                    'data-action' => 'change->year-limit#onAssetChange',
+                    'data-campaign-asset-target' => 'asset',
                 ],
             ])
-            ->add('shipRoles', EntityType::class, [
-                'class' => ShipRole::class,
+            ->add('assetRoles', EntityType::class, [
+                'class' => AssetRole::class,
                 'label' => 'Roles',
-                'choice_label' => fn(ShipRole $role) => sprintf('%s – %s', $role->getCode(), $role->getName()),
+                'choice_label' => fn(AssetRole $role) => sprintf('%s – %s', $role->getCode(), $role->getName()),
                 'multiple' => true,
                 'expanded' => false,
                 'required' => false,
@@ -190,7 +190,7 @@ class CrewType extends AbstractType
             $crew = $event->getData();
             $form = $event->getForm();
 
-            $ship = $form->get('ship')->getData();
+            $asset = $form->get('asset')->getData();
 
             /** @var ImperialDate|null $birth */
             $birth = $form->get('birthDate')->getData();
@@ -234,13 +234,13 @@ class CrewType extends AbstractType
                 $crew->setDeceasedYear($deceased->getYear());
             }
 
-            if ($ship !== null) {
+            if ($asset !== null) {
                 if (!$crew->getStatus()) {
-                    $form->get('status')->addError(new FormError('Status is required when a ship is assigned.'));
+                    $form->get('status')->addError(new FormError('Status is required when an asset is assigned.'));
                 }
 
-                if ($crew->getShipRoles()->count() === 0) {
-                    $form->get('shipRoles')->addError(new FormError('At least one role is required when a ship is assigned.'));
+                if ($crew->getAssetRoles()->count() === 0) {
+                    $form->get('assetRoles')->addError(new FormError('At least one role is required when an asset is assigned.'));
                 }
 
                 $status = $crew->getStatus() ?? '';

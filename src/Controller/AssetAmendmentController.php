@@ -67,7 +67,6 @@ final class AssetAmendmentController extends BaseController
 
         return $this->renderTurbo('asset/amendment_new.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
-            'ship' => $asset,
             'asset' => $asset,
             'amendments' => $existing,
             'form' => $form,

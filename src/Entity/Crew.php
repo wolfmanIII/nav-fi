@@ -203,15 +203,7 @@ class Crew
      */
     public function getAssetRoles(): Collection
     {
-        return $this->assetRoles;
-    }
-
-    /**
-     * Legacy method for compatibility during refactor, or we can alias it.
-     * But better to just update callers.
-     */
-    public function getShipRoles(): Collection
-    {
+        // Legacy methods getShipRoles, addShipRole, removeShipRole removed. Use getAssetRoles etc.
         return $this->assetRoles;
     }
 
@@ -236,23 +228,11 @@ class Crew
         return $this;
     }
 
-    // Legacy method
-    public function addShipRole(AssetRole $role): static
-    {
-        return $this->addAssetRole($role);
-    }
-
     public function removeAssetRole(AssetRole $assetRole): static
     {
         $this->assetRoles->removeElement($assetRole);
 
         return $this;
-    }
-
-    // Legacy method
-    public function removeShipRole(AssetRole $role): static
-    {
-        return $this->removeAssetRole($role);
     }
 
     public function isCaptain(): bool

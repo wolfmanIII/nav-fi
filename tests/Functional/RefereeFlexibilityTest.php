@@ -118,12 +118,12 @@ final class RefereeFlexibilityTest extends WebTestCase
 
         // Submit change
         $this->client->submit($crawler->filter('button.btn-primary')->form(), [
-            'mortgage[shipShares]' => 10,
+            'mortgage[assetShares]' => 10,
         ]);
 
         $this->em->clear();
         $updatedMortgage = $this->em->getRepository(Mortgage::class)->find($mortgage->getId());
-        self::assertSame(10, $updatedMortgage->getShipShares());
+        self::assertSame(10, $updatedMortgage->getAssetShares());
     }
 
     public function testCanEditSignedIncome(): void
@@ -167,7 +167,7 @@ final class RefereeFlexibilityTest extends WebTestCase
         self::assertSame('Edited Signed Contract', $updatedIncome->getTitle());
     }
 
-    public function testShipDeletionCascades(): void
+    public function testAssetDeletionCascades(): void
     {
         $user = $this->createUser('referee3@test.local');
         $asset = $this->createAsset($user, 'ISS Expendable');

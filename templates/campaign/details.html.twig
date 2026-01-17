@@ -334,7 +334,7 @@
                         {% for log in session_logs %}
                             {% set log_id = 'session_log_' ~ log.id %}
                             {% set snapshot = log.payload.snapshot ?? null %}
-                            {% set ships_count = snapshot and snapshot.ships is defined ? snapshot.ships|length : 0 %}
+                            {% set assets_count = snapshot and snapshot.assets is defined ? snapshot.assets|length : 0 %}
                             <tr class="hover:bg-cyan-500/5 transition-colors text-slate-300">
                                 <td class="font-mono text-xs p-2">{{ log.createdAt ? log.createdAt|date('Y-m-d H:i') : '—' }}</td>
                                 <td class="font-mono text-xs p-2">

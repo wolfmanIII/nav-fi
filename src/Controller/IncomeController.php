@@ -87,7 +87,6 @@ final class IncomeController extends BaseController
             'incomes' => $incomes,
             'filters' => $filters,
             'categories' => $categories,
-            'ships' => $assets,
             'assets' => $assets,
             'campaigns' => $campaigns,
             'pagination' => $pagination,
@@ -165,9 +164,9 @@ final class IncomeController extends BaseController
 
         return $this->renderTurbo('income/edit.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
+            'controller_name' => self::CONTROLLER_NAME,
             'income' => $income,
             'form' => $form,
-            'ship' => $income->getAsset(),
             'asset' => $income->getAsset(),
         ]);
     }
@@ -596,6 +595,19 @@ final class IncomeController extends BaseController
                     '{{DISPUTE_PROCESS}}' => $this->fallback($d?->getDisputeProcess()),
                     '{{NOTES}}' => $this->fallback($income->getNote()),
                 ]);
+                if ($income->getAsset()) {
+                    $map['{{ asset_name }}'] = $this->fallback($income->getAsset()->getName());
+                    $map['{{ asset_code }}'] = $this->fallback((string) $income->getAsset()->getCode());
+                    $map['{{ asset_type }}'] = $this->fallback($income->getAsset()->getType());
+                    $map['{{ asset_class }}'] = $this->fallback($income->getAsset()->getClass());
+                    $map['{{ asset_hull_tons }}'] = $this->formatMoney((string) $income->getAsset()->getHullTons(), '') . ' dt';
+                } else {
+                    $map['{{ asset_name }}'] = 'NA';
+                    $map['{{ asset_code }}'] = 'NA';
+                    $map['{{ asset_type }}'] = 'NA';
+                    $map['{{ asset_class }}'] = 'NA';
+                    $map['{{ asset_hull_tons }}'] = '0 dt';
+                }
                 break;
             case 'TRADE':
                 $d = $income->getTradeDetails();

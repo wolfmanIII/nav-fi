@@ -24,6 +24,9 @@ class IncomeCharterDetails
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $purpose = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $type = null;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $manifestSummary = null;
 
@@ -103,6 +106,18 @@ class IncomeCharterDetails
     public function setPurpose(?string $purpose): static
     {
         $this->purpose = $purpose;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(?string $type): static
+    {
+        $this->type = $type;
 
         return $this;
     }

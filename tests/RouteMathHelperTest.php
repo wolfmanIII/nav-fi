@@ -16,6 +16,20 @@ class RouteMathHelperTest extends TestCase
         $this->helper = new RouteMathHelper();
     }
 
+    public function testGetAssetFuelCapacity()
+    {
+        $helper = new RouteMathHelper();
+        $asset = new Asset();
+
+        $asset->setAssetDetails(['fuel' => ['tons' => 40]]);
+        $this->assertEquals(40.0, $helper->getAssetFuelCapacity($asset));
+
+        $asset->setAssetDetails([]);
+        $this->assertNull($helper->getAssetFuelCapacity($asset));
+
+        $this->assertNull($helper->getAssetFuelCapacity(null));
+    }
+
     public function testEstimateJumpFuelCalculatesCorrectlyPerParsec(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -55,6 +69,23 @@ class RouteMathHelperTest extends TestCase
         $this->assertSame('80.00', $fuel);
     }
 
+    public function testGetAssetJumpRating()
+    {
+        $helper = new RouteMathHelper();
+        $asset = new Asset();
+
+        $asset->setAssetDetails(['jDrive' => ['jump' => 2]]);
+        $this->assertEquals(2, $helper->getAssetJumpRating($asset));
+
+        $asset->setAssetDetails(['jDrive' => ['jump' => '3']]);
+        $this->assertEquals(3, $helper->getAssetJumpRating($asset));
+
+        $asset->setAssetDetails([]);
+        $this->assertNull($helper->getAssetJumpRating($asset));
+
+        $this->assertNull($helper->getAssetJumpRating(null));
+    }
+
     public function testEstimateJumpFuelReturnsNullIfNoShipDetails(): void
     {
         $asset = $this->createMock(Asset::class);
@@ -83,6 +114,23 @@ class RouteMathHelperTest extends TestCase
 
         $fuel = $this->helper->estimateJumpFuel($route, $distances);
         $this->assertNull($fuel);
+    }
+
+    public function testResolveJumpRating()
+    {
+        $helper = new RouteMathHelper();
+        $route = new Route();
+        $this->assertNull($helper->resolveJumpRating($route));
+
+        $route->setJumpRating(2);
+        $this->assertEquals(2, $helper->resolveJumpRating($route));
+
+        // Test fallback to asset
+        $route->setJumpRating(null);
+        $asset = new Asset();
+        $asset->setAssetDetails(['jDrive' => ['jump' => 3]]);
+        $route->setAsset($asset);
+        $this->assertEquals(3, $helper->resolveJumpRating($route));
     }
 
     public function testTotalRequiredFuelCalculatesSumOfAllSegments(): void

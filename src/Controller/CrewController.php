@@ -60,8 +60,7 @@ final class CrewController extends BaseController
             'controller_name' => self::CONTROLLER_NAME,
             'crew'            => $crew,
             'filters'         => $filters,
-            'ships'           => $assets, // Keeping variable name in template for now if not updated, but should trigger update
-            'assets'          => $assets, // Sending both to be safe during transition
+            'assets'          => $assets,
             'campaigns'       => $campaigns,
             'pagination'      => $pagination,
         ]);
