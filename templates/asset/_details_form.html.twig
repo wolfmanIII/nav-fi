@@ -52,27 +52,25 @@
     </div>
     
     <div>
-        <div class="flex items-center justify-between mb-2">
-            <label class="label">Total Cost (auto-calculated)</label>
-        </div>
+        {{ form_label(detailsForm.totalCost) }}
         <input type="text"
                class="input m-1 w-full"
                data-asset-details-target="totalDisplay"
                readonly
                value="">
-        {{ form_errors(detailsForm.totalCost) }}
         {{ form_widget(detailsForm.totalCost, { attr: { class: 'hidden', 'data-asset-details-target': 'totalInput' } }) }}
-            {% set total_help_id = detailsForm.totalCost.vars.id ~ '-help' %}
-            <input type="checkbox" id="{{ total_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box">
-                    <h3 class="font-bold">Total Cost</h3>
-                    <p class="py-2 text-sm">Auto-calculated from the component rows. If the total is 0, the field stays empty.</p>
-                    <div class="modal-action">
-                        <label for="{{ total_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
+        {{ form_errors(detailsForm.totalCost) }}
+        {% set total_help_id = detailsForm.totalCost.vars.id ~ '-help' %}
+        <input type="checkbox" id="{{ total_help_id }}" class="modal-toggle hidden" />
+        <div class="modal" role="dialog">
+            <div class="modal-box">
+                <h3 class="font-bold">Total Cost</h3>
+                <p class="py-2 text-sm">Auto-calculated from the component rows. If the total is 0, the field stays empty.</p>
+                <div class="modal-action">
+                    <label for="{{ total_help_id }}" class="btn btn-primary">Close</label>
                 </div>
             </div>
+        </div>
     </div>
 
     {% set single_items = [
