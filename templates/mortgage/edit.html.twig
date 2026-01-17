@@ -181,9 +181,11 @@
                 </div>
             {% endif %}
 
+            {% if sign_form %}
             <button type="button" class="btn btn-outline btn-warning btn-sm px-6 font-orbitron uppercase text-[10px] tracking-widest font-bold" {% if not can_sign %} disabled {% endif %} onclick="document.getElementById('sign_modal').showModal();">
                 Authorize Signature
             </button>
+            {% endif %}
 
             <button type="submit" form="mortgage_form" name="action" value="save" class="btn btn-primary px-8 font-orbitron uppercase text-[10px] tracking-widest font-bold shadow-lg shadow-cyan-500/10" {% if not (mortgage.id ? can_edit : can_create) %} disabled {% endif %}>
                 Confirm Allocation // Commit to Log
@@ -276,6 +278,7 @@
         {% set sessionDay = asset ? (asset.campaign ? asset.campaign.sessionDay : asset.sessionDay) : null %}
         {% set sessionYear = asset ? (asset.campaign ? asset.campaign.sessionYear : asset.sessionYear) : null %}
         {% set sessionValue = (sessionDay is not null and sessionYear is not null) ? (sessionDay|imperial_date(sessionYear)) : '—' %}
+        {% if sign_form %}
         <dialog id="sign_modal" class="modal">
             <div class="modal-box w-11/12 max-w-xl border border-primary/20 shadow-[0_0_15px_rgba(59,130,246,0.3)] bg-slate-900">
                 <header class="mb-6 border-b border-primary/10 pb-4">
@@ -340,7 +343,9 @@
                 <button>close</button>
             </form>
         </dialog>
+        {% endif %}
 
+        {% if start_date_form %}
         <dialog id="start_date_modal" class="modal">
             <div class="modal-box w-11/12 max-w-xl">
                 <header class="mb-6">
@@ -383,6 +388,7 @@
                 {{ form_end(start_date_form) }}
             </div>
         </dialog>
+        {% endif %}
 
         {% if can_pay %}
             <dialog id="pay_installment_modal" class="modal">
