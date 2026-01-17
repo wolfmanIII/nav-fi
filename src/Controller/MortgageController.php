@@ -21,6 +21,7 @@ use App\Model\ImperialDate;
 use App\Form\Config\DayYearLimits;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 
 final class MortgageController extends BaseController
 {
@@ -168,7 +169,7 @@ final class MortgageController extends BaseController
 
         // Start Date Form for Modal
         $startImperialDate = new ImperialDate($mortgage->getStartYear(), $mortgage->getStartDay());
-        $startDateForm = $this->container->get('form.factory')->createNamedBuilder('mortgage_set_start_date', null, ['startDate' => $startImperialDate])
+        $startDateForm = $this->container->get('form.factory')->createNamedBuilder('mortgage_set_start_date', FormType::class, ['startDate' => $startImperialDate])
             ->setAction($this->generateUrl('app_mortgage_set_start_date', ['id' => $mortgage->getId()]))
             ->setMethod('POST')
             ->add('startDate', ImperialDateType::class, [
@@ -338,7 +339,7 @@ final class MortgageController extends BaseController
 
         $this->denyAccessUnlessGranted(MortgageVoter::SET_START_DATE, $mortgage);
 
-        $startDateForm = $this->container->get('form.factory')->createNamedBuilder('mortgage_set_start_date', null, ['startDate' => new ImperialDate($mortgage->getStartYear(), $mortgage->getStartDay())])
+        $startDateForm = $this->container->get('form.factory')->createNamedBuilder('mortgage_set_start_date', FormType::class, ['startDate' => new ImperialDate($mortgage->getStartYear(), $mortgage->getStartDay())])
             ->add('startDate', ImperialDateType::class, [
                 'min_year' => $limits->getYearMin(),
                 'max_year' => $limits->getYearMax(),
