@@ -43,7 +43,18 @@
 
 <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full"
          data-controller="asset-details">
-// ...
+    <legend class="fieldset-legend">Asset Technical Details</legend>
+    
+    <div>
+        {{ form_label(detailsForm.techLevel) }}
+        {{ form_widget(detailsForm.techLevel) }}
+        {{ form_errors(detailsForm.techLevel) }}
+    </div>
+    
+    <div>
+        <div class="flex items-center justify-between mb-2">
+            <label class="label">Total Cost (auto-calculated)</label>
+        </div>
         <input type="text"
                class="input m-1 w-full"
                data-asset-details-target="totalDisplay"
@@ -62,7 +73,6 @@
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 
     {% set single_items = [
