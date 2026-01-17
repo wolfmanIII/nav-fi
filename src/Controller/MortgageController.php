@@ -97,11 +97,19 @@ final class MortgageController extends BaseController
         $payment = new MortgageInstallment();
         $payment->setMortgage($mortgage);
 
+        $summary = $mortgage->calculate();
+        $paymentForm = $this->createForm(MortgageInstallmentType::class, $payment, ['summary' => $summary]);
+
         return $this->renderTurbo('mortgage/edit.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'mortgage' => $mortgage,
+            'summary' => $summary,
             'form' => $form,
+            'payment_form' => $paymentForm->createView(),
+            'start_date_form' => null,
+            'sign_form' => null,
             'last_payment' => $mortgage->getMortgageInstallments()->last(),
+            'asset' => $mortgage->getAsset(),
         ]);
     }
 
