@@ -5,7 +5,25 @@
         <button type="button"
                 class="btn btn-ghost btn-xs absolute right-1 top-1"
                 data-action="asset-details#removeItem">&times;</button>
-// ... (skipping some lines) ...
+        <div>
+            {{ form_label(child.description) }}
+            {{ form_widget(child.description) }}
+            {{ form_errors(child.description) }}
+        </div>
+        <div>
+            {{ form_label(child.tons) }}
+            {{ form_widget(child.tons) }}
+            {{ form_errors(child.tons) }}
+        </div>
+        <div>
+            {{ form_label(child.costMcr) }}
+            {{ form_widget(child.costMcr) }}
+            {{ form_errors(child.costMcr) }}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro render_collection(collection, title) %}
     <div class="space-y-2" data-asset-details-target="collection">
         <div class="flex items-center justify-between">
             <h4 class="font-semibold text-cyan-100">{{ title }}</h4>
