@@ -79,6 +79,10 @@ class CostType extends AbstractType
                 'placeholder' => '-- Select a Category --',
                 'choice_label' => fn(CostCategory $cat) =>
                 sprintf('%s - %s', $cat->getCode(), $cat->getDescription()),
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('cc')
+                        ->orderBy('cc.code', 'ASC');
+                },
                 'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('campaign', EntityType::class, [

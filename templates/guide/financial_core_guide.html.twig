@@ -3,7 +3,7 @@
 {% block title %}Nav-Fi - Financial Core User Guide{% endblock %}
 
 {% block pageContent %}
-    <div class="max-w-5xl mx-auto">
+    <div class="min-h-[80vh] space-y-8">
         
         {# Hero Header #}
         <div class="relative rounded-2xl border border-amber-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-amber-900 shadow-lg mb-8 overflow-hidden">
@@ -18,7 +18,7 @@
                     <div>
                         <p class="uppercase text-[10px] tracking-[0.3em] text-amber-300/70 font-bold font-orbitron mb-1">Complete Reference</p>
                         <h1 class="text-3xl font-bold text-amber-100 leading-tight font-orbitron uppercase">Financial Core User Guide</h1>
-                        <p class="text-sm text-amber-100/60 font-rajdhani tracking-widest uppercase mt-1">Master the credit flow: when, why, and how to use each module</p>
+                        <p class="text-sm text-amber-100/60 font-rajdhani tracking-widest uppercase mt-1">Master the credit flow: time travel, organization management, and automated ledgers.</p>
                     </div>
                 </div>
             </div>
@@ -29,157 +29,147 @@
             <h2 class="text-lg font-bold text-cyan-100 font-orbitron uppercase mb-4 flex items-center gap-2">
                 <span class="text-cyan-400">///</span> Table of Contents
             </h2>
-            <div class="grid md:grid-cols-2 gap-3 text-sm">
-                <a href="#overview" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                <a href="#core-concepts" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                    <span>1. Overview</span>
+                    <span>1. Core Concepts & " The Ship"</span>
                 </a>
-                <a href="#when-to-use" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
+                <a href="#time-cursor" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                    <span>2. When to Use</span>
+                    <span>2. Session Date as Time Cursor</span>
                 </a>
                 <a href="#modules" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
                     <span>3. Module Deep Dive</span>
                 </a>
-                <a href="#date-management" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
-                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                    <span>4. Date Management</span>
-                </a>
                 <a href="#workflows" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                    <span>5. Practical Workflows</span>
-                </a>
-                <a href="#best-practices" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
-                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                    <span>6. Best Practices</span>
+                    <span>4. Practical Workflows</span>
                 </a>
             </div>
         </div>
 
-        {# 1. OVERVIEW #}
-        <section id="overview" class="mb-12 scroll-mt-6">
+        {# 1. CORE CONCEPTS #}
+        <section id="core-concepts" class="mb-12 scroll-mt-6">
             <div class="rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-cyan-950/10 border border-slate-800 p-8">
                 <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2 font-orbitron">
-                    <span class="text-cyan-400">01 ///</span> Overview
+                    <span class="text-cyan-400">01 ///</span> Core Concepts & The Entity of "The Ship"
                 </h2>
-                <div class="prose prose-invert prose-sm max-w-none">
-                    <p class="text-slate-300 leading-relaxed mb-4">
-                        The <strong class="text-white">Financial Core</strong> is Nav-Fi's comprehensive credit management system designed for Traveller campaigns. 
-                        It tracks every aspect of your ship's financial lifecycle—from hull financing to daily operational costs.
-                    </p>
-                    <p class="text-slate-300 leading-relaxed">
-                        The system consists of <strong class="text-cyan-400">four interconnected modules</strong>:
-                    </p>
-                    <ul class="space-y-2 mt-4 text-slate-300">
-                        <li class="flex items-start gap-3">
-                            <span class="mt-1.5 w-2 h-2 rounded-full bg-cyan-500 flex-shrink-0"></span>
-                            <span><strong class="text-cyan-300">Mortgage:</strong> Long-term ship financing with interest calculations</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="mt-1.5 w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
-                            <span><strong class="text-emerald-300">Income:</strong> Revenue streams from contracts, cargo, and passengers</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="mt-1.5 w-2 h-2 rounded-full bg-amber-500 flex-shrink-0"></span>
-                            <span><strong class="text-amber-300">Costs:</strong> Operational expenses, maintenance, and crew salaries</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="mt-1.5 w-2 h-2 rounded-full bg-purple-500 flex-shrink-0"></span>
-                            <span><strong class="text-purple-300">Annual Budget:</strong> Yearly financial projections and cash flow analysis</span>
-                        </li>
-                    </ul>
+                
+                <div class="space-y-6">
+                    <div class="prose prose-invert prose-sm max-w-none">
+                        <p class="text-slate-300 leading-relaxed mb-4">
+                            Nav-Fi is not just a spreadsheet; it is a relational financial engine. To function, it requires a central anchor point for all data.
+                        </p>
+                        
+                        <div class="grid lg:grid-cols-2 gap-8 mt-6">
+                            {# The Ship Anchor #}
+                            <div class="rounded-lg bg-cyan-950/20 border border-cyan-500/20 p-5">
+                                <h3 class="text-lg font-bold text-cyan-100 mb-3 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20h20"/><path d="M5 20v-8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8"/><path d="M12 10V4"/></svg>
+                                    The "Ship" is Mandatory
+                                </h3>
+                                <p class="text-slate-400 text-sm mb-4">
+                                    In Nav-Fi, the <strong>Ship</strong> is the fundamental accounting unit. All Incomes, Costs, Mortgages, and Budgets <em>must</em> belong to a Ship. 
+                                </p>
+                                <div class="alert alert-info bg-cyan-950/30 border-cyan-500/30 text-cyan-200 text-xs">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span>
+                                        <strong>For Players:</strong> A Ship entity is <strong>REQUIRED</strong>. You cannot track player finances without it.<br/>
+                                        <strong>For NPCs/Adversaries:</strong> Optional. You can create fully detailed ships with fits/crew for combat, but you can skip the <em>Financial Core</em> tracking unless you specifically want to simulate their economy.
+                                    </span>
+                                </div>
+                            </div>
+
+                            {# Logic for No Ship #}
+                            <div class="rounded-lg bg-emerald-950/20 border border-emerald-500/20 p-5">
+                                <h3 class="text-lg font-bold text-emerald-100 mb-3 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                    No Ship? Use a "Team"
+                                </h3>
+                                <p class="text-slate-400 text-sm mb-3">
+                                    Running a mercenary campaign? Or a ground-based trade company? The "Ship" entity is flexible.
+                                </p>
+                                <ul class="text-slate-300 text-sm space-y-2 list-disc pl-4">
+                                    <li>Create a Ship named <strong>"Alpha Squad"</strong> or <strong>"Trade Corp"</strong>.</li>
+                                    <li>Leave the <strong>Components/Fit</strong> empty (it's optional!).</li>
+                                    <li>Use this abstract "Ship" to track all your team's credits, contracts, and salary costs.</li>
+                                </ul>
+                                <p class="text-xs text-emerald-400/80 mt-3 italic">
+                                    The Financial Core works perfectly for any organization by treating it as a "Ship" container.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        {# 2. WHEN TO USE #}
-        <section id="when-to-use" class="mb-12 scroll-mt-6">
-            <div class="rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/10 border border-slate-800 p-8">
+        {# 2. TIME CURSOR #}
+        <section id="time-cursor" class="mb-12 scroll-mt-6">
+            <div class="rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/10 border border-amber-500/30 p-8">
                 <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2 font-orbitron">
-                    <span class="text-amber-400">02 ///</span> When to Use
+                    <span class="text-amber-400">02 ///</span> The Time Cursor: Historical & Future Analysis
                 </h2>
-                
-                <div class="grid md:grid-cols-2 gap-6">
-                    {# Full Campaigns #}
-                    <div class="rounded-xl bg-slate-900/60 border border-emerald-500/30 p-6">
-                        <div class="flex items-center gap-3 mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 2l3 7 7 .5-5.5 4.5 1.8 7-6.3-4-6.3 4 1.8-7L2 9.5 9 9z"></path>
-                            </svg>
-                            <h3 class="text-xl font-bold text-emerald-100 font-orbitron uppercase">Full Campaigns</h3>
-                        </div>
-                        <p class="text-sm text-slate-300 mb-4">
-                            For <strong class="text-white">ongoing campaigns</strong> spanning multiple sessions and in-game years, use the Financial Core in its entirety.
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="md:col-span-2 space-y-4">
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            The <strong>Mission Session Date</strong> is not just a "current date" field. it acts as a <strong class="text-amber-300">Time Cursor</strong> for the entire financial simulation. 
+                            By moving this date, you are effectively moving the "Now" point of your campaign's financial reality.
                         </p>
-                        <div class="space-y-3 text-sm">
-                            <div class="flex items-start gap-2">
-                                <span class="mt-1 text-emerald-400">✓</span>
+                        
+                        <div class="space-y-4 mt-6">
+                            <div class="flex gap-4 p-4 rounded-lg bg-slate-950/50 border border-slate-800">
+                                <div class="mt-1 flex-shrink-0">
+                                    <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center text-slate-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"/></svg>
+                                    </div>
+                                </div>
                                 <div>
-                                    <strong class="text-emerald-300">Mortgage:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Essential for tracking 40-year ship financing. Generates monthly payment schedules and interest calculations.</p>
+                                    <h4 class="text-slate-200 font-bold mb-1">Looking into the Past</h4>
+                                    <p class="text-slate-400 text-xs">
+                                        If you set the Session Date to a past year, the <strong>Ledger</strong> and <strong>Budget</strong> will recalculate to show you the state of finances <em>at that exact moment</em>. 
+                                        Future transactions (relative to that past date) become "Pending" again. This allows accurate historical auditing.
+                                    </p>
                                 </div>
                             </div>
-                            <div class="flex items-start gap-2">
-                                <span class="mt-1 text-emerald-400">✓</span>
+
+                             <div class="flex gap-4 p-4 rounded-lg bg-slate-950/50 border border-slate-800">
+                                <div class="mt-1 flex-shrink-0">
+                                    <div class="w-8 h-8 rounded-full bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 12"/></svg>
+                                    </div>
+                                </div>
                                 <div>
-                                    <strong class="text-emerald-300">Income & Costs:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Track every credit flowing in and out. Critical for long-term financial planning.</p>
+                                    <h4 class="text-amber-200 font-bold mb-1">Projecting the Future</h4>
+                                    <p class="text-slate-400 text-xs">
+                                        Advance the Session Date into the future to see what happens when "Pending" transactions hit. 
+                                        Will the mortgage payment clear? Will that big contract payout arrive in time? 
+                                        <strong class="text-amber-300">The Ledger simulates the future</strong> based on the data you've entered.
+                                    </p>
                                 </div>
                             </div>
-                            <div class="flex items-start gap-2">
-                                <span class="mt-1 text-emerald-400">✓</span>
-                                <div>
-                                    <strong class="text-emerald-300">Annual Budget:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Project yearly cash flow. Identify profitable routes and optimize operations.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-emerald-500/20">
-                            <p class="text-xs text-emerald-400/80 italic">
-                                💡 Recommended for campaigns with persistent crews and long-term narrative arcs
-                            </p>
                         </div>
                     </div>
 
-                    {# Oneshots #}
-                    <div class="rounded-xl bg-slate-900/60 border border-amber-500/30 p-6">
-                        <div class="flex items-center gap-3 mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
-                            </svg>
-                            <h3 class="text-xl font-bold text-amber-100 font-orbitron uppercase">Oneshots & Short Adventures</h3>
-                        </div>
-                        <p class="text-sm text-slate-300 mb-4">
-                            For <strong class="text-white">single-session</strong> or short adventures, simplify or skip modules based on narrative needs.
-                        </p>
-                        <div class="space-y-3 text-sm">
-                            <div class="flex items-start gap-2">
-                                <span class="mt-1 text-amber-400">⊘</span>
-                                <div>
-                                    <strong class="text-amber-300">Mortgage:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Skip entirely unless the debt is central to the story. Not needed for borrowed or rented ships.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-2">
-                                <span class="mt-1 text-amber-400">⊘</span>
-                                <div>
-                                    <strong class="text-amber-300">Annual Budget:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Not relevant for short timeframes. Focus on immediate cash flow instead.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-2">
-                                <span class="mt-1 text-amber-400">~</span>
-                                <div>
-                                    <strong class="text-amber-300">Income & Costs:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Optional. Track only if credits are a key narrative element (e.g., heist, salvage operation).</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-amber-500/20">
-                            <p class="text-xs text-amber-400/80 italic">
-                                💡 Use only what serves your narrative—Nav-Fi adapts to your table's needs
-                            </p>
+                    <div class="space-y-4">
+                        <div class="rounded-lg bg-amber-950/20 border border-amber-500/20 p-5">
+                            <h3 class="text-sm font-bold text-amber-100 uppercase tracking-wider mb-2">Automated Ledger Logic</h3>
+                            <ul class="space-y-3 text-xs text-slate-300">
+                                <li class="flex gap-2">
+                                    <span class="text-emerald-400 font-mono">1.</span>
+                                    <span><strong>Effective Date:</strong> If a Transaction Date <= Session Date, it is <strong>POSTED</strong> (Green) and affects the balance.</span>
+                                </li>
+                                <li class="flex gap-2">
+                                    <span class="text-amber-400 font-mono">2.</span>
+                                    <span><strong>Pending Date:</strong> If a Transaction Date > Session Date, it is <strong>PENDING</strong> (Yellow) and does not yet touch the credits.</span>
+                                </li>
+                                <li class="flex gap-2">
+                                    <span class="text-cyan-400 font-mono">3.</span>
+                                    <span><strong>Auto-Correction:</strong> Moving the Session Cursor automatically flips transactions between POSTED and PENDING statuses.</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -193,447 +183,164 @@
                     <span class="text-purple-400">03 ///</span> Module Deep Dive
                 </h2>
 
-                <div class="space-y-6">
-                    {# Mortgage #}
-                    <div class="rounded-lg bg-slate-900/60 border border-cyan-500/20 p-6">
-                        <h3 class="text-lg font-bold text-cyan-100 mb-3 font-orbitron uppercase flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                            </svg>
-                            Mortgage & Crew Integration
+                <div class="space-y-12">
+                    
+                    {# INCOME #}
+                    <div>
+                        <h3 class="text-xl font-bold text-emerald-100 mb-4 border-b border-emerald-500/30 pb-2">
+                            A. Income: Smart Transactions
                         </h3>
-                        <p class="text-sm text-slate-300 mb-4">
-                            Tracks long-term ship financing with automatic interest calculations and deep integration with ship hierarchy.
-                        </p>
-                        <div class="grid md:grid-cols-2 gap-4 text-xs">
-                            <div>
-                                <strong class="text-cyan-300 block mb-2">Key Features:</strong>
-                                <ul class="space-y-1 text-slate-400">
-                                    <li>• 40-year standard financing</li>
-                                    <li>• <strong>Captain Required</strong> for signing</li>
-                                    <li>• <strong>Session-Aligned</strong> authorization dates</li>
-                                    <li>• Historical Crew Visibility (Active/Deceased)</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <strong class="text-cyan-300 block mb-2">Signing Requirements:</strong>
-                                <ul class="space-y-1 text-slate-400">
-                                    <li>• Ship must have an assigned <strong>Captain</strong></li>
-                                    <li>• Signing Date defaults to current Session Date</li>
-                                    <li>• First Installment Date is optional & flexible</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    {# Income #}
-                    <div class="rounded-lg bg-slate-900/60 border border-emerald-500/20 p-6">
-                        <h3 class="text-lg font-bold text-emerald-100 mb-3 font-orbitron uppercase flex items-center gap-2">
-                            <div class="w-10 h-10 flex items-center justify-center font-bold text-emerald-400 font-orbitron border border-emerald-400/40 rounded bg-emerald-500/10 flex-shrink-0 normal-case">Cr</div>
-                            Income & Smart Transactions
-                        </h3>
-                        <p class="text-sm text-slate-300 mb-4">
-                            Records all revenue streams with <strong>automated logic</strong> to handle deposits, bonuses, and final payments based on dates.
-                        </p>
-                        <div class="grid md:grid-cols-2 gap-4 text-xs">
-                            <div>
-                                <strong class="text-emerald-300 block mb-2">Key Features:</strong>
-                                <ul class="space-y-1 text-slate-400">
-                                    <li>• <strong>Auto-Split Deposits:</strong> Signing generates immediate deposit transactions (if applicable).</li>
-                                    <li>• <strong>Balance on Payment Date:</strong> Remainder is realized only when the date arrives.</li>
-                                    <li>• <strong>Bonus Integration:</strong> Bonuses are automatically added to the final balance.</li>
-                                    <li>• PDF contract generation</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <strong class="text-emerald-300 block mb-2">Common Categories:</strong>
-                                <ul class="space-y-1 text-slate-400">
-                                    <li>• Freight (cargo transport)</li>
-                                    <li>• Charter (ship rental with deposit)</li>
-                                    <li>• Passenger fares</li>
-                                    <li>• Salvage & bounties</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    {# Costs #}
-                    <div class="rounded-lg bg-slate-900/60 border border-amber-500/20 p-6">
-                            <div class="w-10 h-10 flex items-center justify-center font-bold text-amber-400 font-orbitron border border-amber-400/40 rounded bg-amber-500/10 flex-shrink-0 normal-case">Cr</div>
-                            Costs
-                        </h3>
-                        <p class="text-sm text-slate-300 mb-4">
-                            Tracks all operational expenses with detailed categorization and payment status.
-                        </p>
-                        <div class="grid md:grid-cols-2 gap-4 text-xs">
-                            <div>
-                                <strong class="text-amber-300 block mb-2">Key Features:</strong>
-                                <ul class="space-y-1 text-slate-400">
-                                    <li>• Detailed item-level tracking</li>
-                                    <li>• Category-based organization</li>
-                                    <li>• Payment date tracking</li>
-                                    <li>• Local law compliance notes</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <strong class="text-amber-300 block mb-2">Common Categories:</strong>
-                                <ul class="space-y-1 text-slate-400">
-                                    <li>• Fuel & life support</li>
-                                    <li>• Maintenance & repairs</li>
-                                    <li>• Crew salaries</li>
-                                    <li>• Port fees & docking</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    {# Annual Budget #}
-                    <div class="rounded-lg bg-slate-900/60 border border-purple-500/20 p-6">
-                        <h3 class="text-lg font-bold text-purple-100 mb-3 font-orbitron uppercase flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M3 3v18h18"></path>
-                                <path d="M18 17V9"></path>
-                                <path d="M13 17V5"></path>
-                                <path d="M8 17v-3"></path>
-                            </svg>
-                            Annual Budget
-                        </h3>
-                        <p class="text-sm text-slate-300 mb-4">
-                            Provides yearly financial overview with automatic aggregation of income, costs, and mortgage payments.
-                        </p>
-                        <div class="grid md:grid-cols-2 gap-4 text-xs">
-                            <div>
-                                <strong class="text-purple-300 block mb-2">Key Features:</strong>
-                                <ul class="space-y-1 text-slate-400">
-                                    <li>• Automatic data aggregation</li>
-                                    <li>• Net surplus calculations</li>
-                                    <li>• Visual chart representations</li>
-                                    <li>• Year-over-year comparisons</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <strong class="text-purple-300 block mb-2">Use Cases:</strong>
-                                <ul class="space-y-1 text-slate-400">
-                                    <li>• Long-term financial planning</li>
-                                    <li>• Route profitability analysis</li>
-                                    <li>• Identifying cost patterns</li>
-                                    <li>• Investment decisions</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        {# 4. DATE MANAGEMENT #}
-        <section id="date-management" class="mb-12 scroll-mt-6">
-            <div class="rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/10 border border-amber-500/30 p-8">
-                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2 font-orbitron">
-                    <span class="text-amber-400">04 ///</span> Date Management & Chronological Verification
-                </h2>
-
-                <div class="space-y-6">
-                    {# Mission as Master Clock #}
-                    <div class="rounded-lg bg-slate-900/60 border border-cyan-500/20 p-6">
-                        <h3 class="text-lg font-bold text-cyan-100 mb-3 font-orbitron uppercase">Mission as Master Clock</h3>
-                        <p class="text-sm text-slate-300 mb-4">
-                            Every financial record in Nav-Fi is tied to a <strong class="text-white">Mission</strong> (Campaign). 
-                            The Mission's <strong class="text-cyan-400">Session Date</strong> acts as the master clock for all operations.
-                        </p>
-                        <div class="bg-slate-950/50 border border-cyan-500/10 rounded p-4 text-xs text-slate-400">
-                            <strong class="text-cyan-300 block mb-2">Important:</strong>
-                            A Mission can be an <strong class="text-white">entire campaign</strong> (spanning years) or a <strong class="text-white">single adventure</strong> (one session). 
-                            Use whatever scope fits your table.
-                        </div>
-                    </div>
-
-                    {# Chronological Verification Badge #}
-                    <div class="rounded-lg bg-amber-950/20 border border-amber-500/30 p-6">
-                        <div class="flex items-start gap-4 mb-4">
-                            <div class="p-2 rounded bg-amber-500/10 border border-amber-500/30">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-amber-400 animate-spin-slow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <path d="M12 6v6l4 2"></path>
-                                </svg>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="text-lg font-bold text-amber-100 mb-2 font-orbitron uppercase">Chronological Verification Badge</h3>
-                                <p class="text-sm text-slate-300 mb-3">
-                                    You'll see this <strong class="text-amber-400">warning badge</strong> on all financial pages:
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="prose prose-invert prose-sm">
+                                <p>
+                                    Income in Nav-Fi is "Smart". When you create an income record (like a Cargo Contract), the system doesn't just add a number. It analyzes your <strong>Signing Date</strong> and <strong>Payment Date</strong>.
                                 </p>
-                                <div class="inline-flex items-center gap-2 px-3 py-2 rounded border border-amber-500/30 bg-amber-500/5 text-xs font-mono text-amber-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 animate-spin-slow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <path d="M12 6v6l4 2"></path>
-                                    </svg>
-                                    <span class="font-semibold uppercase tracking-wider">Chronological Verification:</span>
-                                    <span class="text-amber-300/80">Ensure dates align with session</span>
-                                </div>
+                                <ul class="list-none space-y-2 pl-0">
+                                    <li class="pl-4 border-l-2 border-emerald-500/30">
+                                        <strong class="text-emerald-300">Deposit Handling:</strong> If you specify a deposit (e.g., 10% on signing), the system creates an immediate transaction for that amount on the <em>Signing Date</em>.
+                                    </li>
+                                    <li class="pl-4 border-l-2 border-emerald-500/30">
+                                        <strong class="text-emerald-300">Final Balance:</strong> The remaining amount waits in "Pending" status until the <em>Payment Date</em> arrives.
+                                    </li>
+                                    <li class="pl-4 border-l-2 border-emerald-500/30">
+                                        <strong class="text-emerald-300">Bonus Logic:</strong> Crushed the deadline? Add a bonus. It gets added to the Final Balance transaction automatically.
+                                    </li>
+                                </ul>
                             </div>
-                        </div>
-                        <div class="space-y-3 text-sm">
-                            <div class="flex items-start gap-2">
-                                <span class="mt-1 text-amber-400">⚠</span>
-                                <div>
-                                    <strong class="text-amber-300">What it means:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">
-                                        This badge reminds you to verify that record dates (payment, signing, etc.) are chronologically consistent with your Mission's session date.
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-2">
-                                <span class="mt-1 text-amber-400">✓</span>
-                                <div>
-                                    <strong class="text-amber-300">Advisory, not blocking:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">
-                                        The system <strong class="text-white">never blocks saves</strong>. You have full Referee authority to override timeline constraints for narrative reasons.
-                                    </p>
+                            <div class="bg-slate-950 rounded-lg border border-emerald-500/10 p-4">
+                                <div class="text-xs font-mono text-emerald-500/50 mb-2 uppercase">Example Flow</div>
+                                <div class="space-y-2 text-xs">
+                                    <div class="flex justify-between p-2 bg-slate-900 rounded border border-emerald-500/20">
+                                        <span class="text-slate-300">Sign Contract</span>
+                                        <span class="text-emerald-400">+10,000 Cr (Deposit)</span>
+                                    </div>
+                                    <div class="flex justify-center text-slate-600">↓ Time Passes ↓</div>
+                                    <div class="flex justify-between p-2 bg-slate-900 rounded border border-emerald-500/20">
+                                        <span class="text-slate-300">Deliver Goods</span>
+                                        <span class="text-emerald-400">+90,000 Cr (Balance)</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {# Date Alignment Examples #}
-                    <div class="rounded-lg bg-slate-900/60 border border-slate-700 p-6">
-                        <h3 class="text-lg font-bold text-slate-100 mb-4 font-orbitron uppercase">Date Alignment Examples</h3>
-                        <div class="space-y-4">
-                            {# Good Example #}
-                            <div class="border-l-4 border-emerald-500 bg-emerald-950/20 p-4 rounded-r">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <span class="text-emerald-400 text-lg">✓</span>
-                                    <strong class="text-emerald-300 text-sm">Good: Aligned Dates</strong>
-                                </div>
-                                <div class="text-xs text-slate-400 space-y-1">
-                                    <p>• Mission Session Date: <code class="text-emerald-400">Day 152, Year 1105</code></p>
-                                    <p>• Income Payment Date: <code class="text-emerald-400">Day 152, Year 1105</code></p>
-                                    <p class="text-emerald-300 italic mt-2">→ Dates match perfectly. Payment received on session day.</p>
-                                </div>
+                    {# COSTS #}
+                    <div>
+                        <h3 class="text-xl font-bold text-amber-100 mb-4 border-b border-amber-500/30 pb-2">
+                            B. Costs: Granular Tracking
+                        </h3>
+                         <div class="grid md:grid-cols-2 gap-8">
+                             <div class="prose prose-invert prose-sm">
+                                <p>
+                                    Costs are the heartbeat of the simulation. Every credit spent is categorized and timestamped.
+                                </p>
+                                <ul class="list-none space-y-2 pl-0">
+                                    <li class="pl-4 border-l-2 border-amber-500/30">
+                                        <strong class="text-amber-300">Categories:</strong> Fuel, Life Support, Maintenance, Salaries, Berthing. Consistent use of these categories powers the Annual Budget analysis.
+                                    </li>
+                                    <li class="pl-4 border-l-2 border-amber-500/30">
+                                        <strong class="text-amber-300">Legal Context:</strong> You can tag costs with a "Local Law" or Jurisdiction. This is vital for campaigns where compliance matters (or where bribes need to be tracked casually).
+                                    </li>
+                                    <li class="pl-4 border-l-2 border-amber-500/30">
+                                        <strong class="text-amber-300">Detail Items:</strong> A single "Cost" record (e.g., "Starport Resupply") can have multiple line items (Fuel x50 tons, Life Support x2 weeks), creating a detailed manifest.
+                                    </li>
+                                </ul>
                             </div>
-
-                            {# Warning Example #}
-                            <div class="border-l-4 border-amber-500 bg-amber-950/20 p-4 rounded-r">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <span class="text-amber-400 text-lg">⚠</span>
-                                    <strong class="text-amber-300 text-sm">Warning: Misaligned Dates</strong>
-                                </div>
-                                <div class="text-xs text-slate-400 space-y-1">
-                                    <p>• Mission Session Date: <code class="text-amber-400">Day 152, Year 1105</code></p>
-                                    <p>• Cost Payment Date: <code class="text-amber-400">Day 200, Year 1105</code></p>
-                                    <p class="text-amber-300 italic mt-2">→ Payment is in the future. Verify this is intentional (e.g., advance payment).</p>
-                                </div>
+                             <div class="bg-slate-950 rounded-lg border border-amber-500/10 p-4">
+                                <div class="text-xs font-mono text-amber-500/50 mb-2 uppercase">Budget Impact</div>
+                                <p class="text-xs text-slate-400 mb-3">
+                                    Costs are deducted on their <strong>Payment Date</strong>. If you defer payment (put it on a tab), set the date to the future. The debt will loom in your ledger until that day comes.
+                                </p>
                             </div>
+                        </div>
+                    </div>
 
-                            {# Tactical Override #}
-                            <div class="border-l-4 border-cyan-500 bg-cyan-950/20 p-4 rounded-r">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <span class="text-cyan-400 text-lg">⚡</span>
-                                    <strong class="text-cyan-300 text-sm">Tactical Override: Referee Authority</strong>
+                    {# MORTGAGE #}
+                    <div>
+                        <h3 class="text-xl font-bold text-cyan-100 mb-4 border-b border-cyan-500/30 pb-2">
+                            C. Mortgage: The Long Game
+                        </h3>
+                        <div class="prose prose-invert prose-sm max-w-none">
+                            <p>
+                                The classic Traveller burden. Nav-Fi handles the math so you can focus on the stress.
+                            </p>
+                            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+                                <div class="p-3 bg-slate-900 rounded border border-cyan-500/20">
+                                    <strong class="block text-cyan-300 text-xs uppercase mb-1">Standard Terms</strong>
+                                    <span class="text-slate-400 text-xs">40 Years, 480 payments. The default Traveller standard.</span>
                                 </div>
-                                <div class="text-xs text-slate-400 space-y-1">
-                                    <p>• Mission Session Date: <code class="text-cyan-400">Day 152, Year 1105</code></p>
-                                    <p>• Mortgage Start Date: <code class="text-cyan-400">Day 1, Year 1100</code></p>
-                                    <p class="text-cyan-300 italic mt-2">→ Backdating is allowed. Referee can set historical dates for narrative continuity.</p>
+                                <div class="p-3 bg-slate-900 rounded border border-cyan-500/20">
+                                    <strong class="block text-cyan-300 text-xs uppercase mb-1">Amortization</strong>
+                                    <span class="text-slate-400 text-xs">Calculates principal vs interest for every single month automatically.</span>
+                                </div>
+                                <div class="p-3 bg-slate-900 rounded border border-cyan-500/20">
+                                    <strong class="block text-cyan-300 text-xs uppercase mb-1">The Captain</strong>
+                                    <span class="text-slate-400 text-xs">A mortgage <strong>requires</strong> a Captain. This links the crew hierarchy to the debt.</span>
+                                </div>
+                                <div class="p-3 bg-slate-900 rounded border border-cyan-500/20">
+                                    <strong class="block text-cyan-300 text-xs uppercase mb-1">Foreclosure Warning</strong>
+                                    <span class="text-slate-400 text-xs">The Budget module highlights missed payments immediately.</span>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </section>
 
-        {# 5. WORKFLOWS #}
+        {# 4. WORKFLOWS #}
         <section id="workflows" class="mb-12 scroll-mt-6">
             <div class="rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-cyan-950/10 border border-slate-800 p-8">
                 <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2 font-orbitron">
-                    <span class="text-cyan-400">05 ///</span> Practical Workflows
-                </h2>
-
-                <div class="space-y-6">
-                    {# New Campaign Setup #}
-                    <div class="rounded-lg bg-slate-900/60 border border-cyan-500/20 p-6">
-                        <h3 class="text-lg font-bold text-cyan-100 mb-4 font-orbitron uppercase">Workflow 1: New Campaign Setup</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-500 flex items-center justify-center text-xs font-bold text-cyan-400">1</span>
-                                <div class="text-sm">
-                                    <strong class="text-white">Create Mission:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Set campaign title, starting year, and initial session date.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-500 flex items-center justify-center text-xs font-bold text-cyan-400">2</span>
-                                <div class="text-sm">
-                                    <strong class="text-white">Create Ship:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Link ship to mission. Define hull type and components.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-500 flex items-center justify-center text-xs font-bold text-cyan-400">3</span>
-                                <div class="text-sm">
-                                    <strong class="text-white">Setup Mortgage:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Configure financing terms, interest rate, and duration.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-500 flex items-center justify-center text-xs font-bold text-cyan-400">4</span>
-                                <div class="text-sm">
-                                    <strong class="text-white">Start Tracking:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Begin logging income and costs as the campaign progresses.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {# Session-to-Session #}
-                    <div class="rounded-lg bg-slate-900/60 border border-emerald-500/20 p-6">
-                        <h3 class="text-lg font-bold text-emerald-100 mb-4 font-orbitron uppercase">Workflow 2: Session-to-Session Operations</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500 flex items-center justify-center text-xs font-bold text-emerald-400">1</span>
-                                <div class="text-sm">
-                                    <strong class="text-white">Update Session Date:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Advance mission session date to reflect in-game time progression.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500 flex items-center justify-center text-xs font-bold text-emerald-400">2</span>
-                                <div class="text-sm">
-                                    <strong class="text-white">Log New Income:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Record contracts signed and payments received during session.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500 flex items-center justify-center text-xs font-bold text-emerald-400">3</span>
-                                <div class="text-sm">
-                                    <strong class="text-white">Log Costs:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Track fuel, repairs, salaries, and other expenses incurred.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500 flex items-center justify-center text-xs font-bold text-emerald-400">4</span>
-                                <div class="text-sm">
-                                    <strong class="text-white">Review Budget:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Check annual budget to monitor cash flow trends.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {# Oneshot Workflow #}
-                    <div class="rounded-lg bg-slate-900/60 border border-amber-500/20 p-6">
-                        <h3 class="text-lg font-bold text-amber-100 mb-4 font-orbitron uppercase">Workflow 3: Oneshot Adventure</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-amber-500/20 border border-amber-500 flex items-center justify-center text-xs font-bold text-amber-400">1</span>
-                                <div class="text-sm">
-                                    <strong class="text-white">Create Mission:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Single adventure scope. Set session date to adventure start.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-amber-500/20 border border-amber-500 flex items-center justify-center text-xs font-bold text-amber-400">2</span>
-                                <div class="text-sm">
-                                    <strong class="text-white">Create Ship (Optional):</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Only if ship details matter to the story.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-amber-500/20 border border-amber-500 flex items-center justify-center text-xs font-bold text-amber-400">3</span>
-                                <div class="text-sm">
-                                    <strong class="text-white">Skip Mortgage & Budget:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Not relevant for single-session play.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-amber-500/20 border border-amber-500 flex items-center justify-center text-xs font-bold text-amber-400">4</span>
-                                <div class="text-sm">
-                                    <strong class="text-white">Track Key Transactions:</strong>
-                                    <p class="text-slate-400 text-xs mt-1">Log only narrative-critical income/costs (e.g., heist payout, bribe).</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        {# 6. BEST PRACTICES #}
-        <section id="best-practices" class="mb-12 scroll-mt-6">
-            <div class="rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/10 border border-slate-800 p-8">
-                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2 font-orbitron">
-                    <span class="text-emerald-400">06 ///</span> Best Practices & Tips
+                    <span class="text-cyan-400">04 ///</span> Practical Workflows
                 </h2>
 
                 <div class="grid md:grid-cols-2 gap-6">
-                    <div class="space-y-4">
-                        <div class="rounded-lg bg-emerald-950/20 border border-emerald-500/20 p-4">
-                            <h4 class="text-sm font-bold text-emerald-300 mb-2 flex items-center gap-2">
-                                <span>✓</span> Keep Dates Consistent
-                            </h4>
-                            <p class="text-xs text-slate-400">
-                                Always align record dates with your mission's session date unless you have a specific narrative reason to deviate.
-                            </p>
-                        </div>
-
-                        <div class="rounded-lg bg-emerald-950/20 border border-emerald-500/20 p-4">
-                            <h4 class="text-sm font-bold text-emerald-300 mb-2 flex items-center gap-2">
-                                <span>✓</span> Use Categories Wisely
-                            </h4>
-                            <p class="text-xs text-slate-400">
-                                Proper categorization makes budget analysis meaningful. Be consistent with category choices across sessions.
-                            </p>
-                        </div>
-
-                        <div class="rounded-lg bg-emerald-950/20 border border-emerald-500/20 p-4">
-                            <h4 class="text-sm font-bold text-emerald-300 mb-2 flex items-center gap-2">
-                                <span>✓</span> Review Annually
-                            </h4>
-                            <p class="text-xs text-slate-400">
-                                Check the Annual Budget at the end of each in-game year to identify financial trends and optimize operations.
-                            </p>
-                        </div>
+                    {# Standard Campaign #}
+                    <div class="rounded-lg bg-slate-900/60 border border-cyan-500/20 p-6">
+                        <h3 class="text-lg font-bold text-cyan-100 mb-4 font-orbitron uppercase">Workflow: The Free Trader</h3>
+                        <ol class="space-y-4 text-sm text-slate-300 list-decimal pl-4 marker:text-cyan-500 font-medium">
+                            <li>
+                                <strong>Start Session:</strong> Check the <em>Mission Date</em>. Update it to "Now".
+                            </li>
+                            <li>
+                                <strong>Check Ledger:</strong> Look at the Ship's Ledger. Did any automated payments (Mortgage, Salaries) trigger when you advanced the date?
+                            </li>
+                            <li>
+                                <strong>Log Activity:</strong> Add new Incomes (Contracts) and Costs (Fuel, Repairs) as they happen at the table.
+                            </li>
+                            <li>
+                                <strong>End Session:</strong> Advance the date if time passed. The Ledger will lock "Posted" transactions.
+                            </li>
+                        </ol>
                     </div>
 
-                    <div class="space-y-4">
-                        <div class="rounded-lg bg-amber-950/20 border border-amber-500/20 p-4">
-                            <h4 class="text-sm font-bold text-amber-300 mb-2 flex items-center gap-2">
-                                <span>⚠</span> Don't Over-Track
-                            </h4>
-                            <p class="text-xs text-slate-400">
-                                Only track what matters to your narrative. Skip modules that don't serve your story.
-                            </p>
-                        </div>
-
-                        <div class="rounded-lg bg-amber-950/20 border border-amber-500/20 p-4">
-                            <h4 class="text-sm font-bold text-amber-300 mb-2 flex items-center gap-2">
-                                <span>⚠</span> Referee Authority
-                            </h4>
-                            <p class="text-xs text-slate-400">
-                                Remember: you have full authority to override any date constraints. The system is advisory, never blocking.
-                            </p>
-                        </div>
-
-                        <div class="rounded-lg bg-amber-950/20 border border-amber-500/20 p-4">
-                            <h4 class="text-sm font-bold text-amber-300 mb-2 flex items-center gap-2">
-                                <span>⚠</span> Backdate When Needed
-                            </h4>
-                            <p class="text-xs text-slate-400">
-                                Need to add historical records? Go ahead. Nav-Fi supports backdating for campaign continuity.
-                            </p>
-                        </div>
+                    {# Mercenary / No Ship #}
+                    <div class="rounded-lg bg-slate-900/60 border border-emerald-500/20 p-6">
+                        <h3 class="text-lg font-bold text-emerald-100 mb-4 font-orbitron uppercase">Workflow: The Ground Unit (No Ship)</h3>
+                        <ol class="space-y-4 text-sm text-slate-300 list-decimal pl-4 marker:text-emerald-500 font-medium">
+                            <li>
+                                <strong>Create "Team":</strong> Create a Ship entity named "Bravo Company". Leave fittings blank.
+                            </li>
+                            <li>
+                                <strong>Log Logistics:</strong> Use "Costs" to track ammo, rations, and bribes. Categorize them under "Maintenance" or "Life Support".
+                            </li>
+                            <li>
+                                <strong>Contracts:</strong> Use "Income" to log your mercenary tickets. The partial payment logic (Deposit vs Completion) is perfect for merc contracts.
+                            </li>
+                            <li>
+                                <strong>Payroll:</strong> Standard Crew Salary functions work perfectly for your squad members.
+                            </li>
+                        </ol>
                     </div>
                 </div>
             </div>
         </section>
 
         {# Footer CTA #}
-        <div class="rounded-xl bg-gradient-to-r from-cyan-900/20 to-amber-900/20 border border-slate-700 p-8 text-center">
+        <div class="rounded-xl bg-gradient-to-r from-cyan-900/20 to-amber-900/20 border border-slate-700 p-8 text-center sticky bottom-4 backdrop-blur-sm">
             <h3 class="text-xl font-bold text-white mb-3 font-orbitron">Ready to Master Your Credits?</h3>
-            <p class="text-sm text-slate-400 mb-6 max-w-2xl mx-auto">
-                Start tracking your ship's finances with precision. The Financial Core adapts to your table—use what you need, skip what you don't.
-            </p>
             <div class="flex items-center justify-center gap-4">
                 <a href="{{ path('app_campaign_index') }}" class="btn btn-primary btn-sm px-6 font-orbitron uppercase text-[10px] tracking-widest font-bold">
                     Create Mission
