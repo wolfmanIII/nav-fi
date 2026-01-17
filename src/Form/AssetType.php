@@ -4,9 +4,9 @@ namespace App\Form;
 
 use App\Entity\Campaign;
 use App\Entity\Asset;
-use App\Dto\ShipDetailsData;
+use App\Dto\AssetDetailsData;
 use App\Repository\CampaignRepository;
-use App\Form\ShipDetailsType;
+use App\Form\AssetDetailsType;
 use App\Form\Type\TravellerMoneyType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -21,7 +21,7 @@ class AssetType extends AbstractType
     {
         /** @var Asset $asset */
         $asset = $options['data'];
-        $detailsData = ShipDetailsData::fromArray($asset->getShipDetails() ?? []);
+        $detailsData = AssetDetailsData::fromArray($asset->getShipDetails() ?? []);
         $builder
             ->add('category', ChoiceType::class, [
                 'choices' => [
@@ -58,7 +58,7 @@ class AssetType extends AbstractType
                 'label' => 'Price(Cr)',
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('shipDetails', ShipDetailsType::class, [
+            ->add('shipDetails', AssetDetailsType::class, [
                 'mapped' => false,
                 'data' => $detailsData,
                 'label' => 'Asset Details',
