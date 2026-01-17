@@ -43,10 +43,10 @@ class Campaign
     private ?User $user = null;
 
     /**
-     * @var Collection<int, Ship>
+     * @var Collection<int, Asset>
      */
-    #[ORM\OneToMany(targetEntity: Ship::class, mappedBy: 'campaign')]
-    private Collection $ships;
+    #[ORM\OneToMany(targetEntity: Asset::class, mappedBy: 'campaign')]
+    private Collection $assets;
 
     /**
      * @var Collection<int, Route>
@@ -56,7 +56,7 @@ class Campaign
 
     public function __construct()
     {
-        $this->ships = new ArrayCollection();
+        $this->assets = new ArrayCollection();
         $this->routes = new ArrayCollection();
         $this->code = Uuid::v7();
     }
@@ -151,28 +151,28 @@ class Campaign
     }
 
     /**
-     * @return Collection<int, Ship>
+     * @return Collection<int, Asset>
      */
-    public function getShips(): Collection
+    public function getAssets(): Collection
     {
-        return $this->ships;
+        return $this->assets;
     }
 
-    public function addShip(Ship $ship): static
+    public function addAsset(Asset $asset): static
     {
-        if (!$this->ships->contains($ship)) {
-            $this->ships->add($ship);
-            $ship->setCampaign($this);
+        if (!$this->assets->contains($asset)) {
+            $this->assets->add($asset);
+            $asset->setCampaign($this);
         }
 
         return $this;
     }
 
-    public function removeShip(Ship $ship): static
+    public function removeAsset(Asset $asset): static
     {
-        if ($this->ships->removeElement($ship)) {
-            if ($ship->getCampaign() === $this) {
-                $ship->setCampaign(null);
+        if ($this->assets->removeElement($asset)) {
+            if ($asset->getCampaign() === $this) {
+                $asset->setCampaign(null);
             }
         }
 

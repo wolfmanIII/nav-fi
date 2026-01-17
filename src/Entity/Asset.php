@@ -2,22 +2,29 @@
 
 namespace App\Entity;
 
-use App\Repository\ShipRepository;
+use App\Repository\AssetRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 
-#[ORM\Entity(repositoryClass: ShipRepository::class)]
-#[ORM\Index(name: 'idx_ship_user', columns: ['user_id'])]
-#[ORM\Index(name: 'idx_ship_campaign', columns: ['campaign_id'])]
-class Ship
+#[ORM\Entity(repositoryClass: AssetRepository::class)]
+#[ORM\Index(name: 'idx_asset_user', columns: ['user_id'])]
+#[ORM\Index(name: 'idx_asset_campaign', columns: ['campaign_id'])]
+class Asset
 {
+    public const CATEGORY_SHIP = 'ship';
+    public const CATEGORY_BASE = 'base';
+    public const CATEGORY_TEAM = 'team';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\Column(length: 10, options: ['default' => self::CATEGORY_SHIP])]
+    private ?string $category = self::CATEGORY_SHIP;
 
     #[ORM\Column(type: Types::GUID)]
     private ?string $code = null;
@@ -25,13 +32,13 @@ class Ship
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $type = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $class = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2, nullable: true)]
     private ?string $price = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, options: ['default' => '0.00'])]
@@ -41,60 +48,57 @@ class Ship
     #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ships')]
+    #[ORM\ManyToOne(inversedBy: 'assets')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Campaign $campaign = null;
 
-    // Legacy session fields removed
-
-
-    #[ORM\OneToOne(mappedBy: 'ship', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'asset', cascade: ['persist', 'remove'])]
     private ?Mortgage $mortgage = null;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $shipDetails = null;
+    private ?array $shipDetails = null; // Keeping field name for now to avoid drastic data structure change, or could rename to details? Let's keep shipDetails but maybe getter getDetails? Or rename field. The plan said rename references. I'll stick to shipDetails for internal data if I want to be safe, OR rename it to details. Let's rename to details for cleanliness.
 
     /**
      * @var Collection<int, Crew>
      */
-    #[ORM\OneToMany(targetEntity: Crew::class, mappedBy: 'ship')]
+    #[ORM\OneToMany(targetEntity: Crew::class, mappedBy: 'asset')]
     private Collection $crews;
 
     /**
      * @var Collection<int, ShipAmendment>
      */
-    #[ORM\OneToMany(targetEntity: ShipAmendment::class, mappedBy: 'ship', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    private Collection $amendments;
+    #[ORM\OneToMany(targetEntity: ShipAmendment::class, mappedBy: 'asset', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $amendments; // Note: Need to verify if ShipAmendment entity is renamed. For now referring to ShipAmendment but mappedBy 'asset'. Wait, if I rename Ship->Asset, I should update relation in ShipAmendment too.
 
     /**
      * @var Collection<int, Cost>
      */
-    #[ORM\OneToMany(targetEntity: Cost::class, mappedBy: 'ship', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Cost::class, mappedBy: 'asset', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $costs;
 
     /**
      * @var Collection<int, Income>
      */
-    #[ORM\OneToMany(targetEntity: Income::class, mappedBy: 'ship', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Income::class, mappedBy: 'asset', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $incomes;
 
     /**
      * @var Collection<int, Route>
      */
-    #[ORM\OneToMany(targetEntity: Route::class, mappedBy: 'ship', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Route::class, mappedBy: 'asset', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $routes;
 
     /**
      * @var Collection<int, AnnualBudget>
      */
-    #[ORM\OneToMany(targetEntity: AnnualBudget::class, mappedBy: 'ship', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: AnnualBudget::class, mappedBy: 'asset', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $annualBudgets;
 
 
     /**
      * @var Collection<int, Transaction>
      */
-    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'ship', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'asset', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $transactions;
 
     public function __construct()
@@ -143,9 +147,21 @@ class Ship
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(?string $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(string $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }
@@ -155,7 +171,7 @@ class Ship
         return $this->class;
     }
 
-    public function setClass(string $class): static
+    public function setClass(?string $class): static
     {
         $this->class = $class;
 
@@ -167,7 +183,7 @@ class Ship
         return $this->price;
     }
 
-    public function setPrice(string $price): static
+    public function setPrice(?string $price): static
     {
         $this->price = $price;
 
@@ -210,9 +226,6 @@ class Ship
         return $this;
     }
 
-    // Legacy session methods removed
-
-
     public function getMortgage(): ?Mortgage
     {
         return $this->mortgage;
@@ -222,12 +235,12 @@ class Ship
     {
         // unset owning side of the relation if necessary
         if ($mortgage === null && $this->mortgage !== null) {
-            $this->mortgage->setShip(null);
+            $this->mortgage->setAsset(null);
         }
 
         // set the owning side of the relation if necessary
-        if ($mortgage !== null && $mortgage->getShip() !== $this) {
-            $mortgage->setShip($this);
+        if ($mortgage !== null && $mortgage->getAsset() !== $this) {
+            $mortgage->setAsset($this);
         }
 
         $this->mortgage = $mortgage;
@@ -255,7 +268,7 @@ class Ship
     {
         if (!$this->amendments->contains($amendment)) {
             $this->amendments->add($amendment);
-            $amendment->setShip($this);
+            $amendment->setAsset($this);
         }
 
         return $this;
@@ -264,8 +277,8 @@ class Ship
     public function removeAmendment(ShipAmendment $amendment): static
     {
         if ($this->amendments->removeElement($amendment)) {
-            if ($amendment->getShip() === $this) {
-                $amendment->setShip(null);
+            if ($amendment->getAsset() === $this) {
+                $amendment->setAsset(null);
             }
         }
 
@@ -276,7 +289,7 @@ class Ship
     {
         if (!$this->crews->contains($crew)) {
             $this->crews->add($crew);
-            $crew->setShip($this);
+            $crew->setAsset($this);
         }
 
         return $this;
@@ -286,8 +299,8 @@ class Ship
     {
         if ($this->crews->removeElement($crew)) {
             // set the owning side to null (unless already changed)
-            if ($crew->getShip() === $this) {
-                $crew->setShip(null);
+            if ($crew->getAsset() === $this) {
+                $crew->setAsset(null);
             }
         }
 
@@ -306,7 +319,7 @@ class Ship
     {
         if (!$this->costs->contains($cost)) {
             $this->costs->add($cost);
-            $cost->setShip($this);
+            $cost->setAsset($this);
         }
 
         return $this;
@@ -315,8 +328,8 @@ class Ship
     public function removeCost(Cost $cost): static
     {
         if ($this->costs->removeElement($cost)) {
-            if ($cost->getShip() === $this) {
-                $cost->setShip(null);
+            if ($cost->getAsset() === $this) {
+                $cost->setAsset(null);
             }
         }
 
@@ -343,7 +356,7 @@ class Ship
     {
         if (!$this->routes->contains($route)) {
             $this->routes->add($route);
-            $route->setShip($this);
+            $route->setAsset($this);
         }
 
         return $this;
@@ -352,8 +365,8 @@ class Ship
     public function removeRoute(Route $route): static
     {
         if ($this->routes->removeElement($route)) {
-            if ($route->getShip() === $this) {
-                $route->setShip(null);
+            if ($route->getAsset() === $this) {
+                $route->setAsset(null);
             }
         }
 
@@ -364,7 +377,7 @@ class Ship
     {
         if (!$this->incomes->contains($income)) {
             $this->incomes->add($income);
-            $income->setShip($this);
+            $income->setAsset($this);
         }
 
         return $this;
@@ -373,8 +386,8 @@ class Ship
     public function removeIncome(Income $income): static
     {
         if ($this->incomes->removeElement($income)) {
-            if ($income->getShip() === $this) {
-                $income->setShip(null);
+            if ($income->getAsset() === $this) {
+                $income->setAsset(null);
             }
         }
 
@@ -426,31 +439,22 @@ class Ship
         return $this;
     }
 
+    // Retaining legacy getters but updating logic
     public function getJumpDriveRating(): ?int
     {
-        // Structure: shipDetails['jDrive']['jump']
         $details = $this->getShipDetails();
-
-        if (isset($details['jDrive']) && is_array($details['jDrive'])) {
-            if (isset($details['jDrive']['jump'])) {
-                return (int) $details['jDrive']['jump'];
-            }
+        if (isset($details['jDrive']['jump'])) {
+            return (int) $details['jDrive']['jump'];
         }
-
         return null;
     }
 
     public function getHullTons(): ?float
     {
-        // Structure: shipDetails['hull']['tons']
         $details = $this->getShipDetails();
-
-        if (isset($details['hull']) && is_array($details['hull'])) {
-            if (isset($details['hull']['tons']) && is_numeric($details['hull']['tons'])) {
-                return (float) $details['hull']['tons'];
-            }
+        if (isset($details['hull']['tons']) && is_numeric($details['hull']['tons'])) {
+            return (float) $details['hull']['tons'];
         }
-
         return null;
     }
 

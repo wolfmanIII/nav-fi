@@ -12,10 +12,10 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: MortgageRepository::class)]
 #[ORM\Index(name: 'idx_mortgage_user', columns: ['user_id'])]
-#[ORM\Index(name: 'idx_mortgage_ship', columns: ['ship_id'])]
+#[ORM\Index(name: 'idx_mortgage_asset', columns: ['asset_id'])]
 class Mortgage
 {
-    private const SHIP_SHARE_VALUE = 1000000;
+    private const SHIP_SHARE_VALUE = 1000000; // Keeping constant name for business rule compatibility
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -30,7 +30,7 @@ class Mortgage
 
     #[ORM\OneToOne(inversedBy: 'mortgage')]
     #[ORM\JoinColumn(nullable: false, unique: true)]
-    private ?Ship $ship = null;
+    private ?Asset $asset = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $startDay = null;
@@ -39,7 +39,7 @@ class Mortgage
     private ?int $startYear = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $shipShares = null;
+    private ?int $shipShares = null; // Keeping field name
 
     #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2, nullable: true)]
     private ?string $advancePayment = null;
@@ -54,8 +54,6 @@ class Mortgage
     #[ORM\ManyToOne(inversedBy: 'mortgages')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Insurance $insurance = null;
-
-
 
     #[ORM\Column(nullable: true)]
     private ?int $signingDay = null;
@@ -120,18 +118,18 @@ class Mortgage
         return $this;
     }
 
-    public function getShip(): ?Ship
+    public function getAsset(): ?Asset
     {
-        return $this->ship;
+        return $this->asset;
     }
 
-    public function setShip(?Ship $ship): static
+    public function setAsset(?Asset $asset): static
     {
-        $this->ship = $ship;
+        $this->asset = $asset;
 
         // ensure inverse side is synchronized
-        if ($ship !== null && $ship->getMortgage() !== $this) {
-            $ship->setMortgage($this);
+        if ($asset !== null && $asset->getMortgage() !== $this) {
+            $asset->setMortgage($this);
         }
 
         return $this;
@@ -295,7 +293,7 @@ class Mortgage
 
     public function calculateShipCost(): string
     {
-        $shipPrice = $this->normalizeAmount($this->getShip()?->getPrice());
+        $shipPrice = $this->normalizeAmount($this->getAsset()?->getPrice());
         $shipSharesValue = bcmul((string)($this->getShipShares() ?? 0), (string)self::SHIP_SHARE_VALUE, 4);
 
         $shipCost = bcsub($shipPrice, $shipSharesValue, 6);
@@ -317,7 +315,7 @@ class Mortgage
 
     public function calculateInsuranceCost(): string
     {
-        $shipPrice = $this->normalizeAmount($this->getShip()?->getPrice());
+        $shipPrice = $this->normalizeAmount($this->getAsset()?->getPrice());
         $annualCost = $this->normalizeAmount($this->getInsurance()?->getAnnualCost());
 
         $base = bcdiv($shipPrice, '100', 6);

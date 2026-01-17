@@ -2,10 +2,10 @@
 
 namespace App\Form;
 
-use App\Dto\ShipDetailsData;
+use App\Dto\AssetDetailsData;
 use App\Entity\Cost;
-use App\Entity\Ship;
-use App\Entity\ShipAmendment;
+use App\Entity\Asset;
+use App\Entity\AssetAmendment;
 use App\Form\Config\DayYearLimits;
 use App\Repository\CostRepository;
 use Doctrine\ORM\EntityRepository;
@@ -18,22 +18,20 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ShipAmendmentType extends AbstractType
+class AssetAmendmentType extends AbstractType
 {
-    public function __construct(private readonly DayYearLimits $limits)
-    {
-    }
+    public function __construct(private readonly DayYearLimits $limits) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var ShipAmendment $amendment */
+        /** @var AssetAmendment $amendment */
         $amendment = $options['data'];
-        /** @var Ship $ship */
-        $ship = $options['ship'];
+        /** @var Asset $asset */
+        $asset = $options['asset'];
         $user = $options['user'];
 
-        $minYear = $ship->getCampaign()?->getStartingYear() ?? $this->limits->getYearMin();
-        $detailsData = ShipDetailsData::fromArray($amendment->getPatchDetails() ?? []);
+        $minYear = $asset->getCampaign()?->getStartingYear() ?? $this->limits->getYearMin();
+        $detailsData = AssetDetailsData::fromArray($amendment->getPatchDetails() ?? []);
 
         $builder
             ->add('title', TextType::class, [
@@ -47,18 +45,18 @@ class ShipAmendmentType extends AbstractType
                 'class' => Cost::class,
                 'required' => true,
                 'placeholder' => '-- Select cost reference --',
-                'choice_label' => fn (Cost $cost) => sprintf('%s — %s', $cost->getTitle(), $cost->getAmount()),
-                'query_builder' => function (CostRepository $repo) use ($ship, $user, $amendment) {
+                'choice_label' => fn(Cost $cost) => sprintf('%s — %s', $cost->getTitle(), $cost->getAmount()),
+                'query_builder' => function (CostRepository $repo) use ($asset, $user, $amendment) {
                     $amendmentId = $amendment?->getId();
                     $qb = $repo->createQueryBuilder('c')
                         ->leftJoin('c.costCategory', 'cc')
-                        ->leftJoin(ShipAmendment::class, 'sa', 'WITH', 'sa.cost = c')
-                        ->andWhere('c.ship = :ship')
+                        ->leftJoin(AssetAmendment::class, 'sa', 'WITH', 'sa.cost = c')
+                        ->andWhere('c.asset = :asset')
                         ->andWhere('cc.code IN (:codes)')
                         ->andWhere('c.paymentDay IS NOT NULL')
                         ->andWhere('c.paymentYear IS NOT NULL')
                         ->andWhere('sa.id IS NULL' . ($amendmentId ? ' OR sa.id = :amendmentId' : ''))
-                        ->setParameter('ship', $ship)
+                        ->setParameter('asset', $asset)
                         ->setParameter('codes', ['SHIP_GEAR', 'SHIP_SOFTWARE'])
                         ->orderBy('c.paymentYear', 'DESC')
                         ->addOrderBy('c.paymentDay', 'DESC');
@@ -79,14 +77,14 @@ class ShipAmendmentType extends AbstractType
                     'data-tom-select-placeholder-value' => 'Search cost reference…',
                 ],
             ])
-            ->add('patchDetails', ShipDetailsType::class, [
+            ->add('patchDetails', AssetDetailsType::class, [
                 'mapped' => false,
                 'data' => $detailsData,
             ])
         ;
 
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
-            /** @var ShipAmendment $amendment */
+            /** @var AssetAmendment $amendment */
             $amendment = $event->getData();
             $form = $event->getForm();
 
@@ -96,9 +94,9 @@ class ShipAmendmentType extends AbstractType
                 $amendment->setEffectiveYear($cost->getPaymentYear());
             }
 
-            /** @var ShipDetailsData $details */
+            /** @var AssetDetailsData $details */
             $details = $form->get('patchDetails')->getData();
-            if ($details instanceof ShipDetailsData) {
+            if ($details instanceof AssetDetailsData) {
                 $amendment->setPatchDetails($details->toArray());
             }
         });
@@ -107,8 +105,8 @@ class ShipAmendmentType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => ShipAmendment::class,
-            'ship' => null,
+            'data_class' => AssetAmendment::class,
+            'asset' => null,
             'user' => null,
         ]);
     }

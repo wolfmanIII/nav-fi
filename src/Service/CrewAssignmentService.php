@@ -3,27 +3,27 @@
 namespace App\Service;
 
 use App\Entity\Crew;
-use App\Entity\Ship;
+use App\Entity\Asset;
 
 final class CrewAssignmentService
 {
-    public function assignToShip(Ship $ship, Crew $crew): void
+    public function assignToAsset(Asset $asset, Crew $crew): void
     {
-        $ship->addCrew($crew);
+        $asset->addCrew($crew);
         $crew->setStatus('Active');
 
-        $sessionDay = $ship->getCampaign()?->getSessionDay();
-        $sessionYear = $ship->getCampaign()?->getSessionYear();
+        $sessionDay = $asset->getCampaign()?->getSessionDay();
+        $sessionYear = $asset->getCampaign()?->getSessionYear();
         if ($sessionDay !== null && $sessionYear !== null) {
             $crew->setActiveDay($sessionDay);
             $crew->setActiveYear($sessionYear);
         }
     }
 
-    public function removeFromShip(Ship $ship, Crew $crew): void
+    public function removeFromAsset(Asset $asset, Crew $crew): void
     {
         $this->clearAfterDetach($crew);
-        $ship->removeCrew($crew);
+        $asset->removeCrew($crew);
     }
 
     public function clearAfterDetach(Crew $crew): void

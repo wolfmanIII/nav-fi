@@ -3,25 +3,38 @@
 namespace App\Form;
 
 use App\Entity\Campaign;
-use App\Entity\Ship;
+use App\Entity\Asset;
 use App\Dto\ShipDetailsData;
 use App\Repository\CampaignRepository;
 use App\Form\ShipDetailsType;
 use App\Form\Type\TravellerMoneyType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ShipType extends AbstractType
+class AssetType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var Ship $ship */
-        $ship = $options['data'];
-        $detailsData = ShipDetailsData::fromArray($ship->getShipDetails() ?? []);
+        /** @var Asset $asset */
+        $asset = $options['data'];
+        $detailsData = ShipDetailsData::fromArray($asset->getShipDetails() ?? []);
         $builder
+            ->add('category', ChoiceType::class, [
+                'choices' => [
+                    'Starship' => Asset::CATEGORY_SHIP,
+                    'Base / Station' => Asset::CATEGORY_BASE,
+                    'Team / Mercenary Unit' => Asset::CATEGORY_TEAM,
+                ],
+                'expanded' => true,
+                'multiple' => false,
+                'label' => 'Asset Type',
+                'attr' => ['class' => 'flex gap-4 mb-4'],
+                'label_attr' => ['class' => 'label font-bold text-slate-400 uppercase tracking-wider text-xs'],
+            ])
             ->add('name', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
@@ -48,7 +61,7 @@ class ShipType extends AbstractType
             ->add('shipDetails', ShipDetailsType::class, [
                 'mapped' => false,
                 'data' => $detailsData,
-                'label' => 'Ship Details',
+                'label' => 'Asset Details',
             ])
         ;
     }
@@ -56,7 +69,7 @@ class ShipType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Ship::class,
+            'data_class' => Asset::class,
         ]);
     }
 }

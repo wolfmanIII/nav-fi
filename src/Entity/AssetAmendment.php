@@ -2,16 +2,17 @@
 
 namespace App\Entity;
 
-use App\Repository\ShipAmendmentRepository;
+use App\Repository\AssetAmendmentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 
-#[ORM\Entity(repositoryClass: ShipAmendmentRepository::class)]
+#[ORM\Entity(repositoryClass: AssetAmendmentRepository::class)]
 #[ORM\Index(name: 'idx_amendment_user', columns: ['user_id'])]
-#[ORM\Index(name: 'idx_amendment_ship', columns: ['ship_id'])]
+#[ORM\Index(name: 'idx_amendment_asset', columns: ['asset_id'])]
 #[ORM\Index(name: 'idx_amendment_cost', columns: ['cost_id'])]
-class ShipAmendment
+#[ORM\Table(name: 'asset_amendment')]
+class AssetAmendment
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -38,7 +39,7 @@ class ShipAmendment
 
     #[ORM\ManyToOne(inversedBy: 'amendments')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Ship $ship = null;
+    private ?Asset $asset = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
@@ -130,14 +131,14 @@ class ShipAmendment
         return $this;
     }
 
-    public function getShip(): ?Ship
+    public function getAsset(): ?Asset
     {
-        return $this->ship;
+        return $this->asset;
     }
 
-    public function setShip(?Ship $ship): static
+    public function setAsset(?Asset $asset): static
     {
-        $this->ship = $ship;
+        $this->asset = $asset;
 
         return $this;
     }

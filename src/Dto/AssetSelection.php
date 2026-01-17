@@ -2,21 +2,21 @@
 
 namespace App\Dto;
 
-use App\Entity\Ship;
+use App\Entity\Asset;
 
-class ShipSelection
+class AssetSelection
 {
-    private Ship $ship;
+    private Asset $asset;
     private bool $selected = false;
 
-    public function getShip(): Ship
+    public function getAsset(): Asset
     {
-        return $this->ship;
+        return $this->asset;
     }
 
-    public function setShip(Ship $ship): self
+    public function setAsset(Asset $asset): self
     {
-        $this->ship = $ship;
+        $this->asset = $asset;
         return $this;
     }
 

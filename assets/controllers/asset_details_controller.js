@@ -9,12 +9,12 @@ export default class extends Controller {
     }
 
     addItem(event) {
-        const collection = event.currentTarget.closest('[data-ship-details-target="collection"]');
+        const collection = event.currentTarget.closest('[data-asset-details-target="collection"]');
         if (!collection) {
             return;
         }
-        const list = collection.querySelector('[data-ship-details-target="list"]');
-        const templateEl = collection.querySelector('template[data-ship-details-target="prototype"]');
+        const list = collection.querySelector('[data-asset-details-target="list"]');
+        const templateEl = collection.querySelector('template[data-asset-details-target="prototype"]');
         if (!list || !templateEl) {
             return;
         }

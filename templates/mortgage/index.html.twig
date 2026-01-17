@@ -19,9 +19,9 @@
                         {% include 'icons/handbook.html.twig' %}
                     </div>
                     <div>
-                        <p class="uppercase text-[10px] tracking-[0.3em] text-cyan-300/70 font-bold font-orbitron mb-0.5">Ship finances // Debt Manifest</p>
+                        <p class="uppercase text-[10px] tracking-[0.3em] text-cyan-300/70 font-bold font-orbitron mb-0.5">Asset finances // Debt Manifest</p>
                         <h1 class="text-2xl font-bold text-cyan-100 leading-tight font-orbitron uppercase">Mortgages</h1>
-                        <p class="text-xs text-cyan-100/60 font-rajdhani tracking-widest uppercase">Mortgages, installments and penalties per ship: keep an eye on interests.</p>
+                        <p class="text-xs text-cyan-100/60 font-rajdhani tracking-widest uppercase">Mortgages, installments and penalties per asset: keep an eye on interests.</p>
 
                         {# Session Date Modal Trigger #}
                         {% if campaigns|length > 0 %}
@@ -101,9 +101,9 @@
                 <input type="text" name="name" value="{{ filters.name }}" class="input w-full bg-slate-950/50 border-slate-800 text-cyan-100 placeholder:text-slate-600 focus:border-cyan-500/50" placeholder="Search by name...">
             </div>
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-cyan-500/60 font-bold">VESSEL_NAV</label>
+                <label class="label text-xs uppercase tracking-[0.2em] text-cyan-500/60 font-bold">ASSET_NAV</label>
                 <select name="ship" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
-                    <option value="">ANY_VESSEL</option>
+                    <option value="">ANY_ASSET</option>
                     {% for ship in ships %}
                         <option value="{{ ship.id }}" {% if filters.ship == ship.id %}selected{% endif %}>{{ ship.name }}</option>
                     {% endfor %}
@@ -187,7 +187,7 @@
 
                             <div class="flex items-center gap-6 text-sm">
                                 <div class="flex flex-col gap-1">
-                                    <span class="uppercase tracking-tighter text-slate-500 font-semibold">Vessel Assignment</span>
+                                    <span class="uppercase tracking-tighter text-slate-500 font-semibold">Asset Assignment</span>
                                     <div class="flex items-center gap-2 text-cyan-100">
                                         {% include 'icons/far-trader.html.twig' with {'dim': 16} %}
                                         <span class="font-bold">{{ mortgage.ship.name }}</span>
@@ -240,7 +240,7 @@
                 <div class="col-span-full py-20 flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
                     <div class="text-slate-500 mb-2">{% include 'icons/handbook.html.twig' with {'dim': 48} %}</div>
                     <p class="text-slate-400 uppercase tracking-widest text-sm">No active debt manifest detected</p>
-                    <a href="{{ path('app_mortgage_new') }}" class="mt-4 text-cyan-400 hover:text-cyan-300 text-xs font-bold uppercase underline underline-offset-4 decoration-cyan-500/30">Initiate vessel financing</a>
+                    <a href="{{ path('app_mortgage_new') }}" class="mt-4 text-cyan-400 hover:text-cyan-300 text-xs font-bold uppercase underline underline-offset-4 decoration-cyan-500/30">Initiate asset financing</a>
                 </div>
             {% endif %}
         </div>

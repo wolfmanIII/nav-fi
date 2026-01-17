@@ -11,7 +11,7 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: CrewRepository::class)]
 #[ORM\Index(name: 'idx_crew_user', columns: ['user_id'])]
-#[ORM\Index(name: 'idx_crew_ship', columns: ['ship_id'])]
+#[ORM\Index(name: 'idx_crew_asset', columns: ['asset_id'])]
 #[Captain]
 class Crew
 {
@@ -42,17 +42,17 @@ class Crew
     private ?string $code = null;
 
     #[ORM\ManyToOne(inversedBy: 'crews')]
-    private ?Ship $ship = null;
+    private ?Asset $asset = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
 
     /**
-     * @var Collection<int, ShipRole>
+     * @var Collection<int, AssetRole>
      */
-    #[ORM\ManyToMany(targetEntity: ShipRole::class, inversedBy: 'crews')]
-    private Collection $shipRoles;
+    #[ORM\ManyToMany(targetEntity: AssetRole::class, inversedBy: 'crews')]
+    private Collection $assetRoles;
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $background = null;
@@ -93,7 +93,7 @@ class Crew
     public function __construct()
     {
         $this->setCode(Uuid::v7());
-        $this->shipRoles = new ArrayCollection();
+        $this->assetRoles = new ArrayCollection();
         $this->status = 'Active';
     }
 
@@ -186,24 +186,33 @@ class Crew
         return $this;
     }
 
-    public function getShip(): ?Ship
+    public function getAsset(): ?Asset
     {
-        return $this->ship;
+        return $this->asset;
     }
 
-    public function setShip(?Ship $ship): static
+    public function setAsset(?Asset $asset): static
     {
-        $this->ship = $ship;
+        $this->asset = $asset;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, ShipRole>
+     * @return Collection<int, AssetRole>
+     */
+    public function getAssetRoles(): Collection
+    {
+        return $this->assetRoles;
+    }
+
+    /**
+     * Legacy method for compatibility during refactor, or we can alias it.
+     * But better to just update callers.
      */
     public function getShipRoles(): Collection
     {
-        return $this->shipRoles;
+        return $this->assetRoles;
     }
 
     public function getUser(): ?User
@@ -218,25 +227,37 @@ class Crew
         return $this;
     }
 
-    public function addShipRole(ShipRole $shipRole): static
+    public function addAssetRole(AssetRole $assetRole): static
     {
-        if (!$this->shipRoles->contains($shipRole)) {
-            $this->shipRoles->add($shipRole);
+        if (!$this->assetRoles->contains($assetRole)) {
+            $this->assetRoles->add($assetRole);
         }
 
         return $this;
     }
 
-    public function removeShipRole(ShipRole $shipRole): static
+    // Legacy method
+    public function addShipRole(AssetRole $role): static
     {
-        $this->shipRoles->removeElement($shipRole);
+        return $this->addAssetRole($role);
+    }
+
+    public function removeAssetRole(AssetRole $assetRole): static
+    {
+        $this->assetRoles->removeElement($assetRole);
 
         return $this;
     }
 
+    // Legacy method
+    public function removeShipRole(AssetRole $role): static
+    {
+        return $this->removeAssetRole($role);
+    }
+
     public function isCaptain(): bool
     {
-        foreach ($this->getShipRoles() as $role) {
+        foreach ($this->getAssetRoles() as $role) {
             if ($role->getCode() === "CAP") {
                 return true;
             }
@@ -246,8 +267,8 @@ class Crew
 
     public function hasMortgageSigned(): bool
     {
-        if ($this->getShip()) {
-            return $this->getShip()->hasMortgageSigned();
+        if ($this->getAsset()) {
+            return $this->getAsset()->hasMortgageSigned();
         }
         return false;
     }
@@ -396,51 +417,29 @@ class Crew
         return $this;
     }
 
-    /**
-     * Check if the crew member is currently displayable (not MIA or deceased).
-     */
     public function isDisplayable(): bool
     {
         return !in_array($this->status, ['Missing (MIA)', 'Deceased'], true);
     }
 
-    /**
-     * Check if the crew member was active at or after a specific date.
-     * 
-     * @param int|null $referenceYear The reference year
-     * @param int|null $referenceDay The reference day
-     * @return bool True if crew was active at or after the reference date
-     */
     public function isActiveAtOrAfterDate(?int $referenceYear, ?int $referenceDay): bool
     {
-        // If no reference date is provided, consider the crew as active
         if (!$referenceYear || !$referenceDay) {
             return true;
         }
 
-        // If crew has no active date, they don't pass the filter
         if (!$this->activeYear || !$this->activeDay) {
             return false;
         }
 
-        // Calculate date indices for comparison (year * 1000 + day)
         $activeIndex = $this->activeYear * 1000 + $this->activeDay;
         $referenceIndex = $referenceYear * 1000 + $referenceDay;
 
         return $activeIndex >= $referenceIndex;
     }
 
-    /**
-     * Check if the crew member should be visible in a mortgage context.
-     * 
-     * @param int|null $mortgageSigningYear The mortgage signing year
-     * @param int|null $mortgageSigningDay The mortgage signing day
-     * @return bool True if crew should be displayed in the mortgage
-     */
     public function isVisibleInMortgage(?int $mortgageSigningYear, ?int $mortgageSigningDay): bool
     {
-        // Show all currently displayable crew members (Active, Retired, etc.)
-        // Ignore the signing date constraint so new crew are visible on existing mortgages.
         return $this->isDisplayable();
     }
 }

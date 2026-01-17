@@ -7,7 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
-#[ORM\Index(name: 'idx_transaction_ship', columns: ['ship_id'])]
+#[ORM\Index(name: 'idx_transaction_asset', columns: ['asset_id'])]
 class Transaction
 {
     #[ORM\Id]
@@ -17,7 +17,7 @@ class Transaction
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Ship $ship = null;
+    private ?Asset $asset = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2)]
     private ?string $amount = null;
@@ -68,14 +68,14 @@ class Transaction
         return $this->id;
     }
 
-    public function getShip(): ?Ship
+    public function getAsset(): ?Asset
     {
-        return $this->ship;
+        return $this->asset;
     }
 
-    public function setShip(?Ship $ship): static
+    public function setAsset(?Asset $asset): static
     {
-        $this->ship = $ship;
+        $this->asset = $asset;
 
         return $this;
     }

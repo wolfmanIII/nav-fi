@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: RouteRepository::class)]
-#[ORM\Index(name: 'idx_route_ship', columns: ['ship_id'])]
+#[ORM\Index(name: 'idx_route_asset', columns: ['asset_id'])]
 #[ORM\Index(name: 'idx_route_campaign', columns: ['campaign_id'])]
 class Route
 {
@@ -34,7 +34,7 @@ class Route
 
     #[ORM\ManyToOne(inversedBy: 'routes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Ship $ship = null;
+    private ?Asset $asset = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $plannedAt = null;
@@ -136,14 +136,14 @@ class Route
         return $this;
     }
 
-    public function getShip(): ?Ship
+    public function getAsset(): ?Asset
     {
-        return $this->ship;
+        return $this->asset;
     }
 
-    public function setShip(?Ship $ship): static
+    public function setAsset(?Asset $asset): static
     {
-        $this->ship = $ship;
+        $this->asset = $asset;
 
         return $this;
     }
@@ -280,9 +280,6 @@ class Route
         return $this;
     }
 
-    /**
-     * @return Collection<int, RouteWaypoint>
-     */
     public function getWaypoints(): Collection
     {
         return $this->waypoints;
@@ -323,7 +320,7 @@ class Route
 
     public function getJumpDistance(): ?int
     {
-        $jumpRating = $this->getJumpRating() ?? $this->getShip()?->getJumpDriveRating();
+        $jumpRating = $this->getJumpRating() ?? $this->getAsset()?->getJumpDriveRating();
 
         if ($jumpRating === null) {
             return null;

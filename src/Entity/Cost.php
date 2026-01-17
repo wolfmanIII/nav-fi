@@ -10,7 +10,7 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: CostRepository::class)]
 #[ORM\Index(name: 'idx_cost_user', columns: ['user_id'])]
-#[ORM\Index(name: 'idx_cost_ship', columns: ['ship_id'])]
+#[ORM\Index(name: 'idx_cost_asset', columns: ['asset_id'])]
 #[ORM\Index(name: 'idx_cost_category', columns: ['cost_category_id'])]
 #[ORM\Index(name: 'idx_cost_payment_date', columns: ['payment_day', 'payment_year'])]
 class Cost
@@ -41,7 +41,7 @@ class Cost
 
     #[ORM\ManyToOne(inversedBy: 'costs')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Ship $ship = null;
+    private ?Asset $asset = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
@@ -143,14 +143,14 @@ class Cost
         return $this;
     }
 
-    public function getShip(): ?Ship
+    public function getAsset(): ?Asset
     {
-        return $this->ship;
+        return $this->asset;
     }
 
-    public function setShip(?Ship $ship): static
+    public function setAsset(?Asset $asset): static
     {
-        $this->ship = $ship;
+        $this->asset = $asset;
 
         return $this;
     }

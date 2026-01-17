@@ -7,12 +7,12 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ShipSelectType extends AbstractType
+class AssetSelectType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('shipSelections', CollectionType::class, [
-            'entry_type'    => ShipRowType::class,
+        $builder->add('assetSelections', CollectionType::class, [ // Renamed key to match future usages
+            'entry_type'    => AssetRowType::class,
             'entry_options' => [
                 'label' => false,
             ],

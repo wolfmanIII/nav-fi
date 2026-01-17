@@ -2,7 +2,7 @@
 
 namespace App\Dto;
 
-class MDriveDetailItem extends ShipDetailItem
+class MDriveDetailItem extends AssetDetailItem
 {
     public ?int $thrust = null;
 

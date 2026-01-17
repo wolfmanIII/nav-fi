@@ -21,13 +21,13 @@
                     </div>
                     <div>
                         <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Fleet manifest</p>
-                        <h1 class="text-3xl font-semibold text-cyan-100 leading-tight">Ships</h1>
+                        <h1 class="text-3xl font-semibold text-cyan-100 leading-tight">Assets</h1>
                         <p class="text-sm text-cyan-100/80">Classes, mortgages and crewed hulls ready for the next jump.</p>
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    {{ tooltip.link('Launch a new hull',
-                                    'Add ship',
+                    {{ tooltip.link('Launch a new asset',
+                                    'Add Asset',
                                     'icons/far-trader.html.twig',
                                     path('app_ship_new'),
                                     { position: 'tooltip-left', dim: 24, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
@@ -61,7 +61,7 @@
         {% include 'components/index_filters.html.twig' with {
             form_id: 'ship-filters',
             action: path('app_ship_index'),
-            legend: 'Ship search',
+            legend: 'Asset search',
             grid_class: 'md:grid-cols-3',
             fields: filter_fields,
             reset_path: path('app_ship_index'),
@@ -81,10 +81,10 @@
                             </div>
                             <div class="flex items-center gap-1">
                                 {{ tooltip.link('View Financial Ledger', '', 'icons/handbook.html.twig', path('app_ship_ledger', {id: ship.id}), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-400' }) }}
-                                {{ tooltip.link('Tune ship manifest', '', 'icons/action-edit.html.twig', path('app_ship_edit', {id: ship.id}), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-400' }) }}
+                                {{ tooltip.link('Tune asset manifest', '', 'icons/action-edit.html.twig', path('app_ship_edit', {id: ship.id}), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-400' }) }}
                                 {% set CAN_DELETE = constant('App\\Security\\Voter\\ShipVoter::DELETE') %}
                                 {% set can_delete = is_granted(CAN_DELETE, ship) %}
-                                {{ tooltip.link('Decommission hull', '', 'icons/action-trash.html.twig', path('app_ship_delete', {id: ship.id}), {
+                                {{ tooltip.link('Decommission asset', '', 'icons/action-trash.html.twig', path('app_ship_delete', {id: ship.id}), {
                                     position: 'tooltip-left',
                                     dim: 16,
                                     linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none')
@@ -94,18 +94,57 @@
 
                         {# Card Body: Identity #}
                         <div class="mb-4">
-                            <h2 class="text-2xl font-bold text-slate-200 group-hover:text-cyan-400 transition-colors uppercase tracking-tight font-orbitron truncate" title="{{ ship.name }}">
-                                {{ ship.name }}
-                            </h2>
-                            <p class="text-sm font-medium text-slate-500 font-rajdhani tracking-widest uppercase">
-                                {{ ship.type }} // {{ ship.class }}
-                            </p>
+                            <div class="flex items-start justify-between">
+                                <h2 class="text-2xl font-bold text-slate-200 group-hover:text-cyan-400 transition-colors uppercase tracking-tight font-orbitron truncate" title="{{ ship.name }}">
+                                    {{ ship.name }}
+                                </h2>
+                                
+                                <div class="opacity-50 group-hover:opacity-100 transition-opacity">
+                                    {% if ship.category == 'team' %}
+                                        <div class="text-emerald-500" title="Team / Mercenary Unit">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                                <circle cx="9" cy="7" r="4"></circle>
+                                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                            </svg>
+                                        </div>
+                                    {% elseif ship.category == 'base' %}
+                                        <div class="text-amber-500" title="Base / Station">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M3 21h18"></path>
+                                                <path d="M5 21V7l8-4 8 4v14"></path>
+                                                <path d="M9 10a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"></path>
+                                            </svg>
+                                        </div>
+                                    {% else %}
+                                        <div class="text-cyan-500" title="Starship">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                               <path d="M2 20h20"></path>
+                                               <path d="M5 20v-8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8"></path>
+                                               <path d="M12 10V4"></path>
+                                            </svg>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            {% if ship.category != 'team' %}
+                                <p class="text-sm font-medium text-slate-500 font-rajdhani tracking-widest uppercase">
+                                    {{ ship.type }} // {{ ship.class }}
+                                </p>
+                            {% else %}
+                                 <p class="text-sm font-medium text-emerald-500/50 font-rajdhani tracking-widest uppercase">
+                                    Personnel Unit
+                                </p>
+                            {% endif %}
                         </div>
 
                         {# Card Detail: Tech Specs (Price & Mortgage) #}
                         <div class="grid grid-cols-2 gap-2 mb-6 p-2 rounded-lg bg-slate-900/50 border border-slate-800/50">
                             <div class="flex flex-col">
-                                <span class="text-[10px] text-slate-500 uppercase tracking-wider font-rajdhani">Hull Cost</span>
+
+                                <span class="text-[10px] text-slate-500 uppercase tracking-wider font-rajdhani">Asset Value</span>
                                 <span class="text-cyan-300 font-mono text-sm tracking-tight">
                                     {{ ship.price|format_number({ min_fraction_digit: 0, max_fraction_digit: 0, grouping_used: true }, 'decimal', 'default', locale) }} <span class="text-xs text-cyan-500/60">Cr</span>
                                 </span>
@@ -144,9 +183,9 @@
                 {% endfor %}
             {% else %}
                 <div class="col-span-full py-12 text-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
-                    <p class="text-slate-500 font-rajdhani tracking-widest uppercase mb-4 text-sm">Drydock is empty // No ships detected</p>
-                     {{ tooltip.link('Launch a new hull',
-                                    'Initialize Construction',
+                    <p class="text-slate-500 font-rajdhani tracking-widest uppercase mb-4 text-sm">Registry is empty // No assets detected</p>
+                     {{ tooltip.link('Launch a new asset',
+                                    'Initialize Asset',
                                     'icons/far-trader.html.twig',
                                     path('app_ship_new'),
                                     { position: 'tooltip-left', dim: 20, linkClass: 'btn btn-primary btn-sm btn-outline' }) }}

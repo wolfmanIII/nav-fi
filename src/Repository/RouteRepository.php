@@ -24,10 +24,10 @@ class RouteRepository extends ServiceEntityRepository
     public function findAllForUser(User $user): array
     {
         return $this->createQueryBuilder('r')
-            ->leftJoin('r.ship', 's')
+            ->leftJoin('r.asset', 'a')
             ->leftJoin('r.campaign', 'c')
-            ->addSelect('s', 'c')
-            ->andWhere('s.user = :user')
+            ->addSelect('a', 'c')
+            ->andWhere('a.user = :user')
             ->setParameter('user', $user)
             ->orderBy('r.plannedAt', 'DESC')
             ->getQuery()
@@ -38,11 +38,11 @@ class RouteRepository extends ServiceEntityRepository
     public function findOneForUser(int $id, User $user): ?Route
     {
         return $this->createQueryBuilder('r')
-            ->leftJoin('r.ship', 's')
+            ->leftJoin('r.asset', 'a')
             ->leftJoin('r.campaign', 'c')
-            ->addSelect('s', 'c')
+            ->addSelect('a', 'c')
             ->andWhere('r.id = :id')
-            ->andWhere('s.user = :user')
+            ->andWhere('a.user = :user')
             ->setParameter('id', $id)
             ->setParameter('user', $user)
             ->getQuery()
@@ -53,12 +53,12 @@ class RouteRepository extends ServiceEntityRepository
     public function findOneForUserWithWaypoints(int $id, User $user): ?Route
     {
         return $this->createQueryBuilder('r')
-            ->leftJoin('r.ship', 's')
+            ->leftJoin('r.asset', 'a')
             ->leftJoin('r.campaign', 'c')
             ->leftJoin('r.waypoints', 'w')
-            ->addSelect('s', 'c', 'w')
+            ->addSelect('a', 'c', 'w')
             ->andWhere('r.id = :id')
-            ->andWhere('s.user = :user')
+            ->andWhere('a.user = :user')
             ->setParameter('id', $id)
             ->setParameter('user', $user)
             ->orderBy('w.position', 'ASC')
@@ -68,28 +68,28 @@ class RouteRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param array{name?: string, ship?: int, campaign?: int} $filters
+     * @param array{name?: string, asset?: int, campaign?: int} $filters
      *
      * @return array{items: Route[], total: int}
      */
     public function findForUserWithFilters(User $user, array $filters, int $page, int $limit): array
     {
         $qb = $this->createQueryBuilder('r')
-            ->leftJoin('r.ship', 's')
+            ->leftJoin('r.asset', 'a')
             ->leftJoin('r.campaign', 'c')
-            ->addSelect('s', 'c')
-            ->andWhere('s.user = :user')
+            ->addSelect('a', 'c')
+            ->andWhere('a.user = :user')
             ->setParameter('user', $user);
 
         if (!empty($filters['name'])) {
-            $term = '%'.strtolower($filters['name']).'%';
+            $term = '%' . strtolower($filters['name']) . '%';
             $qb->andWhere('LOWER(r.name) LIKE :name')
                 ->setParameter('name', $term);
         }
 
-        if ($filters['ship'] !== null) {
-            $qb->andWhere('s.id = :ship')
-                ->setParameter('ship', (int) $filters['ship']);
+        if ($filters['asset'] !== null) {
+            $qb->andWhere('a.id = :asset')
+                ->setParameter('asset', (int) $filters['asset']);
         }
 
         if ($filters['campaign'] !== null) {

@@ -4,104 +4,35 @@
     <div class="grid grid-cols-3 gap-2 border border-base-300 rounded p-3 relative collection-item bg-base-100">
         <button type="button"
                 class="btn btn-ghost btn-xs absolute right-1 top-1"
-                data-action="ship-details#removeItem">&times;</button>
-        <div>
-            {{ form_label(child.description) }}
-            {{ form_widget(child.description) }}
-            {{ form_errors(child.description) }}
-        </div>
-        <div>
-            {{ form_label(child.tons) }}
-            {{ form_widget(child.tons) }}
-            {{ form_errors(child.tons) }}
-        </div>
-        <div>
-            {{ form_label(child.costMcr) }}
-            {{ form_widget(child.costMcr) }}
-            {{ form_errors(child.costMcr) }}
-        </div>
-    </div>
-{% endmacro %}
-
-{% macro render_collection(collection, title) %}
-    <div class="space-y-2" data-ship-details-target="collection">
+                data-action="asset-details#removeItem">&times;</button>
+// ... (skipping some lines) ...
+    <div class="space-y-2" data-asset-details-target="collection">
         <div class="flex items-center justify-between">
             <h4 class="font-semibold text-cyan-100">{{ title }}</h4>
             <button type="button" class="btn btn-outline btn-xs"
-                    data-action="ship-details#addItem">+ Add</button>
+                    data-action="asset-details#addItem">+ Add</button>
         </div>
-        <div class="space-y-2" data-ship-details-target="list">
+        <div class="space-y-2" data-asset-details-target="list">
             {% for child in collection %}
                 {{ _self.render_item(child) }}
             {% endfor %}
         </div>
-        <template data-ship-details-target="prototype">
+        <template data-asset-details-target="prototype">
             {{ _self.render_item(collection.vars.prototype) }}
         </template>
     </div>
 {% endmacro %}
 
 <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full"
-         data-controller="ship-details">
-    <legend class="fieldset-legend">
-        {% if is_amendment|default(false) %}
-            Amendment Details
-        {% else %}
-            Ship Details
-        {% endif %}
-    </legend>
-    <div class="col-span-2">
-        <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-4">
-            <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
-                 style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
-            </div>
-            <div class="relative p-4 flex items-start gap-3">
-                <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
-                    {% include 'icons/ship-components.html.twig' %}
-                </div>
-                <div>
-                    <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Ship details</p>
-                    <h3 class="font-semibold text-cyan-100 text-xl leading-tight">Layout & components</h3>
-                    <p class="text-sm text-cyan-100/80">Insert hull, drives, systems and payload in a structured way; data will be stored as JSON.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% set is_amendment = is_amendment|default(false) %}
-    <div class="col-span-2">
-        <div class="alert alert-info flex items-start gap-2">
-            <div class="pt-0.5 animate-spin-slow">
-                {% include 'icons/radar.html.twig' %}
-            </div>
-            <div>
-                {% if is_amendment %}
-                    Total Cost is auto-calculated and stored with the amendment details; it does not affect the financial reference, which remains the selected Cost ref.
-                {% else %}
-                    Total Cost is auto-calculated and stored with the ship details, but it does not affect the Ship Price field: set your ship price independently.
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
-    <div class="col-span-2 grid grid-cols-3 gap-4">
-        <div>
-            {{ form_label(detailsForm.techLevel) }}
-            {{ form_widget(detailsForm.techLevel) }}
-            {{ form_errors(detailsForm.techLevel) }}
-        </div>
-        {% set total_help_id = detailsForm.totalCost.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-center gap-2">
-                {{ form_label(detailsForm.totalCost) }}
-                <label for="{{ total_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
-            </div>
-            <input type="text"
-                   class="input m-1 w-full"
-                   data-ship-details-target="totalDisplay"
-                   readonly
-                   value="">
-            {{ form_errors(detailsForm.totalCost) }}
-            {{ form_widget(detailsForm.totalCost, { attr: { class: 'hidden', 'data-ship-details-target': 'totalInput' } }) }}
+         data-controller="asset-details">
+// ...
+        <input type="text"
+               class="input m-1 w-full"
+               data-asset-details-target="totalDisplay"
+               readonly
+               value="">
+        {{ form_errors(detailsForm.totalCost) }}
+        {{ form_widget(detailsForm.totalCost, { attr: { class: 'hidden', 'data-asset-details-target': 'totalInput' } }) }}
             <input type="checkbox" id="{{ total_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
                 <div class="modal-box">

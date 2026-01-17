@@ -18,7 +18,7 @@ export default class extends Controller {
             return;
         }
 
-        if (!this.isShipActive()) {
+        if (!this.isAssetActive()) {
             this.statusTarget.required = false;
             this.clearRequiredDates();
             this.hideAll();
@@ -85,8 +85,8 @@ export default class extends Controller {
         }
     }
 
-    isShipActive() {
-        return this.element.dataset.shipActive === 'true';
+    isAssetActive() {
+        return this.element.dataset.assetActive === 'true';
     }
 
     normalizeStatus(value) {

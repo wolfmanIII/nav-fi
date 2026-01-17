@@ -19,7 +19,7 @@
                     <div>
                         <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Mission tracking</p>
                         <h1 class="text-3xl font-semibold text-cyan-100 leading-tight">{{ campaign.title }}</h1>
-                        <p class="text-sm text-cyan-100/80">Session clock, hull roster and mission metadata in one view.</p>
+                        <p class="text-sm text-cyan-100/80">Session clock, asset roster and mission metadata in one view.</p>
                     </div>
                 </div>
                 <div class="flex gap-2">
@@ -28,7 +28,7 @@
                             {% include 'icons/calendar.html.twig' %}
                         </button>
                     </div>
-                    <div class="tooltip tooltip-left" data-tip="Dock ships to mission">
+                    <div class="tooltip tooltip-left" data-tip="Assign assets to mission">
                         <button class="btn btn-outline btn-primary btn-md" onclick="m_ship_select.showModal()">
                             {% include 'icons/far-trader.html.twig' %}
                         </button>
@@ -86,8 +86,8 @@
                         {% include 'icons/spaceport.html.twig' %}
                     </div>
                     <div>
-                        <p class="uppercase text-xs tracking-[0.3em] text-cyan-300/70">Fleet manifest</p>
-                        <h2 class="text-xl font-semibold text-cyan-100">Ships assigned</h2>
+                        <p class="uppercase text-xs tracking-[0.3em] text-cyan-300/70">Asset manifest</p>
+                        <h2 class="text-xl font-semibold text-cyan-100">Assets assigned</h2>
                         <p class="text-sm text-cyan-100/70">Roster locked to this operation docket.</p>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
                 <thead>
                 <tr class="border-b border-slate-800">
                     <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Code</th>
-                    <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Ship</th>
+                    <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Asset</th>
                     <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Credits</th>
                     <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Action</th>
                 </tr>
@@ -141,7 +141,7 @@
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="6">No ships in this mission.</td>
+                        <td colspan="6">No assets in this mission.</td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -152,7 +152,7 @@
         {% for ship in campaign.ships %}
             <dialog id="crew_{{ ship.id }}" class="modal">
                 <div class="modal-box w-full max-w-3xl">
-                    <h3 class="text-lg font-bold mb-4">Crew — {{ ship.name }}</h3>
+                    <h3 class="text-lg font-bold mb-4">Personnel — {{ ship.name }}</h3>
                     <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/40 shadow-inner">
                         <table class="table table-xs w-full border-separate border-spacing-0">
                             <thead>
@@ -198,7 +198,7 @@
 
         <dialog id="m_ship_select" class="modal">
             <div class="modal-box w-full max-w-5xl">
-                <h3 class="text-lg font-bold mb-4">Select Ships</h3>
+                <h3 class="text-lg font-bold mb-4">Select Assets</h3>
 
                 {{ form_start(form) }}
                 <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/40 shadow-inner" data-controller="bulk-select">
@@ -214,7 +214,7 @@
                                 >
                             </th>
                             <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Code</th>
-                            <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Ship</th>
+                            <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Asset</th>
                             <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Captain(★)</th>
                         </tr>
                         </thead>
@@ -239,7 +239,7 @@
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="6">No ships available to add.</td>
+                                    <td colspan="6">No assets available to add.</td>
                                 </tr>
                             {% endif %}
                         </tbody>
@@ -345,7 +345,7 @@
                                 <td class="font-mono text-xs p-2">{{ log.user ? log.user.email : 'System' }}</td>
                                 <td>
                                     <div class="flex items-center gap-2">
-                                        <span class="badge badge-outline badge-sm">Ships {{ ships_count }}</span>
+                                        <span class="badge badge-outline badge-sm">Assets {{ ships_count }}</span>
                                         <button type="button" class="btn btn-outline btn-info btn-xs" onclick="document.getElementById('{{ log_id }}').showModal()">
                                             View snapshot
                                         </button>

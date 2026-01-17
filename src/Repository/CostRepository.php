@@ -46,7 +46,7 @@ class CostRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param array{title?: string, category?: int, ship?: int, campaign?: int} $filters
+     * @param array{title?: string, category?: int, asset?: int, campaign?: int} $filters
      *
      * @return array{items: Cost[], total: int}
      */
@@ -54,14 +54,14 @@ class CostRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('c')
             ->leftJoin('c.costCategory', 'cat')
-            ->leftJoin('c.ship', 's')
-            ->leftJoin('s.campaign', 'camp')
-            ->addSelect('cat', 's', 'camp')
+            ->leftJoin('c.asset', 'a')
+            ->leftJoin('a.campaign', 'camp')
+            ->addSelect('cat', 'a', 'camp')
             ->andWhere('c.user = :user')
             ->setParameter('user', $user);
 
         if (!empty($filters['title'])) {
-            $title = '%'.strtolower($filters['title']).'%';
+            $title = '%' . strtolower($filters['title']) . '%';
             $qb->andWhere('LOWER(c.title) LIKE :title')
                 ->setParameter('title', $title);
         }
@@ -71,9 +71,9 @@ class CostRepository extends ServiceEntityRepository
                 ->setParameter('category', (int) $filters['category']);
         }
 
-        if ($filters['ship'] !== null) {
-            $qb->andWhere('s.id = :ship')
-                ->setParameter('ship', (int) $filters['ship']);
+        if ($filters['asset'] !== null) {
+            $qb->andWhere('a.id = :asset')
+                ->setParameter('asset', (int) $filters['asset']);
         }
 
         if ($filters['campaign'] !== null) {

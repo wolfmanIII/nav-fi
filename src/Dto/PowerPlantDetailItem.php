@@ -2,7 +2,7 @@
 
 namespace App\Dto;
 
-class PowerPlantDetailItem extends ShipDetailItem
+class PowerPlantDetailItem extends AssetDetailItem
 {
     public ?int $power = null;
 

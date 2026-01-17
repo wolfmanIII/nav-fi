@@ -4,7 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Insurance;
 use App\Entity\InterestRate;
-use App\Entity\ShipRole;
+use App\Entity\AssetRole;
 use App\Entity\CostCategory;
 use App\Entity\IncomeCategory;
 use App\Entity\CompanyRole;
@@ -26,7 +26,7 @@ class DashboardController extends AbstractDashboardController
         $links = [
             'Interest Rate' => $this->adminUrlGenerator->setController(InterestRateCrudController::class)->setAction('index')->generateUrl(),
             'Insurance' => $this->adminUrlGenerator->setController(InsuranceCrudController::class)->setAction('index')->generateUrl(),
-            'Ship Role' => $this->adminUrlGenerator->setController(ShipRoleCrudController::class)->setAction('index')->generateUrl(),
+            'Asset Role' => $this->adminUrlGenerator->setController(AssetRoleCrudController::class)->setAction('index')->generateUrl(),
             'Cost Category' => $this->adminUrlGenerator->setController(CostCategoryCrudController::class)->setAction('index')->generateUrl(),
             'Income Category' => $this->adminUrlGenerator->setController(IncomeCategoryCrudController::class)->setAction('index')->generateUrl(),
             'Company Role' => $this->adminUrlGenerator->setController(CompanyRoleCrudController::class)->setAction('index')->generateUrl(),
@@ -52,7 +52,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::section('Settings');
         yield MenuItem::linkToCrud('Interest Rate', 'fas fa-list', InterestRate::class);
         yield MenuItem::linkToCrud('Insurance', 'fas fa-list', Insurance::class);
-        yield MenuItem::linkToCrud('ShipRole', 'fas fa-list', ShipRole::class);
+        yield MenuItem::linkToCrud('AssetRole', 'fas fa-list', AssetRole::class);
         yield MenuItem::linkToCrud('Cost Category', 'fas fa-list', CostCategory::class);
         yield MenuItem::linkToCrud('Income Category', 'fas fa-list', IncomeCategory::class);
         yield MenuItem::linkToCrud('Company Role', 'fas fa-list', CompanyRole::class);

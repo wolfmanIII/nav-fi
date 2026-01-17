@@ -22,7 +22,7 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: IncomeRepository::class)]
 #[ORM\Index(name: 'idx_income_user', columns: ['user_id'])]
-#[ORM\Index(name: 'idx_income_ship', columns: ['ship_id'])]
+#[ORM\Index(name: 'idx_income_asset', columns: ['asset_id'])]
 #[ORM\Index(name: 'idx_income_category', columns: ['income_category_id'])]
 class Income
 {
@@ -126,11 +126,17 @@ class Income
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
-    private ?Ship $ship = null;
+    private ?Asset $asset = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
+
+    public function __construct()
+    {
+        $this->setCode(Uuid::v7());
+        $this->status = self::STATUS_DRAFT;
+    }
 
     public function getCharterDetails(): ?IncomeCharterDetails
     {
@@ -311,11 +317,6 @@ class Income
 
         return $this;
     }
-    public function __construct()
-    {
-        $this->setCode(Uuid::v7());
-        $this->status = self::STATUS_DRAFT;
-    }
 
     public function getId(): ?int
     {
@@ -495,14 +496,14 @@ class Income
         return $this;
     }
 
-    public function getShip(): ?Ship
+    public function getAsset(): ?Asset
     {
-        return $this->ship;
+        return $this->asset;
     }
 
-    public function setShip(?Ship $ship): static
+    public function setAsset(?Asset $asset): static
     {
-        $this->ship = $ship;
+        $this->asset = $asset;
 
         return $this;
     }

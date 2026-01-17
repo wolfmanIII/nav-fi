@@ -6,7 +6,7 @@
 {% set can_create = is_granted(CAN_CREATE, ship) %}
 {% import '_tooltip.html.twig' as tooltip %}
 
-{% block title %}Nav-Fi - Ship{% endblock %}
+{% block title %}Nav-Fi - Asset{% endblock %}
 
 {% block pageContent %}
 
@@ -15,7 +15,7 @@
         {{ form_start(form) }}
 
         <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-            <legend class="fieldset-legend">Ship</legend>
+            <legend class="fieldset-legend">Asset</legend>
 
             {% if ship.mortgageSigned %}
                 <div class="col-span-2">
@@ -24,7 +24,7 @@
                             {% include 'icons/radar.html.twig' with { dim: 24 } %}
                         </div>
                         <div class="text-sm font-rajdhani uppercase tracking-widest font-bold text-cyan-200">
-                            Ship has a <span class="text-cyan-500">SIGNED MORTGAGE</span>. Amendments are recommended, but direct tactical overrides are authorized.
+                            Asset has a <span class="text-cyan-500">SIGNED MORTGAGE</span>. Amendments are recommended, but direct tactical overrides are authorized.
                         </div>
                     </div>
                 </div>
@@ -40,8 +40,8 @@
                             {% include 'icons/far-trader.html.twig' %}
                         </div>
                         <div class="flex-1">
-                            <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Ship sheet</p>
-                            <h3 class="font-semibold text-cyan-100 text-xl leading-tight">Update your ship</h3>
+                            <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Asset sheet</p>
+                            <h3 class="font-semibold text-cyan-100 text-xl leading-tight">Update asset</h3>
                             <p class="text-sm text-cyan-100/80">Update class and price before mortgages and embarkations: every jump starts with an aligned bridge.</p>
 
                             {# Session Date Indicator #}
@@ -70,13 +70,13 @@
                                                 { dim: 16, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
                                 
                                 {{ tooltip.link('Open ship PDF',
-                                                'Ship PDF',
+                                                'Asset PDF',
                                                 'icons/ship-pdf.html.twig',
                                                 path('app_ship_pdf', { id: ship.id }),
                                                 { dim: 16, linkClass: 'btn btn-outline btn-secondary btn-sm', attrs: { target: '_blank', rel: 'noopener' } }) }}
                                 {% if ship.mortgageSigned %}
-                                    {{ tooltip.link('Log ship amendments',
-                                                    'Ship amendments',
+                                    {{ tooltip.link('Log amendments',
+                                                    'Amendments',
                                                     'icons/ship-amendment.html.twig',
                                                     path('app_ship_amendment_new', { id: ship.id }),
                                                     { dim: 16, linkClass: 'btn btn-outline btn-info btn-sm' }) }}
@@ -95,6 +95,12 @@
             {% endif %}
 
             <div>
+                {{ form_label(form.category) }}
+                {{ form_widget(form.category) }}
+                {{ form_errors(form.category) }}
+            </div>
+
+            <div data-ship-target="nameField">
                 {{ form_label(form.name) }}
                 {{ form_widget(form.name) }}
                 {{ form_errors(form.name) }}
@@ -126,7 +132,9 @@
 
        </fieldset>
 
-        {% include 'ship/_details_form.html.twig' with { detailsForm: form.shipDetails } %}
+        <div id="technical-details-wrapper">
+            {% include 'ship/_details_form.html.twig' with { detailsForm: form.shipDetails } %}
+        </div>
 
         <div class="flex gap-4">
             <button type="submit"
@@ -140,5 +148,43 @@
 
         {{ form_end(form) }}
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryInputs = document.querySelectorAll('input[name="ship[category]"]');
+            const technicalWrapper = document.getElementById('technical-details-wrapper');
+            const shipDetailsControllers = document.querySelectorAll('[data-controller="asset-details"]');
+            const technicalInputs = technicalWrapper.querySelectorAll('input, select, textarea');
+
+            function updateVisibility() {
+                const selected = document.querySelector('input[name="ship[category]"]:checked')?.value;
+                
+                // Logic:
+                // SHIP: Show Everything
+                // BASE: Show Everything (maybe hide drives in future, but for now Base has structure/hull)
+                // TEAM: Hide Technical Details Wrapper completely
+                
+                if (selected === 'team') {
+                    technicalWrapper.classList.add('hidden');
+                    // Disable inputs to avoid validation errors or posting empty data
+                    // technicalInputs.forEach(input => input.disabled = true); // Optional: depends if we want to nullify data
+                } else {
+                    technicalWrapper.classList.remove('hidden');
+                    // technicalInputs.forEach(input => input.disabled = false);
+                }
+
+                // Update Header Labels dynamically?
+                // Example: Change "Ship Details" to "Unit Details" or hide Hull/Drive specific fields within the wrapper
+                // For now, the request specifically asked to hide technical fits for Teams.
+            }
+
+            categoryInputs.forEach(input => {
+                input.addEventListener('change', updateVisibility);
+            });
+
+            // Initial check
+            updateVisibility();
+        });
+    </script>
 
 {% endblock %}

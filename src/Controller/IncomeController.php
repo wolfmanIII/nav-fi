@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Income;
 use App\Entity\Campaign;
-use App\Entity\Ship;
+use App\Entity\Asset;
 use App\Form\IncomeType;
 use App\Security\Voter\IncomeVoter;
 use App\Entity\IncomeCategory;
@@ -50,7 +50,7 @@ final class IncomeController extends BaseController
         $filters = $listViewHelper->collectFilters($request, [
             'title',
             'category' => ['type' => 'int'],
-            'ship' => ['type' => 'int'],
+            'asset' => ['type' => 'int'],
             'campaign' => ['type' => 'int'],
         ]);
         $page = $listViewHelper->getPage($request);
@@ -58,9 +58,8 @@ final class IncomeController extends BaseController
 
         $incomes = [];
         $total = 0;
-        $totalPages = 1;
         $categories = [];
-        $ships = [];
+        $assets = [];
         $campaigns = [];
 
         if ($user instanceof \App\Entity\User) {
@@ -77,7 +76,7 @@ final class IncomeController extends BaseController
             }
 
             $categories = $em->getRepository(IncomeCategory::class)->findBy([], ['code' => 'ASC']);
-            $ships = $em->getRepository(Ship::class)->findAllForUser($user);
+            $assets = $em->getRepository(Asset::class)->findAllForUser($user);
             $campaigns = $em->getRepository(Campaign::class)->findAllForUser($user);
         }
 
@@ -88,7 +87,8 @@ final class IncomeController extends BaseController
             'incomes' => $incomes,
             'filters' => $filters,
             'categories' => $categories,
-            'ships' => $ships,
+            'ships' => $assets,
+            'assets' => $assets,
             'campaigns' => $campaigns,
             'pagination' => $pagination,
         ]);
@@ -153,15 +153,10 @@ final class IncomeController extends BaseController
             }
         }
 
-        $wasPaid = $income->getPaymentDay() !== null || $income->getPaymentYear() !== null;
-
         $form = $this->createForm(IncomeType::class, $income, ['user' => $user]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-
-
             $this->clearUnusedDetails($income, $em);
             $em->flush();
 
@@ -171,9 +166,9 @@ final class IncomeController extends BaseController
         return $this->renderTurbo('income/edit.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'income' => $income,
-            'income' => $income,
             'form' => $form,
-            'ship' => $income->getShip(),
+            'ship' => $income->getAsset(),
+            'asset' => $income->getAsset(),
         ]);
     }
 
@@ -294,7 +289,7 @@ final class IncomeController extends BaseController
     private function buildPlaceholderMap(Income $income): array
     {
         $currency = 'Cr';
-        $ship = $income->getShip();
+        $asset = $income->getAsset();
         $company = $income->getCompany();
         $detailCode = $income->getIncomeCategory()?->getCode();
 
@@ -310,7 +305,7 @@ final class IncomeController extends BaseController
             '{{SERVICE_ID}}' => $income->getCode(),
             '{{PROGRAM_REF}}' => $this->fallback($income->getCode()),
             '{{STATUS}}' => $income->getStatus() ?: Income::STATUS_DRAFT,
-            '{{VESSEL_NAME}}' => $ship?->getName() ?? '—',
+            '{{VESSEL_NAME}}' => $asset?->getName() ?? '—',
             '{{CURRENCY}}' => $currency,
             '{{NOTES}}' => $this->fallback($income->getNote()),
             '{{PAYMENT}}' => $this->formatMoney($income->getAmount(), $currency),
@@ -335,9 +330,9 @@ final class IncomeController extends BaseController
                     '{{CHARTERER_NAME}}' => $companyName,
                     '{{CHARTERER_CONTACT}}' => $companyContact,
                     '{{CHARTERER_SIGN}}' => $companySign,
-                    '{{CARRIER_NAME}}' => $ship?->getName() ?? '—',
-                    '{{CARRIER_SIGN}}' => $ship?->getCaptain() ?? '—',
-                    '{{CHARTER_TYPE}}' => $this->fallback(null),
+                    '{{CARRIER_NAME}}' => $asset?->getName() ?? '—',
+                    '{{CARRIER_SIGN}}' => $asset?->getCaptain() ?? '—',
+                    '{{CHARTER_TYPE}}' => $this->fallback($d?->getType()),
                     '{{START_DATE}}' => $this->formatDayYear($d?->getStartDay(), $d?->getStartYear()),
                     '{{END_DATE}}' => $this->formatDayYear($d?->getEndDay(), $d?->getEndYear()),
                     '{{AREA_OR_ROUTE}}' => $this->fallback($d?->getAreaOrRoute()),
@@ -360,9 +355,9 @@ final class IncomeController extends BaseController
                     '{{AUTHORITY_NAME}}' => $companyName,
                     '{{AUTHORITY_CONTACT}}' => $companyContact,
                     '{{AUTHORITY_SIGN}}' => $companySign,
-                    '{{CARRIER_NAME}}' => $ship?->getName() ?? '—',
-                    '{{CARRIER_CONTACT}}' => $ship?->getCaptain(),
-                    '{{CARRIER_SIGN}}' => $ship?->getCaptain(),
+                    '{{CARRIER_NAME}}' => $asset?->getName() ?? '—',
+                    '{{CARRIER_CONTACT}}' => $asset?->getCaptain(),
+                    '{{CARRIER_SIGN}}' => $asset?->getCaptain(),
                     '{{PROGRAM_REF}}' => $this->fallback($d?->getProgramRef()),
                     '{{ORIGIN}}' => $this->fallback($d?->getOrigin()),
                     '{{DESTINATION}}' => $this->fallback($d?->getDestination()),
@@ -384,9 +379,9 @@ final class IncomeController extends BaseController
                 $d = $income->getPrizeDetails();
                 $map = array_merge($map, [
                     '{{PRIZE_ID}}' => $income->getCode(),
-                    '{{CAPTOR_NAME}}' => $ship?->getName(),
+                    '{{CAPTOR_NAME}}' => $asset?->getName(),
                     '{{CAPTOR_CONTACT}}' => $companyContact,
-                    '{{CAPTOR_SIGN}}' => $ship?->getCaptain(),
+                    '{{CAPTOR_SIGN}}' => $asset?->getCaptain(),
                     '{{AUTHORITY_NAME}}' => $this->fallback($income->getLocalLaw()?->getShortDescription()),
                     '{{AUTHORITY_SIGN}}' => $this->fallback($income->getLocalLaw()?->getDescription()),
                     '{{CASE_REF}}' => $this->fallback($d?->getCaseRef()),
@@ -410,8 +405,8 @@ final class IncomeController extends BaseController
                     '{{SHIPPER_NAME}}' => $companyName,
                     '{{SHIPPER_CONTACT}}' => $companyContact,
                     '{{SHIPPER_SIGN}}' => $companySign,
-                    '{{CARRIER_NAME}}' => $ship?->getName() ?? '—',
-                    '{{CARRIER_SIGN}}' => $ship?->getCaptain() ?? '—',
+                    '{{CARRIER_NAME}}' => $asset?->getName() ?? '—',
+                    '{{CARRIER_SIGN}}' => $asset?->getCaptain() ?? '—',
                     '{{ORIGIN}}' => $this->fallback($d?->getOrigin()),
                     '{{DESTINATION}}' => $this->fallback($d?->getDestination()),
                     '{{PICKUP_DATE}}' => $this->formatDayYear($d?->getPickupDay(), $d?->getPickupYear()),
@@ -434,10 +429,10 @@ final class IncomeController extends BaseController
                     '{{CUSTOMER_NAME}}' => $companyName,
                     '{{CUSTOMER_CONTACT}}' => $companyContact,
                     '{{CUSTOMER_SIGN}}' => $companySign,
-                    '{{PROVIDER_NAME}}' => $ship?->getName() ?? '—',
-                    '{{PROVIDER_SIGN}}' => $ship?->getCaptain() ?? '—',
+                    '{{PROVIDER_NAME}}' => $asset?->getName() ?? '—',
+                    '{{PROVIDER_SIGN}}' => $asset?->getCaptain() ?? '—',
                     '{{LOCATION}}' => $this->fallback($d?->getLocation()),
-                    '{{VESSEL_NAME}}' => $ship?->getName() ?? '—',
+                    '{{VESSEL_NAME}}' => $asset?->getName() ?? '—',
                     '{{VESSEL_ID}}' => $income->getCode(),
                     '{{REQUESTED_BY}}' => $this->fallback($d?->getRequestedBy()),
                     '{{SERVICE_TYPE}}' => $this->fallback($d?->getServiceType()),
@@ -462,8 +457,8 @@ final class IncomeController extends BaseController
                     '{{PASSENGER_NAMES}}' => $this->fallback($d?->getPassengerNames()),
                     '{{PASSENGER_CONTACT}}' => $this->fallback($d?->getPassengerContact()),
                     '{{PASSENGER_SIGN}}' => $companySign,
-                    '{{CARRIER_NAME}}' => $ship?->getName() ?? '—',
-                    '{{CARRIER_SIGN}}' => $ship?->getCaptain() ?? '—',
+                    '{{CARRIER_NAME}}' => $asset?->getName() ?? '—',
+                    '{{CARRIER_SIGN}}' => $asset?->getCaptain() ?? '—',
                     '{{ORIGIN}}' => $this->fallback($d?->getOrigin()),
                     '{{DESTINATION}}' => $this->fallback($d?->getDestination()),
                     '{{DEPARTURE_DATE}}' => $this->formatDayYear($d?->getDepartureDay(), $d?->getDepartureYear()),
@@ -486,8 +481,8 @@ final class IncomeController extends BaseController
                     '{{PATRON_NAME}}' => $companyName,
                     '{{PATRON_CONTACT}}' => $companyContact,
                     '{{PATRON_SIGN}}' => $companySign,
-                    '{{CONTRACTOR_NAME}}' => $ship?->getName() ?? '—',
-                    '{{CONTRACTOR_SIGN}}' => $ship?->getCaptain() ?? '—',
+                    '{{CONTRACTOR_NAME}}' => $asset?->getName() ?? '—',
+                    '{{CONTRACTOR_SIGN}}' => $asset?->getCaptain() ?? '—',
                     '{{JOB_TYPE}}' => $this->fallback($d?->getJobType()),
                     '{{LOCATION}}' => $this->fallback($d?->getLocation()),
                     '{{OBJECTIVE}}' => $this->fallback($d?->getObjective()),
@@ -510,7 +505,7 @@ final class IncomeController extends BaseController
                 $map = array_merge($map, [
                     '{{RECEIPT_ID}}' => $income->getCode(),
                     '{{PAYER_NAME}}' => $companyName,
-                    '{{PAYEE_NAME}}' => $ship?->getName() ?? '—',
+                    '{{PAYEE_NAME}}' => $asset?->getName() ?? '—',
                     '{{PAYEE_CONTACT}}' => $companyContact,
                     '{{ACCOUNT_REF}}' => $this->fallback($d?->getAccountRef()),
                     '{{INSTRUMENT}}' => $this->fallback($d?->getInstrument()),
@@ -528,8 +523,8 @@ final class IncomeController extends BaseController
             case 'MAIL':
                 $d = $income->getMailDetails();
                 $map = array_merge($map, [
-                    '{{CARRIER_NAME}}' => $ship?->getName() ?? '—',
-                    '{{VESSEL_NAME}}' => $ship?->getName() ?? '—',
+                    '{{CARRIER_NAME}}' => $asset?->getName() ?? '—',
+                    '{{VESSEL_NAME}}' => $asset?->getName() ?? '—',
                     '{{ORIGIN}}' => $this->fallback($d?->getOrigin()),
                     '{{DESTINATION}}' => $this->fallback($d?->getDestination()),
                     '{{DISPATCH_DATE}}' => $this->formatDayYear($d?->getDispatchDay(), $d?->getDispatchYear()),
@@ -546,7 +541,7 @@ final class IncomeController extends BaseController
                     '{{MAIL_FEE}}' => $this->formatMoney($income->getAmount(), $currency),
                     '{{LIABILITY_LIMIT}}' => $this->formatMoney($d?->getLiabilityLimit(), $currency),
                     '{{PROOF_OF_DELIVERY}}' => $this->fallback($d?->getProofOfDelivery()),
-                    '{{CARRIER_SIGN}}' => $ship?->getCaptain() ?? '—',
+                    '{{CARRIER_SIGN}}' => $asset?->getCaptain() ?? '—',
                     '{{AUTHORITY_NAME}}' => $companyName,
                     '{{AUTHORITY_SIGN}}' => $companySign,
                 ]);
@@ -556,7 +551,7 @@ final class IncomeController extends BaseController
                 $map = array_merge($map, [
                     '{{CLAIM_ID}}' => $income->getCode(),
                     '{{INSURER_NAME}}' => $companyName,
-                    '{{INSURED_NAME}}' => $ship?->getName() ?? '—',
+                    '{{INSURED_NAME}}' => $asset?->getName() ?? '—',
                     '{{INSURED_CONTACT}}' => $companyContact,
                     '{{POLICY_NUMBER}}' => $income->getCode(),
                     '{{INCIDENT_REF}}' => $this->fallback($d?->getIncidentRef()),
@@ -573,16 +568,16 @@ final class IncomeController extends BaseController
                     '{{SUBROGATION_TERMS}}' => $this->fallback($d?->getSubrogationTerms()),
                     '{{NOTES}}' => $this->fallback($income->getNote()),
                     '{{INSURER_SIGN}}' => $companySign,
-                    '{{INSURED_SIGN}}' => $ship?->getCaptain() ?? '—',
+                    '{{INSURED_SIGN}}' => $asset?->getCaptain() ?? '—',
                 ]);
                 break;
             case 'SALVAGE':
                 $d = $income->getSalvageDetails();
                 $map = array_merge($map, [
                     '{{CLAIM_ID}}' => $income->getCode(),
-                    '{{SALVAGE_TEAM_NAME}}' => $ship?->getName(),
+                    '{{SALVAGE_TEAM_NAME}}' => $asset?->getName(),
                     '{{SALVAGE_CONTACT}}' => $companyContact,
-                    '{{SALVAGE_SIGN}}' => $ship?->getCaptain(),
+                    '{{SALVAGE_SIGN}}' => $asset?->getCaptain(),
                     '{{AUTHORITY_OR_OWNER_NAME}}' => $company,
                     '{{AUTHORITY_SIGN}}' => $companySign,
                     '{{CASE_REF}}' => $this->fallback($d?->getCaseRef()),
@@ -609,9 +604,9 @@ final class IncomeController extends BaseController
                     '{{BUYER_NAME}}' => $companyName,
                     '{{BUYER_CONTACT}}' => $companyContact,
                     '{{BUYER_SIGN}}' => $companySign,
-                    '{{SELLER_NAME}}' => $ship?->getName() ?? '—',
+                    '{{SELLER_NAME}}' => $asset?->getName() ?? '—',
                     '{{SELLER_CONTACT}}' => $companyContact,
-                    '{{SELLER_SIGN}}' => $ship?->getName() ?? '—',
+                    '{{SELLER_SIGN}}' => $asset?->getName() ?? '—',
                     '{{LOCATION}}' => $this->fallback($d?->getLocation()),
                     '{{GOODS_DESCRIPTION}}' => $this->fallback($d?->getGoodsDescription()),
                     '{{QTY}}' => (string) ($d?->getQty() ?? '—'),

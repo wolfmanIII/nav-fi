@@ -2,7 +2,7 @@
 
 namespace App\Dto;
 
-class ShipDetailItem
+class AssetDetailItem
 {
     public ?string $description = null;
     public ?float $tons = null;

@@ -118,7 +118,7 @@
             </div>
 
             <div id="crew_roles_{{ crew.id }}" class="col-span-2 grid grid-cols-2 gap-4"
-                data-controller="campaign-ship role-selector ship-roles-toggle"
+                data-controller="campaign-asset role-selector asset-roles-toggle"
                 data-action="show->role-selector#prepareSelection close->role-selector#resetSelection cancel->role-selector#resetSelection">
                 <div>
                     {{ form_label(form.campaign) }}
@@ -126,15 +126,15 @@
                     {{ form_errors(form.campaign) }}
                 </div>
                 <div>
-                    {{ form_label(form.ship) }}
-                    {{ form_widget(form.ship, { attr: {
-                        'data-ship-roles-toggle-target': 'shipSelect',
-                        'data-action': 'change->ship-roles-toggle#refresh'
+                    {{ form_label(form.asset) }}
+                    {{ form_widget(form.asset, { attr: {
+                        'data-asset-roles-toggle-target': 'assetSelect',
+                        'data-action': 'change->asset-roles-toggle#refresh'
                     }}) }}
-                    {{ form_errors(form.ship) }}
+                    {{ form_errors(form.asset) }}
                 </div>
-                <div id="ship-roles-wrapper"
-                    data-ship-roles-toggle-target="wrapper"
+                <div id="asset-roles-wrapper"
+                    data-asset-roles-toggle-target="wrapper"
                     class="col-span-2 hidden">
                     <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
                         <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
@@ -146,7 +146,7 @@
                                     {% include 'icons/crew.html.twig' %}
                                 </div>
                                 <div>
-                                    <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Ship roles</p>
+                                    <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Asset roles</p>
                                     <h4 class="font-semibold text-cyan-100 text-lg leading-tight">Bridge manifest</h4>
                                     <p class="text-sm text-cyan-100/80">Toggle assignments as if sealing the crew roster before departure.</p>
                                 </div>
@@ -156,7 +156,7 @@
                                     attr: {
                                         class: 'hidden',
                                         'data-role-selector-target': 'select',
-                                        'data-ship-roles-toggle-target': 'shipRolesSelect',
+                                        'data-asset-roles-toggle-target': 'assetRolesSelect',
                                         autocomplete: 'off'
                                     }
                                 }) }}
@@ -172,22 +172,22 @@
                 </div>
 
                 <div class="col-span-2">
-                    <div class="alert alert-info alert-outline shadow-sm mt-2" data-ship-roles-toggle-target="statusHelper">
+                    <div class="alert alert-info alert-outline shadow-sm mt-2" data-asset-roles-toggle-target="statusHelper">
                         <span class="flex items-center justify-center animate-spin-slow">
                             {% include 'icons/radar.html.twig' %}
                         </span>
                         <div class="text-xs text-slate-200">
-                            Select a ship to unlock status tracking and ship roles for this crew member.
+                            Select an asset to unlock status tracking and asset roles for this crew member.
                         </div>
                     </div>
                 </div>
 
-                <div class="col-span-2 grid grid-cols-2 gap-4 items-end" data-controller="crew-status-date" data-ship-roles-toggle-target="statusWrapper">
+                <div class="col-span-2 grid grid-cols-2 gap-4 items-end" data-controller="crew-status-date" data-asset-roles-toggle-target="statusWrapper">
                     <div class="space-y-1">
                         {{ form_label(form.status) }}
                         {{ form_widget(form.status, { attr: {
                             'data-crew-status-date-target': 'status',
-                            'data-ship-roles-toggle-target': 'statusSelect',
+                            'data-asset-roles-toggle-target': 'statusSelect',
                             'data-action': 'change->crew-status-date#toggle'
                         } }) }}
                     </div>

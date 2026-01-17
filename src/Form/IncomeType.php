@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Entity\Income;
 use App\Entity\IncomeCategory;
-use App\Entity\Ship;
+use App\Entity\Asset;
 use App\Entity\Company;
 use App\Entity\LocalLaw;
 use App\Form\EventSubscriber\IncomeDetailsSubscriber;
@@ -12,7 +12,7 @@ use App\Form\Config\DayYearLimits;
 use App\Form\Type\ImperialDateType;
 use App\Form\Type\TravellerMoneyType;
 use App\Model\ImperialDate;
-use App\Repository\ShipRepository;
+use App\Repository\AssetRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -38,7 +38,7 @@ class IncomeType extends AbstractType
         $user = $options['user'];
         /** @var Income $income */
         $income = $builder->getData();
-        $campaignStartYear = $income?->getShip()?->getCampaign()?->getStartingYear();
+        $campaignStartYear = $income?->getAsset()?->getCampaign()?->getStartingYear();
         $minYear = $campaignStartYear ?? $this->dayYearLimits->getYearMin();
 
         $signingDate = new ImperialDate($income?->getSigningYear(), $income?->getSigningDay());
@@ -118,7 +118,7 @@ class IncomeType extends AbstractType
                 'required' => false,
                 'placeholder' => '-- Select a Campaign --',
                 'choice_label' => fn(Campaign $campaign) => sprintf('%s (%03d/%04d)', $campaign->getTitle(), $campaign->getSessionDay(), $campaign->getSessionYear()),
-                'data' => $income->getShip()?->getCampaign(),
+                'data' => $income->getAsset()?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
                     if ($user) {
@@ -128,24 +128,24 @@ class IncomeType extends AbstractType
                 },
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
-                    'data-campaign-ship-target' => 'campaign',
-                    'data-action' => 'change->campaign-ship#onCampaignChange',
+                    'data-campaign-asset-target' => 'campaign',
+                    'data-action' => 'change->campaign-asset#onCampaignChange',
                 ],
             ])
-            ->add('ship', EntityType::class, [
-                'class' => Ship::class,
-                'placeholder' => '-- Select a Ship --',
+            ->add('asset', EntityType::class, [
+                'class' => Asset::class,
+                'placeholder' => '-- Select an Asset --',
                 'required' => false,
-                'choice_label' => fn(Ship $ship) => sprintf('%s - %s(%s)', $ship->getName(), $ship->getType(), $ship->getClass()),
-                'choice_attr' => function (Ship $ship): array {
-                    $start = $ship->getCampaign()?->getStartingYear();
-                    $campaignId = $ship->getCampaign()?->getId();
+                'choice_label' => fn(Asset $asset) => sprintf('%s - %s(%s)', $asset->getName(), $asset->getType(), $asset->getClass()),
+                'choice_attr' => function (Asset $asset): array {
+                    $start = $asset->getCampaign()?->getStartingYear();
+                    $campaignId = $asset->getCampaign()?->getId();
                     return [
                         'data-start-year' => $start ?? '',
                         'data-campaign' => $campaignId ? (string) $campaignId : '',
                     ];
                 },
-                'query_builder' => function (ShipRepository $repo) use ($user) {
+                'query_builder' => function (AssetRepository $repo) use ($user) {
                     $qb = $repo->createQueryBuilder('s')->orderBy('s.name', 'ASC');
                     if ($user) {
                         $qb->andWhere('s.user = :user')->setParameter('user', $user);
@@ -157,8 +157,8 @@ class IncomeType extends AbstractType
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-controller' => 'income-details year-limit',
                     'data-year-limit-default-value' => $this->dayYearLimits->getYearMin(),
-                    'data-action' => 'change->year-limit#onShipChange',
-                    'data-campaign-ship-target' => 'ship',
+                    'data-action' => 'change->year-limit#onAssetChange',
+                    'data-campaign-asset-target' => 'asset',
                 ],
             ])
             ->add('company', EntityType::class, [

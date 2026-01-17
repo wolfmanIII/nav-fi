@@ -11,7 +11,7 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: AnnualBudgetRepository::class)]
 #[ORM\Index(name: 'idx_budget_user', columns: ['user_id'])]
-#[ORM\Index(name: 'idx_budget_ship', columns: ['ship_id'])]
+#[ORM\Index(name: 'idx_budget_asset', columns: ['asset_id'])]
 class AnnualBudget
 {
     #[ORM\Id]
@@ -39,7 +39,7 @@ class AnnualBudget
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Ship $ship = null;
+    private ?Asset $asset = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
@@ -127,14 +127,14 @@ class AnnualBudget
         return $this;
     }
 
-    public function getShip(): ?Ship
+    public function getAsset(): ?Asset
     {
-        return $this->ship;
+        return $this->asset;
     }
 
-    public function setShip(?Ship $ship): static
+    public function setAsset(?Asset $asset): static
     {
-        $this->ship = $ship;
+        $this->asset = $asset;
 
         return $this;
     }
@@ -154,7 +154,7 @@ class AnnualBudget
     public function calculateBudget()
     {
         $budget = 0.00;
-        foreach ($this->getShip()->getIncomes() as $income) {
+        foreach ($this->getAsset()->getIncomes() as $income) {
             if (
                 is_null($income->getCancelDay())
                 && !is_null($income->getSigningYear())
@@ -164,11 +164,11 @@ class AnnualBudget
             }
         }
 
-        foreach ($this->getShip()->getCosts() as $cost) {
+        foreach ($this->getAsset()->getCosts() as $cost) {
             $budget = bcsub($budget, $cost->getAmount(), 6);
         }
 
-        foreach ($this->getShip()->getMortgage()->getMortgageInstallments() as $payment) {
+        foreach ($this->getAsset()->getMortgage()->getMortgageInstallments() as $payment) {
             $budget = bcsub($budget, $payment->getPayment(), 6);
         }
 
@@ -178,7 +178,7 @@ class AnnualBudget
     public function getTotalIncomeAmount()
     {
         $incomeAmount = 0.00;
-        foreach ($this->getShip()->getIncomes() as $income) {
+        foreach ($this->getAsset()->getIncomes() as $income) {
             if (
                 is_null($income->getCancelDay())
                 && is_null($income->getCancelYear())
@@ -194,7 +194,7 @@ class AnnualBudget
     public function getTotalCostsAmount()
     {
         $costAmount = 0.00;
-        foreach ($this->getShip()->getCosts() as $cost) {
+        foreach ($this->getAsset()->getCosts() as $cost) {
             $costAmount = bcadd($costAmount, $cost->getAmount(), 6);
         }
         return round($costAmount, 2, PHP_ROUND_HALF_DOWN);
@@ -203,7 +203,7 @@ class AnnualBudget
     public function getActualBudget()
     {
         $totalIncomeAmount = $this->getTotalIncomeAmount();
-        $mortgageAnnualPayment = $this->getShip()->getMortgage()->calculate()['total_annual_payment'];
+        $mortgageAnnualPayment = $this->getAsset()->getMortgage()->calculate()['total_annual_payment'];
         $totaleCostsAmount = $this->getTotalCostsAmount();
 
         $totalCost = bcadd($mortgageAnnualPayment, $totaleCostsAmount, 6);

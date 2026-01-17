@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\ShipRoleRepository;
+use App\Repository\AssetRoleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ShipRoleRepository::class)]
-class ShipRole
+#[ORM\Entity(repositoryClass: AssetRoleRepository::class)]
+#[ORM\Table(name: 'asset_role')]
+class AssetRole
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -27,7 +28,7 @@ class ShipRole
     /**
      * @var Collection<int, Crew>
      */
-    #[ORM\ManyToMany(targetEntity: Crew::class, mappedBy: 'shipRoles')]
+    #[ORM\ManyToMany(targetEntity: Crew::class, mappedBy: 'assetRoles')]
     private Collection $crews;
 
     public function __construct()
@@ -88,7 +89,7 @@ class ShipRole
     {
         if (!$this->crews->contains($crew)) {
             $this->crews->add($crew);
-            $crew->addShipRole($this);
+            $crew->addAssetRole($this);
         }
 
         return $this;
@@ -97,7 +98,7 @@ class ShipRole
     public function removeCrew(Crew $crew): static
     {
         if ($this->crews->removeElement($crew)) {
-            $crew->removeShipRole($this);
+            $crew->removeAssetRole($this);
         }
 
         return $this;

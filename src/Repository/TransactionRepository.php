@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Transaction;
+use App\Entity\Asset;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,13 +20,13 @@ class TransactionRepository extends ServiceEntityRepository
      * Finds Pending transactions that have become effective (Date <= Current Date).
      * @return Transaction[]
      */
-    public function findPendingEffective(\App\Entity\Ship $ship, int $currentDay, int $currentYear): array
+    public function findPendingEffective(Asset $asset, int $currentDay, int $currentYear): array
     {
         return $this->createQueryBuilder('t')
-            ->where('t.ship = :ship')
+            ->where('t.asset = :asset')
             ->andWhere('t.status = :status')
             ->andWhere('(t.sessionYear < :year) OR (t.sessionYear = :year AND t.sessionDay <= :day)')
-            ->setParameter('ship', $ship)
+            ->setParameter('asset', $asset)
             ->setParameter('status', Transaction::STATUS_PENDING)
             ->setParameter('year', $currentYear)
             ->setParameter('day', $currentDay)
@@ -38,13 +39,13 @@ class TransactionRepository extends ServiceEntityRepository
      * Used for undoing time travel (backtracking).
      * @return Transaction[]
      */
-    public function findPostedFuture(\App\Entity\Ship $ship, int $currentDay, int $currentYear): array
+    public function findPostedFuture(Asset $asset, int $currentDay, int $currentYear): array
     {
         return $this->createQueryBuilder('t')
-            ->where('t.ship = :ship')
+            ->where('t.asset = :asset')
             ->andWhere('t.status = :status')
             ->andWhere('(t.sessionYear > :year) OR (t.sessionYear = :year AND t.sessionDay > :day)')
-            ->setParameter('ship', $ship)
+            ->setParameter('asset', $asset)
             ->setParameter('status', Transaction::STATUS_POSTED)
             ->setParameter('year', $currentYear)
             ->setParameter('day', $currentDay)
@@ -53,17 +54,17 @@ class TransactionRepository extends ServiceEntityRepository
     }
 
     /**
-     * Finds all transactions for a ship with pagination support.
-     * @param \App\Entity\Ship $ship
+     * Finds all transactions for an asset with pagination support.
+     * @param Asset $asset
      * @param int $page
      * @param int $limit
      * @return array{'items': Transaction[], 'total': int}
      */
-    public function findForShip(\App\Entity\Ship $ship, int $page = 1, int $limit = 20): array
+    public function findForAsset(Asset $asset, int $page = 1, int $limit = 20): array
     {
         $qb = $this->createQueryBuilder('t')
-            ->where('t.ship = :ship')
-            ->setParameter('ship', $ship)
+            ->where('t.asset = :asset')
+            ->setParameter('asset', $asset)
             ->orderBy('t.sessionYear', 'DESC')
             ->addOrderBy('t.sessionDay', 'DESC')
             ->addOrderBy('t.createdAt', 'DESC')

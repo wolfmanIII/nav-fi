@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Campaign;
 use App\Entity\Route;
 use App\Entity\RouteWaypoint;
-use App\Entity\Ship;
+use App\Entity\Asset;
 use App\Form\RouteType;
 use App\Service\ListViewHelper;
 use App\Service\TravellerMapSectorLookup;
@@ -26,7 +26,7 @@ final class RouteController extends BaseController
         $user = $this->getUser();
         $filters = $listViewHelper->collectFilters($request, [
             'name',
-            'ship' => ['type' => 'int'],
+            'asset' => ['type' => 'int'],
             'campaign' => ['type' => 'int'],
         ]);
         $page = $listViewHelper->getPage($request);
@@ -34,7 +34,7 @@ final class RouteController extends BaseController
 
         $routes = [];
         $total = 0;
-        $ships = [];
+        $assets = [];
         $campaigns = [];
 
         if ($user instanceof \App\Entity\User) {
@@ -42,26 +42,28 @@ final class RouteController extends BaseController
             $routes = $result['items'];
             $total = $result['total'];
 
-            $ships = $em->getRepository(Ship::class)->findAllForUser($user);
+            $assets = $em->getRepository(Asset::class)->findAllForUser($user);
             $campaigns = $em->getRepository(Campaign::class)->findAllForUser($user);
         }
 
         $pagination = $listViewHelper->buildPaginationPayload($page, $perPage, $total);
 
         // Context for Navbar
-        $ship = null;
-        if (!empty($filters['ship'])) {
-            $ship = $em->getRepository(Ship::class)->find($filters['ship']);
+        $asset = null;
+        if (!empty($filters['asset'])) {
+            $asset = $em->getRepository(Asset::class)->find($filters['asset']);
         }
 
         return $this->render('route/index.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'routes' => $routes,
             'filters' => $filters,
-            'ships' => $ships,
+            'ships' => $assets,
+            'assets' => $assets,
             'campaigns' => $campaigns,
             'pagination' => $pagination,
-            'ship' => $ship, // Pass context
+            'ship' => $asset, // Pass context (legacy)
+            'asset' => $asset, // Pass context
         ]);
     }
 
@@ -74,12 +76,12 @@ final class RouteController extends BaseController
         }
 
         $route = new Route();
-        // Try to prepopulate ship from query if exists
-        $shipId = $request->query->get('ship');
-        if ($shipId) {
-            $ship = $em->getRepository(Ship::class)->find($shipId);
-            if ($ship) {
-                $route->setShip($ship);
+        // Try to prepopulate asset from query if exists
+        $assetId = $request->query->get('asset');
+        if ($assetId) {
+            $asset = $em->getRepository(Asset::class)->find($assetId);
+            if ($asset) {
+                $route->setAsset($asset);
             }
         }
 
@@ -102,7 +104,8 @@ final class RouteController extends BaseController
             'controller_name' => self::CONTROLLER_NAME,
             'route' => $route,
             'form' => $form,
-            'ship' => $route->getShip(), // Pass context
+            'ship' => $route->getAsset(), // Pass context (legacy)
+            'asset' => $route->getAsset(),
         ]);
     }
 
@@ -137,7 +140,8 @@ final class RouteController extends BaseController
             'controller_name' => self::CONTROLLER_NAME,
             'route' => $route,
             'form' => $form,
-            'ship' => $route->getShip(), // Pass context
+            'ship' => $route->getAsset(), // Pass context (legacy)
+            'asset' => $route->getAsset(),
         ]);
     }
 
@@ -181,7 +185,8 @@ final class RouteController extends BaseController
             'mapUrl' => $mapUrl,
             'currentHex' => $startHex,
             'currentSector' => $sector,
-            'ship' => $route->getShip(), // Pass context
+            'ship' => $route->getAsset(), // Pass context (legacy)
+            'asset' => $route->getAsset(),
         ]);
     }
 

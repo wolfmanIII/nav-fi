@@ -2,7 +2,7 @@
 
 namespace App\Dto;
 
-class JDriveDetailItem extends ShipDetailItem
+class JDriveDetailItem extends AssetDetailItem
 {
     public ?int $jump = null;
 

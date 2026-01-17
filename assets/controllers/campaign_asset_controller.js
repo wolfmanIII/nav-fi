@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ['campaign', 'ship'];
+    static targets = ['campaign', 'asset'];
 
     connect() {
         this.applyFilter();
@@ -13,11 +13,11 @@ export default class extends Controller {
 
     applyFilter() {
         const campaignId = this.campaignTarget.value;
-        const shipSelect = this.shipTarget;
-        const options = Array.from(shipSelect.options);
+        const assetSelect = this.assetTarget;
+        const options = Array.from(assetSelect.options);
 
         const hasCampaign = campaignId !== '';
-        shipSelect.disabled = !hasCampaign;
+        assetSelect.disabled = !hasCampaign;
 
         options.forEach((option) => {
             if (option.value === '') {
@@ -30,13 +30,13 @@ export default class extends Controller {
         });
 
         if (!hasCampaign) {
-            shipSelect.value = '';
+            assetSelect.value = '';
             return;
         }
 
-        const selectedOption = shipSelect.options[shipSelect.selectedIndex];
+        const selectedOption = assetSelect.options[assetSelect.selectedIndex];
         if (selectedOption && selectedOption.value && selectedOption.dataset.campaign !== campaignId) {
-            shipSelect.value = '';
+            assetSelect.value = '';
         }
     }
 }

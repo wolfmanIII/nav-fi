@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Entity\Campaign;
 use App\Entity\Mortgage;
 use App\Entity\MortgageInstallment;
-use App\Entity\Ship;
+use App\Entity\Asset;
 use App\Entity\Transaction;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -24,14 +24,14 @@ class FinancialAutomationService
         $currentDay = $campaign->getSessionDay() ?? 0;
         $currentYear = $campaign->getSessionYear() ?? 0;
 
-        foreach ($campaign->getShips() as $ship) {
-            $this->processMortgage($ship, $currentDay, $currentYear);
+        foreach ($campaign->getAssets() as $asset) {
+            $this->processMortgage($asset, $currentDay, $currentYear);
         }
     }
 
-    private function processMortgage(Ship $ship, int $currentDay, int $currentYear): void
+    private function processMortgage(Asset $asset, int $currentDay, int $currentYear): void
     {
-        $mortgage = $ship->getMortgage();
+        $mortgage = $asset->getMortgage();
         if (!$mortgage || !$mortgage->isSigned()) {
             return;
         }
@@ -43,7 +43,6 @@ class FinancialAutomationService
             return;
         }
 
-        // Determine Last Payment Date
         // Determine Last Payment Date
         $installments = $mortgage->getMortgageInstallments()->toArray();
         // Sort to ensure we get the chronological last
@@ -84,7 +83,7 @@ class FinancialAutomationService
             $installment->setPaymentDay($nextDueDay);
             $installment->setPaymentYear($nextDueYear);
             $installment->setPayment($paymentAmount);
-            $installment->setUser($ship->getUser()); // Optional tracking
+            $installment->setUser($asset->getUser()); // Optional tracking
 
             $this->entityManager->persist($installment);
             // We need to flush to get ID for linking
@@ -92,7 +91,7 @@ class FinancialAutomationService
 
             // Create Ledger Withdrawal
             $this->ledgerService->withdraw(
-                $ship,
+                $asset,
                 $paymentAmount,
                 "Mortgage Installment (Date: $nextDueYear-$nextDueDay)",
                 $nextDueDay,

@@ -21,7 +21,7 @@
                     <div>
                         <p class="uppercase text-[10px] tracking-[0.3em] text-cyan-300/70 font-bold font-orbitron mb-0.5">Financial route // Projection System</p>
                         <h1 class="text-2xl font-bold text-cyan-100 leading-tight font-orbitron uppercase">Annual Budget</h1>
-                        <p class="text-xs text-cyan-100/60 font-rajdhani tracking-widest uppercase">Set the time window to monitor your ship.</p>
+                        <p class="text-xs text-cyan-100/60 font-rajdhani tracking-widest uppercase">Set the time window to monitor your asset.</p>
 
                         {# Session Date Modal Trigger #}
                         {% if campaigns|length > 0 %}
@@ -97,9 +97,9 @@
 
         {% set filter_fields %}
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-cyan-500/60 font-bold">VESSEL_NAV</label>
+                <label class="label text-xs uppercase tracking-[0.2em] text-cyan-500/60 font-bold">ASSET_NAV</label>
                 <select name="ship" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
-                    <option value="">ANY_VESSEL</option>
+                    <option value="">ANY_ASSET</option>
                     {% for ship in ships %}
                         <option value="{{ ship.id }}" {% if filters.ship == ship.id %}selected{% endif %}>{{ ship.name }}</option>
                     {% endfor %}

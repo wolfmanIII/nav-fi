@@ -26,7 +26,7 @@
             </p>
             
             <div class="flex flex-wrap gap-2 mt-2">
-                {% for tag in ['Mission First', 'Shipyard & Crew', 'Companies', 'Costs & Income', 'Mortgage & Amendments', 'Routes', 'Annual Budget', 'DDD/YYYY'] %}
+                {% for tag in ['Mission First', 'Assets & Personnel', 'Companies', 'Costs & Income', 'Mortgage & Amendments', 'Routes', 'Annual Budget', 'DDD/YYYY'] %}
                      <span class="px-3 py-1.5 rounded bg-slate-900 border border-slate-700 text-xs font-bold tracking-wider text-slate-400 uppercase">{{ tag }}</span>
                 {% endfor %}
             </div>
@@ -60,11 +60,11 @@
                     {% include 'icons/far-trader.html.twig' with { dim: 20 } %}
                 </div>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Register the Ships</h3>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Register Assets</h3>
             <p class="text-sm text-slate-400 leading-relaxed">Drop in hulls for PCs or NPCs. Give them class/type, price, and details if needed. NPC ships can sail without mortgages, costs, or income if they’re just scenery in your sector.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                Shipyard
+                Asset Registry
             </div>
         </div>
 
@@ -94,8 +94,8 @@
                     </span>
                 </div>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Dock ships to Mission</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Link each hull to the mission so every date tracks the same session clock. Session day/year will drive ship PDFs, mortgages, and contracts automatically.</p>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Assign assets to Mission</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Link each asset to the mission so every date tracks the same session clock. Session day/year will drive ship PDFs, mortgages, and contracts automatically.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
                 Session Sync
@@ -174,8 +174,8 @@
                     {% include 'icons/ship-components.html.twig' with { dim: 20 } %}
                 </div>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Log Ship Amendments</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Signed hulls can only change via amendments. Link each amendment to a technical cost with payment date; that payment date becomes the amendment’s effective day/year.</p>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Log Asset Amendments</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Signed assets can only change via amendments. Link each amendment to a technical cost with payment date; that payment date becomes the amendment’s effective day/year.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
                 Upgrade Docket

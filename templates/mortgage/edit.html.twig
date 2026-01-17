@@ -27,12 +27,12 @@
                         {% include 'icons/handbook.html.twig' %}
                     </div>
                     <div class="flex-1">
-                        <p class="uppercase text-[10px] tracking-[0.3em] text-cyan-300/70 font-bold font-orbitron mb-0.5">Ship mortgage // Hull Financing</p>
-                        <h3 class="font-bold text-cyan-100 text-2xl leading-tight font-orbitron uppercase">Finance your ship</h3>
-                        <p class="text-xs text-cyan-100/60 font-rajdhani tracking-widest uppercase">Calculate costs and interests: fund the imperial hull.</p>
+                        <p class="uppercase text-[10px] tracking-[0.3em] text-cyan-300/70 font-bold font-orbitron mb-0.5">Asset mortgage // Hull Financing</p>
+                        <h3 class="font-bold text-cyan-100 text-2xl leading-tight font-orbitron uppercase">Finance your asset</h3>
+                        <p class="text-xs text-cyan-100/60 font-rajdhani tracking-widest uppercase">Calculate costs and interests: fund the asset acquisition.</p>
 
                         {# Session Date Indicator #}
-                        {% set campaign = mortgage.ship.campaign ?? (mortgage.campaign ?? null) %}
+                        {% set campaign = mortgage.asset.campaign ?? (mortgage.campaign ?? null) %}
                         {% if campaign %}
                             <div class="flex flex-wrap gap-2 mt-3">
                                 <div class="badge badge-info gap-1.5 px-2.5 py-2.5 text-xs font-mono">
@@ -83,7 +83,7 @@
         {{ form_start(form, { attr: { id: 'mortgage_form' } }) }}
 
         <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
-            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Fleet Deployment</legend>
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Asset Deployment</legend>
 
             <div class="col-span-2 md:col-span-1">
                 {{ form_label(form.campaign) }}
@@ -92,9 +92,9 @@
             </div>
 
             <div class="col-span-2 md:col-span-1">
-                {{ form_label(form.ship) }}
-                {{ form_widget(form.ship) }}
-                {{ form_errors(form.ship) }}
+                {{ form_label(form.asset) }}
+                {{ form_widget(form.asset) }}
+                {{ form_errors(form.asset) }}
             </div>
 
             <div class="col-span-2 md:col-span-1">
@@ -171,10 +171,10 @@
 
             {% if mortgage.id %}
                 {% set disabledClass = mortgage.signed ? '' : ' opacity-60 pointer-events-none' %}
-                <a href="{{ path('app_mortgage_unsign', {id: mortgage.id}) }}" class="btn btn-outline btn-error btn-sm font-orbitron uppercase text-[10px] tracking-widest {{ disabledClass }}">Unsign Hull</a>
+                <a href="{{ path('app_mortgage_unsign', {id: mortgage.id}) }}" class="btn btn-outline btn-error btn-sm font-orbitron uppercase text-[10px] tracking-widest {{ disabledClass }}">Unsign Asset</a>
             {% endif %}
 
-            {% if not mortgage.signed and mortgage.ship and not mortgage.ship.hasCaptain %}
+            {% if not mortgage.signed and mortgage.asset and not mortgage.asset.hasCaptain %}
                  <div class="flex items-center gap-2 bg-red-500/10 border border-red-500/20 px-4 py-2 rounded text-red-400 text-[10px] font-orbitron uppercase tracking-widest font-bold">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                     Warning: Active Captain Required for Authorization
@@ -262,7 +262,7 @@
                     <span>Financial Bond Registry</span>
                 </h3>
                 <p class="py-2 text-[11px] text-slate-400 font-rajdhani uppercase tracking-widest leading-relaxed">
-                    This table shows how the bank prices your hull: duration (years), price multipliers/dividers, and the annual interest rate. Pick the correct band before signing so the 13-period schedule reflects the agreed terms and the Campaign session clock.
+                    This table shows how the bank prices your asset: duration (years), price multipliers/dividers, and the annual interest rate. Pick the correct band before signing so the 13-period schedule reflects the agreed terms and the Campaign session clock.
                 </p>
                 <div class="modal-action mt-6 gap-3">
                     <form method="dialog">
@@ -272,7 +272,7 @@
             </div>
         </dialog>
 
-        {% set ship = mortgage.ship ?? null %}
+        {% set ship = mortgage.asset ?? null %}
         {% set sessionDay = ship ? (ship.campaign ? ship.campaign.sessionDay : ship.sessionDay) : null %}
         {% set sessionYear = ship ? (ship.campaign ? ship.campaign.sessionYear : ship.sessionYear) : null %}
         {% set sessionValue = (sessionDay is not null and sessionYear is not null) ? (sessionDay|imperial_date(sessionYear)) : '—' %}

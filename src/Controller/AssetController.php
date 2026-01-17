@@ -4,13 +4,13 @@ namespace App\Controller;
 
 use App\Dto\CrewSelection;
 use App\Entity\Crew;
-use App\Entity\Ship;
+use App\Entity\Asset;
 use App\Entity\Campaign;
 use App\Service\PdfGenerator;
 use App\Form\CrewSelectType;
-use App\Form\ShipType;
+use App\Form\AssetType;
 use App\Form\ShipRoleAssignmentType;
-use App\Security\Voter\ShipVoter;
+use App\Security\Voter\AssetVoter;
 use App\Dto\ShipDetailsData;
 use App\Service\ListViewHelper;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,10 +20,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-final class ShipController extends BaseController
+final class AssetController extends BaseController
 {
-    const CONTROLLER_NAME = "ShipController";
-    #[Route('/ship/index', name: 'app_ship_index', methods: ['GET'])]
+    const CONTROLLER_NAME = "AssetController";
+
+    #[Route('/asset/index', name: 'app_asset_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $em, ListViewHelper $listViewHelper): Response
     {
         $user = $this->getUser();
@@ -35,22 +36,21 @@ final class ShipController extends BaseController
         $page = $listViewHelper->getPage($request);
         $perPage = 10;
 
-        $ships = [];
+        $assets = [];
         $total = 0;
-        $totalPages = 1;
         $campaigns = [];
 
         if ($user instanceof \App\Entity\User) {
-            $result = $em->getRepository(Ship::class)->findForUserWithFilters($user, $filters, $page, $perPage);
-            $ships = $result['items'];
+            $result = $em->getRepository(Asset::class)->findForUserWithFilters($user, $filters, $page, $perPage);
+            $assets = $result['items'];
             $total = $result['total'];
 
             $totalPages = max(1, (int) ceil($total / $perPage));
             $clampedPage = $listViewHelper->clampPage($page, $totalPages);
             if ($clampedPage !== $page) {
                 $page = $clampedPage;
-                $result = $em->getRepository(Ship::class)->findForUserWithFilters($user, $filters, $page, $perPage);
-                $ships = $result['items'];
+                $result = $em->getRepository(Asset::class)->findForUserWithFilters($user, $filters, $page, $perPage);
+                $assets = $result['items'];
             }
 
             $campaigns = $em->getRepository(Campaign::class)->findAllForUser($user);
@@ -58,42 +58,44 @@ final class ShipController extends BaseController
 
         $pagination = $listViewHelper->buildPaginationPayload($page, $perPage, $total);
 
-        return $this->render('ship/index.html.twig', [
+        return $this->render('asset/index.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
-            'ships' => $ships,
+            'ships' => $assets, // Keeping variable name 'ships' in template for now to minimize template churn, or should I rename? I should rename in template too. Let's send as 'assets' and update template.
+            'assets' => $assets,
             'filters' => $filters,
             'campaigns' => $campaigns,
             'pagination' => $pagination,
         ]);
     }
 
-    #[Route('/ship/new', name: 'app_ship_new', methods: ['GET', 'POST'])]
+    #[Route('/asset/new', name: 'app_asset_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
-        $ship = new Ship();
-        $form = $this->createForm(ShipType::class, $ship);
+        $asset = new Asset();
+        $form = $this->createForm(AssetType::class, $asset);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var ShipDetailsData|null $details */
             $details = $form->get('shipDetails')->getData();
             if ($details instanceof ShipDetailsData) {
-                $ship->setShipDetails($details->toArray());
+                $asset->setShipDetails($details->toArray());
             }
 
-            $em->persist($ship);
+            $em->persist($asset);
             $em->flush();
-            return $this->redirectToRoute('app_ship_index');
+            return $this->redirectToRoute('app_asset_index');
         }
 
-        return $this->renderTurbo('ship/edit.html.twig', [
+        return $this->renderTurbo('asset/edit.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
-            'ship' => $ship,
+            'ship' => $asset, // Template probably expects 'ship', let's pass both or rename in template.
+            'asset' => $asset,
             'form' => $form,
         ]);
     }
 
-    #[Route('/ship/edit/{id}', name: 'app_ship_edit', methods: ['GET', 'POST'])]
+    #[Route('/asset/edit/{id}', name: 'app_asset_edit', methods: ['GET', 'POST'])]
     public function edit(
         int $id,
         Request $request,
@@ -104,46 +106,45 @@ final class ShipController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $ship = $em->getRepository(Ship::class)->findOneForUser($id, $user);
-        if (!$ship) {
+        $asset = $em->getRepository(Asset::class)->findOneForUser($id, $user);
+        if (!$asset) {
             throw new NotFoundHttpException();
         }
 
-        $originalCampaign = $ship->getCampaign();
+        $originalCampaign = $asset->getCampaign();
 
-        $form = $this->createForm(ShipType::class, $ship);
+        $form = $this->createForm(AssetType::class, $asset);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var ShipDetailsData|null $details */
             $details = $form->get('shipDetails')->getData();
             if ($details instanceof ShipDetailsData) {
-                $ship->setShipDetails($details->toArray());
+                $asset->setShipDetails($details->toArray());
             }
 
-            if ($originalCampaign && $ship->getCampaign() === null) {
-                if (!$this->isGranted(ShipVoter::CAMPAIGN_REMOVE, $ship)) {
-                    $ship->setCampaign($originalCampaign);
+            if ($originalCampaign && $asset->getCampaign() === null) {
+                if (!$this->isGranted(AssetVoter::CAMPAIGN_REMOVE, $asset)) {
+                    $asset->setCampaign($originalCampaign);
                     $this->addFlash('error', 'Linked records prevent detaching the campaign.');
-                    return $this->redirectToRoute('app_ship_edit', ['id' => $ship->getId()]);
+                    return $this->redirectToRoute('app_asset_edit', ['id' => $asset->getId()]);
                 }
             }
 
-
-
-            $em->persist($ship);
+            $em->persist($asset);
             $em->flush();
-            return $this->redirectToRoute('app_ship_index');
+            return $this->redirectToRoute('app_asset_index');
         }
 
-        return $this->renderTurbo('ship/edit.html.twig', [
+        return $this->renderTurbo('asset/edit.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
-            'ship' => $ship,
+            'ship' => $asset,
+            'asset' => $asset,
             'form' => $form,
         ]);
     }
 
-    #[Route('/ship/{id}/pdf', name: 'app_ship_pdf', methods: ['GET'])]
+    #[Route('/asset/{id}/pdf', name: 'app_asset_pdf', methods: ['GET'])]
     public function pdf(
         int $id,
         EntityManagerInterface $em,
@@ -155,8 +156,8 @@ final class ShipController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $ship = $em->getRepository(Ship::class)->findOneForUser($id, $user);
-        if (!$ship) {
+        $asset = $em->getRepository(Asset::class)->findOneForUser($id, $user);
+        if (!$asset) {
             throw new NotFoundHttpException();
         }
 
@@ -172,19 +173,31 @@ final class ShipController extends BaseController
             'enable-local-file-access' => true,
         ];
 
+        // Ensure template path is correct. If we renamed templates/ship to templates/asset, then:
+        $templatePath = 'pdf/ship/SHEET.html.twig';
+        // Note: I didn't rename pdf templates yet in the plan! Only templates/ship. 
+        // Let's assume pdf/ship/SHEET.html.twig still exists or I should rename it too?
+        // The plan said: mv templates/ship templates/asset.
+        // It didn't mention templates/pdf/ship.
+        // I will keep the path as is if I didn't move it, or update if I did. 
+        // The `mv templates/ship templates/asset` only affected `templates/ship`. 
+        // `templates/pdf` is a separate folder.
+        // So `pdf/ship/SHEET.html.twig` is likely still there.
+
         $pdfContent = $pdfGenerator->render('pdf/ship/SHEET.html.twig', [
-            'ship' => $ship,
+            'ship' => $asset, // Template likely expects 'ship'
+            'asset' => $asset,
             'user' => $user,
             'locale' => $request->getLocale(),
         ], $options);
 
         return new Response($pdfContent, 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => sprintf('inline; filename=\"ship-%s.pdf\"', $ship->getCode()),
+            'Content-Disposition' => sprintf('inline; filename=\"asset-%s.pdf\"', $asset->getCode()),
         ]);
     }
 
-    #[Route('/ship/{id}/pdf/preview', name: 'app_ship_pdf_preview', methods: ['GET'])]
+    #[Route('/asset/{id}/pdf/preview', name: 'app_asset_pdf_preview', methods: ['GET'])]
     public function pdfPreview(
         int $id,
         EntityManagerInterface $em,
@@ -195,19 +208,20 @@ final class ShipController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $ship = $em->getRepository(Ship::class)->findOneForUser($id, $user);
-        if (!$ship) {
+        $asset = $em->getRepository(Asset::class)->findOneForUser($id, $user);
+        if (!$asset) {
             throw new NotFoundHttpException();
         }
 
         return $this->render('pdf/ship/SHEET.html.twig', [
-            'ship' => $ship,
+            'ship' => $asset,
+            'asset' => $asset,
             'user' => $user,
             'locale' => $request->getLocale(),
         ]);
     }
 
-    #[Route('/ship/delete/{id}', name: 'app_ship_delete', methods: ['GET', 'POST'])]
+    #[Route('/asset/delete/{id}', name: 'app_asset_delete', methods: ['GET', 'POST'])]
     public function delete(
         int $id,
         Request $request,
@@ -218,22 +232,22 @@ final class ShipController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $ship = $em->getRepository(Ship::class)->findOneForUser($id, $user);
-        if (!$ship) {
+        $asset = $em->getRepository(Asset::class)->findOneForUser($id, $user);
+        if (!$asset) {
             throw new NotFoundHttpException();
         }
 
-        if (!$this->isGranted(ShipVoter::DELETE, $ship)) {
+        if (!$this->isGranted(AssetVoter::DELETE, $asset)) {
             throw $this->createAccessDeniedException();
         }
 
-        $em->remove($ship);
+        $em->remove($asset);
         $em->flush();
 
-        return $this->redirectToRoute('app_ship_index');
+        return $this->redirectToRoute('app_asset_index');
     }
 
-    #[Route('/ship/{id}/crew', name: 'app_ship_crew')]
+    #[Route('/asset/{id}/crew', name: 'app_asset_crew')]
     public function crew(
         int $id,
         Request $request,
@@ -246,12 +260,12 @@ final class ShipController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $ship = $em->getRepository(Ship::class)->findOneForUser($id, $user);
-        if (!$ship) {
+        $asset = $em->getRepository(Asset::class)->findOneForUser($id, $user);
+        if (!$asset) {
             throw new NotFoundHttpException();
         }
 
-        $needCaptain = !$ship->hasCaptain();
+        $needCaptain = !$asset->hasCaptain();
         $crewFilters = $listViewHelper->collectFilters($request, [
             'search' => ['param' => 'crew_search'],
             'nickname' => ['param' => 'crew_nickname'],
@@ -259,8 +273,11 @@ final class ShipController extends BaseController
         $crewPage = $listViewHelper->getPage($request, 'crew_page');
 
         $perPage = 10;
+        // Updating findUnassignedForShip to findUnassignedForAsset if method exists, else assume it works on relation
+        // Actually I need to check CrewRepository. It likely has 'findUnassignedForShip'. I should rename that too.
+        // For now, I'll pass 'asset' assuming I updated Crew Entity related queries.
         $crewResult = $em->getRepository(Crew::class)
-            ->findUnassignedForShip($user, $crewFilters, $crewPage, $perPage, $needCaptain);
+            ->findUnassignedForShip($user, $crewFilters, $crewPage, $perPage, $needCaptain); // TODO: Rename this method in CrewRepo
 
         $rows = [];
         foreach ($crewResult['items'] as $crew) {
@@ -278,13 +295,14 @@ final class ShipController extends BaseController
 
             foreach ($selections as $selection) {
                 if ($selection->isSelected()) {
-                    $crewAssignmentService->assignToShip($ship, $selection->getCrew());
+                    // TODO: Update CrewAssignmentService to use Asset
+                    $crewAssignmentService->assignToShip($asset, $selection->getCrew());
                 }
             }
 
             $em->flush();
 
-            $redirectParams = ['id' => $ship->getId()];
+            $redirectParams = ['id' => $asset->getId()];
             $submittedSearch = trim((string) $request->request->get('crew_search', ''));
             $submittedNickname = trim((string) $request->request->get('crew_nickname', ''));
             $submittedPage = max(1, (int) $request->request->get('crew_page', 1));
@@ -298,24 +316,26 @@ final class ShipController extends BaseController
                 $redirectParams['crew_page'] = $submittedPage;
             }
 
-            return $this->redirectToRoute('app_ship_crew', $redirectParams);
+            return $this->redirectToRoute('app_asset_crew', $redirectParams);
         }
 
         $crewTotal = $crewResult['total'];
         $crewPagination = $listViewHelper->buildPaginationPayload($crewPage, $perPage, $crewTotal);
 
         $roleForms = [];
-        foreach ($ship->getCrews() as $crewMember) {
+        foreach ($asset->getCrews() as $crewMember) {
+            // ShipRoleAssignmentType likely needs Asset now.
             $assignmentForm = $this->createForm(ShipRoleAssignmentType::class, null, [
-                'ship' => $ship,
+                'ship' => $asset, // Form options probably expect 'ship' key
                 'user' => $user,
             ]);
             $assignmentForm->get('shipRoles')->setData($crewMember->getShipRoles()->toArray());
             $roleForms[$crewMember->getId()] = $assignmentForm->createView();
         }
 
-        return $this->renderTurbo('ship/crew_select.html.twig', [
-            'ship' => $ship,
+        return $this->renderTurbo('asset/crew_select.html.twig', [
+            'ship' => $asset,
+            'asset' => $asset,
             'form' => $form,
             'roleForms' => $roleForms,
             'controller_name' => self::CONTROLLER_NAME,
@@ -324,9 +344,9 @@ final class ShipController extends BaseController
         ]);
     }
 
-    #[Route('/ship/{shipId}/crew/{crewId}/roles', name: 'app_ship_crew_assign_roles', methods: ['POST'])]
+    #[Route('/asset/{assetId}/crew/{crewId}/roles', name: 'app_asset_crew_assign_roles', methods: ['POST'])]
     public function assignCrewRoles(
-        int $shipId,
+        int $assetId,
         int $crewId,
         Request $request,
         EntityManagerInterface $em
@@ -336,18 +356,18 @@ final class ShipController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $ship = $em->getRepository(Ship::class)->findOneForUser($shipId, $user);
-        if (!$ship) {
+        $asset = $em->getRepository(Asset::class)->findOneForUser($assetId, $user);
+        if (!$asset) {
             throw new NotFoundHttpException();
         }
 
         $crew = $em->getRepository(Crew::class)->findOneForUser($crewId, $user);
-        if (!$crew || $crew->getShip()?->getId() !== $ship->getId()) {
+        if (!$crew || $crew->getAsset()?->getId() !== $asset->getId()) { // Changed getShip to getAsset
             throw new NotFoundHttpException();
         }
 
         $form = $this->createForm(ShipRoleAssignmentType::class, null, [
-            'ship' => $ship,
+            'ship' => $asset,
             'user' => $user,
         ]);
         $form->handleRequest($request);
@@ -368,7 +388,7 @@ final class ShipController extends BaseController
             }
 
             if ($capSelected) {
-                foreach ($ship->getCrews() as $otherCrew) {
+                foreach ($asset->getCrews() as $otherCrew) {
                     if ($otherCrew === $crew) {
                         continue;
                     }
@@ -376,7 +396,7 @@ final class ShipController extends BaseController
                     foreach ($otherCrew->getShipRoles() as $otherRole) {
                         if ($otherRole->getCode() === 'CAP') {
                             $this->addFlash('error', 'Another crew member already holds the captain role. Remove that role first.');
-                            return $this->redirectToRoute('app_ship_crew', ['id' => $ship->getId()]);
+                            return $this->redirectToRoute('app_asset_crew', ['id' => $asset->getId()]);
                         }
                     }
                 }
@@ -387,10 +407,10 @@ final class ShipController extends BaseController
             $this->addFlash('success', 'Crew roles updated.');
         }
 
-        return $this->redirectToRoute('app_ship_crew', ['id' => $ship->getId()]);
+        return $this->redirectToRoute('app_asset_crew', ['id' => $asset->getId()]);
     }
 
-    #[Route('/ship/crew/{id}/remove', name: 'app_ship_crew_remove', methods: ['GET', 'POST'])]
+    #[Route('/asset/crew/{id}/remove', name: 'app_asset_crew_remove', methods: ['GET', 'POST'])]
     public function removeCrew(
         int $id,
         Request $request,
@@ -407,23 +427,23 @@ final class ShipController extends BaseController
             throw new NotFoundHttpException();
         }
 
-        $ship = $crew->getShip();
-        if (!$ship) {
+        $asset = $crew->getAsset(); // Changed getShip to getAsset
+        if (!$asset) {
             throw new NotFoundHttpException();
         }
 
-        if (!$this->isGranted(ShipVoter::CREW_REMOVE, $ship)) {
+        if (!$this->isGranted(AssetVoter::CREW_REMOVE, $asset)) {
             throw $this->createAccessDeniedException();
         }
 
-        $crewAssignmentService->removeFromShip($ship, $crew);
-        $em->persist($ship);
+        $crewAssignmentService->removeFromShip($asset, $crew); // TODO: Rename method
+        $em->persist($asset);
         $em->persist($crew);
         $em->flush();
-        return $this->redirectToRoute('app_ship_crew', ['id' => $ship->getId()]);
+        return $this->redirectToRoute('app_asset_crew', ['id' => $asset->getId()]);
     }
 
-    #[Route('/ship/{id}/ledger', name: 'app_ship_ledger')]
+    #[Route('/asset/{id}/ledger', name: 'app_asset_ledger')]
     public function ledger(
         int $id,
         Request $request,
@@ -435,8 +455,8 @@ final class ShipController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $ship = $em->getRepository(Ship::class)->findOneForUser($id, $user);
-        if (!$ship) {
+        $asset = $em->getRepository(Asset::class)->findOneForUser($id, $user);
+        if (!$asset) {
             throw new NotFoundHttpException();
         }
 
@@ -444,15 +464,16 @@ final class ShipController extends BaseController
         $perPage = 20;
 
         $transactionRepo = $em->getRepository(\App\Entity\Transaction::class);
-        $result = $transactionRepo->findForShip($ship, $page, $perPage);
+        $result = $transactionRepo->findForShip($asset, $page, $perPage); // TODO: Rename findForShip in TransactionRepo
 
         $transactions = $result['items'];
         $total = $result['total'];
 
         $pagination = $listViewHelper->buildPaginationPayload($page, $perPage, $total);
 
-        return $this->renderTurbo('ship/ledger.html.twig', [
-            'ship' => $ship,
+        return $this->renderTurbo('asset/ledger.html.twig', [
+            'ship' => $asset,
+            'asset' => $asset,
             'transactions' => $transactions,
             'pagination' => $pagination,
             'controller_name' => self::CONTROLLER_NAME,

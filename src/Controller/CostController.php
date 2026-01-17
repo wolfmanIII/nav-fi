@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Cost;
 use App\Entity\Campaign;
-use App\Entity\Ship;
+use App\Entity\Asset;
 use App\Entity\CostCategory;
 use App\Form\CostType;
 use App\Security\Voter\CostVoter;
@@ -27,7 +27,7 @@ final class CostController extends BaseController
         $filters = $listViewHelper->collectFilters($request, [
             'title',
             'category' => ['type' => 'int'],
-            'ship' => ['type' => 'int'],
+            'asset' => ['type' => 'int'],
             'campaign' => ['type' => 'int'],
         ]);
         $page = $listViewHelper->getPage($request);
@@ -35,9 +35,8 @@ final class CostController extends BaseController
 
         $costs = [];
         $total = 0;
-        $totalPages = 1;
         $categories = [];
-        $ships = [];
+        $assets = [];
         $campaigns = [];
 
         if ($user instanceof \App\Entity\User) {
@@ -54,7 +53,7 @@ final class CostController extends BaseController
             }
 
             $categories = $em->getRepository(CostCategory::class)->findBy([], ['code' => 'ASC']);
-            $ships = $em->getRepository(Ship::class)->findAllForUser($user);
+            $assets = $em->getRepository(Asset::class)->findAllForUser($user);
             $campaigns = $em->getRepository(Campaign::class)->findAllForUser($user);
         }
 
@@ -65,7 +64,8 @@ final class CostController extends BaseController
             'costs' => $costs,
             'filters' => $filters,
             'categories' => $categories,
-            'ships' => $ships,
+            'ships' => $assets,
+            'assets' => $assets,
             'campaigns' => $campaigns,
             'pagination' => $pagination,
         ]);
@@ -113,15 +113,10 @@ final class CostController extends BaseController
             throw new NotFoundHttpException();
         }
 
-        $wasPaid = $cost->getPaymentDay() !== null || $cost->getPaymentYear() !== null;
-
         $form = $this->createForm(CostType::class, $cost, ['user' => $user]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-
-
             $em->flush();
 
             return $this->redirectToRoute('app_cost_index');
@@ -130,9 +125,9 @@ final class CostController extends BaseController
         return $this->renderTurbo('cost/edit.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'cost' => $cost,
-            'cost' => $cost,
             'form' => $form,
-            'ship' => $cost->getShip(),
+            'ship' => $cost->getAsset(),
+            'asset' => $cost->getAsset(),
         ]);
     }
 

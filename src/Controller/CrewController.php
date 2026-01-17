@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Crew;
 use App\Entity\Campaign;
-use App\Entity\Ship;
+use App\Entity\Asset;
 use App\Form\CrewType;
 use App\Security\Voter\CrewVoter;
 use App\Service\ListViewHelper;
@@ -25,7 +25,7 @@ final class CrewController extends BaseController
         $user = $this->getUser();
         $filters = $listViewHelper->collectFilters($request, [
             'search',
-            'ship' => ['type' => 'int'],
+            'asset' => ['type' => 'int'],
             'campaign' => ['type' => 'int'],
         ]);
         $page = $listViewHelper->getPage($request);
@@ -34,7 +34,7 @@ final class CrewController extends BaseController
         $crew = [];
         $total = 0;
         $totalPages = 1;
-        $ships = [];
+        $assets = [];
         $campaigns = [];
 
         if ($user instanceof \App\Entity\User) {
@@ -50,7 +50,7 @@ final class CrewController extends BaseController
                 $crew = $result['items'];
             }
 
-            $ships = $em->getRepository(Ship::class)->findAllForUser($user);
+            $assets = $em->getRepository(Asset::class)->findAllForUser($user);
             $campaigns = $em->getRepository(Campaign::class)->findAllForUser($user);
         }
 
@@ -60,7 +60,8 @@ final class CrewController extends BaseController
             'controller_name' => self::CONTROLLER_NAME,
             'crew'            => $crew,
             'filters'         => $filters,
-            'ships'           => $ships,
+            'ships'           => $assets, // Keeping variable name in template for now if not updated, but should trigger update
+            'assets'          => $assets, // Sending both to be safe during transition
             'campaigns'       => $campaigns,
             'pagination'      => $pagination,
         ]);
@@ -85,9 +86,9 @@ final class CrewController extends BaseController
 
             $em->persist($crew);
 
-            if (!$crew->getShip()) {
-                foreach ($crew->getShipRoles() as $role) {
-                    $crew->removeShipRole($role);
+            if (!$crew->getAsset()) {
+                foreach ($crew->getAssetRoles() as $role) {
+                    $crew->removeAssetRole($role);
                 }
             }
 
@@ -121,7 +122,7 @@ final class CrewController extends BaseController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        $previousShip = $crew->getShip();
+        $previousAsset = $crew->getAsset();
         $form = $this->createForm(CrewType::class, $crew, [
             'user' => $user,
             'is_admin' => $this->isGranted('ROLE_ADMIN'),
@@ -130,13 +131,15 @@ final class CrewController extends BaseController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if ($previousShip !== null && $crew->getShip() === null) {
+            if ($previousAsset !== null && $crew->getAsset() === null) {
+                // Assuming CrewAssignmentService is not yet refactored, it might fail here.
+                // We will rename methods there too.
                 $crewAssignmentService->clearAfterDetach($crew);
             }
 
-            if (!$crew->getShip()) {
-                foreach ($crew->getShipRoles() as $role) {
-                    $crew->removeShipRole($role);
+            if (!$crew->getAsset()) {
+                foreach ($crew->getAssetRoles() as $role) {
+                    $crew->removeAssetRole($role);
                 }
             }
 
