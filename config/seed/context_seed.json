@@ -68,7 +68,7 @@
             "annual_interest_rate": "2.26"
         }
     ],
-    "ship_roles": [
+    "asset_roles": [
         {
             "code": "CAP",
             "name": "Captain",

@@ -7,7 +7,7 @@ use App\Repository\CostCategoryRepository;
 use App\Repository\IncomeCategoryRepository;
 use App\Repository\InterestRateRepository;
 use App\Repository\LocalLawRepository;
-use App\Repository\ShipRoleRepository;
+use App\Repository\AssetRoleRepository;
 use App\Repository\CompanyRoleRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -29,7 +29,7 @@ class ExportContextCommand extends Command
         private readonly CostCategoryRepository $costCategoryRepository,
         private readonly IncomeCategoryRepository $incomeCategoryRepository,
         private readonly InterestRateRepository $interestRateRepository,
-        private readonly ShipRoleRepository $shipRoleRepository,
+        private readonly AssetRoleRepository $assetRoleRepository,
         private readonly CompanyRoleRepository $companyRoleRepository,
         private readonly LocalLawRepository $localLawRepository,
         #[Autowire('%kernel.project_dir%')] private readonly string $projectDir,
@@ -46,8 +46,7 @@ class ExportContextCommand extends Command
                 InputOption::VALUE_REQUIRED,
                 'Percorso del file di export (relativo alla root del progetto se non assoluto)',
                 'config/seed/context_seed.json'
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -77,12 +76,12 @@ class ExportContextCommand extends Command
                         'duration'            => $rate->getDuration(),
                         'price_multiplier'    => $rate->getPriceMultiplier(),
                         'price_divider'       => $rate->getPriceDivider(),
-                        'annual_interest_rate'=> $rate->getAnnualInterestRate(),
+                        'annual_interest_rate' => $rate->getAnnualInterestRate(),
                     ];
                 },
                 $this->interestRateRepository->findAll()
             ),
-            'ship_roles' => array_map(
+            'asset_roles' => array_map(
                 static function ($role): array {
                     return [
                         'code'        => $role->getCode(),
@@ -90,7 +89,7 @@ class ExportContextCommand extends Command
                         'description' => $role->getDescription(),
                     ];
                 },
-                $this->shipRoleRepository->findAll()
+                $this->assetRoleRepository->findAll()
             ),
             'company_roles' => array_map(
                 static function ($role): array {
@@ -152,12 +151,12 @@ class ExportContextCommand extends Command
             return $file;
         }
 
-        return $this->projectDir.'/'.ltrim($file, '/');
+        return $this->projectDir . '/' . ltrim($file, '/');
     }
 
     private function relativePath(string $path): string
     {
-        return str_starts_with($path, $this->projectDir.'/')
+        return str_starts_with($path, $this->projectDir . '/')
             ? substr($path, \strlen($this->projectDir) + 1)
             : $path;
     }

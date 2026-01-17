@@ -50,8 +50,8 @@ class FinancialResyncCommand extends Command
                 continue;
             }
 
-            $ship = $income->getShip();
-            if (!$ship) continue;
+            $asset = $income->getAsset();
+            if (!$asset) continue;
 
             // 1. Calculate Deposit (Advance) from Contract and Charter
             $deposit = '0.00';
@@ -74,7 +74,7 @@ class FinancialResyncCommand extends Command
                 $signingYear = $income->getSigningYear();
                 if ($signingDay !== null && $signingYear !== null) {
                     $this->ledgerService->deposit(
-                        $ship,
+                        $asset,
                         $deposit,
                         "Income Deposit: " . $income->getTitle() . " (" . $income->getCode() . ")",
                         $signingDay,
@@ -100,7 +100,7 @@ class FinancialResyncCommand extends Command
                         }
 
                         $this->ledgerService->deposit(
-                            $ship,
+                            $asset,
                             $balance,
                             $desc . ": " . $income->getTitle() . " (" . $income->getCode() . ")",
                             $paymentDay,
@@ -130,7 +130,7 @@ class FinancialResyncCommand extends Command
             }
 
             $this->ledgerService->deposit(
-                $ship,
+                $asset,
                 $totalAmount,
                 $desc . ": " . $income->getTitle() . " (" . $income->getCode() . ")",
                 $day,
@@ -148,8 +148,8 @@ class FinancialResyncCommand extends Command
                 continue;
             }
 
-            $ship = $cost->getShip();
-            if (!$ship) continue;
+            $asset = $cost->getAsset();
+            if (!$asset) continue;
 
             $day = $cost->getPaymentDay();
             $year = $cost->getPaymentYear();
@@ -160,7 +160,7 @@ class FinancialResyncCommand extends Command
             }
 
             $this->ledgerService->withdraw(
-                $ship,
+                $asset,
                 $cost->getAmount(),
                 "Cost: " . $cost->getTitle() . " (" . $cost->getCode() . ")",
                 $day,

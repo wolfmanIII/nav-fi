@@ -4,14 +4,14 @@ namespace App\Command;
 
 use App\Entity\Insurance;
 use App\Entity\InterestRate;
-use App\Entity\ShipRole;
+use App\Entity\AssetRole;
 use App\Entity\CompanyRole;
 use App\Entity\CostCategory;
 use App\Entity\IncomeCategory;
 use App\Entity\LocalLaw;
 use App\Repository\InsuranceRepository;
 use App\Repository\InterestRateRepository;
-use App\Repository\ShipRoleRepository;
+use App\Repository\AssetRoleRepository;
 use App\Repository\CompanyRoleRepository;
 use App\Repository\CostCategoryRepository;
 use App\Repository\IncomeCategoryRepository;
@@ -38,7 +38,7 @@ class ImportContextCommand extends Command
         private readonly IncomeCategoryRepository $incomeCategoryRepository,
         private readonly LocalLawRepository $localLawRepository,
         private readonly InterestRateRepository $interestRateRepository,
-        private readonly ShipRoleRepository $shipRoleRepository,
+        private readonly AssetRoleRepository $assetRoleRepository,
         private readonly CompanyRoleRepository $companyRoleRepository,
         private readonly EntityManagerInterface $entityManager,
         #[Autowire('%kernel.project_dir%')] private readonly string $projectDir,
@@ -55,8 +55,7 @@ class ImportContextCommand extends Command
                 InputOption::VALUE_REQUIRED,
                 'Percorso del file di import (relativo alla root del progetto se non assoluto)',
                 'config/seed/context_seed.json'
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -84,7 +83,7 @@ class ImportContextCommand extends Command
 
         [$insCreated, $insUpdated] = $this->importInsurance($decoded['insurance'] ?? []);
         [$rateCreated, $rateUpdated] = $this->importInterestRates($decoded['interest_rates'] ?? []);
-        [$roleCreated, $roleUpdated] = $this->importShipRoles($decoded['ship_roles'] ?? []);
+        [$roleCreated, $roleUpdated] = $this->importAssetRoles($decoded['asset_roles'] ?? []);
         [$companyRoleCreated, $companyRoleUpdated] = $this->importCompanyRoles($decoded['company_roles'] ?? []);
         [$catCreated, $catUpdated] = $this->importCostCategories($decoded['cost_categories'] ?? []);
         [$incomeCreated, $incomeUpdated] = $this->importIncomeCategories($decoded['income_categories'] ?? []);
@@ -93,7 +92,7 @@ class ImportContextCommand extends Command
         $this->entityManager->flush();
 
         $io->success(sprintf(
-            'Import completato. Insurance: %d nuovi / %d aggiornati; InterestRate: %d nuovi / %d aggiornati; ShipRole: %d nuovi / %d aggiornati; CompanyRole: %d nuovi / %d aggiornati; CostCategory: %d nuovi / %d aggiornati; IncomeCategory: %d nuovi / %d aggiornati; LocalLaw: %d nuovi / %d aggiornati.',
+            'Import completato. Insurance: %d nuovi / %d aggiornati; InterestRate: %d nuovi / %d aggiornati; AssetRole: %d nuovi / %d aggiornati; CompanyRole: %d nuovi / %d aggiornati; CostCategory: %d nuovi / %d aggiornati; IncomeCategory: %d nuovi / %d aggiornati; LocalLaw: %d nuovi / %d aggiornati.',
             $insCreated,
             $insUpdated,
             $rateCreated,
@@ -132,8 +131,7 @@ class ImportContextCommand extends Command
                 ->setName((string) $row['name'])
                 ->setAnnualCost(isset($row['annual_cost']) ? (string) $row['annual_cost'] : '0.00')
                 ->setLossRefund(isset($row['loss_refund']) ? (string) $row['loss_refund'] : null)
-                ->setCoverage(isset($row['coverage']) && is_array($row['coverage']) ? $row['coverage'] : [])
-            ;
+                ->setCoverage(isset($row['coverage']) && is_array($row['coverage']) ? $row['coverage'] : []);
 
             $this->entityManager->persist($entity);
             $created++;
@@ -161,8 +159,7 @@ class ImportContextCommand extends Command
                 ->setDuration((int) $row['duration'])
                 ->setPriceMultiplier((string) $row['price_multiplier'])
                 ->setPriceDivider((int) $row['price_divider'])
-                ->setAnnualInterestRate(isset($row['annual_interest_rate']) ? (string) $row['annual_interest_rate'] : '0.00')
-            ;
+                ->setAnnualInterestRate(isset($row['annual_interest_rate']) ? (string) $row['annual_interest_rate'] : '0.00');
 
             $this->entityManager->persist($entity);
             $created++;
@@ -176,7 +173,7 @@ class ImportContextCommand extends Command
      *
      * @return array{int, int} [creati, aggiornati]
      */
-    private function importShipRoles(array $rows): array
+    private function importAssetRoles(array $rows): array
     {
         $created = 0;
         $updated = 0;
@@ -186,11 +183,10 @@ class ImportContextCommand extends Command
                 continue;
             }
 
-            $entity = (new ShipRole())
+            $entity = (new AssetRole())
                 ->setCode((string) $row['code'])
                 ->setName(isset($row['name']) ? (string) $row['name'] : '')
-                ->setDescription(isset($row['description']) ? (string) $row['description'] : '')
-            ;
+                ->setDescription(isset($row['description']) ? (string) $row['description'] : '');
 
             $this->entityManager->persist($entity);
             $created++;
@@ -329,7 +325,7 @@ class ImportContextCommand extends Command
 
         if ($platform === 'mysql') {
             $connection->executeStatement('SET FOREIGN_KEY_CHECKS=0');
-            $connection->executeStatement('TRUNCATE TABLE ship_role');
+            $connection->executeStatement('TRUNCATE TABLE asset_role');
             $connection->executeStatement('TRUNCATE TABLE insurance');
             $connection->executeStatement('TRUNCATE TABLE interest_rate');
             $connection->executeStatement('TRUNCATE TABLE company_role');
@@ -342,21 +338,21 @@ class ImportContextCommand extends Command
         }
 
         if ($platform === 'postgresql' || $platform === 'postgres') {
-            $connection->executeStatement('TRUNCATE TABLE ship_role, insurance, interest_rate, company_role, cost_category, income_category, local_law RESTART IDENTITY CASCADE');
+            $connection->executeStatement('TRUNCATE TABLE asset_role, insurance, interest_rate, company_role, cost_category, income_category, local_law RESTART IDENTITY CASCADE');
 
             return;
         }
 
         // fallback per SQLite o altri: delete e reset della sequence
         $connection->executeStatement('PRAGMA foreign_keys = OFF');
-        $connection->executeStatement('DELETE FROM ship_role');
+        $connection->executeStatement('DELETE FROM asset_role');
         $connection->executeStatement('DELETE FROM insurance');
         $connection->executeStatement('DELETE FROM interest_rate');
         $connection->executeStatement('DELETE FROM company_role');
         $connection->executeStatement('DELETE FROM cost_category');
         $connection->executeStatement('DELETE FROM income_category');
         $connection->executeStatement('DELETE FROM local_law');
-        $connection->executeStatement("DELETE FROM sqlite_sequence WHERE name IN ('ship_role','insurance','interest_rate','company_role','cost_category','income_category','local_law')");
+        $connection->executeStatement("DELETE FROM sqlite_sequence WHERE name IN ('asset_role','insurance','interest_rate','company_role','cost_category','income_category','local_law')");
         $connection->executeStatement('PRAGMA foreign_keys = ON');
     }
 
@@ -366,12 +362,12 @@ class ImportContextCommand extends Command
             return $file;
         }
 
-        return $this->projectDir.'/'.ltrim($file, '/');
+        return $this->projectDir . '/' . ltrim($file, '/');
     }
 
     private function relativePath(string $path): string
     {
-        return str_starts_with($path, $this->projectDir.'/')
+        return str_starts_with($path, $this->projectDir . '/')
             ? substr($path, \strlen($this->projectDir) + 1)
             : $path;
     }
