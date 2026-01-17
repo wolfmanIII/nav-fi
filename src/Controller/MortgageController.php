@@ -151,7 +151,7 @@ final class MortgageController extends BaseController
         $paymentForm = $this->createForm(MortgageInstallmentType::class, $payment, ['summary' => $summary]);
 
         // Sign Form (Integrated with Start Date)
-        $signForm = $this->createFormBuilder()
+        $signForm = $this->container->get('form.factory')->createNamedBuilder('mortgage_sign')
             ->setAction($this->generateUrl('app_mortgage_sign', ['id' => $mortgage->getId()]))
             ->setMethod('POST')
             ->add('signingLocation', TextType::class, [
@@ -166,12 +166,9 @@ final class MortgageController extends BaseController
             ])
             ->getForm();
 
-        // Start Date Form for Modal (Keep for standalone edits if needed, or remove if fully replaced)
-        // Keeping it allows editing date after signing without unsigning?
-        // Plan says: "Set First Installment Date" workflow accessible only AFTER signing (via separate button).
-        // But we are adding it to SIGN modal too.
+        // Start Date Form for Modal
         $startImperialDate = new ImperialDate($mortgage->getStartYear(), $mortgage->getStartDay());
-        $startDateForm = $this->createFormBuilder(['startDate' => $startImperialDate])
+        $startDateForm = $this->container->get('form.factory')->createNamedBuilder('mortgage_set_start_date', null, ['startDate' => $startImperialDate])
             ->setAction($this->generateUrl('app_mortgage_set_start_date', ['id' => $mortgage->getId()]))
             ->setMethod('POST')
             ->add('startDate', ImperialDateType::class, [
@@ -264,7 +261,7 @@ final class MortgageController extends BaseController
             throw new NotFoundHttpException();
         }
 
-        $form = $this->createFormBuilder()
+        $form = $this->container->get('form.factory')->createNamedBuilder('mortgage_sign')
             ->add('signingLocation', TextType::class, [
                 'required' => false,
             ])
@@ -340,7 +337,7 @@ final class MortgageController extends BaseController
 
         $this->denyAccessUnlessGranted(MortgageVoter::SET_START_DATE, $mortgage);
 
-        $startDateForm = $this->createFormBuilder(['startDate' => new ImperialDate($mortgage->getStartYear(), $mortgage->getStartDay())])
+        $startDateForm = $this->container->get('form.factory')->createNamedBuilder('mortgage_set_start_date', null, ['startDate' => new ImperialDate($mortgage->getStartYear(), $mortgage->getStartDay())])
             ->add('startDate', ImperialDateType::class, [
                 'min_year' => $limits->getYearMin(),
                 'max_year' => $limits->getYearMax(),
