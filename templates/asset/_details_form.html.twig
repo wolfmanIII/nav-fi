@@ -33,6 +33,7 @@
                value="">
         {{ form_errors(detailsForm.totalCost) }}
         {{ form_widget(detailsForm.totalCost, { attr: { class: 'hidden', 'data-asset-details-target': 'totalInput' } }) }}
+            {% set total_help_id = detailsForm.totalCost.vars.id ~ '-help' %}
             <input type="checkbox" id="{{ total_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
                 <div class="modal-box">
