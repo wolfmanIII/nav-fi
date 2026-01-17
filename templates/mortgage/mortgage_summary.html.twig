@@ -44,7 +44,7 @@
                 </thead>
                 <tbody class="divide-y divide-slate-800/50">
                     <tr class="text-slate-300">
-                        <td class="text-right p-2 font-mono text-xs">{{ calc.asset_cost|number_format(2) }} Cr</td>
+                        <td class="text-right p-2 font-mono text-xs">{{ summary.asset_cost|number_format(2) }} Cr</td>
                         <td class="text-right p-2 font-mono text-xs text-white font-bold">{{ summary.total_mortgage|format_number({ min_fraction_digit: 2, max_fraction_digit: 2 }, 'decimal', 'default', locale) }}</td>
                         <td class="text-right p-2 font-mono text-xs">{{ summary.total_monthly_payment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2 }, 'decimal', 'default', locale) }}</td>
                         <td class="text-right p-2 font-mono text-xs">{{ summary.total_annual_payment|format_number({ min_fraction_digit: 2, max_fraction_digit: 2 }, 'decimal', 'default', locale) }}</td>
