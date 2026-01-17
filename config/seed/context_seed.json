@@ -248,6 +248,10 @@
             "description": "Ship repair cost"
         },
         {
+            "code": "SHIP_RESUPPLY",
+            "description": "Ship resupply cost"
+        },
+        {
             "code": "MEDICAL",
             "description": "Medical cost"
         },
