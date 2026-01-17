@@ -265,7 +265,9 @@ final class MortgageController extends BaseController
         }
 
         $form = $this->createFormBuilder()
-            ->add('signingLocation', TextType::class)
+            ->add('signingLocation', TextType::class, [
+                'required' => false,
+            ])
             ->add('startDate', ImperialDateType::class, [
                 'min_year' => $limits->getYearMin(),
                 'max_year' => $limits->getYearMax(),
@@ -338,7 +340,7 @@ final class MortgageController extends BaseController
 
         $this->denyAccessUnlessGranted(MortgageVoter::SET_START_DATE, $mortgage);
 
-        $startDateForm = $this->createFormBuilder()
+        $startDateForm = $this->createFormBuilder(['startDate' => new ImperialDate($mortgage->getStartYear(), $mortgage->getStartDay())])
             ->add('startDate', ImperialDateType::class, [
                 'min_year' => $limits->getYearMin(),
                 'max_year' => $limits->getYearMax(),

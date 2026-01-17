@@ -99,20 +99,15 @@ class ImperialDateType extends AbstractType
             $day = $data['day'] ?? null;
             $year = $data['year'] ?? null;
 
-            if ($day === null || $day === '') {
+            if ($day === null || $day === '' || $day === '0') {
                 $data['day'] = null;
                 $data['year'] = null;
-                $event->setData($data);
-                return;
+            } else {
+                $data['day'] = (int) $day;
+                $data['year'] = (int) $year;
             }
 
-            if ($day !== null) {
-                $event->getForm()->get('day')->setData((int) $day);
-            }
-
-            if ($year !== null) {
-                $event->getForm()->get('year')->setData((int) $year);
-            }
+            $event->setData($data);
         });
     }
 
