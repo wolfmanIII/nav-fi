@@ -45,11 +45,8 @@ class Ship
     #[ORM\JoinColumn(nullable: true)]
     private ?Campaign $campaign = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $sessionDay = null;
+    // Legacy session fields removed
 
-    #[ORM\Column(nullable: true)]
-    private ?int $sessionYear = null;
 
     #[ORM\OneToOne(mappedBy: 'ship', cascade: ['persist', 'remove'])]
     private ?Mortgage $mortgage = null;
@@ -213,29 +210,8 @@ class Ship
         return $this;
     }
 
-    public function getSessionDay(): ?int
-    {
-        return $this->sessionDay;
-    }
+    // Legacy session methods removed
 
-    public function setSessionDay(?int $sessionDay): static
-    {
-        $this->sessionDay = $sessionDay;
-
-        return $this;
-    }
-
-    public function getSessionYear(): ?int
-    {
-        return $this->sessionYear;
-    }
-
-    public function setSessionYear(?int $sessionYear): static
-    {
-        $this->sessionYear = $sessionYear;
-
-        return $this;
-    }
 
     public function getMortgage(): ?Mortgage
     {

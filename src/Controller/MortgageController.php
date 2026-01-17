@@ -182,7 +182,9 @@ final class MortgageController extends BaseController
             'payment_form' => $paymentForm->createView(),
             'start_date_form' => $startDateForm->createView(),
             'sign_form' => $signForm->createView(),
+            'sign_form' => $signForm->createView(),
             'last_payment' => $mortgage->getMortgageInstallments()->last(),
+            'ship' => $mortgage->getShip(),
         ]);
     }
 

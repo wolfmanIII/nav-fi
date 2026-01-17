@@ -130,7 +130,9 @@ final class CostController extends BaseController
         return $this->renderTurbo('cost/edit.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'cost' => $cost,
+            'cost' => $cost,
             'form' => $form,
+            'ship' => $cost->getShip(),
         ]);
     }
 

@@ -171,7 +171,9 @@ final class IncomeController extends BaseController
         return $this->renderTurbo('income/edit.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'income' => $income,
+            'income' => $income,
             'form' => $form,
+            'ship' => $income->getShip(),
         ]);
     }
 

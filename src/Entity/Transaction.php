@@ -40,9 +40,27 @@ class Transaction
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    public const STATUS_PENDING = 'Pending';
+    public const STATUS_POSTED = 'Posted';
+
+    #[ORM\Column(length: 20, options: ['default' => 'Pending'])]
+    private ?string $status = self::STATUS_PENDING;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+
+        return $this;
     }
 
     public function getId(): ?int

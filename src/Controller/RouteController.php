@@ -48,6 +48,12 @@ final class RouteController extends BaseController
 
         $pagination = $listViewHelper->buildPaginationPayload($page, $perPage, $total);
 
+        // Context for Navbar
+        $ship = null;
+        if (!empty($filters['ship'])) {
+            $ship = $em->getRepository(Ship::class)->find($filters['ship']);
+        }
+
         return $this->render('route/index.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'routes' => $routes,
@@ -55,6 +61,7 @@ final class RouteController extends BaseController
             'ships' => $ships,
             'campaigns' => $campaigns,
             'pagination' => $pagination,
+            'ship' => $ship, // Pass context
         ]);
     }
 
@@ -67,6 +74,15 @@ final class RouteController extends BaseController
         }
 
         $route = new Route();
+        // Try to prepopulate ship from query if exists
+        $shipId = $request->query->get('ship');
+        if ($shipId) {
+            $ship = $em->getRepository(Ship::class)->find($shipId);
+            if ($ship) {
+                $route->setShip($ship);
+            }
+        }
+
         $form = $this->createForm(RouteType::class, $route, ['user' => $user]);
         $form->handleRequest($request);
 
@@ -86,6 +102,7 @@ final class RouteController extends BaseController
             'controller_name' => self::CONTROLLER_NAME,
             'route' => $route,
             'form' => $form,
+            'ship' => $route->getShip(), // Pass context
         ]);
     }
 
@@ -120,6 +137,7 @@ final class RouteController extends BaseController
             'controller_name' => self::CONTROLLER_NAME,
             'route' => $route,
             'form' => $form,
+            'ship' => $route->getShip(), // Pass context
         ]);
     }
 
@@ -163,6 +181,7 @@ final class RouteController extends BaseController
             'mapUrl' => $mapUrl,
             'currentHex' => $startHex,
             'currentSector' => $sector,
+            'ship' => $route->getShip(), // Pass context
         ]);
     }
 

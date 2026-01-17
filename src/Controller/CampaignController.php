@@ -263,16 +263,15 @@ final class CampaignController extends BaseController
                 'type' => $ship->getType(),
                 'class' => $ship->getClass(),
                 'price' => $ship->getPrice(),
-                'sessionDay' => $ship->getSessionDay(),
-                'sessionYear' => $ship->getSessionYear(),
+
                 'shipDetails' => $ship->getShipDetails(),
                 'mortgage' => $this->mapMortgage($ship->getMortgage()),
-                'crews' => $ship->getCrews()->map(fn (Crew $crew) => $this->mapCrew($crew))->toArray(),
-                'costs' => $ship->getCosts()->map(fn (Cost $cost) => $this->mapCost($cost))->toArray(),
-                'incomes' => $ship->getIncomes()->map(fn (Income $income) => $this->mapIncome($income))->toArray(),
-                'amendments' => $ship->getAmendments()->map(fn (ShipAmendment $amendment) => $this->mapAmendment($amendment))->toArray(),
+                'crews' => $ship->getCrews()->map(fn(Crew $crew) => $this->mapCrew($crew))->toArray(),
+                'costs' => $ship->getCosts()->map(fn(Cost $cost) => $this->mapCost($cost))->toArray(),
+                'incomes' => $ship->getIncomes()->map(fn(Income $income) => $this->mapIncome($income))->toArray(),
+                'amendments' => $ship->getAmendments()->map(fn(ShipAmendment $amendment) => $this->mapAmendment($amendment))->toArray(),
                 'annualBudgets' => array_map(
-                    fn (AnnualBudget $budget) => $this->mapAnnualBudget($budget),
+                    fn(AnnualBudget $budget) => $this->mapAnnualBudget($budget),
                     $em->getRepository(AnnualBudget::class)->findBy(['ship' => $ship])
                 ),
             ];
@@ -360,7 +359,7 @@ final class CampaignController extends BaseController
             'miaYear' => $crew->getMiaYear(),
             'deceasedDay' => $crew->getDeceasedDay(),
             'deceasedYear' => $crew->getDeceasedYear(),
-            'roles' => $crew->getShipRoles()->map(fn ($role) => $role->getCode())->toArray(),
+            'roles' => $crew->getShipRoles()->map(fn($role) => $role->getCode())->toArray(),
         ];
     }
 
@@ -413,20 +412,22 @@ final class CampaignController extends BaseController
         $category = $income->getIncomeCategory();
 
         $details = [];
-        foreach ([
-            'charter' => $income->getCharterDetails(),
-            'subsidy' => $income->getSubsidyDetails(),
-            'freight' => $income->getFreightDetails(),
-            'passengers' => $income->getPassengersDetails(),
-            'services' => $income->getServicesDetails(),
-            'insurance' => $income->getInsuranceDetails(),
-            'mail' => $income->getMailDetails(),
-            'interest' => $income->getInterestDetails(),
-            'trade' => $income->getTradeDetails(),
-            'salvage' => $income->getSalvageDetails(),
-            'prize' => $income->getPrizeDetails(),
-            'contract' => $income->getContractDetails(),
-        ] as $key => $detail) {
+        foreach (
+            [
+                'charter' => $income->getCharterDetails(),
+                'subsidy' => $income->getSubsidyDetails(),
+                'freight' => $income->getFreightDetails(),
+                'passengers' => $income->getPassengersDetails(),
+                'services' => $income->getServicesDetails(),
+                'insurance' => $income->getInsuranceDetails(),
+                'mail' => $income->getMailDetails(),
+                'interest' => $income->getInterestDetails(),
+                'trade' => $income->getTradeDetails(),
+                'salvage' => $income->getSalvageDetails(),
+                'prize' => $income->getPrizeDetails(),
+                'contract' => $income->getContractDetails(),
+            ] as $key => $detail
+        ) {
             if ($detail) {
                 $details[$key] = $this->extractDetails($detail);
             }

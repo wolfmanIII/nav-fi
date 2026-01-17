@@ -101,8 +101,7 @@ final class AnnualBudgetController extends BaseController
         int $id,
         Request $request,
         EntityManagerInterface $em
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
@@ -127,7 +126,9 @@ final class AnnualBudgetController extends BaseController
         return $this->renderTurbo('annual_budget/edit.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'budget' => $budget,
+            'budget' => $budget,
             'form' => $form,
+            'ship' => $budget->getShip(),
         ]);
     }
 
@@ -135,8 +136,7 @@ final class AnnualBudgetController extends BaseController
     public function delete(
         int $id,
         EntityManagerInterface $em
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
@@ -181,7 +181,9 @@ final class AnnualBudgetController extends BaseController
             'budget' => $budget,
             'labels' => $labels,
             'incomeSeries' => $incomeSeries,
+            'incomeSeries' => $incomeSeries,
             'costSeries' => $costSeries,
+            'ship' => $budget->getShip(),
         ]);
     }
 
@@ -191,8 +193,7 @@ final class AnnualBudgetController extends BaseController
         array $costs,
         array $installments,
         ImperialDateHelper $imperialDateHelper
-    ): array
-    {
+    ): array {
         $startKey = $imperialDateHelper->toKey($budget->getStartDay(), $budget->getStartYear());
         $endKey = $imperialDateHelper->toKey($budget->getEndDay(), $budget->getEndYear());
         $labels = [];

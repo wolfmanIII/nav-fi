@@ -70,13 +70,15 @@ Quando la Data Sessione avanza (es. l'Arbitro clicca "Next Day" o "End Week"):
 
 ### Fase 1: Fondamenta
 1.  [x] Creare migrazione per `Ship.credits` e tabella `Transaction`.
-2.  [ ] Implementare `LedgerService` (Deposito/Prelievo base).
-3.  [ ] Aggiungere visualizzazione `credits` al layout principale (`base.html.twig`).
+2.  [x] Implementare `LedgerService` (Deposito/Prelievo base).
+3.  [x] Aggiungere visualizzazione `credits` al layout principale (`base.html.twig`).
 
 ### Fase 2: Automazione
-4.  [ ] Creare classi `IncomeEvents` e `CostEvents`.
-5.  [ ] Implementare `FinancialEventSubscriber`.
-6.  [ ] Collegare il cambio di stato `Income` al subscriber.
+4.  [x] Creare classi `IncomeEvents` e `CostEvents` (Sostituito da `FinancialEventSubscriber` generico).
+5.  [x] Implementare `FinancialEventSubscriber` (Gestione Update/Persist).
+6.  [x] Collegare il cambio di stato `Income` al subscriber.
+7.  [x] Implementare `CampaignLifecycleSubscriber` per Sync Temporale.
+8.  [x] Implementare `FinancialAutomationService` per generazione costi ricorrenti (Mutuo).
 
 ### Fase 3: Funzionalità Avanzate
 7.  [ ] Implementare bottone/azione pagamento rata `Mortgage`.

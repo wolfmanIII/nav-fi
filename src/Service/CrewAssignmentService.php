@@ -12,8 +12,8 @@ final class CrewAssignmentService
         $ship->addCrew($crew);
         $crew->setStatus('Active');
 
-        $sessionDay = $ship->getCampaign()?->getSessionDay() ?? $ship->getSessionDay();
-        $sessionYear = $ship->getCampaign()?->getSessionYear() ?? $ship->getSessionYear();
+        $sessionDay = $ship->getCampaign()?->getSessionDay();
+        $sessionYear = $ship->getCampaign()?->getSessionYear();
         if ($sessionDay !== null && $sessionYear !== null) {
             $crew->setActiveDay($sessionDay);
             $crew->setActiveYear($sessionYear);
