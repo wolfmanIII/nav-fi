@@ -24,7 +24,7 @@ class CampaignRepository extends ServiceEntityRepository
     public function findAllForUser(User $user): array
     {
         return $this->createQueryBuilder('c')
-            ->leftJoin('c.ships', 's', 'WITH', 's.user = :user')
+            ->leftJoin('c.assets', 's', 'WITH', 's.user = :user')
             ->andWhere('c.user = :user OR s.id IS NOT NULL')
             ->setParameter('user', $user)
             ->groupBy('c.id')
@@ -43,13 +43,13 @@ class CampaignRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('c');
 
         if ($user) {
-            $qb->leftJoin('c.ships', 's', 'WITH', 's.user = :user')
+            $qb->leftJoin('c.assets', 's', 'WITH', 's.user = :user')
                 ->andWhere('c.user = :user OR s.id IS NOT NULL')
                 ->setParameter('user', $user);
         }
 
         if (!empty($filters['title'])) {
-            $title = '%'.strtolower($filters['title']).'%';
+            $title = '%' . strtolower($filters['title']) . '%';
             $qb->andWhere('LOWER(c.title) LIKE :title')
                 ->setParameter('title', $title);
         }
@@ -77,7 +77,7 @@ class CampaignRepository extends ServiceEntityRepository
     public function findOneForUser(int $id, User $user): ?Campaign
     {
         return $this->createQueryBuilder('c')
-            ->leftJoin('c.ships', 's', 'WITH', 's.user = :user')
+            ->leftJoin('c.assets', 's', 'WITH', 's.user = :user')
             ->andWhere('c.id = :id')
             ->andWhere('c.user = :user OR s.id IS NOT NULL')
             ->setParameter('id', $id)

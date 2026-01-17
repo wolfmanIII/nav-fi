@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Mortgage;
 use App\Entity\MortgageInstallment;
 use App\Entity\Campaign;
-use App\Entity\Ship;
+use App\Entity\Asset;
 use App\Form\MortgageInstallmentType;
 use App\Form\MortgageType;
 use App\Security\Voter\MortgageVoter;
@@ -32,7 +32,7 @@ final class MortgageController extends BaseController
         $user = $this->getUser();
         $filters = $listViewHelper->collectFilters($request, [
             'name',
-            'ship' => ['type' => 'int'],
+            'asset' => ['type' => 'int'],
             'campaign' => ['type' => 'int'],
         ]);
         $page = $listViewHelper->getPage($request);
@@ -41,7 +41,7 @@ final class MortgageController extends BaseController
         $mortgages = [];
         $total = 0;
         $totalPages = 1;
-        $ships = [];
+        $assets = [];
         $campaigns = [];
 
         if ($user instanceof \App\Entity\User) {
@@ -57,7 +57,7 @@ final class MortgageController extends BaseController
                 $mortgages = $result['items'];
             }
 
-            $ships = $em->getRepository(Ship::class)->findAllForUser($user);
+            $assets = $em->getRepository(Asset::class)->findAllForUser($user);
             $campaigns = $em->getRepository(Campaign::class)->findAllForUser($user);
         }
 
@@ -67,7 +67,7 @@ final class MortgageController extends BaseController
             'controller_name' => self::CONTROLLER_NAME,
             'mortgages' => $mortgages,
             'filters' => $filters,
-            'ships' => $ships,
+            'assets' => $assets,
             'campaigns' => $campaigns,
             'pagination' => $pagination,
         ]);
@@ -87,7 +87,7 @@ final class MortgageController extends BaseController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $mortgage->setName("MOR - " . $mortgage->getShip()->getName());
+            $mortgage->setName("MOR - " . $mortgage->getAsset()->getName());
 
             $em->persist($mortgage);
             $em->flush();
@@ -184,7 +184,7 @@ final class MortgageController extends BaseController
             'sign_form' => $signForm->createView(),
             'sign_form' => $signForm->createView(),
             'last_payment' => $mortgage->getMortgageInstallments()->last(),
-            'ship' => $mortgage->getShip(),
+            'asset' => $mortgage->getAsset(),
         ]);
     }
 
@@ -270,10 +270,10 @@ final class MortgageController extends BaseController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $campaign = $mortgage->getShip()?->getCampaign();
+            $campaign = $mortgage->getAsset()?->getCampaign();
 
             if (!$campaign) {
-                $this->addFlash('error', 'Ship is not assigned to a campaign.');
+                $this->addFlash('error', 'Asset is not assigned to a campaign.');
                 return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
             }
 
@@ -398,7 +398,7 @@ final class MortgageController extends BaseController
         $htmlTemplate = 'pdf/contracts/MORTGAGE.html.twig';
         $context = [
             'mortgage' => $mortgage,
-            'ship' => $mortgage->getShip(),
+            'asset' => $mortgage->getAsset(),
             'user' => $user,
             'locale' => $request->getLocale(),
         ];
@@ -442,7 +442,7 @@ final class MortgageController extends BaseController
 
         return $this->render('pdf/contracts/MORTGAGE.html.twig', [
             'mortgage' => $mortgage,
-            'ship' => $mortgage->getShip(),
+            'asset' => $mortgage->getAsset(),
             'user' => $user,
             'locale' => $request->getLocale(),
         ]);

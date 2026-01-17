@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
+#[ORM\Table(name: 'ledger_transaction')]
 #[ORM\Index(name: 'idx_transaction_asset', columns: ['asset_id'])]
 class Transaction
 {

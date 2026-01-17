@@ -29,7 +29,7 @@
                     {{ tooltip.link('Launch a new asset',
                                     'Add Asset',
                                     'icons/far-trader.html.twig',
-                                    path('app_ship_new'),
+                                    path('app_asset_new'),
                                     { position: 'tooltip-left', dim: 24, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
                 </div>
             </div>
@@ -60,11 +60,11 @@
         {% endset %}
         {% include 'components/index_filters.html.twig' with {
             form_id: 'ship-filters',
-            action: path('app_ship_index'),
+            action: path('app_asset_index'),
             legend: 'Asset search',
             grid_class: 'md:grid-cols-3',
             fields: filter_fields,
-            reset_path: path('app_ship_index'),
+            reset_path: path('app_asset_index'),
             is_filtered: filters.campaign or filters.name or filters.type_class
         } %}
 
@@ -80,11 +80,11 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-1">
-                                {{ tooltip.link('View Financial Ledger', '', 'icons/handbook.html.twig', path('app_ship_ledger', {id: ship.id}), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-400' }) }}
-                                {{ tooltip.link('Tune asset manifest', '', 'icons/action-edit.html.twig', path('app_ship_edit', {id: ship.id}), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-400' }) }}
-                                {% set CAN_DELETE = constant('App\\Security\\Voter\\ShipVoter::DELETE') %}
+                                {{ tooltip.link('View Financial Ledger', '', 'icons/handbook.html.twig', path('app_asset_ledger', {id: ship.id}), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-400' }) }}
+                                {{ tooltip.link('Tune asset manifest', '', 'icons/action-edit.html.twig', path('app_asset_edit', {id: ship.id}), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-400' }) }}
+                                {% set CAN_DELETE = constant('App\\Security\\Voter\\AssetVoter::DELETE') %}
                                 {% set can_delete = is_granted(CAN_DELETE, ship) %}
-                                {{ tooltip.link('Decommission asset', '', 'icons/action-trash.html.twig', path('app_ship_delete', {id: ship.id}), {
+                                {{ tooltip.link('Decommission asset', '', 'icons/action-trash.html.twig', path('app_asset_delete', {id: ship.id}), {
                                     position: 'tooltip-left',
                                     dim: 16,
                                     linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none')
@@ -174,7 +174,7 @@
                                 {% endif %}
                              </div>
                              
-                             <a href="{{ path('app_ship_crew', {id: ship.id}) }}" class="flex items-center gap-2 px-3 py-1.5 rounded bg-slate-800 hover:bg-cyan-950/50 border border-slate-700 hover:border-cyan-500/50 text-slate-300 hover:text-cyan-300 transition-all group/btn">
+                             <a href="{{ path('app_asset_crew', {id: ship.id}) }}" class="flex items-center gap-2 px-3 py-1.5 rounded bg-slate-800 hover:bg-cyan-950/50 border border-slate-700 hover:border-cyan-500/50 text-slate-300 hover:text-cyan-300 transition-all group/btn">
                                 <span class="text-[10px] font-bold uppercase tracking-wider">Crew</span>
                                 {% include 'icons/crew.html.twig' with { dim: 14 } %}
                              </a>
@@ -187,7 +187,7 @@
                      {{ tooltip.link('Launch a new asset',
                                     'Initialize Asset',
                                     'icons/far-trader.html.twig',
-                                    path('app_ship_new'),
+                                    path('app_asset_new'),
                                     { position: 'tooltip-left', dim: 20, linkClass: 'btn btn-primary btn-sm btn-outline' }) }}
                 </div>
             {% endif %}
@@ -195,7 +195,7 @@
 
             {% include 'components/pagination.html.twig' with {
                 pagination: pagination,
-                route: 'app_ship_index',
+                route: 'app_asset_index',
                 query: app.request.query.all
             } %}
 

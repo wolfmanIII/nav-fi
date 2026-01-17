@@ -52,7 +52,7 @@ security:
         - { path: ^/_components, roles: PUBLIC_ACCESS } # endpoint che Symfony/Twig UX usa per i componenti
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/crew, roles: ROLE_USER }
-        - { path: ^/ship, roles: ROLE_USER }
+        - { path: ^/asset, roles: ROLE_USER }
         - { path: ^/mortgage, roles: ROLE_USER }
         - { path: ^/annual-budget, roles: ROLE_USER }
         - { path: ^/company, roles: ROLE_USER }

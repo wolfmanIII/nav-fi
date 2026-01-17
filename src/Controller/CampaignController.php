@@ -2,23 +2,23 @@
 
 namespace App\Controller;
 
-use App\Dto\ShipSelection;
+use App\Dto\AssetSelection;
 use App\Entity\Campaign;
-use App\Entity\Ship;
+use App\Entity\Asset;
 use App\Entity\CampaignSessionLog;
 use App\Entity\Crew;
 use App\Entity\Mortgage;
-use App\Entity\ShipAmendment;
+use App\Entity\AssetAmendment;
 use App\Entity\Route as NavRoute;
 use App\Entity\RouteWaypoint;
 use Symfony\Component\Uid\Uuid;
 use App\Form\Config\DayYearLimits;
 use App\Form\CampaignType;
-use App\Form\ShipSelectType;
+use App\Form\AssetSelectType;
 use App\Form\Type\ImperialDateType;
 use App\Model\ImperialDate;
 use App\Security\Voter\CampaignVoter;
-use App\Security\Voter\ShipVoter;
+use App\Security\Voter\AssetVoter;
 use App\Service\ListViewHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -147,7 +147,7 @@ final class CampaignController extends BaseController
     }
 
     #[Route('/campaign/{id}/details', name: 'app_campaign_details')]
-    public function ships(
+    public function assets(
         int $id,
         Request $request,
         DayYearLimits $limits,
@@ -164,19 +164,19 @@ final class CampaignController extends BaseController
             throw new NotFoundHttpException();
         }
 
-        $shipsToSelect = $em->getRepository(Ship::class)->findWithoutCampaignForUser($user);
+        $assetsToSelect = $em->getRepository(Asset::class)->findWithoutCampaignForUser($user);
 
         $rows = [];
-        foreach ($shipsToSelect as $ship) {
-            $dto = (new ShipSelection())
-                ->setShip($ship)
+        foreach ($assetsToSelect as $asset) {
+            $dto = (new AssetSelection())
+                ->setAsset($asset)
                 ->setSelected(false);
 
             $rows[] = $dto;
         }
 
-        $shipForm = $this->createForm(ShipSelectType::class, [
-            'shipSelections' => $rows,
+        $assetForm = $this->createForm(AssetSelectType::class, [
+            'assetSelections' => $rows,
         ]);
 
         $sessionDate = new ImperialDate($campaign->getSessionYear(), $campaign->getSessionDay());
@@ -185,14 +185,14 @@ final class CampaignController extends BaseController
             'max_year' => $limits->getYearMax(),
         ]);
 
-        $shipForm->handleRequest($request);
-        if ($shipForm->isSubmitted() && $shipForm->isValid()) {
-            /** @var ShipSelection[] $selections */
-            $selections = $shipForm->get('shipSelections')->getData();
+        $assetForm->handleRequest($request);
+        if ($assetForm->isSubmitted() && $assetForm->isValid()) {
+            /** @var AssetSelection[] $selections */
+            $selections = $assetForm->get('assetSelections')->getData();
 
             foreach ($selections as $selection) {
                 if ($selection->isSelected()) {
-                    $campaign->addShip($selection->getShip());
+                    $campaign->addAsset($selection->getAsset());
                 }
             }
 
@@ -245,7 +245,7 @@ final class CampaignController extends BaseController
 
         return $this->renderTurbo('campaign/details.html.twig', [
             'campaign' => $campaign,
-            'form' => $shipForm,
+            'form' => $assetForm,
             'calendar_form' => $calendarForm,
             'session_logs' => $sessionLogs,
             'pagination' => $pagination,
@@ -258,22 +258,22 @@ final class CampaignController extends BaseController
      */
     private function buildCampaignSnapshot(Campaign $campaign, EntityManagerInterface $em): array
     {
-        $ships = [];
+        $assets = [];
 
-        foreach ($campaign->getShips() as $ship) {
-            $ships[] = [
-                'id' => $ship->getId(),
-                'code' => $ship->getCode(),
-                'name' => $ship->getName(),
-                'type' => $ship->getType(),
-                'class' => $ship->getClass(),
-                'price' => $ship->getPrice(),
+        foreach ($campaign->getAssets() as $asset) {
+            $assets[] = [
+                'id' => $asset->getId(),
+                'code' => $asset->getCode(),
+                'name' => $asset->getName(),
+                'type' => $asset->getType(),
+                'class' => $asset->getClass(),
+                'price' => $asset->getPrice(),
 
-                'shipDetails' => $ship->getShipDetails(),
-                'mortgage' => $this->mapMortgage($ship->getMortgage()),
-                'crews' => $ship->getCrews()->map(fn(Crew $crew) => $this->mapCrew($crew))->toArray(),
-                'routes' => $ship->getRoutes()->map(fn(NavRoute $route) => $this->mapRoute($route))->toArray(),
-                'amendments' => $ship->getAmendments()->map(fn(ShipAmendment $amendment) => $this->mapAmendment($amendment))->toArray(),
+                'assetDetails' => $asset->getAssetDetails(),
+                'mortgage' => $this->mapMortgage($asset->getMortgage()),
+                'crews' => $asset->getCrews()->map(fn(Crew $crew) => $this->mapCrew($crew))->toArray(),
+                'routes' => $asset->getRoutes()->map(fn(NavRoute $route) => $this->mapRoute($route))->toArray(),
+                'amendments' => $asset->getAmendments()->map(fn(AssetAmendment $amendment) => $this->mapAmendment($amendment))->toArray(),
             ];
         }
 
@@ -287,7 +287,7 @@ final class CampaignController extends BaseController
                 'sessionDay' => $campaign->getSessionDay(),
                 'sessionYear' => $campaign->getSessionYear(),
             ],
-            'ships' => $ships,
+            'assets' => $assets,
         ];
     }
 
@@ -359,7 +359,7 @@ final class CampaignController extends BaseController
             'miaYear' => $crew->getMiaYear(),
             'deceasedDay' => $crew->getDeceasedDay(),
             'deceasedYear' => $crew->getDeceasedYear(),
-            'roles' => $crew->getShipRoles()->map(fn($role) => $role->getCode())->toArray(),
+            'roles' => $crew->getAssetRoles()->map(fn($role) => $role->getCode())->toArray(),
         ];
     }
 
@@ -371,7 +371,7 @@ final class CampaignController extends BaseController
     /**
      * @return array<string, mixed>
      */
-    private function mapAmendment(ShipAmendment $amendment): array
+    private function mapAmendment(AssetAmendment $amendment): array
     {
         $cost = $amendment->getCost();
 
@@ -399,8 +399,8 @@ final class CampaignController extends BaseController
      */
 
 
-    #[Route('/campaign/ship/{id}/remove', name: 'app_campaign_ship_remove', methods: ['GET', 'POST'])]
-    public function removeShip(
+    #[Route('/campaign/asset/{id}/remove', name: 'app_campaign_asset_remove', methods: ['GET', 'POST'])]
+    public function removeAsset(
         int $id,
         EntityManagerInterface $em
     ): Response {
@@ -409,19 +409,19 @@ final class CampaignController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $ship = $em->getRepository(Ship::class)->findOneForUser($id, $user);
-        if (!$ship) {
+        $asset = $em->getRepository(Asset::class)->findOneForUser($id, $user);
+        if (!$asset) {
             throw new NotFoundHttpException();
         }
 
-        $campaign = $ship->getCampaign();
+        $campaign = $asset->getCampaign();
         if (!$campaign) {
             throw new NotFoundHttpException();
         }
 
-        $this->denyAccessUnlessGranted(ShipVoter::CAMPAIGN_REMOVE, $ship);
+        $this->denyAccessUnlessGranted(AssetVoter::CAMPAIGN_REMOVE, $asset);
 
-        $campaign->removeShip($ship);
+        $campaign->removeAsset($asset);
         $em->persist($campaign);
         $em->flush();
 

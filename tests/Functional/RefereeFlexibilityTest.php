@@ -11,7 +11,7 @@ use App\Entity\Income;
 use App\Entity\IncomeCategory;
 use App\Entity\InterestRate;
 use App\Entity\Mortgage;
-use App\Entity\Ship;
+use App\Entity\Asset;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -43,13 +43,13 @@ final class RefereeFlexibilityTest extends WebTestCase
     {
         $user = $this->createUser('referee@test.local');
         $campaign = $this->createCampaign($user);
-        $ship = $this->createShip($user, 'ISS Flexibility');
-        $ship->setCampaign($campaign);
+        $asset = $this->createAsset($user, 'ISS Flexibility');
+        $asset->setCampaign($campaign);
         $category = $this->createCostCategory('FUEL', 'Fuel');
 
         $cost = (new Cost())
             ->setUser($user)
-            ->setShip($ship)
+            ->setAsset($asset)
             ->setCostCategory($category)
             ->setTitle('Paid Fuel Bill')
             ->setAmount('500.00')
@@ -58,7 +58,7 @@ final class RefereeFlexibilityTest extends WebTestCase
             ->setDetailItems([['description' => 'Fuel', 'quantity' => 1, 'cost' => 500.00]]);
 
         $this->em->persist($campaign);
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
         $this->em->persist($cost);
         $this->em->flush();
@@ -87,23 +87,23 @@ final class RefereeFlexibilityTest extends WebTestCase
     {
         $user = $this->createUser('referee2@test.local');
         $campaign = $this->createCampaign($user);
-        $ship = $this->createShip($user, 'ISS Debt');
-        $ship->setCampaign($campaign);
+        $asset = $this->createAsset($user, 'ISS Debt');
+        $asset->setCampaign($campaign);
         $rate = $this->createInterestRate();
 
         $mortgage = (new Mortgage())
             ->setUser($user)
-            ->setShip($ship)
+            ->setAsset($asset)
             ->setInterestRate($rate)
             ->setName('Long Term Loan')
             ->setStartDay(1)
             ->setStartYear(1100)
-            ->setSigned(true)
+
             ->setSigningDay(5)
             ->setSigningYear(1105);
 
         $this->em->persist($campaign);
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($rate);
         $this->em->persist($mortgage);
         $this->em->flush();
@@ -130,13 +130,13 @@ final class RefereeFlexibilityTest extends WebTestCase
     {
         $user = $this->createUser('referee3@test.local');
         $campaign = $this->createCampaign($user);
-        $ship = $this->createShip($user, 'ISS Rewards');
-        $ship->setCampaign($campaign);
+        $asset = $this->createAsset($user, 'ISS Rewards');
+        $asset->setCampaign($campaign);
         $category = $this->createIncomeCategory('CONTRACT', 'Contract');
 
         $income = (new Income())
             ->setUser($user)
-            ->setShip($ship)
+            ->setAsset($asset)
             ->setIncomeCategory($category)
             ->setTitle('Signed Contract')
             ->setAmount('5000.00')
@@ -144,7 +144,7 @@ final class RefereeFlexibilityTest extends WebTestCase
             ->setPaymentYear(1105);
 
         $this->em->persist($campaign);
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
         $this->em->persist($income);
         $this->em->flush();
@@ -170,12 +170,12 @@ final class RefereeFlexibilityTest extends WebTestCase
     public function testShipDeletionCascades(): void
     {
         $user = $this->createUser('referee3@test.local');
-        $ship = $this->createShip($user, 'ISS Expendable');
+        $asset = $this->createAsset($user, 'ISS Expendable');
         $rate = $this->createInterestRate();
 
         $mortgage = (new Mortgage())
             ->setUser($user)
-            ->setShip($ship)
+            ->setAsset($asset)
             ->setInterestRate($rate)
             ->setName('To Be Deleted')
             ->setStartDay(1)
@@ -183,33 +183,33 @@ final class RefereeFlexibilityTest extends WebTestCase
 
         $cost = (new Cost())
             ->setUser($user)
-            ->setShip($ship)
+            ->setAsset($asset)
             ->setCostCategory($this->createCostCategory('MISC', 'Misc'))
             ->setTitle('Ghost Cost')
             ->setAmount('10.00')
             ->setDetailItems([['description' => 'Misc', 'quantity' => 1, 'cost' => 10.00]]);
 
-        $ship->setMortgage($mortgage);
-        $ship->addCost($cost);
+        $asset->setMortgage($mortgage);
+        $asset->addCost($cost);
 
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($rate);
         $this->em->persist($mortgage);
         $this->em->persist($cost);
         $this->em->flush();
 
-        $shipId = $ship->getId();
+        $assetId = $asset->getId();
         $mortgageId = $mortgage->getId();
         $costId = $cost->getId();
 
         $this->client->loginUser($user);
 
         // Use direct EM remove to test database cascade configuration
-        $this->em->remove($ship);
+        $this->em->remove($asset);
         $this->em->flush();
 
         $this->em->clear();
-        self::assertNull($this->em->getRepository(Ship::class)->find($shipId));
+        self::assertNull($this->em->getRepository(Asset::class)->find($assetId));
         self::assertNull($this->em->getRepository(Mortgage::class)->find($mortgageId));
         self::assertNull($this->em->getRepository(Cost::class)->find($costId));
     }
@@ -219,7 +219,7 @@ final class RefereeFlexibilityTest extends WebTestCase
         $user = $this->createUser('referee4@test.local');
         $campaign = $this->createCampaign($user);
 
-        $ship = $this->createShip($user, 'ISS Time Traveler')
+        $asset = $this->createAsset($user, 'ISS Time Traveler')
             ->setCampaign($campaign);
 
         $category = $this->createCostCategory('SUPPLY', 'Supplies');
@@ -228,7 +228,7 @@ final class RefereeFlexibilityTest extends WebTestCase
         // Campaign is 10/1105. Let's set cost to 5/1105.
         $cost = (new Cost())
             ->setUser($user)
-            ->setShip($ship)
+            ->setAsset($asset)
             ->setCostCategory($category)
             ->setTitle('Old Bill')
             ->setAmount('100.00')
@@ -237,7 +237,7 @@ final class RefereeFlexibilityTest extends WebTestCase
             ->setDetailItems([['description' => 'Stuff', 'quantity' => 1, 'cost' => 100.00]]);
 
         $this->em->persist($campaign);
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
         $this->em->persist($cost);
         $this->em->flush();
@@ -246,15 +246,15 @@ final class RefereeFlexibilityTest extends WebTestCase
         $crawler = $this->client->request('GET', '/cost/edit/' . $cost->getId());
 
         self::assertResponseIsSuccessful();
-        // Index != Session -> Chronological Data Verification
-        self::assertStringContainsString('Chronological Data Verification', $crawler->filter('body')->text());
+        // Index != Session -> Chronological Verification
+        self::assertStringContainsString('Chronological Verification', $crawler->filter('body')->text());
 
         // Test with another date discrepancy
         $cost->setPaymentDay(15);
         $this->em->flush();
         $crawler = $this->client->request('GET', '/cost/edit/' . $cost->getId());
         self::assertResponseIsSuccessful();
-        self::assertStringContainsString('Chronological Data Verification', $crawler->filter('body')->text());
+        self::assertStringContainsString('Chronological Verification', $crawler->filter('body')->text());
     }
 
     private function createUser(string $email): User
@@ -267,9 +267,9 @@ final class RefereeFlexibilityTest extends WebTestCase
         return $user;
     }
 
-    private function createShip(User $user, string $name): Ship
+    private function createAsset(User $user, string $name): Asset
     {
-        return (new Ship())
+        return (new Asset())
             ->setUser($user)
             ->setName($name)
             ->setType('Trader')

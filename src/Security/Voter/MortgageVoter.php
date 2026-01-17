@@ -82,13 +82,13 @@ final class MortgageVoter extends Voter
 
     private function canSign(Mortgage $mortgage, ?UserInterface $user = null): bool
     {
-        $ship = $mortgage->getShip();
+        $asset = $mortgage->getAsset();
 
         return $this->isOwner($mortgage, $user)
             && !$mortgage->isSigned()
             && $mortgage->getId()
-            && $ship
-            && $ship->hasCaptain();
+            && $asset
+            && $asset->hasCaptain();
     }
 
     private function canPayInstallment(Mortgage $mortgage, ?UserInterface $user = null): bool

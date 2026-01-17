@@ -57,8 +57,7 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
     public function __construct(
         private readonly IncomeCategoryRepository $incomeCategoryRepository,
         private readonly ContractFieldConfig $contractFieldConfig,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<string, string>
@@ -84,7 +83,7 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
         }
 
         $this->ensureDetailInstance($income, $code);
-        $campaignStartYear = $income->getShip()?->getCampaign()?->getStartingYear();
+        $campaignStartYear = $income->getAsset()?->getCampaign()?->getStartingYear();
         $this->addDetailField($event->getForm(), $code, $campaignStartYear);
     }
 
@@ -104,7 +103,7 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
         $campaignStartYear = null;
         if ($income instanceof Income) {
             $this->ensureDetailInstance($income, $code);
-            $campaignStartYear = $income->getShip()?->getCampaign()?->getStartingYear();
+            $campaignStartYear = $income->getAsset()?->getCampaign()?->getStartingYear();
         }
 
         $this->addDetailField($event->getForm(), $code, $campaignStartYear);

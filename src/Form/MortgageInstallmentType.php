@@ -22,7 +22,7 @@ class MortgageInstallmentType extends AbstractType
         /** @var MortgageInstallment $installments */
         $installment = $options['data'];
         $summary = $installment->getMortgage()->calculate();
-        $campaignStartYear = $installment->getMortgage()?->getShip()?->getCampaign()?->getStartingYear();
+        $campaignStartYear = $installment->getMortgage()?->getAsset()?->getCampaign()?->getStartingYear();
         $minYear = $campaignStartYear ?? $this->limits->getYearMin();
         $paymentDate = new ImperialDate($installment?->getPaymentYear(), $installment?->getPaymentDay());
 

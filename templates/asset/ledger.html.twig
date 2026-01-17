@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div>
-                     <a href="{{ path('app_ship_edit', { id: ship.id }) }}" class="btn btn-outline btn-sm">
+                     <a href="{{ path('app_asset_edit', { id: ship.id }) }}" class="btn btn-outline btn-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                         Back to Asset
                     </a>
@@ -112,7 +112,7 @@
         <div class="mt-4">
              {% include 'components/pagination.html.twig' with {
                 pagination: pagination,
-                route: 'app_ship_ledger',
+                route: 'app_asset_ledger',
                 route_params: { id: ship.id }
             } %}
         </div>

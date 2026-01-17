@@ -41,7 +41,7 @@
                 <select name="ship" class="select m-1 w-full">
                     <option value="">All ships</option>
                     {% for ship in ships %}
-                        <option value="{{ ship.id }}" {% if filters.ship == ship.id %}selected{% endif %}>{{ ship.name }}</option>
+                        <option value="{{ ship.id }}" {% if filters.asset == ship.id %}selected{% endif %}>{{ ship.name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -61,7 +61,7 @@
             fields: filter_fields,
             reset_path: path('app_route_index'),
             grid_class: 'md:grid-cols-2 lg:grid-cols-3',
-            is_filtered: filters.name or filters.ship or filters.campaign
+            is_filtered: filters.name or filters.asset or filters.campaign
         } %}
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -119,9 +119,9 @@
                         {# Footer: Linkages #}
                         <div class="mt-auto pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
                              <div class="flex items-center gap-2 overflow-hidden max-w-[60%]">
-                                {% if route.ship %}
+                                {% if route.asset %}
                                     <span class="text-cyan-500/50">{% include 'icons/far-trader.html.twig' with { dim: 12 } %}</span>
-                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider truncate" title="Assigned Ship">{{ route.ship.name }}</span>
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider truncate" title="Assigned Ship">{{ route.asset.name }}</span>
                                 {% else %}
                                      <span class="text-[10px] text-slate-600 uppercase italic">Unassigned</span>
                                 {% endif %}

@@ -116,7 +116,7 @@
                 <select name="ship" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
                     <option value="">ANY_VESSEL</option>
                     {% for ship in ships %}
-                        <option value="{{ ship.id }}" {% if filters.ship == ship.id %}selected{% endif %}>{{ ship.name }}</option>
+                        <option value="{{ ship.id }}" {% if filters.asset == ship.id %}selected{% endif %}>{{ ship.name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -135,7 +135,7 @@
             legend: 'Income search',
             fields: filter_fields,
             reset_path: path('app_income_index'),
-            is_filtered: filters.title or filters.category or filters.ship or filters.campaign
+            is_filtered: filters.title or filters.category or filters.asset or filters.campaign
         } %}
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
@@ -188,14 +188,14 @@
                                 <span class="uppercase tracking-tighter text-slate-500 font-semibold">Vessel Assignment</span>
                                 <div class="flex items-center gap-2 text-cyan-100">
                                     {% include 'icons/far-trader.html.twig' with {'dim': 16} %}
-                                    <span>{{ income.ship ? income.ship.name : 'UNASSIGNED' }}</span>
+                                    <span>{{ income.asset ? income.asset.name : 'UNASSIGNED' }}</span>
                                 </div>
                             </div>
                             <div class="flex flex-col gap-1">
                                 <span class="uppercase tracking-tighter text-slate-500 font-semibold">Operation Area</span>
                                 <div class="flex items-center gap-2 text-slate-300">
                                     {% include 'icons/alien-structure-1.html.twig' with {'dim': 16} %}
-                                    <span class="truncate">{{ (income.ship and income.ship.campaign) ? income.ship.campaign.title : 'GLOBAL_SPACE' }}</span>
+                                    <span class="truncate">{{ (income.asset and income.asset.campaign) ? income.asset.campaign.title : 'GLOBAL_SPACE' }}</span>
                                 </div>
                             </div>
                         </div>

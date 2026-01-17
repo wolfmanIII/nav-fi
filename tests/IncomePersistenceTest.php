@@ -18,7 +18,7 @@ use App\Entity\IncomeSalvageDetails;
 use App\Entity\IncomeServicesDetails;
 use App\Entity\IncomeSubsidyDetails;
 use App\Entity\IncomeTradeDetails;
-use App\Entity\Ship;
+use App\Entity\Asset;
 use App\Entity\User;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Types\Type;
@@ -77,12 +77,12 @@ class IncomePersistenceTest extends TestCase
     public function testPersistContractIncomeWithDetails(): void
     {
         $user = $this->makeUser('captain@log.test');
-        $ship = $this->makeShip($user, 'ISS Contract Runner', 'Free Trader', 'A-2', '1250000.00');
+        $asset = $this->makeAsset($user, 'ISS Contract Runner', 'Free Trader', 'A-2', '1250000.00');
         $category = $this->makeCategory('CONTRACT', 'Contract Work');
 
         $income = $this->makeIncome(
             $user,
-            $ship,
+            $asset,
             $category,
             'Survey and Recon Assignment',
             '15000.00',
@@ -112,7 +112,7 @@ class IncomePersistenceTest extends TestCase
         $income->setContractDetails($details);
 
         $this->em->persist($user);
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
         $this->em->persist($income);
         $this->em->persist($details);
@@ -129,12 +129,12 @@ class IncomePersistenceTest extends TestCase
     public function testPersistFreightIncomeWithDetails(): void
     {
         $user = $this->makeUser('freight@log.test');
-        $ship = $this->makeShip($user, 'ISS Freight Runner', 'Far Trader', 'A-1', '2000000.00');
+        $asset = $this->makeAsset($user, 'ISS Freight Runner', 'Far Trader', 'A-1', '2000000.00');
         $category = $this->makeCategory('FREIGHT', 'Freight Haul');
 
         $income = $this->makeIncome(
             $user,
-            $ship,
+            $asset,
             $category,
             'Ardan Freight Lot',
             '22000.00',
@@ -164,7 +164,7 @@ class IncomePersistenceTest extends TestCase
         $income->setFreightDetails($details);
 
         $this->em->persist($user);
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
         $this->em->persist($income);
         $this->em->persist($details);
@@ -182,12 +182,12 @@ class IncomePersistenceTest extends TestCase
     public function testPersistCharterIncomeWithDetails(): void
     {
         $user = $this->makeUser('charter@log.test');
-        $ship = $this->makeShip($user, 'ISS Charter Vagrant', 'Liner', 'B-1', '3500000.00');
+        $asset = $this->makeAsset($user, 'ISS Charter Vagrant', 'Liner', 'B-1', '3500000.00');
         $category = $this->makeCategory('CHARTER', 'Charter');
 
         $income = $this->makeIncome(
             $user,
-            $ship,
+            $asset,
             $category,
             'Aramis Loop Charter',
             '82000.00',
@@ -217,7 +217,7 @@ class IncomePersistenceTest extends TestCase
         $income->setCharterDetails($details);
 
         $this->em->persist($user);
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
         $this->em->persist($income);
         $this->em->persist($details);
@@ -234,12 +234,12 @@ class IncomePersistenceTest extends TestCase
     public function testPersistPassengersIncomeWithDetails(): void
     {
         $user = $this->makeUser('passengers@log.test');
-        $ship = $this->makeShip($user, 'ISS Passenger Dawn', 'Liner', 'C-1', '4200000.00');
+        $asset = $this->makeAsset($user, 'ISS Passenger Dawn', 'Liner', 'C-1', '4200000.00');
         $category = $this->makeCategory('PASSENGERS', 'Passenger Passage');
 
         $income = $this->makeIncome(
             $user,
-            $ship,
+            $asset,
             $category,
             'Efate Passenger Run',
             '34000.00',
@@ -271,7 +271,7 @@ class IncomePersistenceTest extends TestCase
         $income->setPassengersDetails($details);
 
         $this->em->persist($user);
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
         $this->em->persist($income);
         $this->em->persist($details);
@@ -288,12 +288,12 @@ class IncomePersistenceTest extends TestCase
     public function testPersistMailIncomeWithDetails(): void
     {
         $user = $this->makeUser('mail@log.test');
-        $ship = $this->makeShip($user, 'ISS Courier Relay', 'Courier', 'B-2', '1800000.00');
+        $asset = $this->makeAsset($user, 'ISS Courier Relay', 'Courier', 'B-2', '1800000.00');
         $category = $this->makeCategory('MAIL', 'Mail Dispatch');
 
         $income = $this->makeIncome(
             $user,
-            $ship,
+            $asset,
             $category,
             'Imperial Mail Bag',
             '56000.00',
@@ -325,7 +325,7 @@ class IncomePersistenceTest extends TestCase
         $income->setMailDetails($details);
 
         $this->em->persist($user);
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
         $this->em->persist($income);
         $this->em->persist($details);
@@ -342,12 +342,12 @@ class IncomePersistenceTest extends TestCase
     public function testPersistServicesIncomeWithDetails(): void
     {
         $user = $this->makeUser('services@log.test');
-        $ship = $this->makeShip($user, 'ISS Yardrunner', 'Tender', 'D-1', '900000.00');
+        $asset = $this->makeAsset($user, 'ISS Yardrunner', 'Tender', 'D-1', '900000.00');
         $category = $this->makeCategory('SERVICES', 'Services');
 
         $income = $this->makeIncome(
             $user,
-            $ship,
+            $asset,
             $category,
             'Regina Refit Work',
             '48000.00',
@@ -379,7 +379,7 @@ class IncomePersistenceTest extends TestCase
         $income->setServicesDetails($details);
 
         $this->em->persist($user);
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
         $this->em->persist($income);
         $this->em->persist($details);
@@ -396,12 +396,12 @@ class IncomePersistenceTest extends TestCase
     public function testPersistSubsidyIncomeWithDetails(): void
     {
         $user = $this->makeUser('subsidy@log.test');
-        $ship = $this->makeShip($user, 'ISS Subsidy Spur', 'Far Trader', 'A-2', '2300000.00');
+        $asset = $this->makeAsset($user, 'ISS Subsidy Spur', 'Far Trader', 'A-2', '2300000.00');
         $category = $this->makeCategory('SUBSIDY', 'Subsidy');
 
         $income = $this->makeIncome(
             $user,
-            $ship,
+            $asset,
             $category,
             'Aramis Subsidy Route',
             '65000.00',
@@ -434,7 +434,7 @@ class IncomePersistenceTest extends TestCase
         $income->setSubsidyDetails($details);
 
         $this->em->persist($user);
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
         $this->em->persist($income);
         $this->em->persist($details);
@@ -451,12 +451,12 @@ class IncomePersistenceTest extends TestCase
     public function testPersistTradeIncomeWithDetails(): void
     {
         $user = $this->makeUser('trade@log.test');
-        $ship = $this->makeShip($user, 'ISS Trade Wind', 'Merchant', 'B-3', '5000000.00');
+        $asset = $this->makeAsset($user, 'ISS Trade Wind', 'Merchant', 'B-3', '5000000.00');
         $category = $this->makeCategory('TRADE', 'Trade');
 
         $income = $this->makeIncome(
             $user,
-            $ship,
+            $asset,
             $category,
             'Mora Catalyst Transfer',
             '90000.00',
@@ -490,7 +490,7 @@ class IncomePersistenceTest extends TestCase
         $income->setTradeDetails($details);
 
         $this->em->persist($user);
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
         $this->em->persist($income);
         $this->em->persist($details);
@@ -507,12 +507,12 @@ class IncomePersistenceTest extends TestCase
     public function testPersistSalvageIncomeWithDetails(): void
     {
         $user = $this->makeUser('salvage@log.test');
-        $ship = $this->makeShip($user, 'ISS Salvager', 'Seeker', 'C-3', '2600000.00');
+        $asset = $this->makeAsset($user, 'ISS Salvager', 'Seeker', 'C-3', '2600000.00');
         $category = $this->makeCategory('SALVAGE', 'Salvage');
 
         $income = $this->makeIncome(
             $user,
-            $ship,
+            $asset,
             $category,
             'Aramis Belt Salvage',
             '420000.00',
@@ -537,7 +537,7 @@ class IncomePersistenceTest extends TestCase
         $income->setSalvageDetails($details);
 
         $this->em->persist($user);
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
         $this->em->persist($income);
         $this->em->persist($details);
@@ -554,12 +554,12 @@ class IncomePersistenceTest extends TestCase
     public function testPersistPrizeIncomeWithDetails(): void
     {
         $user = $this->makeUser('prize@log.test');
-        $ship = $this->makeShip($user, 'ISS Prize Runner', 'Corsair', 'B-5', '7600000.00');
+        $asset = $this->makeAsset($user, 'ISS Prize Runner', 'Corsair', 'B-5', '7600000.00');
         $category = $this->makeCategory('PRIZE', 'Prize');
 
         $income = $this->makeIncome(
             $user,
-            $ship,
+            $asset,
             $category,
             'Confiscated Arms Shipment',
             '950000.00',
@@ -581,7 +581,7 @@ class IncomePersistenceTest extends TestCase
         $income->setPrizeDetails($details);
 
         $this->em->persist($user);
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
         $this->em->persist($income);
         $this->em->persist($details);
@@ -598,12 +598,12 @@ class IncomePersistenceTest extends TestCase
     public function testPersistInterestIncomeWithDetails(): void
     {
         $user = $this->makeUser('interest@log.test');
-        $ship = $this->makeShip($user, 'ISS Ledger', 'Trader', 'A-3', '3100000.00');
+        $asset = $this->makeAsset($user, 'ISS Ledger', 'Trader', 'A-3', '3100000.00');
         $category = $this->makeCategory('INTEREST', 'Interest');
 
         $income = $this->makeIncome(
             $user,
-            $ship,
+            $asset,
             $category,
             'Imperial Bond Interest',
             '5000.00',
@@ -630,7 +630,7 @@ class IncomePersistenceTest extends TestCase
         $income->setInterestDetails($details);
 
         $this->em->persist($user);
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
         $this->em->persist($income);
         $this->em->persist($details);
@@ -647,12 +647,12 @@ class IncomePersistenceTest extends TestCase
     public function testPersistInsuranceIncomeWithDetails(): void
     {
         $user = $this->makeUser('insurance@log.test');
-        $ship = $this->makeShip($user, 'ISS Claims', 'Trader', 'B-2', '2750000.00');
+        $asset = $this->makeAsset($user, 'ISS Claims', 'Trader', 'B-2', '2750000.00');
         $category = $this->makeCategory('INSURANCE', 'Insurance');
 
         $income = $this->makeIncome(
             $user,
-            $ship,
+            $asset,
             $category,
             'Hull Loss Settlement',
             '250000.00',
@@ -678,7 +678,7 @@ class IncomePersistenceTest extends TestCase
         $income->setInsuranceDetails($details);
 
         $this->em->persist($user);
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
         $this->em->persist($income);
         $this->em->persist($details);
@@ -699,9 +699,9 @@ class IncomePersistenceTest extends TestCase
             ->setPassword('hash');
     }
 
-    private function makeShip(User $user, string $name, string $type, string $class, string $price): Ship
+    private function makeAsset(User $user, string $name, string $type, string $class, string $price): Asset
     {
-        return (new Ship())
+        return (new Asset())
             ->setName($name)
             ->setType($type)
             ->setClass($class)
@@ -718,7 +718,7 @@ class IncomePersistenceTest extends TestCase
 
     private function makeIncome(
         User $user,
-        Ship $ship,
+        Asset $asset,
         IncomeCategory $category,
         string $title,
         string $amount,
@@ -732,7 +732,7 @@ class IncomePersistenceTest extends TestCase
             ->setSigningDay($signingDay)
             ->setSigningYear($signingYear)
             ->setIncomeCategory($category)
-            ->setShip($ship)
+            ->setAsset($asset)
             ->setUser($user);
     }
 }

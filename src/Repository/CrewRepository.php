@@ -34,7 +34,7 @@ class CrewRepository extends ServiceEntityRepository
     public function findOneByCaptainOnAsset(Asset $asset, ?Crew $exclude = null): ?Crew
     {
         $qb = $this->createQueryBuilder('c')
-            ->join('c.shipRoles', 'r')
+            ->join('c.assetRoles', 'r')
             ->andWhere('c.asset = :asset')
             ->andWhere('r.code = :cap')
             ->setParameter('asset', $asset)
@@ -121,7 +121,7 @@ class CrewRepository extends ServiceEntityRepository
         }
 
         if (!$needCaptain) {
-            $qb->leftJoin('c.shipRoles', 'capRole', 'WITH', 'capRole.code = :cap')
+            $qb->leftJoin('c.assetRoles', 'capRole', 'WITH', 'capRole.code = :cap')
                 ->andWhere('capRole.id IS NULL')
                 ->setParameter('cap', 'CAP');
         }

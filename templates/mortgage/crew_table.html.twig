@@ -16,7 +16,7 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-800/50">
-            {% for member in mortgage.ship.crews %}
+            {% for member in mortgage.asset.crews %}
                 {% if member.isVisibleInMortgage(mortgage.signingYear, mortgage.signingDay) %}
                     <tr class="hover:bg-cyan-500/5 transition-colors">
                         <td class="p-2 font-mono text-xs text-cyan-400 font-bold uppercase">{{ member.code }}</td>
@@ -24,7 +24,7 @@
                             {{ member.name }} <span class="text-cyan-500/80 font-bold">"{{ member.nickname }}"</span> {{ member.surname }}
                         </td>
                         <td class="p-2 font-rajdhani text-xs text-slate-400 uppercase tracking-widest">
-                            {% for role in member.shipRoles %}
+                            {% for role in member.assetRoles %}
                                 <span class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300">{{ role.name }}</span>
                                 {% if not loop.last %}<span class="mx-1 text-slate-600">//</span>{% endif %}
                             {% endfor %}

@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% set CAN_EDIT = constant('App\\Security\\Voter\\ShipVoter::EDIT') %}
-{% set CAN_CREATE = constant('App\\Security\\Voter\\ShipVoter::CREATE') %}
+{% set CAN_EDIT = constant('App\\Security\\Voter\\AssetVoter::EDIT') %}
+{% set CAN_CREATE = constant('App\\Security\\Voter\\AssetVoter::CREATE') %}
 {% set can_edit = is_granted(CAN_EDIT, ship) %}
 {% set can_create = is_granted(CAN_CREATE, ship) %}
 {% import '_tooltip.html.twig' as tooltip %}
@@ -66,19 +66,19 @@
                                 {{ tooltip.link('Open financial ledger',
                                                 'View Ledger',
                                                 'icons/handbook.html.twig',
-                                                path('app_ship_ledger', { id: ship.id }),
+                                                path('app_asset_ledger', { id: ship.id }),
                                                 { dim: 16, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
                                 
                                 {{ tooltip.link('Open ship PDF',
                                                 'Asset PDF',
                                                 'icons/ship-pdf.html.twig',
-                                                path('app_ship_pdf', { id: ship.id }),
+                                                path('app_asset_pdf', { id: ship.id }),
                                                 { dim: 16, linkClass: 'btn btn-outline btn-secondary btn-sm', attrs: { target: '_blank', rel: 'noopener' } }) }}
                                 {% if ship.mortgageSigned %}
                                     {{ tooltip.link('Log amendments',
                                                     'Amendments',
                                                     'icons/ship-amendment.html.twig',
-                                                    path('app_ship_amendment_new', { id: ship.id }),
+                                                    path('app_asset_amendment_new', { id: ship.id }),
                                                     { dim: 16, linkClass: 'btn btn-outline btn-info btn-sm' }) }}
                                 {% endif %}
                             </div>
@@ -143,7 +143,7 @@
             >
                 Save
             </button>
-            <a href="{{ path('app_ship_index') }}" role="button" class="btn btn-outline btn-default mt-4 mb-4">Cancel</a>
+            <a href="{{ path('app_asset_index') }}" role="button" class="btn btn-outline btn-default mt-4 mb-4">Cancel</a>
         </div>
 
         {{ form_end(form) }}

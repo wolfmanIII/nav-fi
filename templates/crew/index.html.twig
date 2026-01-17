@@ -40,11 +40,11 @@
                 <input type="text" name="search" value="{{ filters.search }}" class="input m-1 w-full">
             </div>
             <div>
-                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Ship</label>
-                <select name="ship" class="select m-1 w-full">
-                    <option value="">All ships</option>
-                    {% for ship in ships %}
-                        <option value="{{ ship.id }}" {% if filters.ship == ship.id %}selected{% endif %}>{{ ship.name }}</option>
+                <label class="label text-xs uppercase tracking-[0.2em] text-slate-400">Asset</label>
+                <select name="asset" class="select m-1 w-full">
+                    <option value="">All assets</option>
+                    {% for asset in assets %}
+                        <option value="{{ asset.id }}" {% if filters.asset == asset.id %}selected{% endif %}>{{ asset.name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -65,7 +65,7 @@
             grid_class: 'md:grid-cols-3',
             fields: filter_fields,
             reset_path: path('app_crew_index'),
-            is_filtered: filters.search or filters.ship or filters.campaign
+            is_filtered: filters.search or filters.asset or filters.campaign
         } %}
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
@@ -110,12 +110,12 @@
 
                         {# Card Detail: Roles #}
                         <div class="flex flex-wrap gap-2 mb-6">
-                            {% for role in member.shipRoles %}
+                            {% for role in member.assetRoles %}
                                 <span class="px-2 py-0.5 rounded-full bg-slate-800/80 border border-slate-700 text-[10px] font-bold text-slate-300 uppercase tracking-wider font-rajdhani">
                                     {{ role.name }}
                                 </span>
                             {% endfor %}
-                            {% if member.shipRoles|length == 0 %}
+                            {% if member.assetRoles|length == 0 %}
                                 <span class="px-2 py-0.5 rounded-full bg-slate-800/40 border border-slate-800 text-[10px] font-bold text-slate-500 uppercase tracking-wider font-rajdhani italic">
                                     Unassigned
                                 </span>
@@ -127,15 +127,15 @@
                             <div class="flex items-center justify-between text-xs font-rajdhani tracking-wider">
                                 <span class="text-slate-500 uppercase">Hull Assignment</span>
                                 <span class="text-indigo-300 font-bold uppercase">
-                                    {% if member.ship %}{{ member.ship.name }}{% else %}<span class="text-slate-600">N/A</span>{% endif %}
+                                    {% if member.asset %}{{ member.asset.name }}{% else %}<span class="text-slate-600">N/A</span>{% endif %}
                                 </span>
                             </div>
                             <div class="flex items-center justify-between text-xs font-rajdhani tracking-wider">
                                 <span class="text-slate-500 uppercase">Sector / Mission</span>
                                 <span class="text-teal-400 font-bold uppercase flex items-center gap-1.5">
-                                    {% if member.ship and member.ship.campaign %}
+                                    {% if member.asset and member.asset.campaign %}
                                         {% include 'icons/alien-structure-1.html.twig' %}
-                                        {{ member.ship.campaign.title }}
+                                        {{ member.asset.campaign.title }}
                                     {% else %}
                                         <span class="text-slate-600">Deep Space</span>
                                     {% endif %}

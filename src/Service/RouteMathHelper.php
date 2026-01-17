@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Route;
-use App\Entity\Ship;
+use App\Entity\Asset;
 
 class RouteMathHelper
 {
@@ -81,7 +81,7 @@ class RouteMathHelper
      */
     public function estimateJumpFuel(Route $route, array $distances): ?string
     {
-        $hullTons = $this->getShipHullTonnage($route->getShip());
+        $hullTons = $this->getAssetHullTonnage($route->getAsset());
         if ($hullTons === null) {
             return null;
         }
@@ -109,7 +109,7 @@ class RouteMathHelper
 
     public function totalRequiredFuel(Route $route): ?string
     {
-        $hullTons = $this->getShipHullTonnage($route->getShip());
+        $hullTons = $this->getAssetHullTonnage($route->getAsset());
         if ($hullTons === null) {
             return null;
         }
@@ -142,7 +142,7 @@ class RouteMathHelper
             return $route->getJumpRating();
         }
 
-        return $this->getShipJumpRating($route->getShip());
+        return $this->getAssetJumpRating($route->getAsset());
     }
 
     public function resolveFuelEstimate(Route $route): ?string
@@ -154,9 +154,9 @@ class RouteMathHelper
         return null;
     }
 
-    public function getShipJumpRating(?Ship $ship): ?int
+    public function getAssetJumpRating(?Asset $asset): ?int
     {
-        $details = $ship?->getShipDetails() ?? [];
+        $details = $asset?->getAssetDetails() ?? [];
         $jump = $details['jDrive']['jump'] ?? null;
         if (is_numeric($jump)) {
             return (int) $jump;
@@ -165,9 +165,9 @@ class RouteMathHelper
         return null;
     }
 
-    public function getShipFuelCapacity(?Ship $ship): ?float
+    public function getAssetFuelCapacity(?Asset $asset): ?float
     {
-        $details = $ship?->getShipDetails() ?? [];
+        $details = $asset?->getAssetDetails() ?? [];
         $tons = $details['fuel']['tons'] ?? null;
         if (is_numeric($tons)) {
             return (float) $tons;
@@ -176,9 +176,9 @@ class RouteMathHelper
         return null;
     }
 
-    public function getShipHullTonnage(?Ship $ship): ?float
+    public function getAssetHullTonnage(?Asset $asset): ?float
     {
-        $details = $ship?->getShipDetails() ?? [];
+        $details = $asset?->getAssetDetails() ?? [];
         $tons = $details['hull']['tons'] ?? null;
         if (is_numeric($tons)) {
             return (float) $tons;

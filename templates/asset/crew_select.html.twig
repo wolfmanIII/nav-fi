@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% set CAN_CREW_REMOVE = constant('App\\Security\\Voter\\ShipVoter::CREW_REMOVE') %}
+{% set CAN_CREW_REMOVE = constant('App\\Security\\Voter\\AssetVoter::CREW_REMOVE') %}
 {% set can_remove_crew = is_granted(CAN_CREW_REMOVE, ship) %}
 
 {% block title %}Nav-Fi - Ship Crew{% endblock %}
@@ -111,7 +111,7 @@
                                     {{ tooltip.link('Remove this crew member from the ship',
                                         'Edit ship',
                                         'icons/action-trash.html.twig',
-                                        path('app_ship_crew_remove', {id: member.id}),
+                                        path('app_asset_crew_remove', {id: member.id}),
                                         { 
                                             position: 'tooltip-left',
                                             dim: 14,
@@ -158,11 +158,11 @@
                 <input type="hidden" name="crew_page" value="1">
             {% endset %}
             {% include 'components/index_filters.html.twig' with {
-                action: path('app_ship_crew', {id: ship.id}),
+                action: path('app_asset_crew', {id: ship.id}),
                 legend: 'Unassigned crew',
                 grid_class: 'md:grid-cols-2',
                 fields: filter_fields,
-                reset_path: path('app_ship_crew', {id: ship.id}),
+                reset_path: path('app_asset_crew', {id: ship.id}),
                 submit_label: 'Search crew',
                 form_attrs: { autocomplete: 'off' },
                 hidden_fields: filter_hidden,
@@ -172,7 +172,7 @@
             <div class="rounded-xl border border-base-content/10 bg-base-100 p-4 shadow-inner">
                 {{ form_start(form, {
                     attr: {
-                        'action': path('app_ship_crew', {id: ship.id}),
+                        'action': path('app_asset_crew', {id: ship.id}),
                         'class': 'space-y-4'
                     }
                 }) }}
@@ -234,7 +234,7 @@
 
                 {% include 'components/pagination.html.twig' with {
                     pagination: crewPagination,
-                    route: 'app_ship_crew',
+                    route: 'app_asset_crew',
                     route_params: {'id': ship.id},
                     query: app.request.query.all,
                     page_param: 'crew_page'
@@ -254,7 +254,7 @@
                     <div class="modal-box w-full max-w-3xl">
                         <h3 class="font-semibold text-cyan-100 text-lg mb-2">Assign Roles — {{ member.name }} {{ member.surname }}</h3>
                         {{ form_start(roleForm, {
-                            action: path('app_ship_crew_assign_roles', {shipId: ship.id, crewId: member.id}),
+                            action: path('app_asset_crew_assign_roles', {shipId: ship.id, crewId: member.id}),
                             method: 'POST',
                             attr: { autocomplete: 'off' }
                         }) }}

@@ -53,8 +53,8 @@ class FinancialEventSubscriber
 
     private function processIncome(Income $income): void
     {
-        $ship = $income->getShip();
-        if (!$ship) return;
+        $asset = $income->getAsset();
+        if (!$asset) return;
 
         // 1. Calculate Deposit (Advance) from Contract and Charter
         $deposit = '0.00';
@@ -80,7 +80,7 @@ class FinancialEventSubscriber
 
             if ($signingDay !== null && $signingYear !== null) {
                 $this->ledgerService->deposit(
-                    $ship,
+                    $asset,
                     $deposit,
                     "Income Deposit: " . $income->getTitle() . " (" . $income->getCode() . ")",
                     $signingDay,
@@ -112,7 +112,7 @@ class FinancialEventSubscriber
                     }
 
                     $this->ledgerService->deposit(
-                        $ship,
+                        $asset,
                         $balance,
                         $desc . ": " . $income->getTitle() . " (" . $income->getCode() . ")",
                         $day,
@@ -146,7 +146,7 @@ class FinancialEventSubscriber
         }
 
         $this->ledgerService->deposit(
-            $ship,
+            $asset,
             $totalAmount,
             $desc . ": " . $income->getTitle() . " (" . $income->getCode() . ")",
             $day,
@@ -158,8 +158,8 @@ class FinancialEventSubscriber
 
     private function processCost(Cost $cost): void
     {
-        $ship = $cost->getShip();
-        if (!$ship) return;
+        $asset = $cost->getAsset();
+        if (!$asset) return;
 
         $day = $cost->getPaymentDay() ?? null;
         $year = $cost->getPaymentYear() ?? null;
@@ -171,7 +171,7 @@ class FinancialEventSubscriber
         if ($amount === null) return;
 
         $this->ledgerService->withdraw(
-            $ship,
+            $asset,
             $amount,
             "Cost: " . $cost->getTitle() . " (" . $cost->getCode() . ")",
             $day,

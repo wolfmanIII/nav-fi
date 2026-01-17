@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Tests;
 
 use App\Entity\Crew;
-use App\Entity\Ship;
-use App\Entity\ShipRole;
+use App\Entity\Asset;
+use App\Entity\AssetRole;
 use App\Entity\User;
 use App\Repository\CrewRepository;
 use Doctrine\DBAL\DriverManager;
@@ -95,7 +95,7 @@ class CrewPersistenceTest extends TestCase
 
         $repo = $this->makeCrewRepository();
 
-        $result = $repo->findUnassignedForShip($user, [], 1, 10, true);
+        $result = $repo->findUnassignedForAsset($user, [], 1, 10, true);
         self::assertCount(1, $result['items']);
         self::assertSame('Active', $result['items'][0]->getStatus());
     }
@@ -105,7 +105,7 @@ class CrewPersistenceTest extends TestCase
         $user = $this->makeUser('crew-captain@log.test');
         $captainRole = $this->makeRole('CAP', 'Captain');
         $crew = $this->makeCrew($user, 'Rae', 'Kade', 'Active');
-        $crew->addShipRole($captainRole);
+        $crew->addAssetRole($captainRole);
 
         $this->em->persist($user);
         $this->em->persist($captainRole);
@@ -114,10 +114,10 @@ class CrewPersistenceTest extends TestCase
 
         $repo = $this->makeCrewRepository();
 
-        $withoutCaptain = $repo->findUnassignedForShip($user, [], 1, 10, false);
+        $withoutCaptain = $repo->findUnassignedForAsset($user, [], 1, 10, false);
         self::assertCount(0, $withoutCaptain['items']);
 
-        $withCaptain = $repo->findUnassignedForShip($user, [], 1, 10, true);
+        $withCaptain = $repo->findUnassignedForAsset($user, [], 1, 10, true);
         self::assertCount(1, $withCaptain['items']);
     }
 
@@ -134,37 +134,37 @@ class CrewPersistenceTest extends TestCase
 
         $repo = $this->makeCrewRepository();
 
-        $byName = $repo->findUnassignedForShip($user, ['search' => 'Nova'], 1, 10, true);
+        $byName = $repo->findUnassignedForAsset($user, ['search' => 'Nova'], 1, 10, true);
         self::assertCount(1, $byName['items']);
         self::assertSame('Nova', $byName['items'][0]->getName());
 
-        $byNickname = $repo->findUnassignedForShip($user, ['nickname' => 'ghost'], 1, 10, true);
+        $byNickname = $repo->findUnassignedForAsset($user, ['nickname' => 'ghost'], 1, 10, true);
         self::assertCount(1, $byNickname['items']);
         self::assertSame('Ghost', $byNickname['items'][0]->getNickname());
     }
 
-    public function testFindOneByCaptainOnShipExcludesSelf(): void
+    public function testFindOneByCaptainOnAssetExcludesSelf(): void
     {
         $user = $this->makeUser('crew-captain-ship@log.test');
-        $ship = $this->makeShip($user, 'ISS Sentinel', 'Scout', 'S-1', '900000.00');
+        $asset = $this->makeAsset($user, 'ISS Sentinel', 'Scout', 'S-1', '900000.00');
         $captainRole = $this->makeRole('CAP', 'Captain');
 
-        $crewOne = $this->makeCrew($user, 'Kai', 'Rowan', 'Active')->setShip($ship);
-        $crewOne->addShipRole($captainRole);
+        $crewOne = $this->makeCrew($user, 'Kai', 'Rowan', 'Active')->setAsset($asset);
+        $crewOne->addAssetRole($captainRole);
 
         $this->em->persist($user);
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($captainRole);
         $this->em->persist($crewOne);
         $this->em->flush();
 
         $repo = $this->makeCrewRepository();
 
-        $found = $repo->findOneByCaptainOnShip($ship);
+        $found = $repo->findOneByCaptainOnAsset($asset);
         self::assertNotNull($found);
         self::assertSame($crewOne->getId(), $found?->getId());
 
-        $excluded = $repo->findOneByCaptainOnShip($ship, $crewOne);
+        $excluded = $repo->findOneByCaptainOnAsset($asset, $crewOne);
         self::assertNull($excluded);
     }
 
@@ -197,9 +197,9 @@ class CrewPersistenceTest extends TestCase
             ->setPassword('hash');
     }
 
-    private function makeShip(User $user, string $name, string $type, string $class, string $price): Ship
+    private function makeAsset(User $user, string $name, string $type, string $class, string $price): Asset
     {
-        return (new Ship())
+        return (new Asset())
             ->setName($name)
             ->setType($type)
             ->setClass($class)
@@ -207,9 +207,9 @@ class CrewPersistenceTest extends TestCase
             ->setUser($user);
     }
 
-    private function makeRole(string $code, string $name): ShipRole
+    private function makeRole(string $code, string $name): AssetRole
     {
-        return (new ShipRole())
+        return (new AssetRole())
             ->setCode($code)
             ->setName($name)
             ->setDescription('Bridge duty role');

@@ -9,7 +9,7 @@ use App\Entity\CostCategory;
 use App\Entity\Crew;
 use App\Entity\Income;
 use App\Entity\IncomeCategory;
-use App\Entity\Ship;
+use App\Entity\Asset;
 use App\Entity\User;
 use App\Service\PdfGenerator;
 use Doctrine\DBAL\Types\StringType;
@@ -64,40 +64,40 @@ final class MinimumFlowTest extends WebTestCase
         });
     }
 
-    public function testShipIndexFiltersAndPagination(): void
+    public function testAssetIndexFiltersAndPagination(): void
     {
-        $user = $this->createUser('ship@test.local');
+        $user = $this->createUser('asset@test.local');
 
         for ($i = 1; $i <= 12; $i++) {
-            $this->em->persist($this->createShip($user, sprintf('ISS Ship %02d', $i)));
+            $this->em->persist($this->createAsset($user, sprintf('ISS Asset %02d', $i)));
         }
 
         $this->em->flush();
         $this->login($user);
 
-        $crawler = $this->client->request('GET', '/ship/index?page=2');
+        $crawler = $this->client->request('GET', '/asset/index?page=2');
         self::assertResponseIsSuccessful();
         self::assertStringContainsString('LOG_SECTOR: 11-12', $crawler->filter('#pagination-metrics')->text());
         self::assertStringContainsString('TOTAL_RECORDS: 12', $crawler->filter('#pagination-metrics')->text());
 
-        $this->client->request('GET', '/ship/index?name=ISS Ship 03');
+        $this->client->request('GET', '/asset/index?name=ISS Asset 03');
         self::assertResponseIsSuccessful();
-        self::assertStringContainsString('ISS Ship 03', $this->client->getResponse()->getContent());
+        self::assertStringContainsString('ISS Asset 03', $this->client->getResponse()->getContent());
     }
 
     public function testCostIndexFiltersAndPagination(): void
     {
         $user = $this->createUser('cost@test.local');
-        $ship = $this->createShip($user, 'ISS Cost Runner');
+        $asset = $this->createAsset($user, 'ISS Cost Runner');
         $category = $this->createCostCategory('SHIP_GEAR', 'Ship Gear');
 
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
 
         for ($i = 1; $i <= 12; $i++) {
             $cost = (new Cost())
                 ->setUser($user)
-                ->setShip($ship)
+                ->setAsset($asset)
                 ->setCostCategory($category)
                 ->setTitle(sprintf('Cost Entry %02d', $i))
                 ->setAmount('1000.00');
@@ -120,16 +120,16 @@ final class MinimumFlowTest extends WebTestCase
     public function testIncomeIndexFiltersAndPagination(): void
     {
         $user = $this->createUser('income@test.local');
-        $ship = $this->createShip($user, 'ISS Income Runner');
+        $asset = $this->createAsset($user, 'ISS Income Runner');
         $category = $this->createIncomeCategory('CONTRACT', 'Contract');
 
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
 
         for ($i = 1; $i <= 12; $i++) {
             $income = (new Income())
                 ->setUser($user)
-                ->setShip($ship)
+                ->setAsset($asset)
                 ->setIncomeCategory($category)
                 ->setTitle(sprintf('Income Entry %02d', $i))
                 ->setAmount('5000.00');
@@ -175,17 +175,17 @@ final class MinimumFlowTest extends WebTestCase
         self::assertStringContainsString('Crew 07', $this->client->getResponse()->getContent());
     }
 
-    public function testOwnershipReturns404ForForeignShip(): void
+    public function testOwnershipReturns404ForForeignAsset(): void
     {
         $owner = $this->createUser('owner@test.local');
         $other = $this->createUser('other@test.local');
-        $ship = $this->createShip($owner, 'ISS Private');
+        $asset = $this->createAsset($owner, 'ISS Private');
 
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->flush();
 
         $this->login($other);
-        $this->client->request('GET', '/ship/edit/' . $ship->getId());
+        $this->client->request('GET', '/asset/edit/' . $asset->getId());
         self::assertResponseStatusCodeSame(404);
     }
 
@@ -193,15 +193,15 @@ final class MinimumFlowTest extends WebTestCase
     {
         $owner = $this->createUser('income-owner@test.local');
         $other = $this->createUser('income-other@test.local');
-        $ship = $this->createShip($owner, 'ISS Contract');
+        $asset = $this->createAsset($owner, 'ISS Contract');
         $category = $this->createIncomeCategory('CONTRACT', 'Contract');
 
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($category);
 
         $income = (new Income())
             ->setUser($owner)
-            ->setShip($ship)
+            ->setAsset($asset)
             ->setIncomeCategory($category)
             ->setTitle('Private Contract')
             ->setAmount('9000.00');
@@ -216,17 +216,17 @@ final class MinimumFlowTest extends WebTestCase
     public function testPdfEndpointsReturnPdf(): void
     {
         $user = $this->createUser('pdf@test.local');
-        $ship = $this->createShip($user, 'ISS PDF');
+        $asset = $this->createAsset($user, 'ISS PDF');
         $costCategory = $this->createCostCategory('SHIP_GEAR', 'Ship Gear');
         $incomeCategory = $this->createIncomeCategory('CONTRACT', 'Contract');
 
-        $this->em->persist($ship);
+        $this->em->persist($asset);
         $this->em->persist($costCategory);
         $this->em->persist($incomeCategory);
 
         $cost = (new Cost())
             ->setUser($user)
-            ->setShip($ship)
+            ->setAsset($asset)
             ->setCostCategory($costCategory)
             ->setTitle('Hull Repairs')
             ->setAmount('1200.00');
@@ -234,7 +234,7 @@ final class MinimumFlowTest extends WebTestCase
 
         $income = (new Income())
             ->setUser($user)
-            ->setShip($ship)
+            ->setAsset($asset)
             ->setIncomeCategory($incomeCategory)
             ->setTitle('Contract')
             ->setAmount('8000.00');
@@ -269,9 +269,9 @@ final class MinimumFlowTest extends WebTestCase
         return $user;
     }
 
-    private function createShip(User $user, string $name): Ship
+    private function createAsset(User $user, string $name): Asset
     {
-        return (new Ship())
+        return (new Asset())
             ->setUser($user)
             ->setName($name)
             ->setType('Trader')

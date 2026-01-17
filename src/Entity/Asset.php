@@ -67,7 +67,7 @@ class Asset
     /**
      * @var Collection<int, ShipAmendment>
      */
-    #[ORM\OneToMany(targetEntity: ShipAmendment::class, mappedBy: 'asset', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: AssetAmendment::class, mappedBy: 'asset', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $amendments; // Note: Need to verify if ShipAmendment entity is renamed. For now referring to ShipAmendment but mappedBy 'asset'. Wait, if I rename Ship->Asset, I should update relation in ShipAmendment too.
 
     /**
@@ -257,14 +257,14 @@ class Asset
     }
 
     /**
-     * @return Collection<int, ShipAmendment>
+     * @return Collection<int, AssetAmendment>
      */
     public function getAmendments(): Collection
     {
         return $this->amendments;
     }
 
-    public function addAmendment(ShipAmendment $amendment): static
+    public function addAmendment(AssetAmendment $amendment): static
     {
         if (!$this->amendments->contains($amendment)) {
             $this->amendments->add($amendment);
@@ -274,7 +274,7 @@ class Asset
         return $this;
     }
 
-    public function removeAmendment(ShipAmendment $amendment): static
+    public function removeAmendment(AssetAmendment $amendment): static
     {
         if ($this->amendments->removeElement($amendment)) {
             if ($amendment->getAsset() === $this) {
@@ -427,12 +427,12 @@ class Asset
         return $this->getMortgage()?->isSigned() === true;
     }
 
-    public function getShipDetails(): ?array
+    public function getAssetDetails(): ?array
     {
         return $this->shipDetails;
     }
 
-    public function setShipDetails(?array $shipDetails): static
+    public function setAssetDetails(?array $shipDetails): static
     {
         $this->shipDetails = $shipDetails;
 

@@ -21,7 +21,7 @@ class AssetType extends AbstractType
     {
         /** @var Asset $asset */
         $asset = $options['data'];
-        $detailsData = AssetDetailsData::fromArray($asset->getShipDetails() ?? []);
+        $detailsData = AssetDetailsData::fromArray($asset->getAssetDetails() ?? []);
         $builder
             ->add('category', ChoiceType::class, [
                 'choices' => [

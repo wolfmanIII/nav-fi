@@ -9,9 +9,9 @@ use App\Entity\Campaign;
 use App\Service\PdfGenerator;
 use App\Form\CrewSelectType;
 use App\Form\AssetType;
-use App\Form\ShipRoleAssignmentType;
+use App\Form\AssetRoleAssignmentType;
 use App\Security\Voter\AssetVoter;
-use App\Dto\ShipDetailsData;
+use App\Dto\AssetDetailsData;
 use App\Service\ListViewHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -76,10 +76,10 @@ final class AssetController extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var ShipDetailsData|null $details */
-            $details = $form->get('shipDetails')->getData();
-            if ($details instanceof ShipDetailsData) {
-                $asset->setShipDetails($details->toArray());
+            /** @var AssetDetailsData|null $details */
+            $details = $form->get('assetDetails')->getData();
+            if ($details instanceof AssetDetailsData) {
+                $asset->setAssetDetails($details->toArray());
             }
 
             $em->persist($asset);
@@ -117,10 +117,10 @@ final class AssetController extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var ShipDetailsData|null $details */
-            $details = $form->get('shipDetails')->getData();
-            if ($details instanceof ShipDetailsData) {
-                $asset->setShipDetails($details->toArray());
+            /** @var AssetDetailsData|null $details */
+            $details = $form->get('assetDetails')->getData();
+            if ($details instanceof AssetDetailsData) {
+                $asset->setAssetDetails($details->toArray());
             }
 
             if ($originalCampaign && $asset->getCampaign() === null) {
@@ -277,7 +277,7 @@ final class AssetController extends BaseController
         // Actually I need to check CrewRepository. It likely has 'findUnassignedForShip'. I should rename that too.
         // For now, I'll pass 'asset' assuming I updated Crew Entity related queries.
         $crewResult = $em->getRepository(Crew::class)
-            ->findUnassignedForShip($user, $crewFilters, $crewPage, $perPage, $needCaptain); // TODO: Rename this method in CrewRepo
+            ->findUnassignedForAsset($user, $crewFilters, $crewPage, $perPage, $needCaptain); // TODO: Rename this method in CrewRepo
 
         $rows = [];
         foreach ($crewResult['items'] as $crew) {
@@ -296,7 +296,7 @@ final class AssetController extends BaseController
             foreach ($selections as $selection) {
                 if ($selection->isSelected()) {
                     // TODO: Update CrewAssignmentService to use Asset
-                    $crewAssignmentService->assignToShip($asset, $selection->getCrew());
+                    $crewAssignmentService->assignToAsset($asset, $selection->getCrew());
                 }
             }
 
@@ -324,12 +324,12 @@ final class AssetController extends BaseController
 
         $roleForms = [];
         foreach ($asset->getCrews() as $crewMember) {
-            // ShipRoleAssignmentType likely needs Asset now.
-            $assignmentForm = $this->createForm(ShipRoleAssignmentType::class, null, [
-                'ship' => $asset, // Form options probably expect 'ship' key
+            // AssetRoleAssignmentType likely needs Asset now.
+            $assignmentForm = $this->createForm(AssetRoleAssignmentType::class, null, [
+                'asset' => $asset, // Form options probably expect 'asset' key
                 'user' => $user,
             ]);
-            $assignmentForm->get('shipRoles')->setData($crewMember->getShipRoles()->toArray());
+            $assignmentForm->get('assetRoles')->setData($crewMember->getAssetRoles()->toArray());
             $roleForms[$crewMember->getId()] = $assignmentForm->createView();
         }
 
@@ -366,17 +366,17 @@ final class AssetController extends BaseController
             throw new NotFoundHttpException();
         }
 
-        $form = $this->createForm(ShipRoleAssignmentType::class, null, [
-            'ship' => $asset,
+        $form = $this->createForm(AssetRoleAssignmentType::class, null, [
+            'asset' => $asset,
             'user' => $user,
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $selectedRoles = $form->get('shipRoles')->getData();
-            $crew->getShipRoles()->clear();
+            $selectedRoles = $form->get('assetRoles')->getData();
+            $crew->getAssetRoles()->clear();
             foreach ($selectedRoles as $role) {
-                $crew->addShipRole($role);
+                $crew->addAssetRole($role);
             }
 
             $capSelected = false;
@@ -436,7 +436,7 @@ final class AssetController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $crewAssignmentService->removeFromShip($asset, $crew); // TODO: Rename method
+        $crewAssignmentService->removeFromAsset($asset, $crew); // TODO: Rename method
         $em->persist($asset);
         $em->persist($crew);
         $em->flush();
@@ -464,7 +464,7 @@ final class AssetController extends BaseController
         $perPage = 20;
 
         $transactionRepo = $em->getRepository(\App\Entity\Transaction::class);
-        $result = $transactionRepo->findForShip($asset, $page, $perPage); // TODO: Rename findForShip in TransactionRepo
+        $result = $transactionRepo->findForAsset($asset, $page, $perPage); // TODO: Rename findForShip in TransactionRepo
 
         $transactions = $result['items'];
         $total = $result['total'];

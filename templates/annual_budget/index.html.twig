@@ -101,7 +101,7 @@
                 <select name="ship" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
                     <option value="">ANY_ASSET</option>
                     {% for ship in ships %}
-                        <option value="{{ ship.id }}" {% if filters.ship == ship.id %}selected{% endif %}>{{ ship.name }}</option>
+                        <option value="{{ ship.id }}" {% if filters.asset == ship.id %}selected{% endif %}>{{ ship.name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -128,7 +128,7 @@
             legend: 'Annual budget search',
             fields: filter_fields,
             reset_path: path('app_annual_budget_index'),
-            is_filtered: filters.ship or filters.start or filters.end or filters.campaign
+            is_filtered: filters.asset or filters.start or filters.end or filters.campaign
         } %}
 
         <div class="grid grid-cols-1 gap-6 mb-8">
@@ -151,7 +151,7 @@
                             <div class="mb-6 flex items-start justify-between">
                                 <div>
                                     <h3 class="text-2xl font-bold text-teal-100 group-hover:text-teal-400 transition-colors uppercase tracking-wider">
-                                        {{ budget.ship.name }}
+                                        {{ budget.asset.name }}
                                     </h3>
                                     <p class="text-sm text-slate-500 font-mono mt-1">
                                         SP_SYSTEM: {{ (budget.startDay is not null and budget.startYear is not null) ? (budget.startDay|imperial_date(budget.startYear)) : '???' }} 
@@ -176,7 +176,7 @@
                                 </div>
                                 <div class="p-6 rounded-lg bg-slate-950/50 border border-slate-800 flex flex-col items-center group/metric transition-colors hover:border-red-500/20">
                                     <span class="text-xs uppercase text-red-500/70 font-bold mb-2 tracking-widest">Mortgage</span>
-                                    <span class="text-xl font-mono text-red-400 font-bold">{{ budget.ship.mortgage.calculate.total_annual_payment|format_number({ max_fraction_digit: 0 }, 'decimal', 'default', locale) }}</span>
+                                    <span class="text-xl font-mono text-red-400 font-bold">{{ budget.asset.mortgage.calculate.total_annual_payment|format_number({ max_fraction_digit: 0 }, 'decimal', 'default', locale) }}</span>
                                 </div>
                             </div>
                         </div>
