@@ -15,4 +15,25 @@ class CampaignSessionLogRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, CampaignSessionLog::class);
     }
+    public function findForCampaign(\App\Entity\Campaign $campaign, int $page = 1, int $limit = 10): array
+    {
+        $qb = $this->createQueryBuilder('l')
+            ->where('l.campaign = :campaign')
+            ->setParameter('campaign', $campaign)
+            ->orderBy('l.createdAt', 'DESC');
+
+        $query = $qb->getQuery();
+
+        $paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($query);
+        $total = count($paginator);
+
+        $paginator->getQuery()
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+
+        return [
+            'items' => iterator_to_array($paginator),
+            'total' => $total,
+        ];
+    }
 }

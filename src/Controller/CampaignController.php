@@ -6,12 +6,11 @@ use App\Dto\ShipSelection;
 use App\Entity\Campaign;
 use App\Entity\Ship;
 use App\Entity\CampaignSessionLog;
-use App\Entity\AnnualBudget;
-use App\Entity\Cost;
 use App\Entity\Crew;
-use App\Entity\Income;
 use App\Entity\Mortgage;
 use App\Entity\ShipAmendment;
+use App\Entity\Route as NavRoute;
+use App\Entity\RouteWaypoint;
 use Symfony\Component\Uid\Uuid;
 use App\Form\Config\DayYearLimits;
 use App\Form\CampaignType;
@@ -152,7 +151,8 @@ final class CampaignController extends BaseController
         int $id,
         Request $request,
         DayYearLimits $limits,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        ListViewHelper $listViewHelper
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
@@ -234,16 +234,21 @@ final class CampaignController extends BaseController
             return $this->redirectToRoute('app_campaign_details', ['id' => $campaign->getId()]);
         }
 
-        $sessionLogs = $em->getRepository(CampaignSessionLog::class)->findBy(
-            ['campaign' => $campaign],
-            ['createdAt' => 'DESC']
-        );
+        $page = $listViewHelper->getPage($request);
+        $perPage = 5; // Smaller page size for timelines
+
+        $logResult = $em->getRepository(CampaignSessionLog::class)->findForCampaign($campaign, $page, $perPage);
+        $sessionLogs = $logResult['items'];
+        $totalLogs = $logResult['total'];
+
+        $pagination = $listViewHelper->buildPaginationPayload($page, $perPage, $totalLogs);
 
         return $this->renderTurbo('campaign/details.html.twig', [
             'campaign' => $campaign,
             'form' => $shipForm,
             'calendar_form' => $calendarForm,
             'session_logs' => $sessionLogs,
+            'pagination' => $pagination,
             'controller_name' => self::CONTROLLER_NAME,
         ]);
     }
@@ -267,13 +272,8 @@ final class CampaignController extends BaseController
                 'shipDetails' => $ship->getShipDetails(),
                 'mortgage' => $this->mapMortgage($ship->getMortgage()),
                 'crews' => $ship->getCrews()->map(fn(Crew $crew) => $this->mapCrew($crew))->toArray(),
-                'costs' => $ship->getCosts()->map(fn(Cost $cost) => $this->mapCost($cost))->toArray(),
-                'incomes' => $ship->getIncomes()->map(fn(Income $income) => $this->mapIncome($income))->toArray(),
+                'routes' => $ship->getRoutes()->map(fn(NavRoute $route) => $this->mapRoute($route))->toArray(),
                 'amendments' => $ship->getAmendments()->map(fn(ShipAmendment $amendment) => $this->mapAmendment($amendment))->toArray(),
-                'annualBudgets' => array_map(
-                    fn(AnnualBudget $budget) => $this->mapAnnualBudget($budget),
-                    $em->getRepository(AnnualBudget::class)->findBy(['ship' => $ship])
-                ),
             ];
         }
 
@@ -366,110 +366,7 @@ final class CampaignController extends BaseController
     /**
      * @return array<string, mixed>
      */
-    private function mapCost(Cost $cost): array
-    {
-        $company = $cost->getCompany();
-        $localLaw = $cost->getLocalLaw();
-        $category = $cost->getCostCategory();
 
-        return [
-            'id' => $cost->getId(),
-            'code' => $cost->getCode(),
-            'title' => $cost->getTitle(),
-            'amount' => $cost->getAmount(),
-            'paymentDay' => $cost->getPaymentDay(),
-            'paymentYear' => $cost->getPaymentYear(),
-            'note' => $cost->getNote(),
-            'detailItems' => $cost->getDetailItems(),
-            'category' => $category ? [
-                'id' => $category->getId(),
-                'code' => $category->getCode(),
-                'description' => $category->getDescription(),
-            ] : null,
-            'company' => $company ? [
-                'id' => $company->getId(),
-                'code' => $company->getCode(),
-                'name' => $company->getName(),
-                'contact' => $company->getContact(),
-                'signLabel' => $company->getSignLabel(),
-            ] : null,
-            'localLaw' => $localLaw ? [
-                'id' => $localLaw->getId(),
-                'shortDescription' => $localLaw->getShortDescription(),
-                'description' => $localLaw->getDescription(),
-                'disclaimer' => $localLaw->getDisclaimer(),
-            ] : null,
-        ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function mapIncome(Income $income): array
-    {
-        $company = $income->getCompany();
-        $localLaw = $income->getLocalLaw();
-        $category = $income->getIncomeCategory();
-
-        $details = [];
-        foreach (
-            [
-                'charter' => $income->getCharterDetails(),
-                'subsidy' => $income->getSubsidyDetails(),
-                'freight' => $income->getFreightDetails(),
-                'passengers' => $income->getPassengersDetails(),
-                'services' => $income->getServicesDetails(),
-                'insurance' => $income->getInsuranceDetails(),
-                'mail' => $income->getMailDetails(),
-                'interest' => $income->getInterestDetails(),
-                'trade' => $income->getTradeDetails(),
-                'salvage' => $income->getSalvageDetails(),
-                'prize' => $income->getPrizeDetails(),
-                'contract' => $income->getContractDetails(),
-            ] as $key => $detail
-        ) {
-            if ($detail) {
-                $details[$key] = $this->extractDetails($detail);
-            }
-        }
-
-        return [
-            'id' => $income->getId(),
-            'code' => $income->getCode(),
-            'title' => $income->getTitle(),
-            'status' => $income->getStatus(),
-            'amount' => $income->getAmount(),
-            'signingDay' => $income->getSigningDay(),
-            'signingYear' => $income->getSigningYear(),
-            'signingLocation' => $income->getSigningLocation(),
-            'paymentDay' => $income->getPaymentDay(),
-            'paymentYear' => $income->getPaymentYear(),
-            'cancelDay' => $income->getCancelDay(),
-            'cancelYear' => $income->getCancelYear(),
-            'expirationDay' => $income->getExpirationDay(),
-            'expirationYear' => $income->getExpirationYear(),
-            'note' => $income->getNote(),
-            'category' => $category ? [
-                'id' => $category->getId(),
-                'code' => $category->getCode(),
-                'description' => $category->getDescription(),
-            ] : null,
-            'company' => $company ? [
-                'id' => $company->getId(),
-                'code' => $company->getCode(),
-                'name' => $company->getName(),
-                'contact' => $company->getContact(),
-                'signLabel' => $company->getSignLabel(),
-            ] : null,
-            'localLaw' => $localLaw ? [
-                'id' => $localLaw->getId(),
-                'shortDescription' => $localLaw->getShortDescription(),
-                'description' => $localLaw->getDescription(),
-                'disclaimer' => $localLaw->getDisclaimer(),
-            ] : null,
-            'details' => $details,
-        ];
-    }
 
     /**
      * @return array<string, mixed>
@@ -500,59 +397,7 @@ final class CampaignController extends BaseController
     /**
      * @return array<string, mixed>
      */
-    private function mapAnnualBudget(AnnualBudget $budget): array
-    {
-        return [
-            'id' => $budget->getId(),
-            'code' => $budget->getCode(),
-            'startDay' => $budget->getStartDay(),
-            'startYear' => $budget->getStartYear(),
-            'endDay' => $budget->getEndDay(),
-            'endYear' => $budget->getEndYear(),
-            'note' => $budget->getNote(),
-        ];
-    }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function extractDetails(object $details): array
-    {
-        $data = [];
-        $ref = new \ReflectionClass($details);
-
-        foreach ($ref->getProperties() as $property) {
-            $property->setAccessible(true);
-            $value = $property->getValue($details);
-            $normalized = $this->normalizeSnapshotValue($value);
-            if ($normalized !== null) {
-                $data[$property->getName()] = $normalized;
-            }
-        }
-
-        return $data;
-    }
-
-    private function normalizeSnapshotValue(mixed $value): mixed
-    {
-        if ($value === null || is_scalar($value)) {
-            return $value;
-        }
-
-        if ($value instanceof \DateTimeInterface) {
-            return $value->format(DATE_ATOM);
-        }
-
-        if ($value instanceof Uuid) {
-            return (string) $value;
-        }
-
-        if (is_array($value)) {
-            return $value;
-        }
-
-        return null;
-    }
 
     #[Route('/campaign/ship/{id}/remove', name: 'app_campaign_ship_remove', methods: ['GET', 'POST'])]
     public function removeShip(
@@ -581,5 +426,24 @@ final class CampaignController extends BaseController
         $em->flush();
 
         return $this->redirectToRoute('app_campaign_details', ['id' => $campaign->getId()]);
+    }
+    private function mapRoute(NavRoute $route): array
+    {
+        return [
+            'id' => $route->getId(),
+            'name' => $route->getName(),
+            'startHex' => $route->getStartHex(),
+            'destHex' => $route->getDestHex(),
+            'startDay' => $route->getStartDay(),
+            'startYear' => $route->getStartYear(),
+            'destDay' => $route->getDestDay(),
+            'destYear' => $route->getDestYear(),
+            'plannedAt' => $route->getPlannedAt()?->format('Y-m-d H:i:s'),
+            'waypoints' => $route->getWaypoints()->map(fn(RouteWaypoint $wp) => [
+                'hex' => $wp->getHex(),
+                'systemName' => $wp->getWorld(),
+                'position' => $wp->getPosition(),
+            ])->toArray(),
+        ];
     }
 }

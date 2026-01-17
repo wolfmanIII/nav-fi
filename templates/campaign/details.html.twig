@@ -375,6 +375,12 @@
                     </tbody>
                 </table>
             </div>
+            {% include 'components/pagination.html.twig' with {
+                pagination: pagination,
+                route: 'app_campaign_details',
+                route_params: { id: campaign.id },
+                query: app.request.query.all
+            } %}
         </div>
 
     </div>
