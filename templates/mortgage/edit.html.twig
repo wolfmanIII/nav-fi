@@ -123,14 +123,15 @@
                     <label class="block text-slate-100 text-[10px] uppercase tracking-widest font-bold font-orbitron">Authorization // signing Date</label>
                 </div>
                 <div class="flex items-center gap-2">
-                    <div class="input input-bordered w-full bg-cyan-950/20 border-cyan-500/30 text-cyan-400 font-mono text-sm flex items-center">
+                    <p class="mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">AUTHORIZATION PROTOCOL: </p>
+                    <p class="text-xs font-mono text-cyan-400 font-bold uppercase mt-1">
                         {% if mortgage.signed %}
                             <span class="animate-pulse mr-2">●</span>
-                            {{ mortgage.signingDay|imperial_date(mortgage.signingYear) }}
+                            AUTH_LOG: {{ mortgage.signingDay|imperial_date(mortgage.signingYear) }}
                         {% else %}
-                            <span class="opacity-50 font-rajdhani uppercase tracking-tighter">Awaiting Signature Protocol</span>
+                            <span class="opacity-50 font-rajdhani uppercase tracking-tighter">Awaiting Authorization Signature</span>
                         {% endif %}
-                    </div>
+                    </p>
                 </div>
             </div>
 

@@ -40,7 +40,7 @@ class LedgerService
             $created[] = $this->createTransaction(
                 $asset,
                 $reversalAmount,
-                "CORRECTION: Reversing " . $tx->getDescription(),
+                "REVERSAL: " . $tx->getDescription(),
                 $currentDay,
                 $currentYear,
                 $relatedType,

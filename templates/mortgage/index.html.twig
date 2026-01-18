@@ -141,11 +141,11 @@
                                         REF: {{ mortgage.code }}
                                     </div>
                                     <span class="px-2.5 py-1 rounded bg-slate-800 text-xs font-bold tracking-tighter uppercase border border-slate-700 {{ mortgage.signed ? 'text-cyan-400 border-cyan-500/30' : 'text-amber-500 border-amber-500/30' }}">
-                                        {{ mortgage.signed ? 'S_AUTHORIZED' : 'P_UNSIGNED' }}
+                                        {{ mortgage.signed ? 'AUTHORIZED' : 'PENDING SIGNATURE' }}
                                     </span>
                                     {% if mortgage.signed and mortgage.signingDay %}
                                         <div class="px-2.5 py-1 rounded border border-slate-700 bg-slate-800/50 text-[10px] font-mono tracking-widest text-slate-400 uppercase">
-                                            AUTH_DATE: {{ mortgage.signingDay|imperial_date(mortgage.signingYear) }}
+                                            Authorized on: {{ mortgage.signingDay|imperial_date(mortgage.signingYear) }}
                                         </div>
                                     {% endif %}
                                 </div>

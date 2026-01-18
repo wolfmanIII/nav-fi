@@ -230,7 +230,7 @@ class FinancialEventSubscriber
         $tx = $this->ledgerService->withdraw(
             $asset,
             $amount,
-            "Mortgage Payment: " . $mortgage->getName(),
+            sprintf("Mortgage Installment (Date: %03d-%s)", $day, $year),
             $day,
             $year,
             'MortgageInstallment',
