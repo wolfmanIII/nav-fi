@@ -8,21 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class MortgageDiscountTest extends TestCase
 {
-    public function testCalculateAssetCostWithFlatDiscount()
-    {
-        $asset = new Asset();
-        $asset->setPrice('1000000'); // 1 MCr
-
-        $mortgage = new Mortgage();
-        $mortgage->setAsset($asset);
-        $mortgage->setDiscount('10'); // 10 Cr? or 10%?
-        $mortgage->setDiscountIsPercentage(false); // Default
-
-        // If flat, cost should be 1,000,000 - 10 = 999,990
-        $this->assertEquals('999990.000000', $mortgage->calculateAssetCost());
-    }
-
-    public function testCalculateAssetCostWithPercentageDiscountBug()
+    public function testCalculateAssetCostWithPercentageDiscount()
     {
         $asset = new Asset();
         $asset->setPrice('1000000'); // 1 MCr
@@ -30,10 +16,22 @@ class MortgageDiscountTest extends TestCase
         $mortgage = new Mortgage();
         $mortgage->setAsset($asset);
         $mortgage->setDiscount('10'); // 10%
-        $mortgage->setDiscountIsPercentage(true);
 
-        // Expected if working correctly: 1,000,000 - 10% (100,000) = 900,000
+        // Cost should be 1,000,000 - 10% (100,000) = 900,000
         $this->assertEquals('900000.000000', $mortgage->calculateAssetCost());
+    }
+
+    public function testCalculateAssetCostWithDifferentPercentage()
+    {
+        $asset = new Asset();
+        $asset->setPrice('1000000'); // 1 MCr
+
+        $mortgage = new Mortgage();
+        $mortgage->setAsset($asset);
+        $mortgage->setDiscount('5'); // 5%
+
+        // 1,000,000 - 5% (50,000) = 950,000
+        $this->assertEquals('950000.000000', $mortgage->calculateAssetCost());
     }
 
     public function testUserReportedScenario()
@@ -50,7 +48,6 @@ class MortgageDiscountTest extends TestCase
         $mortgage->setAsset($asset);
         $mortgage->setAssetShares(2);
         $mortgage->setDiscount('25');
-        $mortgage->setDiscountIsPercentage(true);
 
         // Calculation:
         // Price - Shares = 53,000,000

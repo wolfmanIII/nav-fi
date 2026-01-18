@@ -47,10 +47,9 @@ class MortgageTest extends TestCase
         $mortgage = new Mortgage();
         $mortgage->setAsset($asset);
         $mortgage->setAdvancePayment('1000000.00');
-        $mortgage->setDiscount('500000.00');
-        $mortgage->setDiscountIsPercentage(false);
+        $mortgage->setDiscount('10.00'); // 10%
 
-        // 5M - 1M (Advance) - 0.5M (Discount) = 3.5M
+        // 5M - 1M (Advance) - 10% of 5M (0.5M) = 3.5M
         self::assertEquals('3500000.000000', $mortgage->calculateAssetCost());
     }
 
