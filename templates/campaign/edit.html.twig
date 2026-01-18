@@ -8,26 +8,24 @@
 
         {{ form_start(form) }}
 
-        <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-            <legend class="fieldset-legend">Mission</legend>
-
-            <div class="col-span-2">
-                <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
-                    <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
-                         style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
-                    </div>
-                    <div class="relative p-4 flex items-start gap-3">
-                        <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
-                            {% include 'icons/alien-structure-1.html.twig' %}
-                        </div>
-                        <div>
-                            <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Mission setup</p>
-                            <h3 class="font-semibold text-cyan-100 text-xl leading-tight">Mission</h3>
-                            <p class="text-sm text-cyan-100/80">Titolo, descrizione, anno di inizio e session date della missione.</p>
-                        </div>
-                    </div>
+        <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-6">
+            <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
+                 style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
+            </div>
+            <div class="relative p-4 flex items-start gap-4">
+                <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
+                    {% include 'icons/campaign.html.twig' %}
+                </div>
+                <div>
+                    <p class="uppercase text-[10px] tracking-[0.3em] text-cyan-300/70 font-bold font-orbitron mb-0.5">Strategic Dossier // Mission Registry</p>
+                    <h3 class="font-bold text-cyan-100 text-2xl leading-tight font-orbitron uppercase">Campaign Registry</h3>
+                    <p class="text-xs text-cyan-100/60 font-rajdhani tracking-widest uppercase truncate">Title and operational framework: define the scope of your fleet's journey.</p>
                 </div>
             </div>
+        </div>
+
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Mission Parameters</legend>
 
             <div class="col-span-2">
                 <div class="alert alert-info alert-outline shadow-sm mt-2">
@@ -42,31 +40,35 @@
 
             {% if campaign.id %}
                 <div class="col-span-2">
-                    <label class="block text-slate-300">Code</label>
-                    <div class="m-1 w-full"><b>{{ campaign.code }}</b></div>
+                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron mb-1 opacity-50">Campaign ID // Mission Code</label>
+                    <div class="px-3 py-2 rounded bg-slate-950/50 border border-slate-800 font-mono text-cyan-400 text-sm"><b>{{ campaign.code }}</b></div>
                 </div>
             {% endif %}
 
-            <div>
+            <div class="col-span-2">
                 {{ form_label(form.title) }}
-                {{ form_widget(form.title) }}
+                {{ form_widget(form.title, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.title) }}
             </div>
+        </fieldset>
 
-            <div>
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Temporal Sync</legend>
+            <div class="col-span-1">
                 {{ form_label(form.startingYear) }}
-                {{ form_widget(form.startingYear) }}
+                {{ form_widget(form.startingYear, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 font-mono text-amber-400' } }) }}
                 {{ form_errors(form.startingYear) }}
             </div>
 
             {% set sess_day = campaign.sessionDay %}
             {% set sess_year = campaign.sessionYear %}
 {% set sess_value = (sess_day is not null and sess_year is not null) ? (sess_day|imperial_date(sess_year)) : "" %}
-            <div data-controller="imperial-date session-date-lock"
+            <div class="col-span-1" data-controller="imperial-date session-date-lock"
                  data-session-date-lock-starting-selector="#campaign_startingYear">
                 {{ form_label(form.sessionDate) }}
                 {{ form_widget(form.sessionDate.display, {
                     attr: {
+                        class: 'input input-bordered w-full bg-slate-950/50 border-slate-700',
                         'data-imperial-date-prev-icon': '«',
                         'data-imperial-date-next-icon': '»',
                         'data-imperial-date-initial-day': sess_day ?? '',
@@ -80,16 +82,21 @@
                 {{ form_errors(form.sessionDate.display) }}
             </div>
 
-            <div class="col-span-2">
-                {{ form_label(form.description) }}
-                {{ form_widget(form.description) }}
-                {{ form_errors(form.description) }}
-            </div>
-
         </fieldset>
 
-        <button type="submit" class="btn btn-outline btn-primary mt-4 mb-4 mr-4">Save</button>
-        <a href="{{ path('app_campaign_index') }}" role="button" class="btn btn-outline btn-default mt-4 mb-4 mr-4">Cancel</a>
+        <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-8 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-slate-400 uppercase">Operational Notes</legend>
+            <div>
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description, { attr: { class: 'textarea textarea-bordered w-full bg-slate-950/50 border-slate-700 h-32 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Enter strategic objective or mission background...' } }) }}
+                {{ form_errors(form.description) }}
+            </div>
+        </fieldset>
+
+        <div class="flex gap-4 mb-8">
+            <button type="submit" class="btn btn-primary font-orbitron uppercase tracking-widest text-[10px] px-8">Confirm Mission</button>
+            <a href="{{ path('app_campaign_index') }}" role="button" class="btn btn-outline btn-sm font-orbitron uppercase tracking-widest text-[10px]">Abort Changes</a>
+        </div>
 
         {{ form_end(form) }}
     </div>

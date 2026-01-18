@@ -6,8 +6,8 @@
     <div class="flex flex-col items-stretch gap-4">
         {{ form_start(form) }}
 
-        <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-            <legend class="fieldset-legend">Asset Amendment</legend>
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Asset Amendment</legend>
 
             <div class="col-span-2">
                 <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
@@ -32,39 +32,39 @@
                 <div class="m-1 w-full"><b>{{ asset.name }} — {{ asset.type }} ({{ asset.class }})</b></div>
             </div>
 
-            <div>
+            <div class="col-span-1">
                 {{ form_label(form.title) }}
-                {{ form_widget(form.title) }}
+                {{ form_widget(form.title, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.title) }}
+            </div>
+
+            <div class="col-span-1">
+                {{ form_label(form.cost) }}
+                {{ form_widget(form.cost, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                {{ form_errors(form.cost) }}
             </div>
 
             <div class="col-span-2">
                 {{ form_label(form.description) }}
-                {{ form_widget(form.description) }}
+                {{ form_widget(form.description, { attr: { class: 'textarea textarea-bordered w-full bg-slate-950/50 border-slate-700 h-24 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Enter amendment details here...' } }) }}
                 {{ form_errors(form.description) }}
-            </div>
-
-            <div class="col-span-2">
-                {{ form_label(form.cost) }}
-                {{ form_widget(form.cost) }}
-                {{ form_errors(form.cost) }}
             </div>
         </fieldset>
 
         {% include 'asset/_details_form.html.twig' with { detailsForm: form.patchDetails, is_amendment: true } %}
 
-        <div class="flex gap-4">
-            <button type="submit" class="btn btn-outline btn-primary mt-4 mb-4">Save amendment</button>
-            <a href="{{ path('app_asset_edit', { id: asset.id }) }}" role="button" class="btn btn-outline btn-default mt-4 mb-4">Back to asset</a>
+        <div class="flex gap-4 mb-8">
+            <button type="submit" class="btn btn-primary font-orbitron uppercase tracking-widest text-[10px] px-8">Confirm Patch</button>
+            <a href="{{ path('app_asset_edit', { id: asset.id }) }}" role="button" class="btn btn-outline btn-sm font-orbitron uppercase tracking-widest text-[10px]">Abort Changes</a>
         </div>
 
         {{ form_end(form) }}
 
         {% if amendments|length > 0 %}
-            <div class="card mt-6 border border-white/10 bg-base-200/80 p-4">
-                <h3 class="text-lg font-semibold text-slate-100 mb-3">Recorded amendments</h3>
-                <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-                    <table class="table border-separate border-spacing-0 inner-bordered-table text-sm">
+            <div class="card mt-6 border border-slate-800 bg-slate-900/40 p-6 rounded-xl shadow-inner mb-8">
+                <h3 class="text-[10px] font-bold font-orbitron uppercase tracking-[0.3em] text-cyan-500/80 mb-6">Recorded amendments</h3>
+                <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/40 shadow-inner">
+                    <table class="table table-xs w-full border-separate border-spacing-0">
                         <thead>
                             <tr>
                                 <th>Code</th>

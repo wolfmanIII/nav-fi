@@ -22,12 +22,12 @@
                 Operations <span class="text-cyan-500">Flow</span>
             </h1>
             <p class="text-lg text-slate-400 leading-relaxed font-light">
-                Operational dossier: from mission clock to signed credits. This briefing lays out the full administrative flow: Mission, Company, Crew, Ship, Mortgage, Income, Cost, Annual Budget and the rules that keep them coherent. 
+                Operational dossier: from mission clock to signed credits. This briefing lays out the full administrative flow: Mission, Company, Crew, Asset, Mortgage, Income, Cost, Annual Budget and the rules that keep them coherent. 
                 <span class="text-amber-400/80 font-bold italic">Coherence is fully advisory: the Referee has total tactical control over all data.</span>
             </p>
             
             <div class="flex flex-wrap gap-2 mt-2">
-                {% for tag in ['Cross-mission Companies', 'Imperial Dates', 'Crew Status Timeline', 'Session Timeline Logs', 'Mortgage Signature', 'Contract PDFs', 'Template Version', 'Ship Amendments', 'Routes & TRAVELLERMAP.COM'] %}
+                {% for tag in ['Cross-mission Companies', 'Imperial Dates', 'Crew Status Timeline', 'Session Timeline Logs', 'Mortgage Signature', 'Contract PDFs', 'Template Version', 'Asset Amendments', 'Routes & TRAVELLERMAP.COM'] %}
                      <span class="px-3 py-1.5 rounded bg-slate-900 border border-slate-700 text-xs font-bold tracking-wider text-slate-400 uppercase">{{ tag }}</span>
                 {% endfor %}
             </div>
@@ -57,7 +57,7 @@
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Ships inherit the mission calendar for all day/year fields.</span>
+                    <span>Assets inherit the mission calendar for all day/year fields.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
@@ -121,25 +121,25 @@
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Detaching a crew from ship clears Active/On Leave/Retired dates and status.</span>
+                    <span>Detaching a crew from an asset clears Active/On Leave/Retired dates and status.</span>
                 </li>
             </ul>
         </div>
 
-        {# Ship #}
+        {# Asset #}
          <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
              <div class="flex items-center gap-2 text-cyan-500/50 group-hover:text-cyan-400 mb-3 transition-colors">
                 {% include 'icons/far-trader.html.twig' with { dim: 20 } %}
                 <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Hull Manifest</p>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Ship</h3>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Asset</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Ships are the core asset. Each hull has a single mortgage, a crew roster, and a detailed ship sheet (JSON components) for PDF printing.
+                Assets are the core entity. Each hull has a single mortgage, a crew roster, and a detailed specification sheet (JSON components) for PDF printing.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Ship details track drives, systems, and total component cost.</span>
+                    <span>Asset details track drives, systems, and total component cost.</span>
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
@@ -147,7 +147,7 @@
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Crew assignments and roles are managed per ship.</span>
+                    <span>Crew assignments and roles are managed per asset.</span>
                 </li>
             </ul>
         </div>
@@ -158,7 +158,7 @@
                 {% include 'icons/ship-components.html.twig' with { dim: 20 } %}
                 <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Patch Log</p>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Ship Amendments</h3>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Asset Amendments</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
                 Signed hulls change only through amendments. Each amendment is tied to a SHIP_GEAR/SHIP_SOFTWARE cost and inherits its payment date as the effective day/year.
             </p>
@@ -173,7 +173,7 @@
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Amendments are logged in the ship PDF for auditing.</span>
+                    <span>Amendments are logged in the asset PDF for auditing.</span>
                 </li>
             </ul>
         </div>
@@ -186,7 +186,7 @@
             </div>
             <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Routes</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Routes are built from waypoints and tied to a Ship + Mission. Each waypoint carries a sector name or T5SS abbreviation plus its 4‑digit hex for TravellerMap.
+                Routes are built from waypoints and tied to an Asset + Mission. Each waypoint carries a sector name or T5SS abbreviation plus its 4‑digit hex for TravellerMap.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
@@ -262,7 +262,7 @@
             </div>
             <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Cost</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Costs are logged per ship with detailed line items. LocalLaw and counterparties are printed in PDF for jurisdictional clarity.
+                Costs are logged per asset with detailed line items. LocalLaw and counterparties are printed in PDF for jurisdictional clarity.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
@@ -288,12 +288,12 @@
             </div>
             <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Annual Budget</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                 Annual Budget is the ship’s fiscal strip for the session year: it aggregates Income, Cost, and mortgage installments into a single operational readout.
+                 Annual Budget is the asset’s fiscal strip for the session year: it aggregates Income, Cost, and mortgage installments into a single operational readout.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>One budget per ship, tied to imperial start/end day/year.</span>
+                    <span>One budget per asset, tied to imperial start/end day/year.</span>
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
@@ -322,7 +322,7 @@
                         <span class="mt-1 w-1.5 h-1.5 rounded-full bg-amber-500"></span>
                         <span><strong class="text-white">Informational Notices:</strong> Timeline inconsistencies (e.g., payment before mission start) display informational notices without blocking saves. The Referee maintains full control over data coherence.</span>
                     </li>
-                    <li class="flex items-start gap-2 text-xs text-slate-300">
+                    <li class="pl-4 border-l-2 border-amber-500/30">
                         <span class="mt-1 w-1.5 h-1.5 rounded-full bg-amber-500"></span>
                         <span>
                             <strong class="text-white">Unrestricted Editing:</strong> Paid costs, signed incomes, and signed mortgages remain editable. Use this power to correct tactical errors or reflect narrative changes.
@@ -332,11 +332,11 @@
                 <ul class="space-y-2">
                     <li class="flex items-start gap-2 text-xs text-slate-300">
                         <span class="mt-1 w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                        <span><strong class="text-white">Cascading Deletion:</strong> Removing a primary object (especially a <strong class="text-white">Ship</strong>) will automatically delete all linked history: Mortgage, Installments, Costs, Incomes, and Routes.</span>
+                        <span><strong class="text-white">Cascading Deletion:</strong> Removing a primary object (especially an <strong class="text-white">Asset</strong>) will automatically delete all linked history: Mortgage, Installments, Costs, Incomes, and Routes.</span>
                     </li>
                     <li class="flex items-start gap-2 text-xs text-slate-300">
                         <span class="mt-1 w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                        <span><strong class="text-white">Data Permanent Removal:</strong> Exercise tactical caution when deleting hulls; once confirmed, the associated ledger cannot be recovered via standard UI.</span>
+                        <span><strong class="text-white">Data Permanent Removal:</strong> Exercise tactical caution when deleting assets; once confirmed, the associated ledger cannot be recovered via standard UI.</span>
                     </li>
                 </ul>
             </div>

@@ -1,9 +1,9 @@
-<fieldset class="fieldset grid grid-cols-3 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-    <legend class="fieldset-legend">
-        {% include 'icons/income.html.twig' %} SALVAGE Details
+<fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+    <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">
+        SALVAGE Details
     </legend>
 
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
             <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
                  style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 alert alert-info alert-outline shadow-sm flex items-start gap-2">
+    <div class="col-span-2 alert alert-info alert-outline shadow-sm flex items-start gap-2">
         <span class="pt-0.5 animate-spin-slow">{% include 'icons/radar.html.twig' %}</span>
         <p class="text-sm">Salvage/recovery claim: site/source, recovery window, recovered items and hazards, award/split terms and dispute process.</p>
     </div>
@@ -36,7 +36,7 @@
         {{ form_errors(detail_form.caseRef) }}
         <input type="checkbox" id="{{ case_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Case reference</h3>
                 <p class="py-2 text-sm">Claim file ID or salvage docket reference.</p>
                 <div class="modal-action">
@@ -55,7 +55,7 @@
         {{ form_errors(detail_form.source) }}
         <input type="checkbox" id="{{ source_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Source</h3>
                 <p class="py-2 text-sm">Derelict, distress beacon, wreck registry, or authority assignment.</p>
                 <div class="modal-action">
@@ -74,7 +74,7 @@
         {{ form_errors(detail_form.siteLocation) }}
         <input type="checkbox" id="{{ site_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Site location</h3>
                 <p class="py-2 text-sm">Coordinates, orbit or system location where recovery occurred.</p>
                 <div class="modal-action">
@@ -93,7 +93,7 @@
         {{ form_errors(detail_form.qtyValue) }}
         <input type="checkbox" id="{{ qty_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Qty / value</h3>
                 <p class="py-2 text-sm">Recovered tonnage or assessed value at recovery time.</p>
                 <div class="modal-action">
@@ -103,7 +103,7 @@
         </div>
     </div>
 
-    <div class="col-span-3">
+    <div class="col-span-2">
         {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
         <div class="flex items-center gap-2">
             {{ form_label(detail_form.paymentTerms) }}
@@ -113,7 +113,7 @@
         {{ form_errors(detail_form.paymentTerms) }}
         <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Payment terms</h3>
                 <p class="py-2 text-sm">How the salvage award is paid: triggers, splits, escrow, timing.</p>
                 <div class="modal-action">
@@ -123,7 +123,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set recovered_help_id = detail_form.recoveredItemsSummary.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -134,7 +134,7 @@
             {{ form_errors(detail_form.recoveredItemsSummary) }}
             <input type="checkbox" id="{{ recovered_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Recovered items</h3>
                     <p class="py-2 text-sm">Summary list of recovered hulls, cargo or components.</p>
                     <div class="modal-action">
@@ -153,7 +153,7 @@
             {{ form_errors(detail_form.hazards) }}
             <input type="checkbox" id="{{ hazards_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Hazards</h3>
                     <p class="py-2 text-sm">Known threats encountered: debris fields, radiation, hostiles.</p>
                     <div class="modal-action">
@@ -172,7 +172,7 @@
             {{ form_errors(detail_form.splitTerms) }}
             <input type="checkbox" id="{{ split_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Split terms</h3>
                     <p class="py-2 text-sm">Crew/claimant split or salvage share percentages.</p>
                     <div class="modal-action">
@@ -183,7 +183,7 @@
         </div> 
     </div>
     
-    <div class="col-span-3 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set rights_help_id = detail_form.rightsBasis.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -194,7 +194,7 @@
             {{ form_errors(detail_form.rightsBasis) }}
             <input type="checkbox" id="{{ rights_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Rights basis</h3>
                     <p class="py-2 text-sm">Statute or charter defining salvage rights and authority.</p>
                     <div class="modal-action">
@@ -213,7 +213,7 @@
             {{ form_errors(detail_form.awardTrigger) }}
             <input type="checkbox" id="{{ trigger_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Award trigger</h3>
                     <p class="py-2 text-sm">Final adjudication, escrow release or authority clearance.</p>
                     <div class="modal-action">
@@ -232,7 +232,7 @@
             {{ form_errors(detail_form.disputeProcess) }}
             <input type="checkbox" id="{{ dispute_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Dispute process</h3>
                     <p class="py-2 text-sm">Appeal channel or adjudication board for contested claims.</p>
                     <div class="modal-action">

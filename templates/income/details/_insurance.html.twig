@@ -1,9 +1,9 @@
-<fieldset class="fieldset grid grid-cols-3 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-    <legend class="fieldset-legend">
-        {% include 'icons/income.html.twig' %} INSURANCE Details
+<fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+    <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">
+        INSURANCE Details
     </legend>
 
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
             <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
                  style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 alert alert-info alert-outline shadow-sm flex items-start gap-2">
+    <div class="col-span-2 alert alert-info alert-outline shadow-sm flex items-start gap-2">
         <span class="pt-0.5 animate-spin-slow">{% include 'icons/radar.html.twig' %}</span>
         <p class="text-sm">Insurance claim statement: incident facts, loss type, verified amounts, coverage notes and payout/subrogation terms.</p>
     </div>
@@ -36,7 +36,7 @@
         {{ form_errors(detail_form.incidentRef) }}
         <input type="checkbox" id="{{ incident_ref_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Incident ref</h3>
                 <p class="py-2 text-sm">Case or log reference assigned to the incident.</p>
                 <div class="modal-action">
@@ -69,7 +69,7 @@
         {{ form_errors(detail_form.incidentDate.display) }}
         <input type="checkbox" id="{{ incident_date_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Incident date</h3>
                 <p class="py-2 text-sm">Timestamp of the loss event in imperial day/year.</p>
                 <div class="modal-action">
@@ -88,7 +88,7 @@
         {{ form_errors(detail_form.incidentLocation) }}
         <input type="checkbox" id="{{ incident_location_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Incident location</h3>
                 <p class="py-2 text-sm">Sector, port, or coordinates where the incident occurred.</p>
                 <div class="modal-action">
@@ -107,7 +107,7 @@
         {{ form_errors(detail_form.incidentCause) }}
         <input type="checkbox" id="{{ incident_cause_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Incident cause</h3>
                 <p class="py-2 text-sm">Declared cause or initiating event.</p>
                 <div class="modal-action">
@@ -126,7 +126,7 @@
         {{ form_errors(detail_form.lossType) }}
         <input type="checkbox" id="{{ loss_type_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Loss type</h3>
                 <p class="py-2 text-sm">Loss classification used for coverage assessment.</p>
                 <div class="modal-action">
@@ -145,7 +145,7 @@
         {{ form_errors(detail_form.verifiedLoss) }}
         <input type="checkbox" id="{{ verified_loss_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Verified loss</h3>
                 <p class="py-2 text-sm">Assessed loss value confirmed by the insurer.</p>
                 <div class="modal-action">
@@ -164,7 +164,7 @@
         {{ form_errors(detail_form.deductible) }}
         <input type="checkbox" id="{{ deductible_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Deductible</h3>
                 <p class="py-2 text-sm">Portion retained by the insured before payout.</p>
                 <div class="modal-action">
@@ -184,7 +184,7 @@
         {{ form_errors(detail_form.acceptanceEffect) }}
         <input type="checkbox" id="{{ acceptance_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Acceptance effect</h3>
                 <p class="py-2 text-sm">Legal effect of accepting the settlement.</p>
                 <div class="modal-action">
@@ -195,7 +195,7 @@
     </div>
 
     {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="flex items-center gap-2">
             {{ form_label(detail_form.paymentTerms) }}
             <label for="{{ pay_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
@@ -204,7 +204,7 @@
         {{ form_errors(detail_form.paymentTerms) }}
         <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Payment terms</h3>
                 <p class="py-2 text-sm">How and when the insurer pays the claim (advance, final settlement, conditions).</p>
                 <div class="modal-action">
@@ -214,7 +214,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set subro_help_id = detail_form.subrogationTerms.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -225,7 +225,7 @@
             {{ form_errors(detail_form.subrogationTerms) }}
             <input type="checkbox" id="{{ subro_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Subrogation terms</h3>
                     <p class="py-2 text-sm">Rights transferred to the insurer after payout.</p>
                     <div class="modal-action">
@@ -244,7 +244,7 @@
             {{ form_errors(detail_form.coverageNotes) }}
             <input type="checkbox" id="{{ coverage_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Coverage notes</h3>
                     <p class="py-2 text-sm">Special coverage notes or exclusions tied to the claim.</p>
                     <div class="modal-action">

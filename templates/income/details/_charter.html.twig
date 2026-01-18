@@ -1,9 +1,9 @@
-<fieldset class="fieldset grid grid-cols-3 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-    <legend class="fieldset-legend">
-        {% include 'icons/income.html.twig' %} CHARTER Details
+<fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+    <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">
+        CHARTER Details
     </legend>
 
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
             <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
                  style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
@@ -21,12 +21,12 @@
         </div>
     </div>
 
-    <div class="col-span-3 alert alert-info alert-outline shadow-sm flex items-start gap-2">
+    <div class="col-span-2 alert alert-info alert-outline shadow-sm flex items-start gap-2">
         <span class="pt-0.5 animate-spin-slow">{% include 'icons/radar.html.twig' %}</span>
         <p class="text-sm">Official charter particulars: declared route/purpose, service window, payment terms and deposits as filed by charterer and operator.</p>
     </div>
 
-    <div class="col-span-3 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set area_help_id = detail_form.areaOrRoute.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -37,7 +37,7 @@
             {{ form_errors(detail_form.areaOrRoute) }}
             <input type="checkbox" id="{{ area_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Area / Route</h3>
                     <p class="py-2 text-sm">Declared operating corridor or patrol span for the chartered run.</p>
                     <div class="modal-action">
@@ -56,7 +56,7 @@
             {{ form_errors(detail_form.purpose) }}
             <input type="checkbox" id="{{ purpose_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Purpose</h3>
                     <p class="py-2 text-sm">Primary charter intent: tour, transport, private run, or special service.</p>
                     <div class="modal-action">
@@ -75,7 +75,7 @@
             {{ form_errors(detail_form.deposit) }}
             <input type="checkbox" id="{{ deposit_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Deposit</h3>
                     <p class="py-2 text-sm">Advance retention securing the vessel and crew for the charter window.</p>
                     <div class="modal-action">
@@ -86,7 +86,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set start_help_id = detail_form.startDate.vars.id ~ '-help' %}
         <div class="col-span-1" data-controller="imperial-date">
             <div class="flex items-center gap-2">
@@ -111,7 +111,7 @@
             {{ form_errors(detail_form.startDate.display) }}
             <input type="checkbox" id="{{ start_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Start date</h3>
                     <p class="py-2 text-sm">Charter window activation (imperial day/year).</p>
                     <div class="modal-action">
@@ -143,7 +143,7 @@
             {{ form_errors(detail_form.endDate.display) }}
             <input type="checkbox" id="{{ end_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">End date</h3>
                     <p class="py-2 text-sm">Charter window closeout (imperial day/year).</p>
                     <div class="modal-action">
@@ -154,7 +154,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set manifest_help_id = detail_form.manifestSummary.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -165,7 +165,7 @@
             {{ form_errors(detail_form.manifestSummary) }}
             <input type="checkbox" id="{{ manifest_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Manifest summary</h3>
                     <p class="py-2 text-sm">Brief passenger/cargo manifest filed for the charter run.</p>
                     <div class="modal-action">
@@ -185,7 +185,7 @@
             {{ form_errors(detail_form.paymentTerms) }}
             <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Payment terms</h3>
                     <p class="py-2 text-sm">Specify advance/on-delivery, milestones, currency, and any penalties for late payment.</p>
                     <div class="modal-action">
@@ -196,7 +196,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set extras_help_id = detail_form.extras.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -207,7 +207,7 @@
             {{ form_errors(detail_form.extras) }}
             <input type="checkbox" id="{{ extras_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Extras</h3>
                     <p class="py-2 text-sm">Fuel, port dues, crew overhead, or other charter pass-throughs.</p>
                     <div class="modal-action">
@@ -226,7 +226,7 @@
             {{ form_errors(detail_form.damageTerms) }}
             <input type="checkbox" id="{{ damage_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Damage terms</h3>
                     <p class="py-2 text-sm">Responsibility for damages or cleanup incurred during the charter.</p>
                     <div class="modal-action">
@@ -245,7 +245,7 @@
             {{ form_errors(detail_form.cancellationTerms) }}
             <input type="checkbox" id="{{ cancel_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Cancellation terms</h3>
                     <p class="py-2 text-sm">Fees or penalties applied if the charter is withdrawn.</p>
                     <div class="modal-action">
@@ -256,7 +256,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set proof_ref_help_id = detail_form.deliveryProofRef.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -267,7 +267,7 @@
             {{ form_errors(detail_form.deliveryProofRef) }}
             <input type="checkbox" id="{{ proof_ref_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Delivery proof ref</h3>
                     <p class="py-2 text-sm">Receipt or port protocol ID confirming charter completion.</p>
                     <div class="modal-action">
@@ -299,7 +299,7 @@
             {{ form_errors(detail_form.deliveryProofDate.display) }}
             <input type="checkbox" id="{{ proof_date_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Delivery proof date</h3>
                     <p class="py-2 text-sm">Recorded completion date for the charter service.</p>
                     <div class="modal-action">

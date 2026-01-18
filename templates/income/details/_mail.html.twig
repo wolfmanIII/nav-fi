@@ -1,9 +1,9 @@
-<fieldset class="fieldset grid grid-cols-3 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-    <legend class="fieldset-legend">
-        {% include 'icons/income.html.twig' %} MAIL Details
+<fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+    <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">
+        MAIL Details
     </legend>
 
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
             <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
                  style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 alert alert-info alert-outline shadow-sm flex items-start gap-2">
+    <div class="col-span-2 alert alert-info alert-outline shadow-sm flex items-start gap-2">
         <span class="pt-0.5 animate-spin-slow">{% include 'icons/radar.html.twig' %}</span>
         <p class="text-sm">Mail run manifest: authority/carrier references, route and dispatch/delivery window, mail type, security level and payment terms.</p>
     </div>
@@ -36,7 +36,7 @@
         {{ form_errors(detail_form.origin) }}
         <input type="checkbox" id="{{ origin_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Origin</h3>
                 <p class="py-2 text-sm">Mail dispatch origin port or authority hub.</p>
                 <div class="modal-action">
@@ -55,7 +55,7 @@
         {{ form_errors(detail_form.destination) }}
         <input type="checkbox" id="{{ destination_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Destination</h3>
                 <p class="py-2 text-sm">Delivery port or authority hub receiving the mail run.</p>
                 <div class="modal-action">
@@ -65,7 +65,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
         {% set dispatch_day = data ? data.dispatchDay : null %}
         {% set dispatch_year = data ? data.dispatchYear : null %}
@@ -90,7 +90,7 @@
             {{ form_errors(detail_form.dispatchDate.display) }}
             <input type="checkbox" id="{{ dispatch_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Dispatch date</h3>
                     <p class="py-2 text-sm">Scheduled launch window for the mail run.</p>
                     <div class="modal-action">
@@ -122,7 +122,7 @@
             {{ form_errors(detail_form.deliveryDate.display) }}
             <input type="checkbox" id="{{ delivery_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Delivery date</h3>
                     <p class="py-2 text-sm">Scheduled delivery window at the destination hub.</p>
                     <div class="modal-action">
@@ -143,7 +143,7 @@
         {{ form_errors(detail_form.mailType) }}
         <input type="checkbox" id="{{ type_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Mail type</h3>
                 <p class="py-2 text-sm">Classify the mail shipment per authority registry.</p>
                 <div class="modal-action">
@@ -162,7 +162,7 @@
         {{ form_errors(detail_form.packageCount) }}
         <input type="checkbox" id="{{ package_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Package count</h3>
                 <p class="py-2 text-sm">Number of sealed packages in the run.</p>
                 <div class="modal-action">
@@ -181,7 +181,7 @@
         {{ form_errors(detail_form.totalMass) }}
         <input type="checkbox" id="{{ mass_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Total mass</h3>
                 <p class="py-2 text-sm">Declared total mass/tonnage for the mail consignment.</p>
                 <div class="modal-action">
@@ -200,7 +200,7 @@
         {{ form_errors(detail_form.securityLevel) }}
         <input type="checkbox" id="{{ security_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Security level</h3>
                 <p class="py-2 text-sm">Authority-mandated security classification for the run.</p>
                 <div class="modal-action">
@@ -219,7 +219,7 @@
         {{ form_errors(detail_form.sealCodes) }}
         <input type="checkbox" id="{{ seal_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Seal codes</h3>
                 <p class="py-2 text-sm">Seal identifiers or tamper-evident tags applied at dispatch.</p>
                 <div class="modal-action">
@@ -229,7 +229,7 @@
         </div>
     </div>
     {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="flex items-center gap-2">
             {{ form_label(detail_form.paymentTerms) }}
             <label for="{{ pay_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
@@ -238,7 +238,7 @@
         {{ form_errors(detail_form.paymentTerms) }}
         <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Payment terms</h3>
                 <p class="py-2 text-sm">When and how the mail service is paid (prepaid, COD, staged delivery).</p>
                 <div class="modal-action">
@@ -248,7 +248,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set pod_help_id = detail_form.proofOfDelivery.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -259,7 +259,7 @@
             {{ form_errors(detail_form.proofOfDelivery) }}
             <input type="checkbox" id="{{ pod_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Proof of delivery</h3>
                     <p class="py-2 text-sm">Select the evidence required to validate delivery (signature, stamp, barcode, secure drop, etc.).</p>
                     <div class="modal-action">
@@ -278,7 +278,7 @@
             {{ form_errors(detail_form.liabilityLimit) }}
             <input type="checkbox" id="{{ liability_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Liability limit</h3>
                     <p class="py-2 text-sm">Cap on carrier liability for loss or damage.</p>
                     <div class="modal-action">
@@ -289,7 +289,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set proof_ref_help_id = detail_form.deliveryProofRef.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -300,7 +300,7 @@
             {{ form_errors(detail_form.deliveryProofRef) }}
             <input type="checkbox" id="{{ proof_ref_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Delivery proof ref</h3>
                     <p class="py-2 text-sm">Receipt or authority protocol confirming delivery.</p>
                     <div class="modal-action">
@@ -332,7 +332,7 @@
             {{ form_errors(detail_form.deliveryProofDate.display) }}
             <input type="checkbox" id="{{ proof_date_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Delivery proof date</h3>
                     <p class="py-2 text-sm">Confirmation timestamp for handoff acceptance.</p>
                     <div class="modal-action">
@@ -351,7 +351,7 @@
             {{ form_errors(detail_form.deliveryProofReceivedBy) }}
             <input type="checkbox" id="{{ proof_received_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Received by</h3>
                     <p class="py-2 text-sm">Officer or terminal authority who confirmed receipt.</p>
                     <div class="modal-action">

@@ -1,9 +1,9 @@
-<fieldset class="fieldset grid grid-cols-3 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-    <legend class="fieldset-legend">
-        {% include 'icons/income.html.twig' %} TRADE Details
+<fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+    <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">
+        TRADE Details
     </legend>
 
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
             <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
                  style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 alert alert-info alert-outline shadow-sm flex items-start gap-2">
+    <div class="col-span-2 alert alert-info alert-outline shadow-sm flex items-start gap-2">
         <span class="pt-0.5 animate-spin-slow">{% include 'icons/radar.html.twig' %}</span>
         <p class="text-sm">Buy/sell deal sheet: goods description, quantity/grade, price and payment terms, delivery/transfer conditions and warranty/returns.</p>
     </div>
@@ -36,7 +36,7 @@
         {{ form_errors(detail_form.location) }}
         <input type="checkbox" id="{{ location_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Location</h3>
                 <p class="py-2 text-sm">Exchange location or primary market where the deal is executed.</p>
                 <div class="modal-action">
@@ -55,7 +55,7 @@
         {{ form_errors(detail_form.transferPoint) }}
         <input type="checkbox" id="{{ transfer_point_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Transfer point</h3>
                 <p class="py-2 text-sm">Physical handoff site or storage node for the goods.</p>
                 <div class="modal-action">
@@ -74,7 +74,7 @@
         {{ form_errors(detail_form.transferCondition) }}
         <input type="checkbox" id="{{ transfer_condition_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Transfer condition</h3>
                 <p class="py-2 text-sm">Condition that triggers ownership transfer (payment, inspection, delivery).</p>
                 <div class="modal-action">
@@ -84,7 +84,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set qty_help_id = detail_form.qty.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -95,7 +95,7 @@
             {{ form_errors(detail_form.qty) }}
             <input type="checkbox" id="{{ qty_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Quantity</h3>
                     <p class="py-2 text-sm">Total units or dT recorded for the lot.</p>
                     <div class="modal-action">
@@ -114,7 +114,7 @@
             {{ form_errors(detail_form.grade) }}
             <input type="checkbox" id="{{ grade_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Grade</h3>
                     <p class="py-2 text-sm">Quality grade or inspection tier.</p>
                     <div class="modal-action">
@@ -133,7 +133,7 @@
             {{ form_errors(detail_form.unitPrice) }}
             <input type="checkbox" id="{{ unit_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Unit price</h3>
                     <p class="py-2 text-sm">Price per unit or dT for the lot.</p>
                     <div class="modal-action">
@@ -144,7 +144,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set goods_help_id = detail_form.goodsDescription.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -155,7 +155,7 @@
             {{ form_errors(detail_form.goodsDescription) }}
             <input type="checkbox" id="{{ goods_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Goods description</h3>
                     <p class="py-2 text-sm">Manifest description of the traded lot.</p>
                     <div class="modal-action">
@@ -174,7 +174,7 @@
             {{ form_errors(detail_form.batchIds) }}
             <input type="checkbox" id="{{ batch_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Batch IDs</h3>
                     <p class="py-2 text-sm">Container, lot, or batch identifiers for the shipment.</p>
                     <div class="modal-action">
@@ -185,7 +185,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         <div class="col-span-1 grid grid-cols-2 gap-4">
             {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
             <div>
@@ -197,7 +197,7 @@
                 {{ form_errors(detail_form.paymentTerms) }}
                 <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
                 <div class="modal" role="dialog">
-                    <div class="modal-box">
+                    <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                         <h3 class="font-bold">Payment terms</h3>
                         <p class="py-2 text-sm">Define deposits, balance on delivery/inspection, escrow, or LC conditions for the trade.</p>
                         <div class="modal-action">
@@ -230,7 +230,7 @@
                 {{ form_errors(detail_form.deliveryDate.display) }}
                 <input type="checkbox" id="{{ delivery_help_id }}" class="modal-toggle hidden" />
                 <div class="modal" role="dialog">
-                    <div class="modal-box">
+                    <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                         <h3 class="font-bold">Delivery date</h3>
                         <p class="py-2 text-sm">Declared delivery or inspection window.</p>
                         <div class="modal-action">
@@ -251,7 +251,7 @@
                 {{ form_errors(detail_form.asIsOrWarranty) }}
                 <input type="checkbox" id="{{ asis_help_id }}" class="modal-toggle hidden" />
                 <div class="modal" role="dialog">
-                    <div class="modal-box">
+                    <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                         <h3 class="font-bold">As-is / Warranty</h3>
                         <p class="py-2 text-sm">Specify sale condition (as-is or warranty-backed).</p>
                         <div class="modal-action">
@@ -264,7 +264,7 @@
     </div>
 
 
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         <div class="col-span-1 grid grid-cols-2 gap-4">
             {% set method_help_id = detail_form.deliveryMethod.vars.id ~ '-help' %}
             <div>
@@ -276,9 +276,9 @@
                 {{ form_errors(detail_form.deliveryMethod) }}
                 <input type="checkbox" id="{{ method_help_id }}" class="modal-toggle hidden" />
                 <div class="modal" role="dialog">
-                    <div class="modal-box">
+                    <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                         <h3 class="font-bold">Delivery method</h3>
-                        <p class="py-2 text-sm">Method of delivery or transfer (ship-to-ship, depot, bonded).</p>
+                        <p class="py-2 text-sm">Method of delivery or transfer (vessel-to-vessel, depot, bonded).</p>
                         <div class="modal-action">
                             <label for="{{ method_help_id }}" class="btn btn-primary">Close</label>
                         </div>
@@ -295,7 +295,7 @@
                 {{ form_errors(detail_form.warrantyText) }}
                 <input type="checkbox" id="{{ warranty_help_id }}" class="modal-toggle hidden" />
                 <div class="modal" role="dialog">
-                    <div class="modal-box">
+                    <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                         <h3 class="font-bold">Warranty</h3>
                         <p class="py-2 text-sm">Warranty clauses or exclusions for the goods.</p>
                         <div class="modal-action">
@@ -316,7 +316,7 @@
                 {{ form_errors(detail_form.claimWindow) }}
                 <input type="checkbox" id="{{ claim_help_id }}" class="modal-toggle hidden" />
                 <div class="modal" role="dialog">
-                    <div class="modal-box">
+                    <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                         <h3 class="font-bold">Claim window</h3>
                         <p class="py-2 text-sm">Time allowed to lodge a dispute or inspection claim.</p>
                         <div class="modal-action">
@@ -335,7 +335,7 @@
                 {{ form_errors(detail_form.returnPolicy) }}
                 <input type="checkbox" id="{{ return_help_id }}" class="modal-toggle hidden" />
                 <div class="modal" role="dialog">
-                    <div class="modal-box">
+                    <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                         <h3 class="font-bold">Return policy</h3>
                         <p class="py-2 text-sm">Return or cancellation terms for the trade.</p>
                         <div class="modal-action">
@@ -347,7 +347,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set proof_ref_help_id = detail_form.deliveryProofRef.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -358,7 +358,7 @@
             {{ form_errors(detail_form.deliveryProofRef) }}
             <input type="checkbox" id="{{ proof_ref_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Delivery proof ref</h3>
                     <p class="py-2 text-sm">Receipt or port protocol ID confirming delivery.</p>
                     <div class="modal-action">
@@ -390,7 +390,7 @@
             {{ form_errors(detail_form.deliveryProofDate.display) }}
             <input type="checkbox" id="{{ proof_date_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Delivery proof date</h3>
                     <p class="py-2 text-sm">Confirmation timestamp for delivery acceptance.</p>
                     <div class="modal-action">
@@ -409,7 +409,7 @@
             {{ form_errors(detail_form.deliveryProofReceivedBy) }}
             <input type="checkbox" id="{{ proof_received_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Received by</h3>
                     <p class="py-2 text-sm">Officer or authority who confirmed receipt.</p>
                     <div class="modal-action">

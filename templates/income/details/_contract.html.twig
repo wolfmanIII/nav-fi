@@ -1,9 +1,9 @@
-<fieldset class="fieldset grid grid-cols-3 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-    <legend class="fieldset-legend">
-        {% include 'icons/income.html.twig' %} CONTRACT Details
+<fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+    <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">
+        CONTRACT Details
     </legend>
 
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
             <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
                  style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 alert alert-info alert-outline shadow-sm flex items-start gap-2">
+    <div class="col-span-2 alert alert-info alert-outline shadow-sm flex items-start gap-2">
         <span class="pt-0.5 animate-spin-slow">{% include 'icons/radar.html.twig' %}</span>
         <p class="text-sm">Mission / job engagement: patron, scope/objective, schedule window, pay/bonus/expenses and restrictions/confidentiality.</p>
     </div>
@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set location_help_id = detail_form.location.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -57,7 +57,7 @@
             {{ form_errors(detail_form.location) }}
             <input type="checkbox" id="{{ location_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Location</h3>
                     <p class="py-2 text-sm">Primary theater of operation or jurisdiction where the contract applies.</p>
                     <div class="modal-action">
@@ -76,7 +76,7 @@
             {{ form_errors(detail_form.objective) }}
             <input type="checkbox" id="{{ objective_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Objective</h3>
                     <p class="py-2 text-sm">Mission goal and deliverable criteria required by the patron.</p>
                     <div class="modal-action">
@@ -95,7 +95,7 @@
             {{ form_errors(detail_form.successCondition) }}
             <input type="checkbox" id="{{ success_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Success condition</h3>
                     <p class="py-2 text-sm">Define the acceptance condition that triggers completion.</p>
                     <div class="modal-action">
@@ -113,7 +113,7 @@
     {% set deadline_day = data ? data.deadlineDay : null %}
     {% set deadline_year = data ? data.deadlineYear : null %}
     {% set deadline_value = (deadline_day is not null and deadline_year is not null) ? (deadline_day|imperial_date(deadline_year)) : '' %}
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set start_help_id = detail_form.startDate.vars.id ~ '-help' %}
         <div class="col-span-1" data-controller="imperial-date">
             <div class="flex items-center gap-2">
@@ -134,7 +134,7 @@
             {{ form_errors(detail_form.startDate.display) }}
             <input type="checkbox" id="{{ start_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Start date</h3>
                     <p class="py-2 text-sm">Contract activation window in imperial day/year.</p>
                     <div class="modal-action">
@@ -163,7 +163,7 @@
             {{ form_errors(detail_form.deadlineDate.display) }}
             <input type="checkbox" id="{{ deadline_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Deadline</h3>
                     <p class="py-2 text-sm">Cutoff for completion or reporting as defined by the patron.</p>
                     <div class="modal-action">
@@ -213,7 +213,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set expenses_help_id = detail_form.expensesPolicy.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -224,7 +224,7 @@
             {{ form_errors(detail_form.expensesPolicy) }}
             <input type="checkbox" id="{{ expenses_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Expenses policy</h3>
                     <p class="py-2 text-sm">Define reimbursable costs, caps, and audit requirements.</p>
                     <div class="modal-action">
@@ -243,7 +243,7 @@
             {{ form_errors(detail_form.restrictions) }}
             <input type="checkbox" id="{{ restrictions_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Restrictions</h3>
                     <p class="py-2 text-sm">Operational limits, no-fly zones, or prohibited methods.</p>
                     <div class="modal-action">
@@ -262,7 +262,7 @@
             {{ form_errors(detail_form.confidentialityLevel) }}
             <input type="checkbox" id="{{ confidentiality_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Confidentiality level</h3>
                     <p class="py-2 text-sm">Disclosure tier for mission data and client identity.</p>
                     <div class="modal-action">
@@ -273,7 +273,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set failure_help_id = detail_form.failureTerms.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -284,7 +284,7 @@
             {{ form_errors(detail_form.failureTerms) }}
             <input type="checkbox" id="{{ failure_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Failure terms</h3>
                     <p class="py-2 text-sm">Penalties, forfeitures, or remediation required on non‑performance.</p>
                     <div class="modal-action">
@@ -303,7 +303,7 @@
             {{ form_errors(detail_form.cancellationTerms) }}
             <input type="checkbox" id="{{ cancel_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Cancellation terms</h3>
                     <p class="py-2 text-sm">Withdrawals, off-ramps, and the cost of early termination.</p>
                     <div class="modal-action">

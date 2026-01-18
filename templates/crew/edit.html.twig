@@ -15,215 +15,213 @@
 
         {{ form_widget(form._token) }}
 
-        <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-            <legend class="fieldset-legend">Crew</legend>
-
-            <div class="col-span-2">
-                <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
-                    <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
-                         style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
-                    </div>
-                    <div class="relative p-4 flex items-start gap-3">
-                        <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
-                            {% include 'icons/crew.html.twig' %}
-                        </div>
-                        <div>
-                            <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Crew sheet</p>
-                            <h3 class="font-semibold text-cyan-100 text-xl leading-tight">Bridge roles</h3>
-                            <p class="text-sm text-cyan-100/80">Define bridge roles and captain before departure: the crew is the heart of your asset.</p>
-                        </div>
-                    </div>
+        <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-6">
+            <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
+                 style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
+            </div>
+            <div class="relative p-4 flex items-start gap-4">
+                <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
+                    {% include 'icons/crew.html.twig' %}
+                </div>
+                <div>
+                    <p class="uppercase text-[10px] tracking-[0.3em] text-cyan-300/70 font-bold font-orbitron mb-0.5">Personnel File // Service Registry</p>
+                    <h3 class="font-bold text-cyan-100 text-2xl leading-tight font-orbitron uppercase">Biometric Data</h3>
+                    <p class="text-xs text-cyan-100/60 font-rajdhani tracking-widest uppercase truncate">Identity and origin: every operative in the registry must be uniquely identified.</p>
                 </div>
             </div>
+        </div>
+
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Service Record</legend>
 
             {% if crew.id %}
                 <div class="col-span-2">
-                    <label class="block text-slate-300">Code</label>
-                    <div class="m-1 w-full"><b>{{ crew.code }}</b></div>
+                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron mb-1 opacity-50">Fleet ID // Code</label>
+                    <div class="px-3 py-2 rounded bg-slate-950/50 border border-slate-800 font-mono text-cyan-400 text-sm"><b>{{ crew.code }}</b></div>
                 </div>
             {% endif %}
 
-            {% set statusHasErrors = form.status.vars.errors|length > 0 %}
-            {% set dateErrorCount = 0 %}
-            {% for dateField in ['activeDate', 'onLeaveDate', 'retiredDate', 'miaDate', 'deceasedDate'] %}
-                {% set dateErrorCount = dateErrorCount + attribute(form, dateField).vars.errors|length %}
-                {% set dateErrorCount = dateErrorCount + attribute(form, dateField).display.vars.errors|length %}
-                {% set dateErrorCount = dateErrorCount + attribute(form, dateField).year.vars.errors|length %}
-                {% set dateErrorCount = dateErrorCount + attribute(form, dateField).day.vars.errors|length %}
-            {% endfor %}
-            {% if statusHasErrors or dateErrorCount > 0 or form.vars.errors|length > 0 %}
-                <div class="col-span-2">
-                    <div class="alert alert-error alert-outline shadow-sm">
-                        <span class="flex items-center justify-center animate-spin-slow">
-                            {% include 'icons/radar.html.twig' %}
-                        </span>
-                        <div class="text-xs text-rose-100">
-                            {{ form_errors(form) }}
-                            {{ form_errors(form.status) }}
-                            {% for dateField in ['activeDate', 'onLeaveDate', 'retiredDate', 'miaDate', 'deceasedDate'] %}
-                                {{ form_errors(attribute(form, dateField)) }}
-                                {{ form_errors(attribute(form, dateField).display) }}
-                                {{ form_errors(attribute(form, dateField).year) }}
-                                {{ form_errors(attribute(form, dateField).day) }}
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-
-            <div>
+            <div class="col-span-1">
                 {{ form_label(form.name) }}
-                {{ form_widget(form.name) }}
+                {{ form_widget(form.name, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.name) }}
             </div>
 
-            <div>
+            <div class="col-span-1">
                 {{ form_label(form.surname) }}
-                {{ form_widget(form.surname) }}
+                {{ form_widget(form.surname, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.surname) }}
             </div>
 
-            <div>
+            <div class="col-span-1">
                 {{ form_label(form.nickname) }}
-                {{ form_widget(form.nickname) }}
+                {{ form_widget(form.nickname, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.nickname) }}
             </div>
 
-            <div class="col-span-2 grid grid-cols-2 gap-4" data-controller="imperial-date">
-                <div>
-                    {{ form_label(form.birthDate) }}
-                    {{ form_widget(form.birthDate.display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
-                    {{ form_widget(form.birthDate.year) }}
-                    {{ form_widget(form.birthDate.day) }}
-                    {{ form_errors(form.birthDate.display) }}
-                </div>
-                <div>
-                    {{ form_label(form.birthWorld) }}
-                    {{ form_widget(form.birthWorld) }}
-                    {{ form_errors(form.birthWorld) }}
-                </div>
+            <div class="col-span-1">
+                {{ form_label(form.birthWorld) }}
+                {{ form_widget(form.birthWorld, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
+                {{ form_errors(form.birthWorld) }}
             </div>
 
-            <div class="col-span-2">
-                <div class="alert alert-info alert-outline shadow-sm mt-2">
-                    <span class="flex items-center justify-center animate-spin-slow">
-                        {% include 'icons/radar.html.twig' %}
-                    </span>
-                    <div class="text-sm text-slate-200">
-                        <span class="block">Select a campaign to establish a secure link to the fleet registry and reveal available assets.</span>
-                        <span class="block opacity-80">This is a navigation filter only—if no asset is selected, the campaign choice is ignored and no assignment will be recorded.</span>
-                        <span class="block opacity-80">The crew record will still be saved, ready for a future assignment.</span>
-                    </div>
-                </div>
+            <div class="col-span-1" data-controller="imperial-date">
+                {{ form_label(form.birthDate) }}
+                {{ form_widget(form.birthDate.display, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700', 'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                {{ form_widget(form.birthDate.year) }}
+                {{ form_widget(form.birthDate.day) }}
+                {{ form_errors(form.birthDate.display) }}
             </div>
-
-            <div id="crew_roles_{{ crew.id }}" class="col-span-2 grid grid-cols-2 gap-4"
-                data-controller="campaign-asset role-selector asset-roles-toggle"
-                data-action="show->role-selector#prepareSelection close->role-selector#resetSelection cancel->role-selector#resetSelection">
-                <div>
-                    {{ form_label(form.campaign) }}
-                    {{ form_widget(form.campaign) }}
-                    {{ form_errors(form.campaign) }}
-                </div>
-                <div>
-                    {{ form_label(form.asset) }}
-                    {{ form_widget(form.asset, { attr: {
-                        'data-asset-roles-toggle-target': 'assetSelect',
-                        'data-action': 'change->asset-roles-toggle#refresh'
-                    }}) }}
-                    {{ form_errors(form.asset) }}
-                </div>
-                <div id="asset-roles-wrapper"
-                    data-asset-roles-toggle-target="wrapper"
-                    class="col-span-2 hidden">
-                    <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
-                        <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
-                             style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
-                        </div>
-                        <div class="relative p-4 space-y-3">
-                            <div class="flex items-start gap-3">
-                                <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
-                                    {% include 'icons/crew.html.twig' %}
-                                </div>
-                                <div>
-                                    <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Asset roles</p>
-                                    <h4 class="font-semibold text-cyan-100 text-lg leading-tight">Bridge manifest</h4>
-                                    <p class="text-sm text-cyan-100/80">Toggle assignments as if sealing the crew roster before departure.</p>
-                                </div>
-                            </div>
-                            <div class="space-y-2">
-                                {{ form_widget(form.assetRoles, {
-                                    attr: {
-                                        class: 'hidden',
-                                        'data-role-selector-target': 'select',
-                                        'data-asset-roles-toggle-target': 'assetRolesSelect',
-                                        autocomplete: 'off'
-                                    }
-                                }) }}
-                                <div class="flex items-center gap-2">
-                                    {{ form_label(form.assetRoles) }}
-                                    <span class="badge badge-outline badge-info badge-xs">tap to toggle</span>
-                                </div>
-                                <div class="flex flex-wrap gap-2" data-role-selector-target="chips"></div>
-                                {{ form_errors(form.assetRoles) }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-span-2">
-                    <div class="alert alert-info alert-outline shadow-sm mt-2" data-asset-roles-toggle-target="statusHelper">
-                        <span class="flex items-center justify-center animate-spin-slow">
-                            {% include 'icons/radar.html.twig' %}
-                        </span>
-                        <div class="text-xs text-slate-200">
-                            Select an asset to unlock status tracking and asset roles for this crew member.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-span-2 grid grid-cols-2 gap-4 items-end" data-controller="crew-status-date" data-asset-roles-toggle-target="statusWrapper">
-                    <div class="space-y-1">
-                        {{ form_label(form.status) }}
-                        {{ form_widget(form.status, { attr: {
-                            'data-crew-status-date-target': 'status',
-                            'data-asset-roles-toggle-target': 'statusSelect',
-                            'data-action': 'change->crew-status-date#toggle'
-                        } }) }}
-                    </div>
-                    {% for row in [
-                        {'field': 'activeDate', 'label': 'Active date', 'target': 'active'},
-                        {'field': 'onLeaveDate', 'label': 'On leave date', 'target': 'onLeave'},
-                        {'field': 'retiredDate', 'label': 'Retired date', 'target': 'retired'},
-                        {'field': 'miaDate', 'label': 'MIA date', 'target': 'mia'},
-                        {'field': 'deceasedDate', 'label': 'Deceased date', 'target': 'deceased'}
-                    ] %}
-                        <div data-controller="imperial-date" data-crew-status-date-target="{{ row.target }}" class="hidden space-y-1">
-                            {{ form_label(attribute(form, row.field)) }}
-                            {{ form_widget(attribute(form, row.field).display, { attr: {'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
-                            {{ form_widget(attribute(form, row.field).year) }}
-                            {{ form_widget(attribute(form, row.field).day) }}
-                            {{ form_errors(attribute(form, row.field).display) }}
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div class="col-span-2">
-                {{ form_label(form.background) }}
-                {{ form_widget(form.background) }}
-                {{ form_errors(form.background) }}
-            </div>
-
         </fieldset>
 
-        <button type="submit"
-                class="btn btn-outline btn-primary mt-4 mb-4 mr-4"
-                {% if not (crew.id ? can_edit : can_create) %} disabled {% endif %}
-        >
-            Save
-        </button>
-        <a href="{{ path('app_crew_index') }}" role="button" class="btn btn-outline btn-default mt-4 mb-4 mr-4">Cancel</a>
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative"
+                  data-controller="campaign-asset role-selector asset-roles-toggle"
+                  data-action="show->role-selector#prepareSelection close->role-selector#resetSelection cancel->role-selector#resetSelection">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Tactical Assignment</legend>
+
+            <div class="col-span-2">
+                <div class="alert alert-info alert-outline shadow-sm border-cyan-500/30 bg-cyan-500/5">
+                    <div class="animate-spin-slow text-cyan-500">
+                        {% include 'icons/radar.html.twig' with { dim: 24 } %}
+                    </div>
+                    <div class="text-sm text-slate-200 font-rajdhani">
+                        <span class="block uppercase tracking-wider font-bold text-cyan-200">Deployment Protocol</span>
+                        <span class="block opacity-80">Link human resources to an Asset // Mission to enable deployment tracking.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-span-1">
+                {{ form_label(form.campaign) }}
+                {{ form_widget(form.campaign, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                {{ form_errors(form.campaign) }}
+            </div>
+
+            <div class="col-span-1">
+                {{ form_label(form.asset) }}
+                {{ form_widget(form.asset, { attr: {
+                    class: 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                    'data-asset-roles-toggle-target': 'assetSelect',
+                    'data-action': 'change->asset-roles-toggle#refresh'
+                }}) }}
+                {{ form_errors(form.asset) }}
+            </div>
+
+            <div id="asset-roles-wrapper"
+                data-asset-roles-toggle-target="wrapper"
+                class="col-span-2 hidden">
+                <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mt-2">
+                    <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
+                         style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
+                    </div>
+                    <div class="relative p-4 space-y-3">
+                        <div class="flex items-start gap-3">
+                            <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
+                                {% include 'icons/crew.html.twig' %}
+                            </div>
+                            <div>
+                                <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Roles Allocation</p>
+                                <h4 class="font-semibold text-cyan-100 text-lg leading-tight uppercase font-orbitron">Asset Manifest</h4>
+                                <p class="text-xs text-cyan-100/80 font-rajdhani tracking-widest uppercase mt-1">Authorized personnel bridge clearance.</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            {{ form_widget(form.assetRoles, {
+                                attr: {
+                                    class: 'hidden',
+                                    'data-role-selector-target': 'select',
+                                    'data-asset-roles-toggle-target': 'assetRolesSelect',
+                                    autocomplete: 'off'
+                                }
+                            }) }}
+                            <div class="flex items-center gap-2">
+                                {{ form_label(form.assetRoles) }}
+                                <span class="badge badge-outline badge-info badge-xs uppercase tracking-tighter">[tap to toggle]</span>
+                            </div>
+                            <div class="flex flex-wrap gap-2" data-role-selector-target="chips"></div>
+                            {{ form_errors(form.assetRoles) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Duty Status</legend>
+
+            <div class="col-span-2">
+                <div class="alert alert-info alert-outline shadow-sm border-cyan-500/30 bg-cyan-500/5 mb-4" data-asset-roles-toggle-target="statusHelper">
+                    <div class="animate-spin-slow text-cyan-500">
+                        {% include 'icons/radar.html.twig' with { dim: 24 } %}
+                    </div>
+                    <div class="text-xs text-slate-200 font-rajdhani uppercase tracking-widest font-bold">
+                        Select an <span class="text-cyan-400">Asset</span> to authorize status tracking and log service dates.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 items-end" data-controller="crew-status-date" data-asset-roles-toggle-target="statusWrapper">
+                <div>
+                    {% set status_help_id = form.status.vars.id ~ '-help' %}
+                    <div class="flex items-center gap-2 mb-1">
+                        {{ form_label(form.status) }}
+                        <label for="{{ status_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest">[info]</label>
+                    </div>
+                    {{ form_widget(form.status, { attr: {
+                        class: 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                        'data-crew-status-date-target': 'status',
+                        'data-asset-roles-toggle-target': 'statusSelect',
+                        'data-action': 'change->crew-status-date#toggle'
+                    } }) }}
+                    {{ form_errors(form.status) }}
+                    <input type="checkbox" id="{{ status_help_id }}" class="modal-toggle hidden" />
+                    <div class="modal" role="dialog">
+                        <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
+                            <h3 class="font-bold text-cyan-100 font-orbitron uppercase tracking-widest text-sm mb-4">Tactical Status Protocol</h3>
+                            <p class="py-2 text-sm text-slate-300 font-rajdhani">Status changes trigger chronological logging. Ensure the associated date reflects the exact session day when the status was updated.</p>
+                            <div class="modal-action">
+                                <label for="{{ status_help_id }}" class="btn btn-primary btn-sm btn-outline font-orbitron uppercase text-[10px]">Close</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% for row in [
+                    {'field': 'activeDate', 'label': 'Active date', 'target': 'active'},
+                    {'field': 'onLeaveDate', 'label': 'On leave date', 'target': 'onLeave'},
+                    {'field': 'retiredDate', 'label': 'Retired date', 'target': 'retired'},
+                    {'field': 'miaDate', 'label': 'MIA date', 'target': 'mia'},
+                    {'field': 'deceasedDate', 'label': 'Deceased date', 'target': 'deceased'}
+                ] %}
+                    <div data-controller="imperial-date" data-crew-status-date-target="{{ row.target }}" class="hidden">
+                        {{ form_label(attribute(form, row.field)) }}
+                        {{ form_widget(attribute(form, row.field).display, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700', 'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                        {{ form_widget(attribute(form, row.field).year) }}
+                        {{ form_widget(attribute(form, row.field).day) }}
+                        {{ form_errors(attribute(form, row.field).display) }}
+                    </div>
+                {% endfor %}
+            </div>
+        </fieldset>
+
+        <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-8 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-slate-400 uppercase">Personnel File</legend>
+            <div>
+                {{ form_label(form.background) }}
+                {{ form_widget(form.background, { attr: { class: 'textarea textarea-bordered w-full bg-slate-950/50 border-slate-700 h-32 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Enter tactical dossier / background history...' } }) }}
+                {{ form_errors(form.background) }}
+            </div>
+        </fieldset>
+
+        <div class="flex gap-4 mb-8">
+            <button type="submit"
+                    class="btn btn-primary font-orbitron uppercase tracking-widest text-[10px] px-8"
+                    {% if not (crew.id ? can_edit : can_create) %} disabled {% endif %}
+            >
+                Confirm Enrollment
+            </button>
+            <a href="{{ path('app_crew_index') }}" role="button" class="btn btn-outline btn-sm font-orbitron uppercase tracking-widest text-[10px]">Abort Changes</a>
+        </div>
 
         {{ form_end(form, { render_rest: false }) }}
 

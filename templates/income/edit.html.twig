@@ -86,16 +86,10 @@
         <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Primary Data</legend>
 
-            <div class="col-span-2 md:col-span-1">
+            <div class="col-span-2">
                 {{ form_label(form.title) }}
                 {{ form_widget(form.title, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.title) }}
-            </div>
-
-            <div class="col-span-2 md:col-span-1">
-                {{ form_label(form.localLaw) }}
-                {{ form_widget(form.localLaw, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
-                {{ form_errors(form.localLaw) }}
             </div>
 
             <div class="col-span-2 md:col-span-1">
@@ -111,6 +105,23 @@
             </div>
 
             <div class="col-span-2 md:col-span-1">
+                {{ form_label(form.amount) }}
+                {{ form_widget(form.amount, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
+                {{ form_errors(form.amount) }}
+            </div>
+
+            <div class="col-span-2 md:col-span-1" data-controller="imperial-date">
+                {{ form_label(form.paymentDate) }}
+                {{ form_widget(form.paymentDate.display, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700', 'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                {{ form_widget(form.paymentDate.year) }}
+                {{ form_widget(form.paymentDate.day) }}
+                {{ form_errors(form.paymentDate.display) }}
+            </div>
+        </fieldset>
+
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Logistics & Classification</legend>
+            <div class="col-span-2 md:col-span-1">
                 {{ form_label(form.company) }}
                 {{ form_widget(form.company, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
                 {{ form_errors(form.company) }}
@@ -121,10 +132,16 @@
                 {{ form_widget(form.incomeCategory, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
                 {{ form_errors(form.incomeCategory) }}
             </div>
+
+            <div class="col-span-2">
+                {{ form_label(form.localLaw) }}
+                {{ form_widget(form.localLaw, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                {{ form_errors(form.localLaw) }}
+            </div>
         </fieldset>
 
         <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
-            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Status & Location</legend>
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Status & Location</legend>
 
             <div class="col-span-2 md:col-span-1">
                 {% set status_help_id = form.status.vars.id ~ '-help' %}
@@ -136,7 +153,7 @@
                 {{ form_errors(form.status) }}
                 <input type="checkbox" id="{{ status_help_id }}" class="modal-toggle hidden" />
                 <div class="modal" role="dialog">
-                    <div class="modal-box bg-slate-900 border border-slate-700">
+                    <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                         <h3 class="font-bold text-cyan-100 font-orbitron uppercase tracking-widest text-sm mb-4">Tactical Info: Contract Status</h3>
                         <p class="py-2 text-sm text-slate-300 font-rajdhani">Status is auto-managed: Draft until a signing date is recorded, then it locks to Signed.</p>
                         <div class="modal-action">
@@ -159,26 +176,8 @@
                 {{ form_widget(form.signingDate.day) }}
                 {{ form_errors(form.signingDate.display) }}
             </div>
-        </fieldset>
 
-        <fieldset class="grid grid-cols-3 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
-            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-emerald-500/80 uppercase">Financial Metrics</legend>
-
-            <div class="col-span-3 md:col-span-1">
-                {{ form_label(form.amount) }}
-                {{ form_widget(form.amount, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
-                {{ form_errors(form.amount) }}
-            </div>
-
-            <div class="col-span-3 md:col-span-1" data-controller="imperial-date">
-                {{ form_label(form.paymentDate) }}
-                {{ form_widget(form.paymentDate.display, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700', 'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
-                {{ form_widget(form.paymentDate.year) }}
-                {{ form_widget(form.paymentDate.day) }}
-                {{ form_errors(form.paymentDate.display) }}
-            </div>
-
-            <div class="col-span-3 md:col-span-1" data-controller="imperial-date">
+            <div class="col-span-2 md:col-span-1" data-controller="imperial-date">
                 {{ form_label(form.expirationDate) }}
                 {{ form_widget(form.expirationDate.display, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700', 'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
                 {{ form_widget(form.expirationDate.year) }}
@@ -186,6 +185,8 @@
                 {{ form_errors(form.expirationDate.display) }}
             </div>
         </fieldset>
+
+
 
         <turbo-frame id="income-details-frame">
         {% if form.charterDetails is defined %}{% include 'income/details/_charter.html.twig' with { detail_form: form.charterDetails } %}{% endif %}
@@ -202,10 +203,12 @@
         {% if form.contractDetails is defined %}{% include 'income/details/_contract.html.twig' with { detail_form: form.contractDetails } %}{% endif %}
         </turbo-frame>
 
-        <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+        <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-8 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-slate-400 uppercase">Operational Notes</legend>
-            {{ form_widget(form.note, { attr: { class: 'textarea textarea-bordered w-full bg-slate-950/50 border-slate-700 h-24 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Enter tactical notes here...' } }) }}
-            {{ form_errors(form.note) }}
+            <div>
+                {{ form_widget(form.note, { attr: { class: 'textarea textarea-bordered w-full bg-slate-950/50 border-slate-700 h-24 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Enter tactical notes here...' } }) }}
+                {{ form_errors(form.note) }}
+            </div>
         </fieldset>
 
         {% if income.id %}
@@ -219,7 +222,7 @@
                         {{ form_widget(form.cancelDate.day) }}
                         {{ form_errors(form.cancelDate.display) }}
                     </div>
-                    <div class="p-4 rounded-lg bg-red-500/5 border border-red-500/10 text-[10px] text-red-400/70 font-rajdhani tracking-widest uppercase">
+                    <div class="p-4 rounded-lg bg-red-500/5 border border-red-500/10 text-[10px] text-red-400/70 font-rajdhani tracking-widest uppercase flex items-center">
                         Protocol: Fill only if the contract was canceled. This date closes its validity window permanently.
                     </div>
                 </div>
@@ -227,7 +230,7 @@
         {% endif %}
 
         <div class="flex items-center justify-end gap-3 mb-10">
-            <a href="{{ path('app_income_index') }}" class="btn btn-ghost font-orbitron uppercase text-[10px] tracking-widest text-slate-500 hover:text-slate-300 font-bold">Abort Session</a>
+            <a href="{{ path('app_income_index') }}" class="btn btn-ghost font-orbitron uppercase text-[10px] tracking-widest text-slate-500 hover:text-slate-300 font-bold">Abort Changes</a>
             <button type="submit"
                     class="btn btn-primary px-8 font-orbitron uppercase text-[10px] tracking-widest font-bold shadow-lg shadow-cyan-500/10"
                     {% if not (income.id ? can_edit : can_create) %} disabled {% endif %}

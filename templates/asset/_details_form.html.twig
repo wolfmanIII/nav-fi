@@ -1,23 +1,23 @@
 {% import _self as detailsMacros %}
 
 {% macro render_item(child) %}
-    <div class="grid grid-cols-3 gap-2 border border-base-300 rounded p-3 relative collection-item bg-base-100">
+    <div class="grid grid-cols-3 gap-4 border border-slate-700 bg-slate-950/40 rounded-lg p-4 relative collection-item group hover:border-cyan-500/30 transition-colors">
         <button type="button"
-                class="btn btn-ghost btn-xs absolute right-1 top-1"
+                class="absolute -right-2 -top-2 w-6 h-6 rounded-full bg-slate-800 border border-slate-700 text-slate-400 hover:text-red-400 hover:border-red-500/50 flex items-center justify-center transition-all shadow-lg z-10"
                 data-action="asset-details#removeItem">&times;</button>
         <div>
             {{ form_label(child.description) }}
-            {{ form_widget(child.description) }}
+            {{ form_widget(child.description, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50' } }) }}
             {{ form_errors(child.description) }}
         </div>
         <div>
             {{ form_label(child.tons) }}
-            {{ form_widget(child.tons) }}
+            {{ form_widget(child.tons, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50' } }) }}
             {{ form_errors(child.tons) }}
         </div>
         <div>
             {{ form_label(child.costMcr) }}
-            {{ form_widget(child.costMcr) }}
+            {{ form_widget(child.costMcr, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50' } }) }}
             {{ form_errors(child.costMcr) }}
         </div>
     </div>
@@ -25,10 +25,10 @@
 
 {% macro render_collection(collection, title) %}
     <div class="space-y-2" data-asset-details-target="collection">
-        <div class="flex items-center justify-between">
-            <h4 class="font-semibold text-cyan-100">{{ title }}</h4>
-            <button type="button" class="btn btn-outline btn-xs"
-                    data-action="asset-details#addItem">+ Add</button>
+        <div class="flex items-center justify-between mb-2">
+            <h4 class="text-[10px] uppercase tracking-widest font-rajdhani font-bold text-slate-500">{{ title }}</h4>
+            <button type="button" class="btn btn-outline btn-xs font-orbitron uppercase tracking-widest text-[9px]"
+                    data-action="asset-details#addItem">+ Add Device</button>
         </div>
         <div class="space-y-2" data-asset-details-target="list">
             {% for child in collection %}
@@ -41,9 +41,9 @@
     </div>
 {% endmacro %}
 
-<fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full"
+<fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative"
          data-controller="asset-details">
-    <legend class="fieldset-legend">Asset Technical Details</legend>
+    <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Asset technical details</legend>
     <div class="col-span-2">
         <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-4">
             <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
@@ -62,26 +62,26 @@
         </div>
     </div>
     <div class="col-span-2">
-        <div class="alert alert-info flex items-start gap-2">
-            <div class="pt-0.5 animate-spin-slow">
-                {% include 'icons/radar.html.twig' %}
+        <div class="alert alert-info alert-outline border-cyan-500/50 bg-cyan-500/5 flex items-start gap-2">
+            <div class="pt-0.5 animate-spin-slow text-cyan-500">
+                {% include 'icons/radar.html.twig' with { dim: 16 } %}
             </div>
-            <div>
+            <div class="text-xs font-rajdhani uppercase tracking-widest font-bold text-cyan-200">
                 Total Cost is auto-calculated and stored with the asset details, but it does not affect the Asset Price field: set your asset price independently.
             </div>
         </div>
     </div>
 
-    <div class="col-span-2 grid grid-cols-3 gap-4">
-        <div>
+    <div class="col-span-1 grid grid-cols-2 gap-4">
+        <div class="col-span-1">
             {{ form_label(detailsForm.techLevel) }}
-            {{ form_widget(detailsForm.techLevel) }}
+            {{ form_widget(detailsForm.techLevel, { attr: { class: 'select select-bordered select-sm w-full bg-slate-950/50 border-slate-800' } }) }}
             {{ form_errors(detailsForm.techLevel) }}
         </div>
-        <div>
+        <div class="col-span-1">
             {{ form_label(detailsForm.totalCost) }}
             <input type="text"
-                   class="input m-1 w-full"
+                   class="input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 font-mono text-cyan-400"
                    data-asset-details-target="totalDisplay"
                    readonly
                    value="">
@@ -103,46 +103,46 @@
         { child: detailsForm.cargo, label: 'Cargo' },
     ] %}
 
-    <div class="col-span-2 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-2 lg:grid-cols-3 gap-4">
         {% for item in single_items %}
-            <div class="border border-base-300 rounded p-3 bg-base-100">
-                <div class="flex items-center gap-1 mb-1">
-                    <span class="font-semibold">{{ item.label }}</span>
+            <div class="border border-slate-700 bg-slate-950/40 rounded-lg p-4 relative group hover:border-cyan-500/30 transition-colors">
+                <div class="flex items-center gap-1 mb-2">
+                    <span class="text-[10px] uppercase tracking-widest font-orbitron font-bold text-cyan-500/70">{{ item.label }}</span>
                 </div>
-                <div>
+                <div class="mb-3">
                     {{ form_label(item.child.description) }}
-                    {{ form_widget(item.child.description) }}
+                    {{ form_widget(item.child.description, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50' } }) }}
                     {{ form_errors(item.child.description) }}
                 </div>
                 {% set has_drive_extra = item.child.thrust is defined or item.child.jump is defined or item.child.power is defined %}
-                <div class="grid gap-2 mt-2 {{ has_drive_extra ? 'grid-cols-3' : 'grid-cols-2' }}">
+                <div class="grid gap-2 {{ has_drive_extra ? 'grid-cols-3' : 'grid-cols-2' }}">
                     {% if item.child.thrust is defined %}
                         <div>
                             {{ form_label(item.child.thrust) }}
-                            {{ form_widget(item.child.thrust) }}
+                            {{ form_widget(item.child.thrust, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800' } }) }}
                             {{ form_errors(item.child.thrust) }}
                         </div>
                     {% elseif item.child.jump is defined %}
                         <div>
                             {{ form_label(item.child.jump) }}
-                            {{ form_widget(item.child.jump) }}
+                            {{ form_widget(item.child.jump, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800' } }) }}
                             {{ form_errors(item.child.jump) }}
                         </div>
                     {% elseif item.child.power is defined %}
                         <div>
                             {{ form_label(item.child.power) }}
-                            {{ form_widget(item.child.power) }}
+                            {{ form_widget(item.child.power, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800' } }) }}
                             {{ form_errors(item.child.power) }}
                         </div>
                     {% endif %}
                     <div>
                         {{ form_label(item.child.tons) }}
-                        {{ form_widget(item.child.tons) }}
+                        {{ form_widget(item.child.tons, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800' } }) }}
                         {{ form_errors(item.child.tons) }}
                     </div>
                     <div>
                         {{ form_label(item.child.costMcr) }}
-                        {{ form_widget(item.child.costMcr) }}
+                        {{ form_widget(item.child.costMcr, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800' } }) }}
                         {{ form_errors(item.child.costMcr) }}
                     </div>
                 </div>

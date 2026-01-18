@@ -1,9 +1,9 @@
-<fieldset class="fieldset grid grid-cols-3 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-    <legend class="fieldset-legend">
-        {% include 'icons/income.html.twig' %} PASSENGERS Details
+<fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+    <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">
+        PASSENGERS Details
     </legend>
 
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
             <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
                  style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 alert alert-info alert-outline shadow-sm flex items-start gap-2">
+    <div class="col-span-2 alert alert-info alert-outline shadow-sm flex items-start gap-2">
         <span class="pt-0.5 animate-spin-slow">{% include 'icons/radar.html.twig' %}</span>
         <p class="text-sm">Passenger carriage record: declared route, departure/arrival, berths, baggage allowances and refund/change conditions.</p>
     </div>
@@ -36,7 +36,7 @@
         {{ form_errors(detail_form.origin) }}
         <input type="checkbox" id="{{ origin_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Origin</h3>
                 <p class="py-2 text-sm">Departure port or orbital. Use the official port name or station designation.</p>
                 <div class="modal-action">
@@ -55,7 +55,7 @@
         {{ form_errors(detail_form.destination) }}
         <input type="checkbox" id="{{ destination_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Destination</h3>
                 <p class="py-2 text-sm">Arrival port or orbital. Match the authority registry where passengers disembark.</p>
                 <div class="modal-action">
@@ -65,7 +65,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
         {% set dep_day = data ? data.departureDay : null %}
         {% set dep_year = data ? data.departureYear : null %}
@@ -90,7 +90,7 @@
             {{ form_errors(detail_form.departureDate.display) }}
             <input type="checkbox" id="{{ dep_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Departure date</h3>
                     <p class="py-2 text-sm">Scheduled lift-off window in imperial day/year.</p>
                     <div class="modal-action">
@@ -123,7 +123,7 @@
             {{ form_errors(detail_form.arrivalDate.display) }}
             <input type="checkbox" id="{{ arr_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Arrival date</h3>
                     <p class="py-2 text-sm">Declared arrival slot, used for port clearance and passenger routing.</p>
                     <div class="modal-action">
@@ -144,7 +144,7 @@
         {{ form_errors(detail_form.classOrBerth) }}
         <input type="checkbox" id="{{ berth_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Class / Berth</h3>
                 <p class="py-2 text-sm">Declare berth class or deck tier (e.g., Low Passage, Standard, High, Luxury, or a specific berth code).</p>
                 <div class="modal-action">
@@ -163,7 +163,7 @@
         {{ form_errors(detail_form.qty) }}
         <input type="checkbox" id="{{ qty_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Qty</h3>
                 <p class="py-2 text-sm">Number of seats or berths reserved under this passage record.</p>
                 <div class="modal-action">
@@ -173,7 +173,7 @@
         </div>
     </div>
     {% set names_help_id = detail_form.passengerNames.vars.id ~ '-help' %}
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="flex items-center gap-2">
             {{ form_label(detail_form.passengerNames) }}
             <label for="{{ names_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
@@ -182,7 +182,7 @@
         {{ form_errors(detail_form.passengerNames) }}
         <input type="checkbox" id="{{ names_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Passenger names</h3>
                 <p class="py-2 text-sm">Roster names, comma-separated. Example: <em>Sonny Jackson, Riva Nal, Kora Venn</em>.</p>
                 <div class="modal-action">
@@ -201,7 +201,7 @@
         {{ form_errors(detail_form.passengerContact) }}
         <input type="checkbox" id="{{ contact_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Passenger contact</h3>
                 <p class="py-2 text-sm">Primary comms handle for manifests, reroutes, or authority checks.</p>
                 <div class="modal-action">
@@ -220,7 +220,7 @@
         {{ form_errors(detail_form.baggageAllowance) }}
         <input type="checkbox" id="{{ baggage_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Baggage allowance</h3>
                 <p class="py-2 text-sm">Declared standard baggage mass/volume per passenger.</p>
                 <div class="modal-action">
@@ -239,7 +239,7 @@
         {{ form_errors(detail_form.extraBaggage) }}
         <input type="checkbox" id="{{ extra_baggage_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Extra baggage</h3>
                 <p class="py-2 text-sm">Declared excess beyond standard allowance, billed per policy.</p>
                 <div class="modal-action">
@@ -249,7 +249,7 @@
         </div>
     </div>
     {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="flex items-center gap-2">
             {{ form_label(detail_form.paymentTerms) }}
             <label for="{{ pay_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
@@ -258,7 +258,7 @@
         {{ form_errors(detail_form.paymentTerms) }}
         <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Payment terms</h3>
                 <p class="py-2 text-sm">Ticket settlement protocol: deposits, boarding balance, refund or re-route penalties.</p>
                 <div class="modal-action">
@@ -268,7 +268,7 @@
         </div>
     </div>
     {% set refund_help_id = detail_form.refundChangePolicy.vars.id ~ '-help' %}
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="flex items-center gap-2">
             {{ form_label(detail_form.refundChangePolicy) }}
             <label for="{{ refund_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
@@ -277,7 +277,7 @@
         {{ form_errors(detail_form.refundChangePolicy) }}
         <input type="checkbox" id="{{ refund_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Refund / Change policy</h3>
                 <p class="py-2 text-sm">Re-route windows, penalties, and refund limits for passenger bookings.</p>
                 <div class="modal-action">
@@ -287,7 +287,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set proof_ref_help_id = detail_form.deliveryProofRef.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -298,7 +298,7 @@
             {{ form_errors(detail_form.deliveryProofRef) }}
             <input type="checkbox" id="{{ proof_ref_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Delivery proof ref</h3>
                     <p class="py-2 text-sm">Receipt or port protocol ID confirming passenger handoff.</p>
                     <div class="modal-action">
@@ -330,7 +330,7 @@
             {{ form_errors(detail_form.deliveryProofDate.display) }}
             <input type="checkbox" id="{{ proof_date_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Delivery proof date</h3>
                     <p class="py-2 text-sm">Confirmation timestamp for arrival/transfer.</p>
                     <div class="modal-action">
@@ -349,7 +349,7 @@
             {{ form_errors(detail_form.deliveryProofReceivedBy) }}
             <input type="checkbox" id="{{ proof_received_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Received by</h3>
                     <p class="py-2 text-sm">Officer or terminal authority who confirms receipt.</p>
                     <div class="modal-action">

@@ -1,9 +1,9 @@
- <fieldset class="fieldset grid grid-cols-3 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-    <legend class="fieldset-legend">
-        {% include 'icons/income.html.twig' %} FREIGHT Details
+<fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+    <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">
+        FREIGHT Details
     </legend>
 
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
             <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
                  style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 alert alert-info alert-outline shadow-sm flex items-start gap-2">
+    <div class="col-span-2 alert alert-info alert-outline shadow-sm flex items-start gap-2">
         <span class="pt-0.5 animate-spin-slow">{% include 'icons/radar.html.twig' %}</span>
         <p class="text-sm">Freight consignment particulars: origin/destination, pickup/delivery window, cargo manifest, declared value and payment/liability terms.</p>
     </div>
@@ -65,7 +65,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
         {% set pickup_day = data ? data.pickupDay : null %}
         {% set pickup_year = data ? data.pickupYear : null %}
@@ -90,7 +90,7 @@
             {{ form_errors(detail_form.pickupDate.display) }}
             <input type="checkbox" id="{{ pickup_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Pickup date</h3>
                     <p class="py-2 text-sm">Scheduled pickup window in imperial day/year.</p>
                     <div class="modal-action">
@@ -123,7 +123,7 @@
             {{ form_errors(detail_form.deliveryDate.display) }}
             <input type="checkbox" id="{{ delivery_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Delivery date</h3>
                     <p class="py-2 text-sm">Planned delivery window in imperial day/year.</p>
                     <div class="modal-action">
@@ -136,7 +136,7 @@
 
 
     {% set cargo_desc_help_id = detail_form.cargoDescription.vars.id ~ '-help' %}
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="flex items-center gap-2">
             {{ form_label(detail_form.cargoDescription) }}
             <label for="{{ cargo_desc_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
@@ -174,7 +174,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set declared_help_id = detail_form.declaredValue.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -185,7 +185,7 @@
             {{ form_errors(detail_form.declaredValue) }}
             <input type="checkbox" id="{{ declared_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Declared value</h3>
                     <p class="py-2 text-sm">Declared cargo value used for liability and claims.</p>
                     <div class="modal-action">
@@ -205,7 +205,7 @@
             {{ form_errors(detail_form.liabilityLimit) }}
             <input type="checkbox" id="{{ liab_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Liability limit</h3>
                     <p class="py-2 text-sm">Cap on carrier liability for loss/damage; set to Cr value or leave blank if not limited.</p>
                     <div class="modal-action">
@@ -216,7 +216,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -227,7 +227,7 @@
             {{ form_errors(detail_form.paymentTerms) }}
             <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Payment terms</h3>
                     <p class="py-2 text-sm">Describe when and how freight is paid (advance, on delivery, milestones, currency).</p>
                     <div class="modal-action">
@@ -246,7 +246,7 @@
             {{ form_errors(detail_form.cancellationTerms) }}
             <input type="checkbox" id="{{ cancel_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Cancellation terms</h3>
                     <p class="py-2 text-sm">Conditions and penalties for canceling the freight run.</p>
                     <div class="modal-action">
@@ -257,7 +257,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set proof_ref_help_id = detail_form.deliveryProofRef.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -268,7 +268,7 @@
             {{ form_errors(detail_form.deliveryProofRef) }}
             <input type="checkbox" id="{{ proof_ref_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Delivery proof ref</h3>
                     <p class="py-2 text-sm">Receipt or port protocol ID confirming delivery.</p>
                     <div class="modal-action">
@@ -300,7 +300,7 @@
             {{ form_errors(detail_form.deliveryProofDate.display) }}
             <input type="checkbox" id="{{ proof_date_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Delivery proof date</h3>
                     <p class="py-2 text-sm">Confirmation timestamp for delivery acceptance.</p>
                     <div class="modal-action">
@@ -319,7 +319,7 @@
             {{ form_errors(detail_form.deliveryProofReceivedBy) }}
             <input type="checkbox" id="{{ proof_received_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Received by</h3>
                     <p class="py-2 text-sm">Officer or terminal authority who confirmed receipt.</p>
                     <div class="modal-action">

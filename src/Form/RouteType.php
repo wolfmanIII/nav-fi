@@ -235,7 +235,7 @@ class RouteType extends AbstractType
                     $requiredForJump = 0.1 * $hullTons * $distance;
                     if ($requiredForJump > $fuelCapacity) {
                         $form->get('waypoints')->addError(new FormError(
-                            sprintf('Segment #%d requires %.2f tons of fuel, exceeding ship tank capacity (%.2f tons).', $idx + 1, $requiredForJump, $fuelCapacity)
+                            sprintf('Segment #%d requires %.2f tons of fuel, exceeding asset tank capacity (%.2f tons).', $idx + 1, $requiredForJump, $fuelCapacity)
                         ));
                     }
                 }

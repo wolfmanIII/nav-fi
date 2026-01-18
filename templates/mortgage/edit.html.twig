@@ -93,7 +93,7 @@
 
             <div class="col-span-2 md:col-span-1">
                 {{ form_label(form.asset) }}
-                {{ form_widget(form.asset) }}
+                {{ form_widget(form.asset, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
                 {{ form_errors(form.asset) }}
             </div>
 
@@ -167,7 +167,7 @@
         {% endif %}
 
         <div class="flex items-center justify-end gap-3 mb-10">
-            <a href="{{ path('app_mortgage_index') }}" class="btn btn-ghost font-orbitron uppercase text-[10px] tracking-widest text-slate-500 hover:text-slate-300 font-bold">Abort Session</a>
+            <a href="{{ path('app_mortgage_index') }}" class="btn btn-outline btn-sm font-orbitron uppercase text-[10px] tracking-widest">Abort Changes</a>
 
             {% if mortgage.id %}
                 {% set disabledClass = mortgage.signed ? '' : ' opacity-60 pointer-events-none' %}

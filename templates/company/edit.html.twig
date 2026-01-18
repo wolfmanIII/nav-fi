@@ -8,68 +8,73 @@
 
         {{ form_start(form) }}
 
-        <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-            <legend class="fieldset-legend">Company</legend>
-
-            <div class="col-span-2">
-                <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
-                    <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
-                         style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
-                    </div>
-                    <div class="relative p-4 flex items-start gap-3">
-                        <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
-                            {% include 'icons/company.html.twig' %}
-                        </div>
-                        <div>
-                            <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Counterparty</p>
-                            <h3 class="font-semibold text-cyan-100 text-xl leading-tight">Company details</h3>
-                            <p class="text-sm text-cyan-100/80">Name, role, contact and signature label to reuse across contracts and documents.</p>
-                        </div>
-                    </div>
+        <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-6">
+            <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
+                 style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
+            </div>
+            <div class="relative p-4 flex items-start gap-4">
+                <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
+                    {% include 'icons/company.html.twig' %}
+                </div>
+                <div>
+                    <p class="uppercase text-[10px] tracking-[0.3em] text-cyan-300/70 font-bold font-orbitron mb-0.5">Counterparty Registry // Corporate ID</p>
+                    <h3 class="font-bold text-cyan-100 text-2xl leading-tight font-orbitron uppercase">Corporate Identity</h3>
+                    <p class="text-xs text-cyan-100/60 font-rajdhani tracking-widest uppercase truncate">Name and role classification: defining the administrative signature of the entity.</p>
                 </div>
             </div>
+        </div>
+
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Counterparty Protocol</legend>
 
             {% if company.id %}
                 <div class="col-span-2">
-                    <label class="block text-slate-300">Code</label>
-                    <div class="m-1 w-full"><b>{{ company.code }}</b></div>
+                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron mb-1 opacity-50">Corporate ID // Entity Code</label>
+                    <div class="px-3 py-2 rounded bg-slate-950/50 border border-slate-800 font-mono text-cyan-400 text-sm"><b>{{ company.code }}</b></div>
                 </div>
             {% endif %}
 
-            <div>
+            <div class="col-span-1">
                 {{ form_label(form.name) }}
-                {{ form_widget(form.name) }}
+                {{ form_widget(form.name, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.name) }}
             </div>
 
-            <div>
+            <div class="col-span-1">
                 {{ form_label(form.companyRole) }}
-                {{ form_widget(form.companyRole) }}
+                {{ form_widget(form.companyRole, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
                 {{ form_errors(form.companyRole) }}
             </div>
+        </fieldset>
 
-            <div>
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Logistics & Contact</legend>
+            <div class="col-span-1">
                 {{ form_label(form.contact) }}
-                {{ form_widget(form.contact) }}
+                {{ form_widget(form.contact, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.contact) }}
             </div>
 
-            <div>
+            <div class="col-span-1">
                 {{ form_label(form.signLabel) }}
-                {{ form_widget(form.signLabel) }}
+                {{ form_widget(form.signLabel, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.signLabel) }}
             </div>
-
-            <div class="col-span-2">
-                {{ form_label(form.notes) }}
-                {{ form_widget(form.notes) }}
-                {{ form_errors(form.notes) }}
-            </div>
-
         </fieldset>
 
-        <button type="submit" class="btn btn-outline btn-primary mt-4 mb-4 mr-4">Save</button>
-        <a href="{{ path('app_company_index') }}" role="button" class="btn btn-outline btn-default mt-4 mb-4 mr-4">Cancel</a>
+        <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-8 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-slate-400 uppercase">Operational Notes</legend>
+            <div>
+                {{ form_label(form.notes) }}
+                {{ form_widget(form.notes, { attr: { class: 'textarea textarea-bordered w-full bg-slate-950/50 border-slate-700 h-32 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Enter company-specific tactical notes or administrative details...' } }) }}
+                {{ form_errors(form.notes) }}
+            </div>
+        </fieldset>
+
+        <div class="flex gap-4 mb-8">
+            <button type="submit" class="btn btn-primary font-orbitron uppercase tracking-widest text-[10px] px-8">Confirm Entry</button>
+            <a href="{{ path('app_company_index') }}" role="button" class="btn btn-outline btn-sm font-orbitron uppercase tracking-widest text-[10px]">Abort Changes</a>
+        </div>
 
         {{ form_end(form) }}
     </div>

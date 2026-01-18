@@ -7,26 +7,24 @@
     <div class="flex flex-col items-stretch gap-4">
         {{ form_start(form) }}
 
-        <fieldset class="fieldset grid grid-cols-2 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-            <legend class="fieldset-legend">Route</legend>
-
-            <div class="col-span-2">
-                <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
-                    <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
-                         style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
-                    </div>
-                    <div class="relative p-4 flex items-start gap-3">
-                        <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
-                            {% include 'icons/routes.html.twig' %}
-                        </div>
-                        <div>
-                            <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Route drafting</p>
-                            <h3 class="font-semibold text-cyan-100 text-xl leading-tight">Navigation plan</h3>
-                            <p class="text-sm text-cyan-100/80">Define asset, campaign and waypoints, then validate jump limits.</p>
-                        </div>
-                    </div>
+        <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-6">
+            <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
+                 style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
+            </div>
+            <div class="relative p-4 flex items-start gap-4">
+                <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
+                    {% include 'icons/routes.html.twig' %}
+                </div>
+                <div>
+                    <p class="uppercase text-[10px] tracking-[0.3em] text-cyan-300/70 font-bold font-orbitron mb-0.5">Cartography // Astrogation</p>
+                    <h3 class="font-bold text-cyan-100 text-2xl leading-tight font-orbitron uppercase">Flight Path</h3>
+                    <p class="text-xs text-cyan-100/60 font-rajdhani tracking-widest uppercase truncate">Establish sectors, hex-coords and jump-logic: the map is NOT the territory.</p>
                 </div>
             </div>
+        </div>
+
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Navigation Plan</legend>
             {% if form_errors(form) %}
                 <div class="col-span-2">
                     <div class="alert alert-error alert-outline shadow-sm">
@@ -42,54 +40,63 @@
 
             {% if route.id %}
                 <div class="col-span-2">
-                    <label class="block text-slate-300">Code</label>
-                    <div class="m-1 w-full"><b>{{ route.code }}</b></div>
+                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron mb-1 opacity-50">Route Code // Navigation ID</label>
+                    <div class="px-3 py-2 rounded bg-slate-950/50 border border-slate-800 font-mono text-cyan-400 text-sm"><b>{{ route.code }}</b></div>
                 </div>
             {% endif %}
 
-            <div>
+            <div class="col-span-1">
                 {{ form_label(form.name) }}
-                {{ form_widget(form.name) }}
+                {{ form_widget(form.name, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.name) }}
             </div>
             <div class="col-span-2 grid grid-cols-2 gap-4" data-controller="campaign-asset">
                 <div>
                     {{ form_label(form.campaign) }}
-                    {{ form_widget(form.campaign) }}
+                    {{ form_widget(form.campaign, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
                     {{ form_errors(form.campaign) }}
                 </div>
                 <div>
                     {{ form_label(form.asset) }}
-                    {{ form_widget(form.asset) }}
+                    {{ form_widget(form.asset, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
                     {{ form_errors(form.asset) }}
                 </div>
             </div>
+        </fieldset>
+
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Telemetry Overrides</legend>
             <div class="col-span-2">
-                <div class="alert alert-info alert-outline shadow-sm">
-                    <div class="animate-spin-slow text-current">
+                <div class="alert alert-info alert-outline shadow-sm border-amber-500/30 bg-amber-500/5">
+                    <div class="animate-spin-slow text-amber-500">
                         {% include 'icons/radar.html.twig' with { dim: 24 } %}
                     </div>
-                    <div class="text-sm text-slate-200">
-                        Jump Rating and <b>Single-jump Fuel</b> are sourced from the asset's registered components. Fill them only if you need to override the asset‑details telemetry for this route.
+                    <div class="text-xs text-slate-200 font-rajdhani">
+                        <span class="block uppercase tracking-wider font-bold text-amber-200">Asset Data Sync</span>
+                        <span class="block opacity-80">Jump Rating and Single-jump Fuel are sourced from the asset's registered components. Overrides authorized for tactical scenarios.</span>
                     </div>
                 </div>
             </div>
-            <div>
+            <div class="col-span-1">
                 {{ form_label(form.jumpRating) }}
-                {{ form_widget(form.jumpRating) }}
+                {{ form_widget(form.jumpRating, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.jumpRating) }}
             </div>
-            <div>
+            <div class="col-span-1">
                 {{ form_label(form.fuelEstimate) }}
-                {{ form_widget(form.fuelEstimate) }}
-                <p class="text-xs text-slate-400 mt-1 italic">Estimated fuel for the current/next jump segment.</p>
+                {{ form_widget(form.fuelEstimate, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
+                <p class="text-[10px] text-slate-500 mt-1 italic uppercase tracking-wider font-rajdhani">Estimated tons per jump segment.</p>
                 {{ form_errors(form.fuelEstimate) }}
             </div>
+        </fieldset>
 
-            <div data-controller="imperial-date">
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Flight Schedule</legend>
+            <div class="col-span-1" data-controller="imperial-date">
                 {{ form_label(form.startDate) }}
                 {{ form_widget(form.startDate.display, {
                     attr: {
+                        class: 'input input-bordered w-full bg-slate-950/50 border-slate-700',
                         'data-imperial-date-prev-icon': '«',
                         'data-imperial-date-next-icon': '»',
                     }
@@ -98,10 +105,11 @@
                 {{ form_widget(form.startDate.day) }}
                 {{ form_errors(form.startDate.display) }}
             </div>
-            <div data-controller="imperial-date">
+            <div class="col-span-1" data-controller="imperial-date">
                 {{ form_label(form.destDate) }}
                 {{ form_widget(form.destDate.display, {
                     attr: {
+                        class: 'input input-bordered w-full bg-slate-950/50 border-slate-700',
                         'data-imperial-date-prev-icon': '«',
                         'data-imperial-date-next-icon': '»',
                     }
@@ -112,54 +120,52 @@
             </div>
         </fieldset>
 
-        <fieldset class="fieldset grid grid-cols-1 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full"
+        <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative"
                   data-controller="route-waypoints"
                   data-route-waypoints-target="collection"
                   data-route-waypoints-lookup-url-value="{{ path('app_route_waypoint_lookup') }}">
-            <legend class="fieldset-legend">Waypoints</legend>
-            <div class="flex items-center justify-between">
-                <h4 class="font-semibold text-cyan-100">Route waypoints</h4>
-                <button type="button" class="btn btn-outline btn-xs" data-action="route-waypoints#addItem">+ Add</button>
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Waypoints</legend>
+            <div class="flex items-center justify-between mb-2">
+                <h4 class="text-[10px] uppercase tracking-widest font-rajdhani font-bold text-slate-500">Route waypoints</h4>
+                <button type="button" class="btn btn-outline btn-xs font-orbitron uppercase tracking-widest text-[9px]" data-action="route-waypoints#addItem">+ Add Waypoint</button>
             </div>
-            <div class="space-y-2" data-route-waypoints-target="list">
+            <div class="space-y-4" data-route-waypoints-target="list">
                 {% for child in form.waypoints %}
-                    <div class="collection-item border border-base-300 rounded p-3 bg-base-100 relative">
+                    <div class="collection-item border border-slate-700 bg-slate-950/40 rounded-lg p-4 relative group hover:border-cyan-500/30 transition-colors">
                         <button type="button"
-                                class="btn btn-ghost btn-xs absolute right-2 top-2"
+                                class="absolute -right-2 -top-2 w-6 h-6 rounded-full bg-slate-800 border border-slate-700 text-slate-400 hover:text-red-400 hover:border-red-500/50 flex items-center justify-center transition-all shadow-lg z-10"
                                 data-action="route-waypoints#removeItem">&times;</button>
-                        <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                             <div>
                                 {{ form_label(child.hex) }}
-                                {{ form_widget(child.hex) }}
+                                {{ form_widget(child.hex, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50' } }) }}
                                 {{ form_errors(child.hex) }}
                             </div>
                             <div>
                                 {{ form_label(child.sector) }}
-                                {{ form_widget(child.sector) }}
+                                {{ form_widget(child.sector, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50' } }) }}
                                 {{ form_errors(child.sector) }}
-                                <p class="text-xs text-slate-400 mt-1">Sector name must be T5SS abbreviation (e.g. Spinward Marches => spin).</p>
+                                <p class="text-[9px] text-slate-500 mt-1 uppercase tracking-wider font-rajdhani">Abbrev. (e.g. Spin)</p>
                             </div>
                             <div>
                                 {{ form_label(child.world) }}
-                                {{ form_widget(child.world) }}
+                                {{ form_widget(child.world, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50' } }) }}
                                 {{ form_errors(child.world) }}
                             </div>
                             <div class="route-waypoint-highlight">
                                 {{ form_label(child.uwp) }}
-                                {{ form_widget(child.uwp) }}
+                                {{ form_widget(child.uwp, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono' } }) }}
                                 {{ form_errors(child.uwp) }}
-                                <p class="text-xs text-slate-400 mt-1">Auto-filled after submit from TravellerMap sector data.</p>
                             </div>
                             <div class="route-waypoint-highlight">
                                 {{ form_label(child.jumpDistance) }}
-                                {{ form_widget(child.jumpDistance) }}
+                                {{ form_widget(child.jumpDistance, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono' } }) }}
                                 {{ form_errors(child.jumpDistance) }}
-                                <p class="text-xs text-slate-400 mt-1">Calculated after submit from the waypoint sequence.</p>
                             </div>
                         </div>
                         <div class="mt-3">
                             {{ form_label(child.notes) }}
-                            {{ form_widget(child.notes) }}
+                            {{ form_widget(child.notes, { attr: { class: 'textarea textarea-bordered textarea-sm w-full bg-slate-950/50 border-slate-800 h-16 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Node specific notes...' } }) }}
                             {{ form_errors(child.notes) }}
                         </div>
                         {{ form_widget(child.position) }}
@@ -167,43 +173,40 @@
                 {% endfor %}
             </div>
             <template data-route-waypoints-target="prototype">
-                <div class="collection-item border border-base-300 rounded p-3 bg-base-100 relative">
+                <div class="collection-item border border-slate-700 bg-slate-950/40 rounded-lg p-4 relative group hover:border-cyan-500/30 transition-colors">
                     <button type="button"
-                            class="btn btn-ghost btn-xs absolute right-2 top-2"
+                            class="absolute -right-2 -top-2 w-6 h-6 rounded-full bg-slate-800 border border-slate-700 text-slate-400 hover:text-red-400 hover:border-red-500/50 flex items-center justify-center transition-all shadow-lg z-10"
                             data-action="route-waypoints#removeItem">&times;</button>
                     <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
                         <div>
                             {{ form_label(form.waypoints.vars.prototype.hex) }}
-                            {{ form_widget(form.waypoints.vars.prototype.hex) }}
+                            {{ form_widget(form.waypoints.vars.prototype.hex, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50' } }) }}
                             {{ form_errors(form.waypoints.vars.prototype.hex) }}
                         </div>
                         <div>
                             {{ form_label(form.waypoints.vars.prototype.sector) }}
-                            {{ form_widget(form.waypoints.vars.prototype.sector) }}
+                            {{ form_widget(form.waypoints.vars.prototype.sector, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50' } }) }}
                             {{ form_errors(form.waypoints.vars.prototype.sector) }}
-                            <p class="text-xs text-slate-400 mt-1">Sector name or T5SS abbreviation (e.g. Spinward Marches / SM).</p>
                         </div>
                         <div>
                             {{ form_label(form.waypoints.vars.prototype.world) }}
-                            {{ form_widget(form.waypoints.vars.prototype.world) }}
+                            {{ form_widget(form.waypoints.vars.prototype.world, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50' } }) }}
                             {{ form_errors(form.waypoints.vars.prototype.world) }}
                         </div>
                         <div class="route-waypoint-highlight">
                                 {{ form_label(form.waypoints.vars.prototype.uwp) }}
-                            {{ form_widget(form.waypoints.vars.prototype.uwp) }}
+                            {{ form_widget(form.waypoints.vars.prototype.uwp, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono' } }) }}
                             {{ form_errors(form.waypoints.vars.prototype.uwp) }}
-                            <p class="text-xs text-slate-400 mt-1">Auto-filled after submit from TravellerMap sector data.</p>
                         </div>
                         <div class="route-waypoint-highlight">
                                 {{ form_label(form.waypoints.vars.prototype.jumpDistance) }}
-                            {{ form_widget(form.waypoints.vars.prototype.jumpDistance) }}
+                            {{ form_widget(form.waypoints.vars.prototype.jumpDistance, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono' } }) }}
                             {{ form_errors(form.waypoints.vars.prototype.jumpDistance) }}
-                            <p class="text-xs text-slate-400 mt-1">Calculated after submit from the waypoint sequence.</p>
                         </div>
                     </div>
                     <div class="mt-3">
                         {{ form_label(form.waypoints.vars.prototype.notes) }}
-                        {{ form_widget(form.waypoints.vars.prototype.notes) }}
+                        {{ form_widget(form.waypoints.vars.prototype.notes, { attr: { class: 'textarea textarea-bordered textarea-sm w-full bg-slate-950/50 border-slate-800 h-16 focus:border-cyan-500/50 font-rajdhani' } }) }}
                         {{ form_errors(form.waypoints.vars.prototype.notes) }}
                     </div>
                     {{ form_widget(form.waypoints.vars.prototype.position) }}
@@ -211,22 +214,24 @@
             </template>
         </fieldset>
 
-        <fieldset class="fieldset grid grid-cols-1 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-            <legend class="fieldset-legend">Route Notes</legend>
-            <div>
+        <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-slate-400 uppercase">Route Notes</legend>
+            <div class="mb-4">
                 {{ form_label(form.description) }}
-                {{ form_widget(form.description) }}
+                {{ form_widget(form.description, { attr: { class: 'textarea textarea-bordered w-full bg-slate-950/50 border-slate-700 h-24 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Dossier summary...' } }) }}
                 {{ form_errors(form.description) }}
             </div>
             <div>
                 {{ form_label(form.notes) }}
-                {{ form_widget(form.notes) }}
+                {{ form_widget(form.notes, { attr: { class: 'textarea textarea-bordered w-full bg-slate-950/50 border-slate-700 h-32 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Enter detailed tactical notes here...' } }) }}
                 {{ form_errors(form.notes) }}
             </div>
         </fieldset>
 
-        <button type="submit" class="btn btn-outline btn-primary mt-4 mb-4 mr-4">Save</button>
-        <a href="{{ path('app_route_index') }}" role="button" class="btn btn-outline btn-default mt-4 mb-4 mr-4">Cancel</a>
+        <div class="flex gap-4 mb-8">
+            <button type="submit" class="btn btn-primary font-orbitron uppercase tracking-widest text-[10px] px-8">Confirm Route</button>
+            <a href="{{ path('app_route_index') }}" role="button" class="btn btn-outline btn-sm font-orbitron uppercase tracking-widest text-[10px]">Abort Changes</a>
+        </div>
 
         {{ form_end(form) }}
     </div>

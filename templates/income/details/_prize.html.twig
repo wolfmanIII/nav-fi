@@ -1,9 +1,9 @@
-<fieldset class="fieldset grid grid-cols-3 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-    <legend class="fieldset-legend">
-        {% include 'icons/income.html.twig' %} PRIZE Details
+<fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+    <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">
+        PRIZE Details
     </legend>
 
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
             <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
                  style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
@@ -21,12 +21,12 @@
         </div>
     </div>
 
-    <div class="col-span-3 alert alert-info alert-outline shadow-sm flex items-start gap-2">
+    <div class="col-span-2 alert alert-info alert-outline shadow-sm flex items-start gap-2">
         <span class="pt-0.5 animate-spin-slow">{% include 'icons/radar.html.twig' %}</span>
         <p class="text-sm">Prize/seizure record: legal basis, prize description/value, disposition, payment/share split and award trigger.</p>
     </div>
 
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set basis_help_id = detail_form.legalBasis.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -37,7 +37,7 @@
             {{ form_errors(detail_form.legalBasis) }}
             <input type="checkbox" id="{{ basis_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Legal basis</h3>
                     <p class="py-2 text-sm">Authority, charter clause, or prize code authorizing the seizure.</p>
                     <div class="modal-action">
@@ -56,7 +56,7 @@
             {{ form_errors(detail_form.caseRef) }}
             <input type="checkbox" id="{{ case_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Case reference</h3>
                     <p class="py-2 text-sm">Docket or seizure file ID assigned by the authority.</p>
                     <div class="modal-action">
@@ -67,7 +67,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set prize_help_id = detail_form.prizeDescription.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -78,7 +78,7 @@
             {{ form_errors(detail_form.prizeDescription) }}
             <input type="checkbox" id="{{ prize_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Prize description</h3>
                     <p class="py-2 text-sm">Describe the seized asset(s), cargo, hull or rights awarded.</p>
                     <div class="modal-action">
@@ -97,7 +97,7 @@
             {{ form_errors(detail_form.estimatedValue) }}
             <input type="checkbox" id="{{ value_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Estimated value</h3>
                     <p class="py-2 text-sm">Appraised value for settlement or auction purposes.</p>
                     <div class="modal-action">
@@ -116,7 +116,7 @@
             {{ form_errors(detail_form.disposition) }}
             <input type="checkbox" id="{{ disposition_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Disposition</h3>
                     <p class="py-2 text-sm">Auctioned, retained, transferred or otherwise disposed asset.</p>
                     <div class="modal-action">
@@ -128,7 +128,7 @@
     </div>
 
     {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="flex items-center gap-2">
             {{ form_label(detail_form.paymentTerms) }}
             <label for="{{ pay_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
@@ -137,7 +137,7 @@
         {{ form_errors(detail_form.paymentTerms) }}
         <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Payment terms</h3>
                 <p class="py-2 text-sm">Prize award settlement: when and how proceeds are paid or distributed.</p>
                 <div class="modal-action">
@@ -147,7 +147,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set split_help_id = detail_form.shareSplit.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -158,7 +158,7 @@
             {{ form_errors(detail_form.shareSplit) }}
             <input type="checkbox" id="{{ split_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Share split</h3>
                     <p class="py-2 text-sm">Crew/claimant allocation or percentage split of the prize.</p>
                     <div class="modal-action">
@@ -177,7 +177,7 @@
             {{ form_errors(detail_form.awardTrigger) }}
             <input type="checkbox" id="{{ trigger_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Award trigger</h3>
                     <p class="py-2 text-sm">Final adjudication or escrow release condition.</p>
                     <div class="modal-action">

@@ -1,9 +1,9 @@
-<fieldset class="fieldset grid grid-cols-3 bg-base-200 border-base-300 gap-4 p-4 border rounded w-full">
-    <legend class="fieldset-legend">
-        {% include 'icons/income.html.twig' %} SUBSIDY Details
+<fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+    <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">
+        SUBSIDY Details
     </legend>
 
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg">
             <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
                  style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 alert alert-info alert-outline shadow-sm flex items-start gap-2">
+    <div class="col-span-2 alert alert-info alert-outline shadow-sm flex items-start gap-2">
         <span class="pt-0.5 animate-spin-slow">{% include 'icons/radar.html.twig' %}</span>
         <p class="text-sm">Subsidy / grant dossier: declared covered route, service level, milestones, reporting duties and cancellation/recovery clauses.</p>
     </div>
@@ -36,7 +36,7 @@
         {{ form_errors(detail_form.programRef) }}
         <input type="checkbox" id="{{ program_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Program ref</h3>
                 <p class="py-2 text-sm">Authority program or grant reference code.</p>
                 <div class="modal-action">
@@ -55,7 +55,7 @@
         {{ form_errors(detail_form.origin) }}
         <input type="checkbox" id="{{ origin_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Origin</h3>
                 <p class="py-2 text-sm">Route origin covered by the subsidy.</p>
                 <div class="modal-action">
@@ -74,7 +74,7 @@
         {{ form_errors(detail_form.destination) }}
         <input type="checkbox" id="{{ destination_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Destination</h3>
                 <p class="py-2 text-sm">Route destination covered by the subsidy.</p>
                 <div class="modal-action">
@@ -84,7 +84,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set start_help_id = detail_form.startDate.vars.id ~ '-help' %}
         <div class="col-span-1" data-controller="imperial-date">
             <div class="flex items-center gap-2">
@@ -109,7 +109,7 @@
             {{ form_errors(detail_form.startDate.display) }}
             <input type="checkbox" id="{{ start_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Start date</h3>
                     <p class="py-2 text-sm">Subsidy coverage start in imperial day/year.</p>
                     <div class="modal-action">
@@ -141,7 +141,7 @@
             {{ form_errors(detail_form.endDate.display) }}
             <input type="checkbox" id="{{ end_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">End date</h3>
                     <p class="py-2 text-sm">Subsidy coverage end in imperial day/year.</p>
                     <div class="modal-action">
@@ -162,7 +162,7 @@
         {{ form_errors(detail_form.serviceLevel) }}
         <input type="checkbox" id="{{ level_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Service level</h3>
                 <p class="py-2 text-sm">Required cadence or capacity defined by the authority.</p>
                 <div class="modal-action">
@@ -181,7 +181,7 @@
         {{ form_errors(detail_form.subsidyAmount) }}
         <input type="checkbox" id="{{ amount_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Subsidy amount</h3>
                 <p class="py-2 text-sm">Declared grant value for the covered service.</p>
                 <div class="modal-action">
@@ -191,7 +191,7 @@
         </div>
     </div>
     {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
-    <div class="col-span-3">
+    <div class="col-span-2">
         <div class="flex items-center gap-2">
             {{ form_label(detail_form.paymentTerms) }}
             <label for="{{ pay_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
@@ -200,7 +200,7 @@
         {{ form_errors(detail_form.paymentTerms) }}
         <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
         <div class="modal" role="dialog">
-            <div class="modal-box">
+            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                 <h3 class="font-bold">Payment terms</h3>
                 <p class="py-2 text-sm">Define how the subsidy is paid (schedule, milestones, advances, holdbacks).</p>
                 <div class="modal-action">
@@ -210,7 +210,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set milestones_help_id = detail_form.milestones.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -221,7 +221,7 @@
             {{ form_errors(detail_form.milestones) }}
             <input type="checkbox" id="{{ milestones_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Milestones</h3>
                     <p class="py-2 text-sm">Milestone conditions for staged payment release.</p>
                     <div class="modal-action">
@@ -240,7 +240,7 @@
             {{ form_errors(detail_form.reportingRequirements) }}
             <input type="checkbox" id="{{ reporting_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Reporting requirements</h3>
                     <p class="py-2 text-sm">Logs or reports required by the granting authority.</p>
                     <div class="modal-action">
@@ -251,7 +251,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set compliance_help_id = detail_form.nonComplianceTerms.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -262,7 +262,7 @@
             {{ form_errors(detail_form.nonComplianceTerms) }}
             <input type="checkbox" id="{{ compliance_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Non-compliance terms</h3>
                     <p class="py-2 text-sm">Penalties, clawbacks, or suspension conditions.</p>
                     <div class="modal-action">
@@ -281,7 +281,7 @@
             {{ form_errors(detail_form.proofRequirements) }}
             <input type="checkbox" id="{{ proof_req_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Proof requirements</h3>
                     <p class="py-2 text-sm">Evidence required to validate service delivery.</p>
                     <div class="modal-action">
@@ -300,7 +300,7 @@
             {{ form_errors(detail_form.cancellationTerms) }}
             <input type="checkbox" id="{{ cancel_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Cancellation terms</h3>
                     <p class="py-2 text-sm">Termination rules set by the authority.</p>
                     <div class="modal-action">
@@ -311,7 +311,7 @@
         </div>
     </div>
 
-    <div class="col-span-3 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set proof_ref_help_id = detail_form.deliveryProofRef.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -322,7 +322,7 @@
             {{ form_errors(detail_form.deliveryProofRef) }}
             <input type="checkbox" id="{{ proof_ref_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Delivery proof ref</h3>
                     <p class="py-2 text-sm">Receipt or protocol ID confirming subsidy obligations were met.</p>
                     <div class="modal-action">
@@ -354,7 +354,7 @@
             {{ form_errors(detail_form.deliveryProofDate.display) }}
             <input type="checkbox" id="{{ proof_date_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Delivery proof date</h3>
                     <p class="py-2 text-sm">Confirmation timestamp for compliance.</p>
                     <div class="modal-action">
@@ -373,7 +373,7 @@
             {{ form_errors(detail_form.deliveryProofReceivedBy) }}
             <input type="checkbox" id="{{ proof_received_help_id }}" class="modal-toggle hidden" />
             <div class="modal" role="dialog">
-                <div class="modal-box">
+                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
                     <h3 class="font-bold">Received by</h3>
                     <p class="py-2 text-sm">Authority officer confirming fulfillment.</p>
                     <div class="modal-action">
