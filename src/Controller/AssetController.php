@@ -31,6 +31,7 @@ final class AssetController extends BaseController
         $filters = $listViewHelper->collectFilters($request, [
             'name',
             'type_class',
+            'category',
             'campaign' => ['type' => 'int'],
         ]);
         $page = $listViewHelper->getPage($request);
@@ -71,6 +72,16 @@ final class AssetController extends BaseController
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $asset = new Asset();
+        $user = $this->getUser();
+        if ($user instanceof \App\Entity\User) {
+            $asset->setUser($user);
+        }
+
+        $category = $request->query->get('category');
+        if ($category && in_array($category, [Asset::CATEGORY_SHIP, Asset::CATEGORY_BASE, Asset::CATEGORY_TEAM])) {
+            $asset->setCategory($category);
+        }
+
         $form = $this->createForm(AssetType::class, $asset);
 
         $form->handleRequest($request);
@@ -83,7 +94,7 @@ final class AssetController extends BaseController
 
             $em->persist($asset);
             $em->flush();
-            return $this->redirectToRoute('app_asset_index');
+            return $this->redirectToRoute('app_asset_index', ['category' => $asset->getCategory()]);
         }
 
         return $this->renderTurbo('asset/edit.html.twig', [
@@ -131,7 +142,7 @@ final class AssetController extends BaseController
 
             $em->persist($asset);
             $em->flush();
-            return $this->redirectToRoute('app_asset_index');
+            return $this->redirectToRoute('app_asset_index', ['category' => $asset->getCategory()]);
         }
 
         return $this->renderTurbo('asset/edit.html.twig', [
@@ -230,7 +241,7 @@ final class AssetController extends BaseController
         $em->remove($asset);
         $em->flush();
 
-        return $this->redirectToRoute('app_asset_index');
+        return $this->redirectToRoute('app_asset_index', ['category' => $asset->getCategory()]);
     }
 
     #[Route('/asset/{id}/crew', name: 'app_asset_crew')]

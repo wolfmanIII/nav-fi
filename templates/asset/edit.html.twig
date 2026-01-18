@@ -24,9 +24,19 @@
                         {% include 'icons/far-trader.html.twig' %}
                     </div>
                     <div class="flex-1">
-                        <p class="uppercase text-[10px] tracking-[0.3em] text-cyan-300/70 font-bold font-orbitron mb-0.5">Asset sheet // Hull Registry</p>
-                        <h3 class="font-bold text-cyan-100 text-2xl leading-tight font-orbitron uppercase">Update asset</h3>
-                        <p class="text-xs text-cyan-100/60 font-rajdhani tracking-widest uppercase truncate">Update class and price before mortgages and embarkations: every jump starts with an aligned bridge.</p>
+                        <p class="uppercase text-[10px] tracking-[0.3em] text-cyan-300/70 font-bold font-orbitron mb-0.5">
+                            {% if asset.category == 'team' %}Unit Dossier // Personnel Registry{% else %}Asset sheet // Hull Registry{% endif %}
+                        </p>
+                        <h3 class="font-bold text-cyan-100 text-2xl leading-tight font-orbitron uppercase">
+                            {% if asset.category == 'team' %}Update Unit{% else %}Update asset{% endif %}
+                        </h3>
+                        <p class="text-xs text-cyan-100/60 font-rajdhani tracking-widest uppercase truncate">
+                            {% if asset.category == 'team' %}
+                                Update roster and unit status: every operation starts with an aligned team.
+                            {% else %}
+                                Update class and price before mortgages and embarkations: every jump starts with an aligned bridge.
+                            {% endif %}
+                        </p>
 
                         {# Session Date Indicator #}
                         {% set campaign = asset.campaign ?? null %}
@@ -87,31 +97,42 @@
 
             {% if asset.id %}
                 <div class="col-span-2">
-                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron mb-1 opacity-50">Fleet Asset // Registry Code</label>
+                    <div class="flex items-baseline h-5 mb-1">
+                        <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Fleet Asset // Registry Code</label>
+                    </div>
                     <div class="px-3 py-2 rounded bg-slate-950/50 border border-slate-800 font-mono text-cyan-400 text-sm"><b>{{ asset.code }}</b></div>
                 </div>
             {% endif %}
 
             <div class="col-span-1">
-                {{ form_label(form.category) }}
-                {{ form_widget(form.category, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
-                {{ form_errors(form.category) }}
+                <div class="col-span-2">
+                    <div class="flex items-baseline h-5 mb-1">
+                        <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Fleet Asset // Category</label>
+                    </div>
+                    <div class="px-3 py-2 rounded bg-slate-950/50 border border-slate-800 font-mono text-cyan-400 text-sm"><b>{{ asset.category }}</b></div>
+                </div>
             </div>
 
             <div class="col-span-1" data-asset-target="nameField">
-                {{ form_label(form.name) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.name, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.name, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.name) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.type) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.type, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.type, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
                 {{ form_errors(form.type) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.class) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.class, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.class, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.class) }}
             </div>
@@ -120,30 +141,34 @@
         <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Mission Sync</legend>
             <div class="col-span-1">
-                {{ form_label(form.campaign) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.campaign, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.campaign, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
                 {{ form_errors(form.campaign) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.price) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.price, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.price, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 font-mono text-amber-400' } }) }}
                 {{ form_errors(form.price) }}
             </div>
         </fieldset>
 
-        <div id="technical-details-wrapper">
+        <div id="technical-details-wrapper" class="{% if asset.category == 'team' %}hidden{% endif %}" data-asset-category="{{ asset.category }}">
             {% include 'asset/_details_form.html.twig' with { detailsForm: form.assetDetails } %}
         </div>
 
-        <div class="flex gap-4 mb-8">
+        <div class="flex items-center justify-end gap-3 mb-10">
+            <a href="{{ path('app_asset_index', {category: asset.category}) }}" class="btn btn-ghost font-orbitron uppercase text-[10px] tracking-widest text-slate-500 hover:text-slate-300 font-bold">Abort Changes</a>
             <button type="submit"
-                    class="btn btn-primary font-orbitron uppercase tracking-widest text-[10px] px-8"
+                    class="btn btn-primary px-8 font-orbitron uppercase text-[10px] tracking-widest font-bold shadow-lg shadow-cyan-500/10"
                     {% if not (asset.id ? can_edit : can_create) %} disabled {% endif %}
             >
-                Save Protocol
+                Save Protocol // Commit Entry
             </button>
-            <a href="{{ path('app_asset_index') }}" role="button" class="btn btn-outline btn-sm font-orbitron uppercase tracking-widest text-[10px]">Abort Changes</a>
         </div>
 
         {{ form_end(form) }}
@@ -151,36 +176,16 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const categoryInputs = document.querySelectorAll('input[name="asset[category]"]');
             const technicalWrapper = document.getElementById('technical-details-wrapper');
-            const assetDetailsControllers = document.querySelectorAll('[data-controller="asset-details"]');
-            const technicalInputs = technicalWrapper.querySelectorAll('input, select, textarea');
+            const selected = technicalWrapper.dataset.assetCategory;
 
             function updateVisibility() {
-                const selected = document.querySelector('input[name="asset[category]"]:checked')?.value;
-                
-                // Logic:
-                // ASSET: Show Everything
-                // BASE: Show Everything (maybe hide drives in future, but for now Base has structure/hull)
-                // TEAM: Hide Technical Details Wrapper completely
-                
                 if (selected === 'team') {
                     technicalWrapper.classList.add('hidden');
-                    // Disable inputs to avoid validation errors or posting empty data
-                    // technicalInputs.forEach(input => input.disabled = true); // Optional: depends if we want to nullify data
                 } else {
                     technicalWrapper.classList.remove('hidden');
-                    // technicalInputs.forEach(input => input.disabled = false);
                 }
-
-                // Update Header Labels dynamically?
-                // Example: Change "Asset Details" to "Unit Details" or hide Hull/Drive specific fields within the wrapper
-                // For now, the request specifically asked to hide technical fits for Teams.
             }
-
-            categoryInputs.forEach(input => {
-                input.addEventListener('change', updateVisibility);
-            });
 
             // Initial check
             updateVisibility();

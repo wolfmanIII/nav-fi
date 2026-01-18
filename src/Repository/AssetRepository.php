@@ -84,6 +84,11 @@ class AssetRepository extends ServiceEntityRepository
                 ->setParameter('campaign', (int) $filters['campaign']);
         }
 
+        if (!empty($filters['category'])) {
+            $qb->andWhere('a.category = :category')
+                ->setParameter('category', $filters['category']);
+        }
+
         $qb->orderBy('a.name', 'ASC');
 
         $query = $qb->getQuery()

@@ -46,7 +46,9 @@
             {% endif %}
 
             <div class="col-span-2">
-                {{ form_label(form.title) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.title, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.title, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.title) }}
             </div>
@@ -55,7 +57,9 @@
         <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Temporal Sync</legend>
             <div class="col-span-1">
-                {{ form_label(form.startingYear) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.startingYear, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.startingYear, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 font-mono text-amber-400' } }) }}
                 {{ form_errors(form.startingYear) }}
             </div>
@@ -93,9 +97,13 @@
             </div>
         </fieldset>
 
-        <div class="flex gap-4 mb-8">
-            <button type="submit" class="btn btn-primary font-orbitron uppercase tracking-widest text-[10px] px-8">Confirm Mission</button>
-            <a href="{{ path('app_campaign_index') }}" role="button" class="btn btn-outline btn-sm font-orbitron uppercase tracking-widest text-[10px]">Abort Changes</a>
+        <div class="flex items-center justify-end gap-3 mb-10">
+            <a href="{{ path('app_campaign_index') }}" class="btn btn-ghost font-orbitron uppercase text-[10px] tracking-widest text-slate-500 hover:text-slate-300 font-bold">Abort Changes</a>
+            <button type="submit"
+                    class="btn btn-primary px-8 font-orbitron uppercase text-[10px] tracking-widest font-bold shadow-lg shadow-cyan-500/10"
+            >
+                Confirm Mission // Commit to Log
+            </button>
         </div>
 
         {{ form_end(form) }}

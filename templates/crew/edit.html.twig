@@ -134,9 +134,9 @@
                                     autocomplete: 'off'
                                 }
                             }) }}
-                            <div class="flex items-center gap-2">
-                                {{ form_label(form.assetRoles) }}
-                                <span class="badge badge-outline badge-info badge-xs uppercase tracking-tighter">[tap to toggle]</span>
+                            <div class="flex items-baseline justify-between h-5 mb-1">
+                                {{ form_label(form.assetRoles, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                                <span class="badge badge-outline badge-info badge-xs uppercase tracking-tighter text-[8px] opacity-70">[tap to toggle]</span>
                             </div>
                             <div class="flex flex-wrap gap-2" data-role-selector-target="chips"></div>
                             {{ form_errors(form.assetRoles) }}
@@ -163,8 +163,8 @@
             <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 items-end" data-controller="crew-status-date" data-asset-roles-toggle-target="statusWrapper">
                 <div>
                     {% set status_help_id = form.status.vars.id ~ '-help' %}
-                    <div class="flex items-center gap-2 mb-1">
-                        {{ form_label(form.status) }}
+                    <div class="flex items-baseline justify-between h-5 mb-1">
+                        {{ form_label(form.status, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                         <label for="{{ status_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest">[info]</label>
                     </div>
                     {{ form_widget(form.status, { attr: {
@@ -194,7 +194,9 @@
                     {'field': 'deceasedDate', 'label': 'Deceased date', 'target': 'deceased'}
                 ] %}
                     <div data-controller="imperial-date" data-crew-status-date-target="{{ row.target }}" class="hidden">
-                        {{ form_label(attribute(form, row.field)) }}
+                        <div class="flex items-baseline h-5 mb-1">
+                            {{ form_label(attribute(form, row.field), null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                        </div>
                         {{ form_widget(attribute(form, row.field).display, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700', 'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
                         {{ form_widget(attribute(form, row.field).year) }}
                         {{ form_widget(attribute(form, row.field).day) }}
@@ -213,14 +215,14 @@
             </div>
         </fieldset>
 
-        <div class="flex gap-4 mb-8">
+        <div class="flex items-center justify-end gap-3 mb-10">
+            <a href="{{ path('app_crew_index') }}" class="btn btn-ghost font-orbitron uppercase text-[10px] tracking-widest text-slate-500 hover:text-slate-300 font-bold">Abort Changes</a>
             <button type="submit"
-                    class="btn btn-primary font-orbitron uppercase tracking-widest text-[10px] px-8"
+                    class="btn btn-primary px-8 font-orbitron uppercase text-[10px] tracking-widest font-bold shadow-lg shadow-cyan-500/10"
                     {% if not (crew.id ? can_edit : can_create) %} disabled {% endif %}
             >
-                Confirm Enrollment
+                Confirm Enrollment // Commit to Log
             </button>
-            <a href="{{ path('app_crew_index') }}" role="button" class="btn btn-outline btn-sm font-orbitron uppercase tracking-widest text-[10px]">Abort Changes</a>
         </div>
 
         {{ form_end(form, { render_rest: false }) }}

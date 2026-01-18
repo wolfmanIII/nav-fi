@@ -23,18 +23,6 @@ class AssetType extends AbstractType
         $asset = $options['data'];
         $detailsData = AssetDetailsData::fromArray($asset->getAssetDetails() ?? []);
         $builder
-            ->add('category', ChoiceType::class, [
-                'choices' => [
-                    'Starship' => Asset::CATEGORY_SHIP,
-                    'Base / Station' => Asset::CATEGORY_BASE,
-                    'Team / Mercenary Unit' => Asset::CATEGORY_TEAM,
-                ],
-                'expanded' => true,
-                'multiple' => false,
-                'label' => 'Asset Type',
-                'attr' => ['class' => 'flex gap-4 mb-4'],
-                'label_attr' => ['class' => 'label font-bold text-slate-400 uppercase tracking-wider text-xs'],
-            ])
             ->add('name', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
             ])

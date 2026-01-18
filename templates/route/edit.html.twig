@@ -46,18 +46,24 @@
             {% endif %}
 
             <div class="col-span-1">
-                {{ form_label(form.name) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.name, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.name, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.name) }}
             </div>
             <div class="col-span-2 grid grid-cols-2 gap-4" data-controller="campaign-asset">
                 <div>
-                    {{ form_label(form.campaign) }}
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(form.campaign, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
                     {{ form_widget(form.campaign, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
                     {{ form_errors(form.campaign) }}
                 </div>
                 <div>
-                    {{ form_label(form.asset) }}
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(form.asset, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
                     {{ form_widget(form.asset, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
                     {{ form_errors(form.asset) }}
                 </div>
@@ -78,12 +84,28 @@
                 </div>
             </div>
             <div class="col-span-1">
-                {{ form_label(form.jumpRating) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.jumpRating, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.jumpRating, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.jumpRating) }}
             </div>
             <div class="col-span-1">
-                {{ form_label(form.fuelEstimate) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.jumpLevel, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(form.jumpLevel, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 font-mono text-amber-400' } }) }}
+                {{ form_errors(form.jumpLevel) }}
+            </div>
+            <div class="col-span-1">
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.distance, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(form.distance, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 font-mono text-cyan-400' } }) }}
+                {{ form_errors(form.distance) }}
+            </div>
+            <div class="col-span-1">
+                {{ form_label(form.fuelEstimate, null, { label_attr: { class: 'mb-1 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                 {{ form_widget(form.fuelEstimate, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 <p class="text-[10px] text-slate-500 mt-1 italic uppercase tracking-wider font-rajdhani">Estimated tons per jump segment.</p>
                 {{ form_errors(form.fuelEstimate) }}
@@ -228,9 +250,13 @@
             </div>
         </fieldset>
 
-        <div class="flex gap-4 mb-8">
-            <button type="submit" class="btn btn-primary font-orbitron uppercase tracking-widest text-[10px] px-8">Confirm Route</button>
-            <a href="{{ path('app_route_index') }}" role="button" class="btn btn-outline btn-sm font-orbitron uppercase tracking-widest text-[10px]">Abort Changes</a>
+        <div class="flex items-center justify-end gap-3 mb-10">
+            <a href="{{ path('app_route_index') }}" class="btn btn-ghost font-orbitron uppercase text-[10px] tracking-widest text-slate-500 hover:text-slate-300 font-bold">Abort Changes</a>
+            <button type="submit"
+                    class="btn btn-primary px-8 font-orbitron uppercase text-[10px] tracking-widest font-bold shadow-lg shadow-cyan-500/10"
+            >
+                Confirm Route // Commit to Log
+            </button>
         </div>
 
         {{ form_end(form) }}

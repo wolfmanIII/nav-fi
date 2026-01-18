@@ -35,28 +35,36 @@
             {% endif %}
 
             <div class="col-span-1">
-                {{ form_label(form.name) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.name, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.name, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.name) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.companyRole) }}
-                {{ form_widget(form.companyRole, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
-                {{ form_errors(form.companyRole) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.category, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(form.category, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                {{ form_errors(form.category) }}
             </div>
         </fieldset>
 
         <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Logistics & Contact</legend>
             <div class="col-span-1">
-                {{ form_label(form.contact) }}
-                {{ form_widget(form.contact, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
-                {{ form_errors(form.contact) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.address, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(form.address, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
+                {{ form_errors(form.address) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.signLabel) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.signLabel, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.signLabel, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.signLabel) }}
             </div>
@@ -71,9 +79,13 @@
             </div>
         </fieldset>
 
-        <div class="flex gap-4 mb-8">
-            <button type="submit" class="btn btn-primary font-orbitron uppercase tracking-widest text-[10px] px-8">Confirm Entry</button>
-            <a href="{{ path('app_company_index') }}" role="button" class="btn btn-outline btn-sm font-orbitron uppercase tracking-widest text-[10px]">Abort Changes</a>
+        <div class="flex items-center justify-end gap-3 mb-10">
+            <a href="{{ path('app_company_index') }}" class="btn btn-ghost font-orbitron uppercase text-[10px] tracking-widest text-slate-500 hover:text-slate-300 font-bold">Abort Changes</a>
+            <button type="submit"
+                    class="btn btn-primary px-8 font-orbitron uppercase text-[10px] tracking-widest font-bold shadow-lg shadow-cyan-500/10"
+            >
+                Confirm Entry // Commit to Log
+            </button>
         </div>
 
         {{ form_end(form) }}
