@@ -47,7 +47,7 @@ Gestisce lo storico dei pagamenti effettuati.
 - **salary**: Relazione ManyToOne verso `Salary`.
 - **paymentDay / paymentYear**: Data effettiva del pagamento.
 - **amount**: DECIMAL (15, 2).
-- **transaction**: Relazione OneToOne verso `Transaction` (Ledger).
+- **transaction**: Gestito via `relatedEntityId` nel Ledger (Transaction).
 
 ## Esperienza Utente & Uniformità
 Il modulo segue i rigorosi standard UI/UX del progetto Nav-Fi:

@@ -277,7 +277,7 @@ class FinancialEventSubscriber
         );
 
         if ($autoFlush) {
-            $payment->setTransaction($tx);
+            // No direct link needed, Transaction entity handles relatedEntityId
         }
 
         if (!$autoFlush && $emForCompute) {

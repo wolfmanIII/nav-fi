@@ -27,10 +27,6 @@ class SalaryPayment
     #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2)]
     private ?string $amount = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Transaction $transaction = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -80,18 +76,6 @@ class SalaryPayment
     public function setAmount(string $amount): static
     {
         $this->amount = $amount;
-
-        return $this;
-    }
-
-    public function getTransaction(): ?Transaction
-    {
-        return $this->transaction;
-    }
-
-    public function setTransaction(Transaction $transaction): static
-    {
-        $this->transaction = $transaction;
 
         return $this;
     }
