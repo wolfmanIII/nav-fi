@@ -106,11 +106,26 @@ class Crew
     #[ORM\Column(nullable: true)]
     private ?int $deceasedYear = null;
 
+    /**
+     * @var Collection<int, Salary>
+     */
+    #[ORM\OneToMany(targetEntity: Salary::class, mappedBy: 'crew', orphanRemoval: true)]
+    private Collection $salaries;
+
     public function __construct()
     {
         $this->setCode(Uuid::v7());
         $this->assetRoles = new ArrayCollection();
+        $this->salaries = new ArrayCollection();
         $this->status = null;
+    }
+
+    /**
+     * @return Collection<int, Salary>
+     */
+    public function getSalaries(): Collection
+    {
+        return $this->salaries;
     }
 
     public function getId(): ?int

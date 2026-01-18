@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+{% import '_tooltip.html.twig' as tooltip %}
+
+{% block title %}Nav-Fi - Salario{% endblock %}
+
+{% block pageContent %}
+    {# Header can follow Emerald theme as it represents Crew/Salaries #}
+    <div class="relative rounded-xl border border-emerald-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-900 shadow-lg mb-6 overflow-hidden">
+        <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
+             style="background: radial-gradient(circle at 20% 20%, rgba(16,185,129,0.25), transparent 35%);">
+        </div>
+        <div class="relative p-4 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-400/40">
+                    {# Sidebar matched icon #}
+                    {% include 'icons/credits.html.twig' %}
+                </div>
+                <div class="flex-1">
+                    <p class="uppercase text-[10px] tracking-[0.3em] text-emerald-300/70 font-bold font-orbitron mb-0.5">Crew Management // Payroll Registry</p>
+                    <h3 class="font-bold text-emerald-100 text-2xl leading-tight font-orbitron uppercase">
+                        {{ salary.id ? 'Modifiche Salari' : 'Nuovo Accordo' }}
+                    </h3>
+                    <p class="text-xs text-emerald-100/60 font-rajdhani tracking-widest uppercase">Establish or update crew compensation agreements.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div data-controller="salary">
+    {{ form_start(form) }}
+    {{ form_widget(form._token) }}
+
+    <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+        {# Legends must be Cyan for financial uniformity #}
+        <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Agreement Data</legend>
+
+        <div class="col-span-2 md:col-span-1">
+            <div class="flex items-baseline h-5 mb-1">
+                <label class="mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Campaign Filter [UNMAPPED]</label>
+            </div>
+            {{ form_widget(form.campaign, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
+        </div>
+
+        <div class="col-span-2 md:col-span-1">
+            <div class="flex items-baseline h-5 mb-1">
+                <label class="mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Asset Filter [UNMAPPED]</label>
+            </div>
+            {{ form_widget(form.asset, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
+        </div>
+
+        <div class="col-span-2">
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(form.crew, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
+            {{ form_widget(form.crew, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
+            {{ form_errors(form.crew) }}
+        </div>
+
+        <div class="col-span-2 md:col-span-1">
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(form.amount, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
+            {{ form_widget(form.amount, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 font-mono' } }) }}
+            {{ form_errors(form.amount) }}
+        </div>
+
+        <div class="col-span-2 md:col-span-1">
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(form.status, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
+            {{ form_widget(form.status, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
+            {{ form_errors(form.status) }}
+        </div>
+    </fieldset>
+
+    <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-8 relative">
+        <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Chronicle & Cycle</legend>
+
+        <div class="col-span-2" data-controller="imperial-date" data-action="imperial-date:change->salary#recalculateProRata">
+            <div class="flex items-baseline h-5 mb-1">
+                <label class="mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">First Payment Date</label>
+            </div>
+            <div class="flex flex-col gap-2">
+                {{ form_widget(form.firstPaymentDate.display, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50', 'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                {{ form_widget(form.firstPaymentDate.year, { attr: { 'data-salary-target': 'firstPaymentYear' } }) }}
+                {{ form_widget(form.firstPaymentDate.day, { attr: { 'data-salary-target': 'firstPaymentDay' } }) }}
+            </div>
+            <div class="mt-4 p-3 rounded-lg bg-cyan-500/5 border border-cyan-500/20 hidden" data-salary-target="proRataContainer">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] uppercase tracking-widest text-cyan-500/70 font-bold block mb-1">Suggested Pro-Rata</span>
+                        <span class="text-[9px] text-slate-500 uppercase">Based on <span data-salary-target="proRataDays">0</span> days of service</span>
+                    </div>
+                    <div class="text-xl font-mono font-bold text-cyan-400">
+                        <span data-salary-target="proRataAmount">0.00</span>
+                        <span class="text-xs ml-1 text-cyan-600">Cr</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="flex items-center justify-end gap-3 mb-10">
+        <a href="{{ path('app_salary_index') }}" class="btn btn-ghost font-orbitron uppercase text-[10px] tracking-widest text-slate-500 hover:text-slate-300 font-bold">Abort Changes</a>
+        {# Submit button must be Cyan (btn-primary) for financial uniformity #}
+        <button type="submit" class="btn btn-primary px-8 font-orbitron uppercase text-[10px] tracking-widest font-bold shadow-lg shadow-cyan-500/10">
+            Confirm Agreement // Registry Update
+        </button>
+    </div>
+
+    {{ form_end(form) }}
+    </div>
+{% endblock %}

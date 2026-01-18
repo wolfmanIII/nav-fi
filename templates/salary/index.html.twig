@@ -1,0 +1,220 @@
+{% extends 'base.html.twig' %}
+{% import '_tooltip.html.twig' as tooltip %}
+
+{% block title %}Nav-Fi - Salari{% endblock %}
+
+{% block pageContent %}
+    {% set locale = app.request.locale ?? 'en' %}
+
+    <div class="">
+        {# Standard Header Layout: Index is ALWAYS Cyan #}
+        <div class="relative rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-6 overflow-hidden">
+            <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
+                 style="background: radial-gradient(circle at 20% 20%, rgba(6,182,212,0.25), transparent 35%);">
+            </div>
+            <div class="relative p-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="p-2.5 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
+                        {# Hero icon matched with sidebar #}
+                        {% include 'icons/credits.html.twig' %}
+                    </div>
+                    <div>
+                        <p class="uppercase text-[10px] tracking-[0.3em] text-cyan-300/70 font-bold font-orbitron mb-0.5">Crew Management // Salary Manifest</p>
+                        <h1 class="text-2xl font-bold text-cyan-100 leading-tight font-orbitron uppercase">Gestione Salari</h1>
+                        <p class="text-xs text-cyan-100/60 font-rajdhani tracking-widest uppercase">Compensation, payroll and pro-rata: manage your crew payouts.</p>
+
+                        {# Session Date Modal Trigger #}
+                        {% if campaigns|length > 0 %}
+                            <div class="flex flex-wrap gap-2 mt-3">
+                                <label for="session-dates-modal-salary" class="badge badge-info gap-1.5 px-2.5 py-2.5 text-xs font-mono cursor-pointer hover:bg-info/80 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    <span class="font-semibold uppercase">View Mission Session Dates</span>
+                                    <span>({{ campaigns|length }})</span>
+                                </label>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    {# Add button icon matched with sidebar/hero #}
+                    {{ tooltip.link('Record new salary agreement',
+                                    'Add salary',
+                                    'icons/credits.html.twig',
+                                    path('app_salary_new'),
+                                    { dim: 20, linkClass: 'btn btn-outline btn-primary btn-sm px-4', position: 'tooltip-left' }) }}
+                </div>
+            </div>
+        </div>
+
+        {# Session Dates Modal #}
+        <input type="checkbox" id="session-dates-modal-salary" class="modal-toggle" />
+        <div class="modal" role="dialog">
+            <div class="modal-box bg-slate-900 border border-slate-700 max-w-2xl">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="font-bold text-cyan-100 text-lg font-orbitron uppercase tracking-widest">Mission Session Dates</h3>
+                    <label for="session-dates-modal-salary" class="btn btn-sm btn-circle btn-ghost">✕</label>
+                </div>
+                <div class="overflow-x-auto rounded-lg border border-slate-800 bg-slate-950/40 mt-4">
+                    <table class="table table-xs w-full">
+                        <thead>
+                            <tr class="border-b border-slate-800">
+                                <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Mission / Campaign</th>
+                                <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50 text-right">Session Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/50">
+                            {% for campaign in campaigns %}
+                                <tr class="hover:bg-cyan-500/5 transition-colors">
+                                    <td class="p-3 font-semibold text-cyan-100">{{ campaign.title }}</td>
+                                    <td class="p-3 font-mono text-sm text-slate-300 text-right">
+                                        {{ campaign.sessionDay|imperial_date(campaign.sessionYear) }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-action">
+                    <label for="session-dates-modal-salary" class="btn btn-outline btn-primary btn-sm font-orbitron uppercase text-[10px]">Close</label>
+                </div>
+            </div>
+            <label class="modal-backdrop" for="session-dates-modal-salary"></label>
+        </div>
+
+        {# Standard Filters Layout #}
+        {% set filter_fields %}
+            <div>
+                <label class="label text-xs uppercase tracking-[0.2em] text-cyan-500/60 font-bold">CREW_SEARCH</label>
+                <input type="text" name="search" value="{{ filters.search }}" class="input w-full bg-slate-950/50 border-slate-800 text-cyan-100 placeholder:text-slate-600 focus:border-cyan-500/50" placeholder="Search by name...">
+            </div>
+            <div>
+                <label class="label text-xs uppercase tracking-[0.2em] text-cyan-500/60 font-bold">VESSEL_NAV</label>
+                <select name="asset" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
+                    <option value="">ANY_VESSEL</option>
+                    {% for asset in assets %}
+                        <option value="{{ asset.id }}" {% if filters.asset == asset.id %}selected{% endif %}>{{ asset.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="label text-xs uppercase tracking-[0.2em] text-cyan-500/60 font-bold">OPS_CAMPAIGN</label>
+                <select name="campaign" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
+                    <option value="">ALL_OPERATIONS</option>
+                    {% for campaign in campaigns %}
+                        <option value="{{ campaign.id }}" {% if filters.campaign == campaign.id %}selected{% endif %}>{{ campaign.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endset %}
+
+        {% include 'components/index_filters.html.twig' with {
+            action: path('app_salary_index'),
+            legend: 'Salary search',
+            fields: filter_fields,
+            reset_path: path('app_salary_index'),
+            is_filtered: filters.search or filters.asset or filters.campaign
+        } %}
+
+        {# Standard Cards Layout #}
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+            {% if salaries|length > 0 %}
+                {% for salary in salaries %}
+                    <div class="group relative flex flex-col rounded-xl border border-cyan-500/20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 shadow-lg transition-all hover:border-cyan-500/50 hover:shadow-cyan-500/10 hover:-translate-y-1">
+                        {# Card Header: Actions & REF #}
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-2">
+                                <div class="px-2.5 py-1 rounded border border-cyan-500/20 bg-cyan-500/5 text-xs font-mono tracking-widest text-cyan-400/80 uppercase">
+                                    REF: SAL-{{ salary.id }}
+                                </div>
+                                <span class="px-2.5 py-1 rounded {{ salary.status == 'Active' ? 'bg-cyan-900/40 border-cyan-500/30 text-cyan-400' : 'bg-slate-800 border-slate-700 text-slate-400' }} text-xs font-bold tracking-tighter uppercase border">
+                                    {{ salary.status }}
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                {# Index buttons must be Cyan #}
+                                {{ tooltip.link('Edit', '', 'icons/action-edit.html.twig', path('app_salary_edit', {id: salary.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-cyan-500/20 text-cyan-400' }) }}
+                                {{ tooltip.link('Delete', '', 'icons/action-trash.html.twig', path('app_salary_delete', {id: salary.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' }) }}
+                            </div>
+                        </div>
+
+                        {# Card Body: Main Content #}
+                        <div class="mb-4 grow">
+                            <h3 class="text-2xl font-bold text-cyan-100 group-hover:text-cyan-400 transition-colors uppercase tracking-tight">
+                                {{ salary.crew.name }} {{ salary.crew.surname }}
+                            </h3>
+                            <div class="flex items-center gap-2 text-xs text-slate-400">
+                                {% include 'icons/crew.html.twig' with {'dim': 12} %}
+                                <span>{{ salary.crew.assetRole ? salary.crew.assetRole.name : 'CONTRACTOR' }}</span>
+                            </div>
+                        </div>
+
+                        {# Amount Section #}
+                        <div class="mb-6 py-3 px-4 rounded-lg bg-cyan-900/10 border-x-2 border-cyan-500/30">
+                            <div class="flex items-end justify-between">
+                                <span class="text-xs uppercase tracking-widest text-cyan-500/70 font-bold">Monthly Rate</span>
+                                <div class="text-2xl font-mono font-bold text-cyan-300">
+                                    {{ salary.amount|format_number({ min_fraction_digit: 2, max_fraction_digit: 2 }, 'decimal', 'default', locale) }}
+                                    <span class="text-xs ml-1 text-cyan-600">Cr</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Vessel & Context #}
+                        <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
+                            <div class="flex flex-col gap-1">
+                                <span class="uppercase tracking-tighter text-slate-500 font-semibold">Vessel Assignment</span>
+                                <div class="flex items-center gap-2 text-cyan-100">
+                                    {% include 'icons/far-trader.html.twig' with {'dim': 16} %}
+                                    <span>{{ salary.crew.asset ? salary.crew.asset.name : 'UNASSIGNED' }}</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <span class="uppercase tracking-tighter text-slate-500 font-semibold">Operation Area</span>
+                                <div class="flex items-center gap-2 text-slate-300">
+                                    {% include 'icons/alien-structure-1.html.twig' with {'dim': 16} %}
+                                    <span class="truncate">{{ (salary.crew.asset and salary.crew.asset.campaign) ? salary.crew.asset.campaign.title : 'GENERAL_OPS' }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Timeline #}
+                        <div class="pt-4 border-t border-slate-800">
+                            <div class="flex justify-between items-center text-xs font-mono">
+                                <div class="flex flex-col">
+                                    <span class="text-slate-500 uppercase">First Paydate</span>
+                                    <span class="text-cyan-400/80">{{ (salary.firstPaymentDay is not null and salary.firstPaymentYear is not null) ? (salary.firstPaymentDay|imperial_date(salary.firstPaymentYear)) : 'N/A' }}</span>
+                                </div>
+                                <div class="flex flex-col text-right">
+                                    <span class="text-slate-500 uppercase">Cycle</span>
+                                    <span class="text-slate-300">28 DAYS</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-span-full py-12 text-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
+                    <p class="text-slate-500 font-rajdhani tracking-widest uppercase mb-4 text-sm">No crew salaries recorded // Manifest empty</p>
+                    {# Standardized button for empty state, with icon matched to sidebar #}
+                    {{ tooltip.link('Record new salary agreement',
+                                    'Initiate payroll agreement',
+                                    'icons/credits.html.twig',
+                                    path('app_salary_new'),
+                                    { dim: 20, linkClass: 'btn btn-outline btn-primary btn-sm px-6' }) }}
+                </div>
+            {% endif %}
+        </div>
+
+        {# Standard Pagination #}
+        {% include 'components/pagination.html.twig' with {
+            pagination: pagination,
+            route: 'app_salary_index',
+            query: app.request.query.all
+        } %}
+    </div>
+{% endblock %}

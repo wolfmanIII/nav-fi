@@ -142,6 +142,7 @@
                 {% set finance_active = current_route starts with 'app_income' 
                     or current_route starts with 'app_cost' 
                     or current_route starts with 'app_mortgage' 
+                    or current_route starts with 'app_salary' 
                     or current_route starts with 'app_annual_budget' %}
                 <details {% if finance_active %}open{% endif %} data-controller="sidebar-module" data-action="toggle->sidebar-module#toggle">
                     <summary data-sidebar-module-target="summary" class="text-xs uppercase tracking-widest text-slate-400 hover:text-cyan-300 relative overflow-hidden">Credits & Debt</summary>
@@ -162,6 +163,12 @@
                             <a href="{{ path('app_mortgage_index') }}" class="{% if current_route == 'app_mortgage_index' %}text-cyan-400 font-bold{% endif %}">
                                 {% include 'icons/handbook.html.twig' with {'dim': '18'} %}
                                 <span>Debt Manifest</span>
+                            </a>
+                        </li>
+                        <li data-sidebar-module-target="item">
+                            <a href="{{ path('app_salary_index') }}" class="{% if current_route == 'app_salary_index' %}text-emerald-400 font-bold{% endif %}">
+                                {% include 'icons/credits.html.twig' with {'dim': '18'} %}
+                                <span>Salary Ledger</span>
                             </a>
                         </li>
                         <li data-sidebar-module-target="item">

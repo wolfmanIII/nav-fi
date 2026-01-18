@@ -7,12 +7,15 @@ use App\Entity\Mortgage;
 use App\Entity\MortgageInstallment;
 use App\Entity\Asset;
 use App\Entity\Transaction;
+use App\Entity\Salary;
+use App\Entity\SalaryPayment;
 use Doctrine\ORM\EntityManagerInterface;
 
 class FinancialAutomationService
 {
     private const IMPERIAL_YEAR_DAYS = 365;
     private const MORTGAGE_PERIOD_DAYS = 28; // Standard 4-week period
+    private const SALARY_PERIOD_DAYS = 28; // Standard 4-week period
 
     public function __construct(
         private EntityManagerInterface $entityManager,
@@ -26,6 +29,64 @@ class FinancialAutomationService
 
         foreach ($campaign->getAssets() as $asset) {
             $this->processMortgage($asset, $currentDay, $currentYear);
+        }
+
+        $this->processSalaries($campaign, $currentDay, $currentYear);
+    }
+
+    private function processSalaries(Campaign $campaign, int $currentDay, int $currentYear): void
+    {
+        foreach ($campaign->getAssets() as $asset) {
+            foreach ($asset->getCrews() as $crew) {
+                foreach ($crew->getSalaries() as $salary) {
+                    if ($salary->getStatus() === Salary::STATUS_ACTIVE) {
+                        $this->processSalary($salary, $currentDay, $currentYear);
+                    }
+                }
+            }
+        }
+    }
+
+    private function processSalary(Salary $salary, int $currentDay, int $currentYear): void
+    {
+        $payments = $salary->getPayments()->toArray();
+        usort($payments, fn($a, $b) => ($a->getPaymentYear() * 1000 + $a->getPaymentDay()) <=> ($b->getPaymentYear() * 1000 + $b->getPaymentDay()));
+
+        $lastPayment = end($payments);
+        $crew = $salary->getCrew();
+        $asset = $crew?->getAsset();
+
+        if (!$asset) return;
+
+        if ($lastPayment) {
+            [$nextDueDay, $nextDueYear] = $this->addDays($lastPayment->getPaymentDay(), $lastPayment->getPaymentYear(), self::SALARY_PERIOD_DAYS);
+        } else {
+            $nextDueDay = $salary->getFirstPaymentDay();
+            $nextDueYear = $salary->getFirstPaymentYear();
+        }
+
+        while ($this->isDateBeforeOrEqual($nextDueDay, $nextDueYear, $currentDay, $currentYear)) {
+            $payment = new SalaryPayment();
+            $payment->setSalary($salary);
+            $payment->setPaymentDay($nextDueDay);
+            $payment->setPaymentYear($nextDueYear);
+
+            // Calculate Amount (Pro-rata for first payment)
+            if (!$lastPayment && $crew->getActiveDay() !== null) {
+                $totalDays = ($nextDueYear * self::IMPERIAL_YEAR_DAYS + $nextDueDay) - ($crew->getActiveYear() * self::IMPERIAL_YEAR_DAYS + $crew->getActiveDay());
+                $amount = bcmul(bcdiv($salary->getAmount(), (string) self::SALARY_PERIOD_DAYS, 10), (string)$totalDays, 2);
+            } else {
+                $amount = $salary->getAmount();
+            }
+
+            $payment->setAmount($amount);
+            $this->entityManager->persist($payment);
+            $this->entityManager->flush(); // Need ID for FinancialEventSubscriber
+
+            // Subscriber will handle transaction creation
+
+            $lastPayment = $payment;
+            [$nextDueDay, $nextDueYear] = $this->addDays($nextDueDay, $nextDueYear, self::SALARY_PERIOD_DAYS);
         }
     }
 

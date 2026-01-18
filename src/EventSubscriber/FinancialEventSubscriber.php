@@ -8,6 +8,7 @@ use App\Entity\MortgageInstallment;
 use App\Service\LedgerService;
 use App\Service\ImperialDateHelper;
 use App\Entity\Transaction;
+use App\Entity\SalaryPayment;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
@@ -33,12 +34,13 @@ class FinancialEventSubscriber
         $uow = $em->getUnitOfWork();
 
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if ($entity instanceof Income || $entity instanceof Cost || $entity instanceof MortgageInstallment) {
+            if ($entity instanceof Income || $entity instanceof Cost || $entity instanceof MortgageInstallment || $entity instanceof SalaryPayment) {
                 // Reverse old transactions
                 $type = match (true) {
                     $entity instanceof Income => 'Income',
                     $entity instanceof Cost => 'Cost',
                     $entity instanceof MortgageInstallment => 'MortgageInstallment',
+                    $entity instanceof SalaryPayment => 'SalaryPayment',
                 };
 
                 // REVERSAL STRATEGY:
@@ -64,6 +66,8 @@ class FinancialEventSubscriber
             $this->processCost($entity, $autoFlush, $emForCompute);
         } elseif ($entity instanceof MortgageInstallment) {
             $this->processMortgageInstallment($entity, $autoFlush, $emForCompute);
+        } elseif ($entity instanceof SalaryPayment) {
+            $this->processSalaryPayment($entity, $autoFlush, $emForCompute);
         }
     }
 
@@ -241,6 +245,45 @@ class FinancialEventSubscriber
         if (!$autoFlush && $emForCompute) {
             $uow = $emForCompute->getUnitOfWork();
             $uow->computeChangeSet($emForCompute->getClassMetadata(Transaction::class), $tx);
+        }
+    }
+
+    private function processSalaryPayment(SalaryPayment $payment, bool $autoFlush, ?\Doctrine\ORM\EntityManagerInterface $emForCompute): void
+    {
+        $salary = $payment->getSalary();
+        if (!$salary) return;
+
+        $crew = $salary->getCrew();
+        $asset = $crew?->getAsset();
+        if (!$asset) return;
+
+        $day = $payment->getPaymentDay();
+        $year = $payment->getPaymentYear();
+        if ($day === null || $year === null) return;
+
+        $amount = $payment->getAmount();
+        if ($amount === null) return;
+
+        $tx = $this->ledgerService->withdraw(
+            $asset,
+            $amount,
+            sprintf("Salary Payment: %s %s (Date: %03d-%d)", $crew->getName(), $crew->getSurname(), $day, $year),
+            $day,
+            $year,
+            'SalaryPayment',
+            $payment->getId(),
+            null,
+            $autoFlush
+        );
+
+        if ($autoFlush) {
+            $payment->setTransaction($tx);
+        }
+
+        if (!$autoFlush && $emForCompute) {
+            $uow = $emForCompute->getUnitOfWork();
+            $uow->computeChangeSet($emForCompute->getClassMetadata(Transaction::class), $tx);
+            // Relationship update in unit of work is complex for OneToOne if not pre-assigned
         }
     }
 }
