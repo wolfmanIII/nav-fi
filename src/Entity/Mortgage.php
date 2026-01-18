@@ -51,8 +51,7 @@ class Mortgage
     #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2, nullable: true)]
     private ?string $discount = null;
 
-    #[ORM\Column(options: ['default' => false])]
-    private ?bool $discountIsPercentage = false;
+
 
     #[ORM\ManyToOne(inversedBy: 'mortgages')]
     #[ORM\JoinColumn(nullable: true)]
@@ -210,17 +209,7 @@ class Mortgage
         return $this;
     }
 
-    public function getDiscountIsPercentage(): ?bool
-    {
-        return $this->discountIsPercentage;
-    }
 
-    public function setDiscountIsPercentage(bool $discountIsPercentage): static
-    {
-        $this->discountIsPercentage = $discountIsPercentage;
-
-        return $this;
-    }
 
     public function getInsurance(): ?Insurance
     {
@@ -318,10 +307,7 @@ class Mortgage
         }
 
         if ($this->getDiscount()) {
-            $discount = $this->getDiscountIsPercentage() ?
-                bcmul($assetPrice, $this->normalizeAmount($this->getDiscount()), 6) : // Percentage of full price
-                $this->normalizeAmount($this->getDiscount());
-
+            $discount = bcmul($assetPrice, bcdiv($this->normalizeAmount($this->getDiscount()), '100', 4), 6);
             $assetCost = bcsub($assetCost, $discount, 6);
         }
 
