@@ -5,6 +5,25 @@ Tutte le modifiche notevoli a questo progetto saranno documentate in questo file
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/it/1.0.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/lang/it/).
 
+## [1.2.0] - 2026-01-19
+
+### Aggiunto
+- **Modulo Gestione Salari**: Sistema completo per la gestione dei pagamenti dell'equipaggio.
+  - Entità `Salary` e `SalaryPayment`.
+  - Logica Pro-rata automatica con controller Stimulus.
+  - Ciclo standard di 28 giorni (Impero).
+  - Integrazione diretta con il Ledger Finanziario.
+- **Branding Aggiornato**: Nuova terminologia "Command Deck" e "Open Systems".
+
+### Modificato
+- Refactoring UI Navbar e Footer per maggiore immersività.
+- Migliorata visibilità tooltip nella pagina Asset Edit (hero section).
+- Ottimizzazione performance Database (indici su Transaction e Ledger).
+
+### Corretto
+- Fix critico watermark PDF: rimosso placeholder `{{WATERMARK}}` da Mortgage, Cost e Asset PDF.
+- Ripristinata animazione "spin" sulle icone radar e pulse effects.
+
 ## [1.1.0] - 2026-01-15
 
 ### Aggiunto
