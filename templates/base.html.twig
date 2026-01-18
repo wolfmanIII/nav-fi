@@ -190,18 +190,64 @@
                 </div>
             </div>
 
-            <footer class="footer sm:footer-horizontal footer-center bg-neutral text-base-content p-4 sticky top-[100vh]">
-                <aside class="text-sm uppercase tracking-[0.25em] text-slate-200/80">
-                    <div class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-5 opacity-80">
-                            <path d="M3 12h18"></path>
-                            <path d="M8 7l-2 5 2 5"></path>
-                            <path d="M16 7l2 5-2 5"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                        <span>Nav-Fi // Imperial drift lane</span>
+            <footer class="mt-auto relative overflow-hidden bg-slate-950/80 backdrop-blur-md border-t border-cyan-500/20 py-8 px-6">
+                <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent opacity-50"></div>
+                
+                <div class="relative flex flex-col md:flex-row items-center justify-between gap-6 max-w-7xl mx-auto">
+                    <!-- LOGO // SIGNAL -->
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <div class="absolute -inset-1 bg-cyan-500/20 rounded-full blur opacity-50 animate-pulse"></div>
+                            {% include 'icons/radar.html.twig' with { dim: 20, class: 'relative text-cyan-400 opacity-80' } %}
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-orbitron font-bold tracking-[0.4em] text-cyan-500/60 uppercase">Nav-Fi Interface</span>
+                            <span class="text-xs font-rajdhani font-medium tracking-widest text-slate-400 capitalize">Imperial standard drift lane // Protocol 7.4</span>
+                        </div>
                     </div>
-                </aside>
+
+                    <!-- TELEMETRY // DATA -->
+                    <div class="hidden lg:flex items-center gap-8">
+                        <div class="flex flex-col items-end">
+                            <span class="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">System Status</span>
+                            <div class="flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/80 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse"></span>
+                                <span class="text-xs font-mono text-emerald-400/80 font-bold uppercase tracking-widest">Active Link</span>
+                            </div>
+                        </div>
+                        <div class="w-px h-8 bg-slate-800"></div>
+                        <div class="flex flex-col items-end">
+                            <span class="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">Data Synchronization</span>
+                            <div class="flex items-center gap-2 font-mono text-xs text-cyan-400/80">
+                                <span class="animate-pulse">_</span>
+                                <span>SYNC_COMPLETE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COPYRIGHT // SIGNATURE -->
+                    <div class="text-center md:text-right">
+                        <p class="text-[10px] font-orbitron font-bold tracking-[0.2em] text-cyan-300/40 uppercase mb-1">
+                            &copy; {{ "now"|date("Y") }} Imperial Bureau of Finance
+                        </p>
+                        <div class="flex items-center justify-center md:justify-end gap-3 text-[9px] font-bold font-rajdhani text-slate-600 uppercase tracking-[0.3em]">
+                            <span>Restricted Access</span>
+                            <span class="w-1 h-1 rounded-full bg-slate-700"></span>
+                            <span>Level 4 Clearence Required</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOTTOM LINE -->
+                <div class="mt-8 flex items-center justify-center gap-4 opacity-20">
+                    <div class="h-[1px] flex-1 bg-gradient-to-r from-transparent to-cyan-500/50"></div>
+                    <div class="flex gap-1.5">
+                        <div class="w-1 h-1 bg-cyan-500 rotate-45"></div>
+                        <div class="w-1 h-1 bg-cyan-400 rotate-45"></div>
+                        <div class="w-1 h-1 bg-cyan-500 rotate-45"></div>
+                    </div>
+                    <div class="h-[1px] flex-1 bg-gradient-to-l from-transparent to-cyan-500/50"></div>
+                </div>
             </footer>
 
         </div>
