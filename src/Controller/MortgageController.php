@@ -89,6 +89,7 @@ final class MortgageController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $mortgage->setName("MOR - " . $mortgage->getAsset()->getName());
+            $mortgage->setUser($user);
 
             $em->persist($mortgage);
             $em->flush();

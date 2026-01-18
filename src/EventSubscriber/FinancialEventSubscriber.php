@@ -4,6 +4,7 @@ namespace App\EventSubscriber;
 
 use App\Entity\Cost;
 use App\Entity\Income;
+use App\Entity\MortgageInstallment;
 use App\Service\LedgerService;
 use App\Service\ImperialDateHelper;
 use App\Entity\Transaction;
@@ -13,7 +14,7 @@ use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Events;
 
 #[AsDoctrineListener(event: Events::postPersist, priority: 500, connection: 'default')]
-#[AsDoctrineListener(event: Events::postUpdate, priority: 500, connection: 'default')]
+#[AsDoctrineListener(event: Events::onFlush, priority: 500, connection: 'default')]
 class FinancialEventSubscriber
 {
     public function __construct(
@@ -23,38 +24,50 @@ class FinancialEventSubscriber
 
     public function postPersist(PostPersistEventArgs $args): void
     {
-        $this->handleEvent($args->getObject(), false);
+        $this->handleEvent($args->getObject(), false, true);
     }
 
-    public function postUpdate(PostUpdateEventArgs $args): void
+    public function onFlush(\Doctrine\ORM\Event\OnFlushEventArgs $args): void
     {
-        // For updates, we first reverse previous transactions, then apply new ones.
-        // This effectively "updates" the ledger history.
-        // NOTE: This assumes the "Previous" state of the entity was the basis for the existing Txs.
-        // But here we are postUpdate, so the Entity is already New.
-        // We rely on relatedEntityType/Id to find old Txs.
+        $em = $args->getObjectManager();
+        $uow = $em->getUnitOfWork();
 
-        $entity = $args->getObject();
-        if ($entity instanceof Income || $entity instanceof Cost) {
-            // Reverse old
-            $type = $entity instanceof Income ? 'Income' : 'Cost';
-            $this->ledgerService->reverseTransactions($type, $entity->getId());
+        foreach ($uow->getScheduledEntityUpdates() as $entity) {
+            if ($entity instanceof Income || $entity instanceof Cost || $entity instanceof MortgageInstallment) {
+                // Reverse old transactions
+                $type = match (true) {
+                    $entity instanceof Income => 'Income',
+                    $entity instanceof Cost => 'Cost',
+                    $entity instanceof MortgageInstallment => 'MortgageInstallment',
+                };
 
-            // Apply new
-            $this->handleEvent($entity, true);
+                // REVERSAL STRATEGY:
+                // The old architecture relied on reversing everything and adding new.
+                // WE MUST NOT FLUSH.
+                $reversals = $this->ledgerService->reverseTransactions($type, $entity->getId(), false);
+                $metadata = $em->getClassMetadata(Transaction::class);
+                foreach ($reversals as $rtx) {
+                    $uow->computeChangeSet($metadata, $rtx);
+                }
+
+                // 2. Add New
+                $this->handleEvent($entity, true, false, $em);
+            }
         }
     }
 
-    private function handleEvent(object $entity, bool $isUpdate): void
+    private function handleEvent(object $entity, bool $isUpdate, bool $autoFlush = true, ?\Doctrine\ORM\EntityManagerInterface $emForCompute = null): void
     {
         if ($entity instanceof Income) {
-            $this->processIncome($entity);
+            $this->processIncome($entity, $autoFlush, $emForCompute);
         } elseif ($entity instanceof Cost) {
-            $this->processCost($entity);
+            $this->processCost($entity, $autoFlush, $emForCompute);
+        } elseif ($entity instanceof MortgageInstallment) {
+            $this->processMortgageInstallment($entity, $autoFlush, $emForCompute);
         }
     }
 
-    private function processIncome(Income $income): void
+    private function processIncome(Income $income, bool $autoFlush, ?\Doctrine\ORM\EntityManagerInterface $emForCompute): void
     {
         $asset = $income->getAsset();
         if (!$asset) return;
@@ -74,15 +87,21 @@ class FinancialEventSubscriber
             $bonus = bcadd($bonus, $income->getContractDetails()->getBonus() ?? '0.00', 2);
         }
 
+        // Helper to persist safely
+        $persist = function (Transaction $tx) use ($emForCompute) {
+            if ($emForCompute) {
+                $uow = $emForCompute->getUnitOfWork();
+                $uow->computeChangeSet($emForCompute->getClassMetadata(Transaction::class), $tx);
+            }
+        };
+
         // SCENARIO 1: Deposit Exists (> 0)
         if (bccomp($deposit, '0.00', 2) > 0) {
-            // A. Deposit Transaction (At Signing Date)
-            // If we have a signing date, we book the deposit.
             $signingDay = $income->getSigningDay();
             $signingYear = $income->getSigningYear();
 
             if ($signingDay !== null && $signingYear !== null) {
-                $this->ledgerService->deposit(
+                $tx = $this->ledgerService->deposit(
                     $asset,
                     $deposit,
                     "Income Deposit: " . $income->getTitle() . " (" . $income->getCode() . ")",
@@ -90,32 +109,25 @@ class FinancialEventSubscriber
                     $signingYear,
                     'Income',
                     $income->getId(),
-                    $this->isVoid($income, $signingDay, $signingYear) ? Transaction::STATUS_VOID : null
+                    $this->isVoid($income, $signingDay, $signingYear) ? Transaction::STATUS_VOID : null,
+                    $autoFlush
                 );
+                if (!$autoFlush) $persist($tx);
             }
 
-            // B. Balance Transaction (At Payment Date)
-            // Only if payment date is set (strict rule).
             $day = $income->getPaymentDay();
             $year = $income->getPaymentYear();
 
             if ($day !== null && $year !== null) {
                 $baseAmount = $income->getAmount() ?? '0.00';
-
-                // Total Due = Base + Bonus
                 $totalDue = bcadd($baseAmount, $bonus, 2);
-
-                // Balance = Total Due - Deposit
                 $balance = bcsub($totalDue, $deposit, 2);
 
-                // If balance > 0, create transaction
                 if (bccomp($balance, '0.00', 2) > 0) {
                     $desc = "Income Balance";
-                    if (bccomp($bonus, '0.00', 2) > 0) {
-                        $desc .= " (+Bonus)";
-                    }
+                    if (bccomp($bonus, '0.00', 2) > 0) $desc .= " (+Bonus)";
 
-                    $this->ledgerService->deposit(
+                    $tx = $this->ledgerService->deposit(
                         $asset,
                         $balance,
                         $desc . ": " . $income->getTitle() . " (" . $income->getCode() . ")",
@@ -123,34 +135,29 @@ class FinancialEventSubscriber
                         $year,
                         'Income',
                         $income->getId(),
-                        $this->isVoid($income, $day, $year) ? Transaction::STATUS_VOID : null
+                        $this->isVoid($income, $day, $year) ? Transaction::STATUS_VOID : null,
+                        $autoFlush
                     );
+                    if (!$autoFlush) $persist($tx);
                 }
             }
-
-            return; // Done handling deposit scenario
+            return;
         }
 
         // SCENARIO 2: No Deposit (Standard)
-        // Require Payment Date explicitly.
         $day = $income->getPaymentDay();
         $year = $income->getPaymentYear();
-
-        // If no payment date, no transaction.
         if ($day === null || $year === null) return;
 
-        // Amount = Base + Bonus
         $amount = $income->getAmount();
-        if ($amount === null) return;
+        if ($amount === null) return; // Should allow 0?
 
         $totalAmount = bcadd($amount, $bonus, 2);
 
         $desc = "Income";
-        if (bccomp($bonus, '0.00', 2) > 0) {
-            $desc .= " (+Bonus)";
-        }
+        if (bccomp($bonus, '0.00', 2) > 0) $desc .= " (+Bonus)";
 
-        $this->ledgerService->deposit(
+        $tx = $this->ledgerService->deposit(
             $asset,
             $totalAmount,
             $desc . ": " . $income->getTitle() . " (" . $income->getCode() . ")",
@@ -158,8 +165,10 @@ class FinancialEventSubscriber
             $year,
             'Income',
             $income->getId(),
-            $this->isVoid($income, $day, $year) ? Transaction::STATUS_VOID : null
+            $this->isVoid($income, $day, $year) ? Transaction::STATUS_VOID : null,
+            $autoFlush
         );
+        if (!$autoFlush) $persist($tx);
     }
 
     private function isVoid(Income $income, int $day, int $year): bool
@@ -174,28 +183,64 @@ class FinancialEventSubscriber
         return $txKey !== null && $cancelKey !== null && $txKey > $cancelKey;
     }
 
-    private function processCost(Cost $cost): void
+    private function processCost(Cost $cost, bool $autoFlush, ?\Doctrine\ORM\EntityManagerInterface $emForCompute): void
     {
         $asset = $cost->getAsset();
         if (!$asset) return;
 
-        $day = $cost->getPaymentDay() ?? null;
-        $year = $cost->getPaymentYear() ?? null;
-
-        // If no payment date, no transaction
+        $day = $cost->getPaymentDay();
+        $year = $cost->getPaymentYear();
         if ($day === null || $year === null) return;
 
         $amount = $cost->getAmount();
         if ($amount === null) return;
 
-        $this->ledgerService->withdraw(
+        $tx = $this->ledgerService->withdraw(
             $asset,
             $amount,
             "Cost: " . $cost->getTitle() . " (" . $cost->getCode() . ")",
             $day,
             $year,
             'Cost',
-            $cost->getId()
+            $cost->getId(),
+            null,
+            $autoFlush
         );
+        if (!$autoFlush && $emForCompute) {
+            $uow = $emForCompute->getUnitOfWork();
+            $uow->computeChangeSet($emForCompute->getClassMetadata(Transaction::class), $tx);
+        }
+    }
+
+    private function processMortgageInstallment(MortgageInstallment $installment, bool $autoFlush, ?\Doctrine\ORM\EntityManagerInterface $emForCompute): void
+    {
+        $mortgage = $installment->getMortgage();
+        if (!$mortgage) return;
+
+        $asset = $mortgage->getAsset();
+        if (!$asset) return;
+
+        $day = $installment->getPaymentDay();
+        $year = $installment->getPaymentYear();
+        if ($day === null || $year === null) return;
+
+        $amount = $installment->getPayment();
+        if ($amount === null) return;
+
+        $tx = $this->ledgerService->withdraw(
+            $asset,
+            $amount,
+            "Mortgage Payment: " . $mortgage->getName(),
+            $day,
+            $year,
+            'MortgageInstallment',
+            $installment->getId(),
+            null,
+            $autoFlush
+        );
+        if (!$autoFlush && $emForCompute) {
+            $uow = $emForCompute->getUnitOfWork();
+            $uow->computeChangeSet($emForCompute->getClassMetadata(Transaction::class), $tx);
+        }
     }
 }

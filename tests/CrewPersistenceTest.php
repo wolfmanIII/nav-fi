@@ -73,7 +73,7 @@ class CrewPersistenceTest extends TestCase
         $this->em->persist($crew);
         $this->em->flush();
 
-        self::assertSame('Active', $crew->getStatus());
+        self::assertNull($crew->getStatus());
         self::assertNotNull($crew->getCode());
 
         $uuid = Uuid::fromString((string) $crew->getCode());

@@ -10,6 +10,7 @@ final class CrewAssignmentService
     public function assignToAsset(Asset $asset, Crew $crew): void
     {
         $asset->addCrew($crew);
+        $crew->setStatus(Crew::STATUS_ACTIVE);
 
         $sessionDay = $asset->getCampaign()?->getSessionDay();
         $sessionYear = $asset->getCampaign()?->getSessionYear();

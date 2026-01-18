@@ -18,14 +18,16 @@ class LedgerService
     /**
      * Reverses all transactions associated with a specific entity.
      * Used when an entity is updated or deleted.
+     * @return Transaction[]
      */
-    public function reverseTransactions(string $relatedType, int $relatedId): void
+    public function reverseTransactions(string $relatedType, int $relatedId, bool $autoFlush = true): array
     {
         $transactions = $this->transactionRepository->findBy([
             'relatedEntityType' => $relatedType,
             'relatedEntityId' => $relatedId
         ]);
 
+        $created = [];
         foreach ($transactions as $tx) {
             // Simply create a reversal transaction
             $reversalAmount = bcmul($tx->getAmount(), '-1', 2);
@@ -35,37 +37,40 @@ class LedgerService
             $currentDay = $campaign?->getSessionDay() ?? 0;
             $currentYear = $campaign?->getSessionYear() ?? 0;
 
-            $this->createTransaction(
+            $created[] = $this->createTransaction(
                 $asset,
                 $reversalAmount,
                 "CORRECTION: Reversing " . $tx->getDescription(),
                 $currentDay,
                 $currentYear,
                 $relatedType,
-                $relatedId
+                $relatedId,
+                null,
+                $autoFlush
             );
         }
+        return $created;
     }
     /**
      * process a deposit (credit) to the asset's account.
      */
-    public function deposit(Asset $asset, string $amount, string $description, int $day, int $year, ?string $relatedType = null, ?int $relatedId = null, ?string $status = null): Transaction
+    public function deposit(Asset $asset, string $amount, string $description, int $day, int $year, ?string $relatedType = null, ?int $relatedId = null, ?string $status = null, bool $autoFlush = true): Transaction
     {
-        return $this->createTransaction($asset, $amount, $description, $day, $year, $relatedType, $relatedId, $status);
+        return $this->createTransaction($asset, $amount, $description, $day, $year, $relatedType, $relatedId, $status, $autoFlush);
     }
 
     /**
      * Process a withdrawal (debit) from the asset's account.
      * Amount should be positive, it will be negated internally.
      */
-    public function withdraw(Asset $asset, string $amount, string $description, int $day, int $year, ?string $relatedType = null, ?int $relatedId = null, ?string $status = null): Transaction
+    public function withdraw(Asset $asset, string $amount, string $description, int $day, int $year, ?string $relatedType = null, ?int $relatedId = null, ?string $status = null, bool $autoFlush = true): Transaction
     {
         if (!is_numeric($amount) || $amount <= 0) {
             throw new InvalidArgumentException("Withdrawal amount must be positive.");
         }
 
         $negativeAmount = bcmul($amount, '-1', 2);
-        return $this->createTransaction($asset, $negativeAmount, $description, $day, $year, $relatedType, $relatedId, $status);
+        return $this->createTransaction($asset, $negativeAmount, $description, $day, $year, $relatedType, $relatedId, $status, $autoFlush);
     }
 
     private function createTransaction(
@@ -76,7 +81,8 @@ class LedgerService
         ?int $year,
         ?string $relatedType,
         ?int $relatedId,
-        ?string $status = null
+        ?string $status = null,
+        bool $autoFlush = true
     ): Transaction {
         $transaction = new Transaction();
         $transaction->setAsset($asset);
@@ -91,8 +97,6 @@ class LedgerService
             $transaction->setStatus($status);
         }
 
-        $this->entityManager->persist($transaction);
-
         // CHRONOLOGICAL RULE:
         // Update balance ONLY if transaction date <= Campaign's Current Session Date
         // AND status is not VOID.
@@ -105,12 +109,16 @@ class LedgerService
                 $currentBalance = $asset->getCredits() ?? '0.00';
                 $newBalance = bcadd($currentBalance, $amount, 2);
                 $asset->setCredits($newBalance);
-            } else {
+            } elseif ($transaction->getStatus() !== Transaction::STATUS_VOID) {
+                // Only set to pending if not void (redundant check but safe)
                 $transaction->setStatus(Transaction::STATUS_PENDING);
             }
         }
 
-        $this->entityManager->flush();
+        $this->entityManager->persist($transaction);
+        if ($autoFlush) {
+            $this->entityManager->flush();
+        }
 
         return $transaction;
     }

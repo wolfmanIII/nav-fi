@@ -78,19 +78,19 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ path('app_asset_index', {category: 'base', view: 'categorical'}) }}" class="{% if (app.request.query.get('category') == 'base' and app.request.query.get('view') == 'categorical') or (asset is defined and asset.category == 'base' and current_route == 'app_asset_edit') %}text-cyan-400 font-bold{% endif %} capitalize tracking-widest pl-8">
+                                        <a href="{{ path('app_asset_index', {category: 'base', view: 'categorical'}) }}" class="{% if (app.request.query.get('category') == 'base' and app.request.query.get('view') == 'categorical') or (asset is defined and asset and asset.category == 'base' and current_route == 'app_asset_edit') %}text-cyan-400 font-bold{% endif %} capitalize tracking-widest pl-8">
                                             {% include 'icons/spaceport.html.twig' with {'dim': '18'} %}
                                             <span>Base // Station</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ path('app_asset_index', {category: 'ship', view: 'categorical'}) }}" class="{% if (app.request.query.get('category') == 'ship' and app.request.query.get('view') == 'categorical') or (asset is defined and asset.category == 'ship' and current_route == 'app_asset_edit') %}text-cyan-400 font-bold{% endif %} capitalize tracking-widest pl-8">
+                                        <a href="{{ path('app_asset_index', {category: 'ship', view: 'categorical'}) }}" class="{% if (app.request.query.get('category') == 'ship' and app.request.query.get('view') == 'categorical') or (asset is defined and asset and asset.category == 'ship' and current_route == 'app_asset_edit') %}text-cyan-400 font-bold{% endif %} capitalize tracking-widest pl-8">
                                             {% include 'icons/far-trader.html.twig' with {'dim': '18'} %}
                                             <span>Ship // Vessel</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ path('app_asset_index', {category: 'team', view: 'categorical'}) }}" class="{% if (app.request.query.get('category') == 'team' and app.request.query.get('view') == 'categorical') or (asset is defined and asset.category == 'team' and current_route == 'app_asset_edit') %}text-cyan-400 font-bold{% endif %} capitalize tracking-widest pl-8">
+                                        <a href="{{ path('app_asset_index', {category: 'team', view: 'categorical'}) }}" class="{% if (app.request.query.get('category') == 'team' and app.request.query.get('view') == 'categorical') or (asset is defined and asset and asset.category == 'team' and current_route == 'app_asset_edit') %}text-cyan-400 font-bold{% endif %} capitalize tracking-widest pl-8">
                                             {% include 'icons/team.html.twig' with {'dim': '18'} %}
                                             <span>Team // Unit</span>
                                         </a>
