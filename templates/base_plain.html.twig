@@ -16,7 +16,26 @@
     <link rel="icon" type="image/png" sizes="512x512" href="{{ asset('img/android-chrome-512.png') }}">
     <link rel="shortcut icon" href="{{ asset('img/favicon.ico') }}">
 
-    {% block stylesheets %}{% endblock %}
+    {% block stylesheets %}
+        <style>
+            .watermark {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) rotate(-45deg);
+                font-size: 80pt;
+                color: rgba(220, 38, 38, 0.15);
+                z-index: 1000;
+                pointer-events: none;
+                white-space: nowrap;
+                font-family: sans-serif;
+                font-weight: bold;
+                border: 10pt solid rgba(220, 38, 38, 0.15);
+                padding: 20pt;
+                text-transform: uppercase;
+            }
+        </style>
+    {% endblock %}
     {% block javascripts %}
         {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
@@ -30,6 +49,7 @@
                     <div class="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-indigo-500 blur-3xl"></div>
                 </div>
                 <div class="relative">
+                    {{ '{{WATERMARK}}' }}
             {% for label, messages in app.flashes %}
                 {% for message in messages %}
                     <div role="alert" class="alert alert-{{ label }} alert-outline mb-3 w-full">

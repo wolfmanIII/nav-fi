@@ -141,7 +141,8 @@
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
             {% if incomes|length > 0 %}
                 {% for income in incomes %}
-                    <div class="group relative flex flex-col rounded-xl border border-cyan-500/20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 shadow-lg transition-all hover:border-cyan-500/50 hover:shadow-cyan-500/10 hover:-translate-y-1">
+                    {% set is_cancelled = income.isCancelled() %}
+                    <div class="group relative flex flex-col rounded-xl border {% if is_cancelled %}border-rose-500/40 bg-rose-500/5{% else %}border-cyan-500/20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900{% endif %} p-4 shadow-lg transition-all hover:shadow-cyan-500/10 hover:-translate-y-1">
                         {# Card Header: Actions & REF #}
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center gap-2">
@@ -149,9 +150,15 @@
                                     REF: {{ income.code }}
                                 </div>
                                 {% if income.status %}
-                                    <span class="px-2.5 py-1 rounded bg-slate-800 text-xs font-bold tracking-tighter uppercase border border-slate-700 text-slate-400">
-                                        {{ income.status }}
-                                    </span>
+                                    {% if is_cancelled %}
+                                        <span class="px-2.5 py-1 rounded bg-rose-900/40 text-xs font-bold tracking-tighter uppercase border border-rose-500/30 text-rose-400">
+                                            VOID // CANCELLED
+                                        </span>
+                                    {% else %}
+                                        <span class="px-2.5 py-1 rounded bg-slate-800 text-xs font-bold tracking-tighter uppercase border border-slate-700 text-slate-400">
+                                            {{ income.status }}
+                                        </span>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                             <div class="flex items-center gap-1">
@@ -162,7 +169,7 @@
 
                         {# Card Body: Main Content #}
                         <div class="mb-4 grow">
-                            <h3 class="text-2xl font-bold text-cyan-100 mb-1 group-hover:text-cyan-400 transition-colors uppercase tracking-tight">
+                            <h3 class="text-2xl font-bold {% if is_cancelled %}text-rose-200/60 line-through{% else %}text-cyan-100 group-hover:text-cyan-400{% endif %} mb-1 transition-colors uppercase tracking-tight">
                                 {{ income.title }}
                             </h3>
                             <div class="flex items-center gap-2 text-xs text-slate-400">
@@ -175,9 +182,9 @@
                         <div class="mb-6 py-3 px-4 rounded-lg bg-cyan-900/20 border-x-2 border-cyan-500/30">
                             <div class="flex items-end justify-between">
                                 <span class="text-xs uppercase tracking-widest text-cyan-500/70 font-bold">Projected Revenue</span>
-                                <div class="text-2xl font-mono font-bold text-cyan-300">
+                                <div class="text-2xl font-mono font-bold {% if is_cancelled %}text-rose-400/50{% else %}text-cyan-300{% endif %}">
                                     {{ income.amount|format_number({ min_fraction_digit: 2, max_fraction_digit: 2 }, 'decimal', 'default', locale) }}
-                                    <span class="text-xs ml-1 text-cyan-600">Cr</span>
+                                    <span class="text-xs ml-1 {% if is_cancelled %}text-rose-900/50{% else %}text-cyan-600{% endif %}">Cr</span>
                                 </div>
                             </div>
                         </div>

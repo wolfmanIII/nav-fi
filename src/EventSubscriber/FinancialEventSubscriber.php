@@ -5,6 +5,8 @@ namespace App\EventSubscriber;
 use App\Entity\Cost;
 use App\Entity\Income;
 use App\Service\LedgerService;
+use App\Service\ImperialDateHelper;
+use App\Entity\Transaction;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
@@ -15,7 +17,8 @@ use Doctrine\ORM\Events;
 class FinancialEventSubscriber
 {
     public function __construct(
-        private LedgerService $ledgerService
+        private LedgerService $ledgerService,
+        private ImperialDateHelper $dateHelper
     ) {}
 
     public function postPersist(PostPersistEventArgs $args): void
@@ -86,7 +89,8 @@ class FinancialEventSubscriber
                     $signingDay,
                     $signingYear,
                     'Income',
-                    $income->getId()
+                    $income->getId(),
+                    $this->isVoid($income, $signingDay, $signingYear) ? Transaction::STATUS_VOID : null
                 );
             }
 
@@ -118,7 +122,8 @@ class FinancialEventSubscriber
                         $day,
                         $year,
                         'Income',
-                        $income->getId()
+                        $income->getId(),
+                        $this->isVoid($income, $day, $year) ? Transaction::STATUS_VOID : null
                     );
                 }
             }
@@ -152,8 +157,21 @@ class FinancialEventSubscriber
             $day,
             $year,
             'Income',
-            $income->getId()
+            $income->getId(),
+            $this->isVoid($income, $day, $year) ? Transaction::STATUS_VOID : null
         );
+    }
+
+    private function isVoid(Income $income, int $day, int $year): bool
+    {
+        if (!$income->isCancelled()) {
+            return false;
+        }
+
+        $txKey = $this->dateHelper->toKey($day, $year);
+        $cancelKey = $this->dateHelper->toKey($income->getCancelDay(), $income->getCancelYear());
+
+        return $txKey !== null && $cancelKey !== null && $txKey > $cancelKey;
     }
 
     private function processCost(Cost $cost): void

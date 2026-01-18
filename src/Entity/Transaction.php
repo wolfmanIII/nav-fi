@@ -43,6 +43,7 @@ class Transaction
 
     public const STATUS_PENDING = 'Pending';
     public const STATUS_POSTED = 'Posted';
+    public const STATUS_VOID = 'Void';
 
     #[ORM\Column(length: 20, options: ['default' => 'Pending'])]
     private ?string $status = self::STATUS_PENDING;

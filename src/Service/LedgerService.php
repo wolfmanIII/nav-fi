@@ -49,23 +49,23 @@ class LedgerService
     /**
      * process a deposit (credit) to the asset's account.
      */
-    public function deposit(Asset $asset, string $amount, string $description, int $day, int $year, ?string $relatedType = null, ?int $relatedId = null): Transaction
+    public function deposit(Asset $asset, string $amount, string $description, int $day, int $year, ?string $relatedType = null, ?int $relatedId = null, ?string $status = null): Transaction
     {
-        return $this->createTransaction($asset, $amount, $description, $day, $year, $relatedType, $relatedId);
+        return $this->createTransaction($asset, $amount, $description, $day, $year, $relatedType, $relatedId, $status);
     }
 
     /**
      * Process a withdrawal (debit) from the asset's account.
      * Amount should be positive, it will be negated internally.
      */
-    public function withdraw(Asset $asset, string $amount, string $description, int $day, int $year, ?string $relatedType = null, ?int $relatedId = null): Transaction
+    public function withdraw(Asset $asset, string $amount, string $description, int $day, int $year, ?string $relatedType = null, ?int $relatedId = null, ?string $status = null): Transaction
     {
         if (!is_numeric($amount) || $amount <= 0) {
             throw new InvalidArgumentException("Withdrawal amount must be positive.");
         }
 
         $negativeAmount = bcmul($amount, '-1', 2);
-        return $this->createTransaction($asset, $negativeAmount, $description, $day, $year, $relatedType, $relatedId);
+        return $this->createTransaction($asset, $negativeAmount, $description, $day, $year, $relatedType, $relatedId, $status);
     }
 
     private function createTransaction(
@@ -73,9 +73,10 @@ class LedgerService
         string $amount,
         string $description,
         int $day,
-        int $year,
+        ?int $year,
         ?string $relatedType,
-        ?int $relatedId
+        ?int $relatedId,
+        ?string $status = null
     ): Transaction {
         $transaction = new Transaction();
         $transaction->setAsset($asset);
@@ -86,20 +87,27 @@ class LedgerService
         $transaction->setRelatedEntityType($relatedType);
         $transaction->setRelatedEntityId($relatedId);
 
+        if ($status !== null) {
+            $transaction->setStatus($status);
+        }
+
         $this->entityManager->persist($transaction);
 
         // CHRONOLOGICAL RULE:
         // Update balance ONLY if transaction date <= Campaign's Current Session Date
+        // AND status is not VOID.
         // Status is set to POSTED if effective, PENDING otherwise.
 
-        if ($this->isEffective($asset, $day, $year)) {
-            $transaction->setStatus(Transaction::STATUS_POSTED);
+        if ($transaction->getStatus() !== Transaction::STATUS_VOID) {
+            if ($this->isEffective($asset, $day, $year)) {
+                $transaction->setStatus(Transaction::STATUS_POSTED);
 
-            $currentBalance = $asset->getCredits() ?? '0.00';
-            $newBalance = bcadd($currentBalance, $amount, 2);
-            $asset->setCredits($newBalance);
-        } else {
-            $transaction->setStatus(Transaction::STATUS_PENDING);
+                $currentBalance = $asset->getCredits() ?? '0.00';
+                $newBalance = bcadd($currentBalance, $amount, 2);
+                $asset->setCredits($newBalance);
+            } else {
+                $transaction->setStatus(Transaction::STATUS_PENDING);
+            }
         }
 
         $this->entityManager->flush();

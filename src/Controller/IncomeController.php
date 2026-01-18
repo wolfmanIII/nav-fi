@@ -308,6 +308,7 @@ final class IncomeController extends BaseController
             '{{CURRENCY}}' => $currency,
             '{{NOTES}}' => $this->fallback($income->getNote()),
             '{{PAYMENT}}' => $this->formatMoney($income->getAmount(), $currency),
+            '{{WATERMARK}}' => $income->isCancelled() ? '<div class=\"watermark\">CANCELLED // VOID</div>' : '',
         ];
 
         $companyName = $company?->getName() ?? '—';

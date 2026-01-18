@@ -48,10 +48,11 @@
                 <tbody class="divide-y divide-slate-800/50">
                 {% if transactions|length > 0 %}
                     {% for transaction in transactions %}
-                        <tr class="hover:bg-cyan-500/5 transition-colors group">
+                        {% set is_void = transaction.status == constant('App\\Entity\\Transaction::STATUS_VOID') %}
+                        <tr class="hover:bg-cyan-500/5 transition-colors group {% if is_void %}bg-rose-500/5{% endif %}">
                             {# Effective Date #}
-                            <td class="font-mono text-xs p-3 align-top whitespace-nowrap">
-                                <span class="font-bold text-slate-200">
+                            <td class="font-mono text-xs p-3 align-top whitespace-nowrap {% if is_void %}line-through text-slate-500{% endif %}">
+                                <span class="font-bold {% if is_void %}text-slate-500{% else %}text-slate-200{% endif %}">
                                     {{ transaction.sessionDay|imperial_date(transaction.sessionYear) }}
                                 </span>
                             </td>
@@ -62,7 +63,7 @@
                             </td>
 
                             {# Description #}
-                            <td class="text-sm p-3 align-top text-slate-300">
+                            <td class="text-sm p-3 align-top text-slate-300 {% if is_void %}line-through text-slate-500{% endif %}">
                                 <div class="font-medium">{{ transaction.description }}</div>
                                 {% if transaction.relatedEntityType %}
                                     <div class="text-[10px] uppercase tracking-wider text-slate-500 mt-1">
@@ -72,11 +73,11 @@
                             </td>
 
                             {# Amount #}
-                            <td class="font-mono text-sm p-3 align-top text-right font-bold">
+                            <td class="font-mono text-sm p-3 align-top text-right font-bold {% if is_void %}line-through text-slate-600{% endif %}">
                                 {% if transaction.amount > 0 %}
-                                    <span class="text-emerald-400">+{{ transaction.amount|number_format(0, '.', ',') }}</span>
+                                    <span class="{% if is_void %}text-rose-900/40{% else %}text-emerald-400{% endif %}">+{{ transaction.amount|number_format(0, '.', ',') }}</span>
                                 {% elseif transaction.amount < 0 %}
-                                    <span class="text-red-400">{{ transaction.amount|number_format(0, '.', ',') }}</span>
+                                    <span class="{% if is_void %}text-rose-900/40{% else %}text-red-400{% endif %}">{{ transaction.amount|number_format(0, '.', ',') }}</span>
                                 {% else %}
                                     <span class="text-slate-500">0</span>
                                 {% endif %}
@@ -87,6 +88,10 @@
                                 {% if transaction.status == constant('App\\Entity\\Transaction::STATUS_POSTED') %}
                                     <span class="badge badge-xs badge-success gap-1 bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
                                         POSTED
+                                    </span>
+                                {% elseif transaction.status == constant('App\\Entity\\Transaction::STATUS_VOID') %}
+                                    <span class="badge badge-xs badge-error gap-1 bg-rose-500/10 text-rose-400 border-rose-500/20">
+                                        VOID
                                     </span>
                                 {% else %}
                                     <div class="tooltip" data-tip="Future Transaction - pending date arrival">

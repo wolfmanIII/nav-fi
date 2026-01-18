@@ -129,12 +129,8 @@
         {# Asset #}
          <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
              <div class="flex items-center gap-2 text-cyan-500/50 group-hover:text-cyan-400 mb-3 transition-colors">
-                {% include 'icons/far-trader.html.twig' with { dim: 20 } %}
+                {% include 'icons/assets.html.twig' with { dim: 20 } %}
                 <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Asset Manifest</p>
-            </div>
-                <div class="text-cyan-500/50 group-hover:text-cyan-400 transition-colors">
-                    {% include 'icons/assets.html.twig' with { dim: 20 } %}
-                </div>
             </div>
             <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Register Assets</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
@@ -241,19 +237,21 @@
                 <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Revenue Docket</p>
             </div>
             <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Income</h3>
-                Records all revenue streams with automated logic to handle deposits, bonuses, and final payments based on dates. System auto-splits Deposits (Signing Date) and Balances (Payment Date).
+            <p class="text-sm text-slate-400 leading-relaxed mb-4">
+                Records all revenue streams with automated logic to handle deposits, bonuses, and final payments. Now includes a <strong>Cancellation Workflow</strong> with visual VOID badges and PDF watermarking.
+            </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Imperial dates are shown as DDD/YYYY with optional clear.</span>
+                    <span>System auto-splits Deposits (Signing Date) and Balances (Payment Date).</span>
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Status flips Draft → Signed when signing day/year is complete.</span>
+                    <span><strong>CancelDate Support:</strong> Automatically markers related future transactions as VOID.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Contract PDFs mirror the data structure and include template version.</span>
+                    <span>Contract PDFs for cancelled incomes feature a high-visibility watermark.</span>
                 </li>
             </ul>
         </div>

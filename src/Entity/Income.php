@@ -28,6 +28,7 @@ class Income
 {
     public const STATUS_DRAFT = 'Draft';
     public const STATUS_SIGNED = 'Signed';
+    public const STATUS_CANCELLED = 'Cancelled';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -554,5 +555,10 @@ class Income
         $this->signingLocation = $signingLocation;
 
         return $this;
+    }
+
+    public function isCancelled(): bool
+    {
+        return $this->cancelDay !== null && $this->cancelYear !== null;
     }
 }

@@ -238,8 +238,20 @@
 
         {% if income.id %}
             <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-red-900/30 gap-6 p-6 rounded-xl shadow-inner mb-8 relative">
-                <legend class="px-3 py-1 rounded bg-red-900/20 border border-red-900/40 text-[10px] font-bold font-orbitron tracking-[0.3em] text-red-500 uppercase">Decommissioning // Cancellation</legend>
+                <legend class="px-3 py-1 rounded bg-red-900/20 border border-red-900/40 text-[10px] font-bold font-orbitron tracking-[0.3em] text-rose-500 uppercase">Decommissioning // Cancellation</legend>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                    {% if income.isCancelled() %}
+                        <div class="col-span-1 md:col-span-2 p-4 rounded-lg bg-rose-500/10 border border-rose-500/30 flex items-center gap-3 mb-2 animate-pulse">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                            </svg>
+                            <div class="flex flex-col">
+                                <span class="text-xs font-bold font-orbitron text-rose-400 uppercase tracking-widest">Tactical Alert: Asset Income Voided</span>
+                                <span class="text-[10px] font-rajdhani text-rose-300/80 uppercase">This contract has been officially cancelled. It will remain in the manifest but excluded from future fiscal projections.</span>
+                            </div>
+                        </div>
+                    {% endif %}
                     <div data-controller="imperial-date">
                         <div class="flex items-baseline h-5 mb-1">
                             {{ form_label(form.cancelDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}

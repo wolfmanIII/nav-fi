@@ -202,11 +202,6 @@ class IncomeType extends AbstractType
                 $income->setSigningDay($signing->getDay());
                 $income->setSigningYear($signing->getYear());
             }
-            if ($signing instanceof ImperialDate && $signing->getDay() !== null && $signing->getYear() !== null) {
-                $income->setStatus(Income::STATUS_SIGNED);
-            } else {
-                $income->setStatus(Income::STATUS_DRAFT);
-            }
 
             /** @var ImperialDate|null $payment */
             $payment = $form->get('paymentDate')->getData();
@@ -227,6 +222,14 @@ class IncomeType extends AbstractType
             if ($cancel instanceof ImperialDate) {
                 $income->setCancelDay($cancel->getDay());
                 $income->setCancelYear($cancel->getYear());
+            }
+
+            if ($income->isCancelled()) {
+                $income->setStatus(Income::STATUS_CANCELLED);
+            } elseif ($signing instanceof ImperialDate && $signing->getDay() !== null && $signing->getYear() !== null) {
+                $income->setStatus(Income::STATUS_SIGNED);
+            } else {
+                $income->setStatus(Income::STATUS_DRAFT);
             }
         });
 

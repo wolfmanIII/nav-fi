@@ -104,9 +104,11 @@
                             Synchronize assets, crew, and one-to-one mortgages per hull.
                             The <strong>Automated Financial Engine</strong> handles complex transactions, splitting deposits and bonuses automatically based on strict Imperial dates.
                         </p>
-                        <p class="mt-2 text-sm border-l-2 border-amber-500/30 pl-4 py-1 italic">
-                            Session timeline logs capture each clock update with JSON snapshots for audit-grade continuity. 
-                            <strong class="text-amber-400">Referee Tactical Control</strong>: Smart resync tools ensure your ledger remains consistent even if you edit history.
+                        <p class="mt-2 text-sm border-l-2 border-amber-500/30 pl-4 py-1 italic text-slate-300">
+                            <strong class="text-amber-400">Tactical Ledger & Cancellation</strong>: The system now supports contract cancellation with diagonal VOID watermarking on PDFs and automatic reconciliation of ledger transactions.
+                        </p>
+                        <p class="mt-2 text-xs border-l-2 border-cyan-500/30 pl-4 py-1 italic">
+                            <strong class="text-cyan-400">Referee Tactical Control</strong>: Smart resync tools ensure your ledger remains consistent even if you edit history or time-travel across campaign years.
                         </p>
                     </div>
 
@@ -176,7 +178,7 @@
 
                  {# Badge Cluster #}
                   <div class="flex flex-wrap gap-2 pt-2">
-                        {% for badge in ['Jump Ready', 'Owner Secured', 'Quick Scan', 'Session Timeline', 'Imp. Date', 'Cost Detail', 'Contract PDF', 'Vector Map'] %}
+                        {% for badge in ['Jump Ready', 'Owner Secured', 'Quick Scan', 'Session Timeline', 'Imp. Date', 'Cost Detail', 'Contract PDF', 'Vector Map', 'Void Tracking', 'Cancellation Support'] %}
                              <span class="px-3 py-1.5 rounded border border-slate-800 bg-slate-950 text-xs text-slate-400 uppercase tracking-wider hover:border-slate-700 hover:text-slate-300 transition-colors cursor-default font-medium">
                                 {{ badge }}
                              </span>
