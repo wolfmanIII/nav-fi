@@ -14,23 +14,36 @@
 
         {{ form_start(form) }}
 
-        <div class="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-6">
+        {% set hero_color = 'cyan' %}
+        {% if asset.category == 'base' %}
+            {% set hero_color = 'amber' %}
+        {% elseif asset.category == 'team' %}
+            {% set hero_color = 'emerald' %}
+        {% endif %}
+
+        <div class="relative overflow-hidden rounded-xl border border-{{ hero_color }}-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-{{ hero_color }}-900 shadow-lg mb-6">
             <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
-                 style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
+                 style="background: radial-gradient(circle at 20% 20%, rgba({% if hero_color == 'cyan' %}59,130,246{% elseif hero_color == 'amber' %}245,158,11{% else %}16,185,129{% endif %},0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba({% if hero_color == 'cyan' %}14,165,233{% elseif hero_color == 'amber' %}251,191,36{% else %}52,211,153{% endif %},0.25), transparent 35%);">
             </div>
             <div class="relative p-4 flex items-start justify-between gap-4">
                 <div class="flex items-start gap-4">
-                    <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
-                        {% include 'icons/far-trader.html.twig' %}
+                    <div class="p-3 rounded-lg bg-{{ hero_color }}-500/10 border border-{{ hero_color }}-400/40">
+                        {% if asset.category == 'base' %}
+                            {% include 'icons/spaceport.html.twig' %}
+                        {% elseif asset.category == 'team' %}
+                            {% include 'icons/team.html.twig' %}
+                        {% else %}
+                            {% include 'icons/far-trader.html.twig' %}
+                        {% endif %}
                     </div>
                     <div class="flex-1">
-                        <p class="uppercase text-[10px] tracking-[0.3em] text-cyan-300/70 font-bold font-orbitron mb-0.5">
+                        <p class="uppercase text-[10px] tracking-[0.3em] text-{{ hero_color }}-300/70 font-bold font-orbitron mb-0.5">
                             {% if asset.category == 'team' %}Unit Dossier // Personnel Registry{% else %}Asset sheet // Hull Registry{% endif %}
                         </p>
-                        <h3 class="font-bold text-cyan-100 text-2xl leading-tight font-orbitron uppercase">
+                        <h3 class="font-bold text-{{ hero_color }}-100 text-2xl leading-tight font-orbitron uppercase">
                             {% if asset.category == 'team' %}Update Unit{% else %}Update asset{% endif %}
                         </h3>
-                        <p class="text-xs text-cyan-100/60 font-rajdhani tracking-widest uppercase truncate">
+                        <p class="text-xs text-{{ hero_color }}-100/60 font-rajdhani tracking-widest uppercase truncate">
                             {% if asset.category == 'team' %}
                                 Update roster and unit status: every operation starts with an aligned team.
                             {% else %}
@@ -62,7 +75,7 @@
                                         'View Ledger',
                                         'icons/handbook.html.twig',
                                         path('app_asset_ledger', { id: asset.id }),
-                                        { dim: 16, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
+                                        { dim: 16, linkClass: 'btn btn-outline btn-' ~ hero_color ~ ' btn-sm' }) }}
                         
                         {{ tooltip.link('Open asset PDF',
                                         'Asset PDF',

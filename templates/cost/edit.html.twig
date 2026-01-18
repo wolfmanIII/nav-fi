@@ -9,25 +9,25 @@
     {% set can_edit = is_granted(CAN_EDIT, cost) %}
     {% import '_tooltip.html.twig' as tooltip %}
 
-        <div class="relative rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-6 overflow-hidden">
+        <div class="relative rounded-xl border border-amber-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-amber-900 shadow-lg mb-6 overflow-hidden">
             <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
-                 style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
+                 style="background: radial-gradient(circle at 20% 20%, rgba(245,158,11,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(251,191,36,0.25), transparent 35%);">
             </div>
             <div class="relative p-4 flex items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
-                    <div class="p-2.5 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
+                    <div class="p-2.5 rounded-lg bg-amber-500/10 border border-amber-400/40">
                         {% include 'icons/cost.html.twig' %}
                     </div>
                     <div class="flex-1">
-                        <p class="uppercase text-[10px] tracking-[0.3em] text-amber-300/70 font-bold font-orbitron mb-0.5">Mission outflows // Input Protocol</p>
-                        <h3 class="font-bold text-cyan-100 text-2xl leading-tight font-orbitron uppercase">Track your outflows</h3>
-                        <p class="text-xs text-cyan-100/60 font-rajdhani tracking-widest uppercase">Log maintenance, gear and travel: prep the next jump.</p>
+                        <p class="uppercase text-[10px] tracking-[0.3em] text-amber-300/70 font-bold font-orbitron mb-0.5">Asset expense // Logistical Outlay</p>
+                        <h3 class="font-bold text-amber-100 text-2xl leading-tight font-orbitron uppercase">Log your costs</h3>
+                        <p class="text-xs text-amber-100/60 font-rajdhani tracking-widest uppercase">Fuel, life support and repairs: keep the hull pressurized.</p>
                         
                         {# Session Date Indicator #}
                         {% set campaign = cost.asset.campaign ?? null %}
                         {% if campaign %}
                             <div class="flex flex-wrap gap-2 mt-3">
-                                <div class="badge badge-info gap-1.5 px-2.5 py-2.5 text-xs font-mono">
+                                <div class="badge badge-warning gap-1.5 px-2.5 py-2.5 text-xs font-mono">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                         <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -50,7 +50,7 @@
                 </div>
                 {% if cost.id %}
                     <div class="flex items-center gap-2">
-                        {{ tooltip.link('Open cost PDF', 'Cost PDF', 'icons/pdf.html.twig', path('app_cost_pdf', { id: cost.id }), { dim: 20, linkClass: 'btn btn-outline btn-secondary btn-sm px-4', position: 'tooltip-left', attrs: { target: '_blank', rel: 'noopener' } }) }}
+                        {{ tooltip.link('Open cost PDF', 'Cost PDF', 'icons/pdf.html.twig', path('app_cost_pdf', { id: cost.id }), { dim: 20, linkClass: 'btn btn-outline btn-warning btn-sm px-4', position: 'tooltip-left', attrs: { target: '_blank', rel: 'noopener' } }) }}
                     </div>
                 {% endif %}
             </div>

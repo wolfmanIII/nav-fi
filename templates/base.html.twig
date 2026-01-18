@@ -85,7 +85,15 @@
                     {% if asset is defined and asset.credits is defined %}
                         <div class="hidden md:flex items-center gap-4 px-4 py-1.5 rounded-full bg-slate-900/60 border border-slate-700/50 shadow-inner">
                             <div class="flex items-center gap-2">
-                                {% include 'icons/far-trader.html.twig' with { dim: 16 } %}
+                                {% if asset.category == 'ship' %}
+                                    {% include 'icons/far-trader.html.twig' with { dim: 16 } %}
+                                {% elseif asset.category == 'base' %}
+                                    {% include 'icons/spaceport.html.twig' with { dim: 16 } %}
+                                {% elseif asset.category == 'team' %}
+                                    {% include 'icons/team.html.twig' with { dim: 16 } %}
+                                {% else %}
+                                    {% include 'icons/assets.html.twig' with { dim: 16 } %}
+                                {% endif %}
                                 <span class="text-xs font-bold font-orbitron text-cyan-100 uppercase tracking-widest">{{ asset.name }}</span>
                             </div>
                             <div class="h-4 w-[1px] bg-slate-700"></div>
