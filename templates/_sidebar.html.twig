@@ -18,7 +18,7 @@
                 {% set current_route = app.request.attributes.get('_route') %}
                 {% set command_active = current_route in ['app_profile', 'app_home', 'app_bridge'] %}
                 <details {% if command_active %}open{% endif %} data-controller="sidebar-module" data-action="toggle->sidebar-module#toggle">
-                    <summary data-sidebar-module-target="summary" class="text-xs uppercase tracking-widest text-slate-400 hover:text-cyan-300 relative overflow-hidden">Vessel Control</summary>
+                    <summary data-sidebar-module-target="summary" class="text-xs uppercase tracking-widest text-slate-400 hover:text-cyan-300 relative overflow-hidden">Bridge Console</summary>
                     <ul data-sidebar-module-target="content">
                         <li data-sidebar-module-target="item">
                             <a href="{{ path('app_profile') }}"
