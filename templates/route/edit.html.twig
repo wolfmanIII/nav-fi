@@ -94,17 +94,9 @@
             </div>
             <div class="col-span-1">
                 <div class="flex items-baseline h-5 mb-1">
-                    {{ form_label(form.jumpLevel, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    <label class="mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Total Distance</label>
                 </div>
-                {{ form_widget(form.jumpLevel, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 font-mono text-amber-400' } }) }}
-                {{ form_errors(form.jumpLevel) }}
-            </div>
-            <div class="col-span-1">
-                <div class="flex items-baseline h-5 mb-1">
-                    {{ form_label(form.distance, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                </div>
-                {{ form_widget(form.distance, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 font-mono text-cyan-400' } }) }}
-                {{ form_errors(form.distance) }}
+                <input type="text" class="input input-bordered w-full bg-slate-950/50 border-slate-700 font-mono text-cyan-400 cursor-not-allowed" value="{{ route.jumpDistance }} parsecs" readonly disabled>
             </div>
             <div class="col-span-1">
                 <div class="flex items-baseline h-5 mb-1">
