@@ -40,7 +40,7 @@
                 
                 <!-- BOOT SEQUENCE // CONNECTIVITY -->
                 <div class="hidden xl:flex absolute left-1/2 -translate-x-1/2 top-0 h-1 px-4 gap-1">
-                    <div class="w-8 h-full bg-cyan-500/20 rounded-b anime-pulse"></div>
+                    <div class="w-8 h-full bg-cyan-500/20 rounded-b animate-pulse"></div>
                     <div class="w-12 h-full bg-cyan-500/40 rounded-b animate-pulse"></div>
                     <div class="w-8 h-full bg-cyan-500/20 rounded-b animate-pulse"></div>
                 </div>
@@ -71,12 +71,12 @@
                                     <div class="w-1 h-1 rounded-full bg-cyan-400 animate-pulse" style="animation-delay: 0.2s;"></div>
                                     <div class="w-1 h-1 rounded-full bg-cyan-500 animate-pulse" style="animation-delay: 0.4s;"></div>
                                 </div>
-                                <span class="text-[10px] font-rajdhani uppercase tracking-[0.2em] text-cyan-400 font-bold">Imperial Standard</span>
+                                <span class="text-[10px] font-rajdhani uppercase tracking-[0.2em] text-cyan-400 font-bold">CENTRAL INTERFACE</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 text-[11px] font-mono text-cyan-500/60 uppercase tracking-[0.2em] font-bold">
                             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                            Central Systems // Bridge Interface
+                            OPEN SYSTEMS // NAV-COMPUTER
                         </div>
                     </div>
                 </div>
@@ -198,7 +198,7 @@
                     <div class="flex items-center gap-4">
                         <div class="relative">
                             <div class="absolute -inset-1 bg-cyan-500/20 rounded-full blur opacity-50 animate-pulse"></div>
-                            {% include 'icons/radar.html.twig' with { dim: 20, class: 'relative text-cyan-400 opacity-80' } %}
+                            {% include 'icons/radar.html.twig' with { dim: 20, class: 'relative text-cyan-400 opacity-80 animate-spin-slow' } %}
                         </div>
                         <div class="flex flex-col">
                             <span class="text-[10px] font-orbitron font-bold tracking-[0.4em] text-cyan-500/60 uppercase">Nav-Fi Interface</span>
@@ -228,7 +228,7 @@
                     <!-- COPYRIGHT // SIGNATURE -->
                     <div class="text-center md:text-right">
                         <p class="text-[10px] font-orbitron font-bold tracking-[0.2em] text-cyan-300/40 uppercase mb-1">
-                            &copy; {{ "now"|date("Y") }} Imperial Bureau of Finance
+                            &copy; {{ "now"|date("Y") }} Nav-Fi Open Systems | Certified TAS Peripheral
                         </p>
                         <div class="flex items-center justify-center md:justify-end gap-3 text-[9px] font-bold font-rajdhani text-slate-600 uppercase tracking-[0.3em]">
                             <span>Restricted Access</span>

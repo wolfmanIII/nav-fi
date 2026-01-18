@@ -187,6 +187,7 @@ final class AssetController extends BaseController
             'asset' => $asset,
             'user' => $user,
             'locale' => $request->getLocale(),
+            'watermark' => '',
         ], $options);
 
         return new Response($pdfContent, 200, [
@@ -215,6 +216,7 @@ final class AssetController extends BaseController
             'asset' => $asset,
             'user' => $user,
             'locale' => $request->getLocale(),
+            'watermark' => '',
         ]);
     }
 

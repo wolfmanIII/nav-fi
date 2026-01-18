@@ -175,6 +175,7 @@ final class CostController extends BaseController
         $pdf = $pdfGenerator->render('pdf/cost/SHEET.html.twig', [
             'cost' => $cost,
             'locale' => $request->getLocale(),
+            'watermark' => '',
         ], [
             'margin-top' => '14mm',
             'margin-bottom' => '14mm',

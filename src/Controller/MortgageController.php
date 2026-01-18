@@ -410,6 +410,7 @@ final class MortgageController extends BaseController
             'asset' => $mortgage->getAsset(),
             'user' => $user,
             'locale' => $request->getLocale(),
+            'watermark' => '',
         ];
 
         $options = [
@@ -454,6 +455,7 @@ final class MortgageController extends BaseController
             'asset' => $mortgage->getAsset(),
             'user' => $user,
             'locale' => $request->getLocale(),
+            'watermark' => '',
         ]);
     }
 
