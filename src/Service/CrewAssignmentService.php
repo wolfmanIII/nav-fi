@@ -10,7 +10,6 @@ final class CrewAssignmentService
     public function assignToAsset(Asset $asset, Crew $crew): void
     {
         $asset->addCrew($crew);
-        $crew->setStatus('Active');
 
         $sessionDay = $asset->getCampaign()?->getSessionDay();
         $sessionYear = $asset->getCampaign()?->getSessionYear();
@@ -29,7 +28,7 @@ final class CrewAssignmentService
     public function clearAfterDetach(Crew $crew): void
     {
         $status = $crew->getStatus();
-        if (!in_array($status, ['Missing (MIA)', 'Deceased'], true)) {
+        if (!in_array($status, [Crew::STATUS_MIA, Crew::STATUS_DECEASED], true)) {
             $crew->setStatus(null);
         }
 

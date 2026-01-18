@@ -14,11 +14,11 @@ export default class extends Controller {
     }
 
     toggle() {
-        if (!this.hasStatusTarget) {
-            return;
-        }
+        if (!this.hasStatusTarget) return;
 
-        if (!this.isAssetActive()) {
+        const assetActive = this.isAssetActive();
+
+        if (!assetActive) {
             this.statusTarget.required = false;
             this.clearRequiredDates();
             this.hideAll();
@@ -31,23 +31,23 @@ export default class extends Controller {
         const key = this.normalizeStatus(value);
 
         this.hideAll();
-        this.clearRequiredDates();
+
         if (!key) {
+            this.clearRequiredDates();
             return;
         }
 
         const targetName = this.statusToTarget(key);
         if (!targetName) {
+            this.clearRequiredDates();
             return;
         }
 
-        const target = this[`${targetName}Target`];
-        if (!target) {
-            return;
+        if (this[`has${targetName.charAt(0).toUpperCase() + targetName.slice(1)}Target`]) {
+            const target = this[`${targetName}Target`];
+            target.classList.remove('hidden');
+            this.setDateRequired(target, true);
         }
-
-        target.classList.remove('hidden');
-        this.setDateRequired(target, true);
     }
 
     hideAll() {
@@ -86,7 +86,7 @@ export default class extends Controller {
     }
 
     isAssetActive() {
-        return this.element.dataset.assetActive === 'true';
+        return this.element.dataset.assetActive === 'true' || this.element.getAttribute('data-asset-active') === 'true';
     }
 
     normalizeStatus(value) {

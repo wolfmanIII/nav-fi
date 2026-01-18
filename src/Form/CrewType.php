@@ -67,13 +67,7 @@ class CrewType extends AbstractType
             ->add('status', ChoiceType::class, [
                 'required' => false,
                 'placeholder' => '-- Select a Status --',
-                'choices' => [
-                    'Active' => 'Active',
-                    'On Leave' => 'On Leave',
-                    'Retired' => 'Retired',
-                    'Missing (MIA)' => 'Missing (MIA)',
-                    'Deceased' => 'Deceased',
-                ],
+                'choices' => Crew::getStatusChoices(),
                 'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('activeDate', ImperialDateType::class, [
@@ -245,11 +239,11 @@ class CrewType extends AbstractType
 
                 $status = $crew->getStatus() ?? '';
                 $dateField = match ($status) {
-                    'Active' => 'activeDate',
-                    'On Leave' => 'onLeaveDate',
-                    'Retired' => 'retiredDate',
-                    'Missing (MIA)' => 'miaDate',
-                    'Deceased' => 'deceasedDate',
+                    Crew::STATUS_ACTIVE => 'activeDate',
+                    Crew::STATUS_ON_LEAVE => 'onLeaveDate',
+                    Crew::STATUS_RETIRED => 'retiredDate',
+                    Crew::STATUS_MIA => 'miaDate',
+                    Crew::STATUS_DECEASED => 'deceasedDate',
                     default => '',
                 };
 

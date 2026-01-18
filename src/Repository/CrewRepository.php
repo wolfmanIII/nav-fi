@@ -106,7 +106,7 @@ class CrewRepository extends ServiceEntityRepository
             ->andWhere('c.asset IS NULL')
             ->andWhere('(c.status IS NULL OR c.status NOT IN (:blockedStatus))')
             ->setParameter('user', $user);
-        $qb->setParameter('blockedStatus', ['Missing (MIA)', 'Deceased']);
+        $qb->setParameter('blockedStatus', [Crew::STATUS_MIA, Crew::STATUS_DECEASED]);
 
         if (!empty($filters['search'])) {
             $term = '%' . strtolower($filters['search']) . '%';

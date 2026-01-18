@@ -9,7 +9,9 @@
 
 {% block pageContent %}
 
-    <div class="flex flex-col items-stretch gap-4">
+    <div class="flex flex-col items-stretch gap-4"
+         data-controller="campaign-asset role-selector asset-roles-toggle"
+         data-action="show->role-selector#prepareSelection close->role-selector#resetSelection cancel->role-selector#resetSelection">
 
         {{ form_start(form) }}
 
@@ -36,47 +38,64 @@
 
             {% if crew.id %}
                 <div class="col-span-2">
-                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron mb-1 opacity-50">Fleet ID // Code</label>
+                    <div class="flex items-baseline h-5 mb-1">
+                        <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Fleet ID // Code</label>
+                    </div>
                     <div class="px-3 py-2 rounded bg-slate-950/50 border border-slate-800 font-mono text-cyan-400 text-sm"><b>{{ crew.code }}</b></div>
                 </div>
             {% endif %}
 
             <div class="col-span-1">
-                {{ form_label(form.name) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.name, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.name, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.name) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.surname) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.surname, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.surname, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.surname) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.nickname) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.nickname, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.nickname, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.nickname) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.birthWorld) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.birthWorld, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.birthWorld, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.birthWorld) }}
             </div>
 
             <div class="col-span-1" data-controller="imperial-date">
-                {{ form_label(form.birthDate) }}
-                {{ form_widget(form.birthDate.display, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700', 'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.birthDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(form.birthDate.display, { attr: { 
+                    class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50', 
+                    'data-imperial-date-target': 'display',
+                    'data-action': 'click->imperial-date#toggle',
+                    'readonly': true,
+                    'data-imperial-date-prev-icon': '«', 
+                    'data-imperial-date-next-icon': '»'
+                } }) }}
                 {{ form_widget(form.birthDate.year) }}
                 {{ form_widget(form.birthDate.day) }}
                 {{ form_errors(form.birthDate.display) }}
             </div>
         </fieldset>
 
-        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative"
-                  data-controller="campaign-asset role-selector asset-roles-toggle"
-                  data-action="show->role-selector#prepareSelection close->role-selector#resetSelection cancel->role-selector#resetSelection">
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Tactical Assignment</legend>
 
             <div class="col-span-2">
@@ -92,13 +111,17 @@
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.campaign) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.campaign, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.campaign, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
                 {{ form_errors(form.campaign) }}
             </div>
 
             <div class="col-span-1">
-                {{ form_label(form.asset) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.asset, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.asset, { attr: {
                     class: 'select select-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-asset-roles-toggle-target': 'assetSelect',
@@ -136,7 +159,7 @@
                             }) }}
                             <div class="flex items-baseline justify-between h-5 mb-1">
                                 {{ form_label(form.assetRoles, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                                <span class="badge badge-outline badge-info badge-xs uppercase tracking-tighter text-[8px] opacity-70">[tap to toggle]</span>
+                                <span class="text-[8px] text-cyan-500/50 uppercase tracking-tighter"><b>[tap to toggle]</b></span>
                             </div>
                             <div class="flex flex-wrap gap-2" data-role-selector-target="chips"></div>
                             {{ form_errors(form.assetRoles) }}
@@ -160,12 +183,16 @@
                 </div>
             </div>
 
-            <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 items-end" data-controller="crew-status-date" data-asset-roles-toggle-target="statusWrapper">
+            {% set has_asset = crew.asset is not null %}
+            <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 items-end" 
+                 data-controller="crew-status-date" 
+                 data-asset-roles-toggle-target="statusWrapper"
+                 data-asset-active="{{ has_asset ? 'true' : 'false' }}">
                 <div>
                     {% set status_help_id = form.status.vars.id ~ '-help' %}
                     <div class="flex items-baseline justify-between h-5 mb-1">
                         {{ form_label(form.status, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                        <label for="{{ status_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest">[info]</label>
+                        <label for="{{ status_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase tracking-widest"><b>[info]</b></label>
                     </div>
                     {{ form_widget(form.status, { attr: {
                         class: 'select select-bordered w-full bg-slate-950/50 border-slate-700',
@@ -197,7 +224,14 @@
                         <div class="flex items-baseline h-5 mb-1">
                             {{ form_label(attribute(form, row.field), null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                         </div>
-                        {{ form_widget(attribute(form, row.field).display, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700', 'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
+                        {{ form_widget(attribute(form, row.field).display, { attr: { 
+                            class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50', 
+                            'data-imperial-date-target': 'display',
+                            'data-action': 'click->imperial-date#toggle',
+                            'readonly': true,
+                            'data-imperial-date-prev-icon': '«', 
+                            'data-imperial-date-next-icon': '»'
+                        } }) }}
                         {{ form_widget(attribute(form, row.field).year) }}
                         {{ form_widget(attribute(form, row.field).day) }}
                         {{ form_errors(attribute(form, row.field).display) }}
@@ -209,7 +243,9 @@
         <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-8 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-slate-400 uppercase">Personnel File</legend>
             <div>
-                {{ form_label(form.background) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.background, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.background, { attr: { class: 'textarea textarea-bordered w-full bg-slate-950/50 border-slate-700 h-32 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Enter tactical dossier / background history...' } }) }}
                 {{ form_errors(form.background) }}
             </div>

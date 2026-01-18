@@ -66,7 +66,9 @@
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Primary Data</legend>
 
             <div class="col-span-2 md:col-span-1" data-controller="imperial-date">
-                {{ form_label(form.startDate) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.startDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.startDate.display, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700', 'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
                 {{ form_widget(form.startDate.year) }}
                 {{ form_widget(form.startDate.day) }}
@@ -74,7 +76,9 @@
             </div>
 
             <div class="col-span-2 md:col-span-1" data-controller="imperial-date">
-                {{ form_label(form.endDate) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.endDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.endDate.display, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700', 'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
                 {{ form_widget(form.endDate.year) }}
                 {{ form_widget(form.endDate.day) }}
@@ -82,13 +86,17 @@
             </div>
 
             <div class="col-span-2 md:col-span-1">
-                {{ form_label(form.campaign) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.campaign, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.campaign, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
                 {{ form_errors(form.campaign) }}
             </div>
 
             <div class="col-span-2 md:col-span-1">
-                {{ form_label(form.asset) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.asset, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.asset, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
                 {{ form_errors(form.asset) }}
             </div>
@@ -96,8 +104,13 @@
 
         <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-8 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-slate-400 uppercase">Operational Notes</legend>
-            {{ form_widget(form.note, { attr: { class: 'textarea textarea-bordered w-full bg-slate-950/50 border-slate-700 h-24 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Enter tactical notes here...' } }) }}
-            {{ form_errors(form.note) }}
+            <div>
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.note, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(form.note, { attr: { class: 'textarea textarea-bordered w-full bg-slate-950/50 border-slate-700 h-24 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Enter tactical notes here...' } }) }}
+                {{ form_errors(form.note) }}
+            </div>
         </fieldset>
 
         <div class="flex items-center justify-end gap-3 mb-10">

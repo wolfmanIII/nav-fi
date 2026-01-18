@@ -15,6 +15,22 @@ use Symfony\Component\Uid\Uuid;
 #[Captain]
 class Crew
 {
+    public const STATUS_ACTIVE = 'Active';
+    public const STATUS_ON_LEAVE = 'On Leave';
+    public const STATUS_RETIRED = 'Retired';
+    public const STATUS_MIA = 'Missing (MIA)';
+    public const STATUS_DECEASED = 'Deceased';
+
+    public static function getStatusChoices(): array
+    {
+        return [
+            self::STATUS_ACTIVE => self::STATUS_ACTIVE,
+            self::STATUS_ON_LEAVE => self::STATUS_ON_LEAVE,
+            self::STATUS_RETIRED => self::STATUS_RETIRED,
+            self::STATUS_MIA => self::STATUS_MIA,
+            self::STATUS_DECEASED => self::STATUS_DECEASED,
+        ];
+    }
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -94,7 +110,7 @@ class Crew
     {
         $this->setCode(Uuid::v7());
         $this->assetRoles = new ArrayCollection();
-        $this->status = 'Active';
+        $this->status = null;
     }
 
     public function getId(): ?int
@@ -398,7 +414,7 @@ class Crew
 
     public function isDisplayable(): bool
     {
-        return !in_array($this->status, ['Missing (MIA)', 'Deceased'], true);
+        return !in_array($this->status, [self::STATUS_MIA, self::STATUS_DECEASED], true);
     }
 
     public function isActiveAtOrAfterDate(?int $referenceYear, ?int $referenceDay): bool

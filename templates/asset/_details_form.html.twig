@@ -6,17 +6,23 @@
                 class="absolute -right-2 -top-2 w-6 h-6 rounded-full bg-slate-800 border border-slate-700 text-slate-400 hover:text-red-400 hover:border-red-500/50 flex items-center justify-center transition-all shadow-lg z-10"
                 data-action="asset-details#removeItem">&times;</button>
         <div>
-            {{ form_label(child.description) }}
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(child.description, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
             {{ form_widget(child.description, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50' } }) }}
             {{ form_errors(child.description) }}
         </div>
         <div>
-            {{ form_label(child.tons) }}
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(child.tons, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
             {{ form_widget(child.tons, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50' } }) }}
             {{ form_errors(child.tons) }}
         </div>
         <div>
-            {{ form_label(child.costMcr) }}
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(child.costMcr, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
             {{ form_widget(child.costMcr, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50' } }) }}
             {{ form_errors(child.costMcr) }}
         </div>
@@ -24,13 +30,13 @@
 {% endmacro %}
 
 {% macro render_collection(collection, title) %}
-    <div class="space-y-2" data-asset-details-target="collection">
-        <div class="flex items-center justify-between mb-2">
+    <div class="grid grid-cols-1 gap-4" data-asset-details-target="collection">
+        <div class="flex items-center justify-between">
             <h4 class="text-[10px] uppercase tracking-widest font-rajdhani font-bold text-slate-500">{{ title }}</h4>
             <button type="button" class="btn btn-outline btn-xs font-orbitron uppercase tracking-widest text-[9px]"
                     data-action="asset-details#addItem">+ Add Device</button>
         </div>
-        <div class="space-y-2" data-asset-details-target="list">
+        <div class="space-y-4" data-asset-details-target="list">
             {% for child in collection %}
                 {{ _self.render_item(child) }}
             {% endfor %}
@@ -74,12 +80,16 @@
 
     <div class="col-span-1 grid grid-cols-2 gap-4">
         <div class="col-span-1">
-            {{ form_label(detailsForm.techLevel) }}
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detailsForm.techLevel, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
             {{ form_widget(detailsForm.techLevel, { attr: { class: 'select select-bordered select-sm w-full bg-slate-950/50 border-slate-800' } }) }}
             {{ form_errors(detailsForm.techLevel) }}
         </div>
         <div class="col-span-1">
-            {{ form_label(detailsForm.totalCost) }}
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detailsForm.totalCost, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
             <input type="text"
                    class="input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 font-mono text-cyan-400"
                    data-asset-details-target="totalDisplay"
@@ -110,7 +120,9 @@
                     <span class="text-[10px] uppercase tracking-widest font-orbitron font-bold text-cyan-500/70">{{ item.label }}</span>
                 </div>
                 <div class="mb-3">
-                    {{ form_label(item.child.description) }}
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(item.child.description, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
                     {{ form_widget(item.child.description, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50' } }) }}
                     {{ form_errors(item.child.description) }}
                 </div>
@@ -118,30 +130,40 @@
                 <div class="grid gap-2 {{ has_drive_extra ? 'grid-cols-3' : 'grid-cols-2' }}">
                     {% if item.child.thrust is defined %}
                         <div>
-                            {{ form_label(item.child.thrust) }}
+                            <div class="flex items-baseline h-5 mb-1">
+                                {{ form_label(item.child.thrust, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                            </div>
                             {{ form_widget(item.child.thrust, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800' } }) }}
                             {{ form_errors(item.child.thrust) }}
                         </div>
                     {% elseif item.child.jump is defined %}
                         <div>
-                            {{ form_label(item.child.jump) }}
+                            <div class="flex items-baseline h-5 mb-1">
+                                {{ form_label(item.child.jump, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                            </div>
                             {{ form_widget(item.child.jump, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800' } }) }}
                             {{ form_errors(item.child.jump) }}
                         </div>
                     {% elseif item.child.power is defined %}
                         <div>
-                            {{ form_label(item.child.power) }}
+                            <div class="flex items-baseline h-5 mb-1">
+                                {{ form_label(item.child.power, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                            </div>
                             {{ form_widget(item.child.power, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800' } }) }}
                             {{ form_errors(item.child.power) }}
                         </div>
                     {% endif %}
                     <div>
-                        {{ form_label(item.child.tons) }}
+                        <div class="flex items-baseline h-5 mb-1">
+                            {{ form_label(item.child.tons, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                        </div>
                         {{ form_widget(item.child.tons, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800' } }) }}
                         {{ form_errors(item.child.tons) }}
                     </div>
                     <div>
-                        {{ form_label(item.child.costMcr) }}
+                        <div class="flex items-baseline h-5 mb-1">
+                            {{ form_label(item.child.costMcr, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                        </div>
                         {{ form_widget(item.child.costMcr, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800' } }) }}
                         {{ form_errors(item.child.costMcr) }}
                     </div>

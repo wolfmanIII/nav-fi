@@ -6,17 +6,23 @@
                 class="absolute -right-2 -top-2 w-6 h-6 rounded-full bg-slate-800 border border-slate-700 text-slate-400 hover:text-red-400 hover:border-red-500/50 flex items-center justify-center transition-all shadow-lg z-10"
                 data-action="cost-details#removeItem">&times;</button>
         <div class="md:col-span-1">
-            {{ form_label(child.description) }}
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(child.description, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
             {{ form_widget(child.description, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800' } }) }}
             {{ form_errors(child.description) }}
         </div>
         <div>
-            {{ form_label(child.quantity) }}
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(child.quantity, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
             {{ form_widget(child.quantity, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800' } }) }}
             {{ form_errors(child.quantity) }}
         </div>
         <div>
-            {{ form_label(child.cost) }}
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(child.cost, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
             {{ form_widget(child.cost, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800' } }) }}
             {{ form_errors(child.cost) }}
         </div>

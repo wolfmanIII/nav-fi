@@ -42,95 +42,121 @@
         {% endif %}
 
         <div class="flow-root">
-            <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/40 shadow-inner" data-controller="bulk-select">
-                <table class="table table-xs w-full border-separate border-spacing-0">
-                    <!-- head -->
-                    <thead>
-                    <tr class="border-b border-slate-800">
-                        <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Code</th>
-                        <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Name</th>
-                        <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Callsign</th>
-                        <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Surname</th>
-                        <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Roles</th>
-                        <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Active Date</th>
-                        <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Captain</th>
-                        <th class="bg-slate-900/50"></th>
-                    </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-800/50">
-                    {% if asset.crews|length > 0 %}
-                        {% for member in asset.crews %}
-                                <tr class="hover:bg-cyan-500/5 transition-colors text-slate-300">
-                                <td class="font-mono text-xs p-2">{% include 'components/code_with_copy.html.twig' with { code: member.code } %}</td>
-                                <td class="font-mono text-xs p-2 font-bold text-cyan-100">{{ member.name }}</td>
-                            <td class="font-mono text-xs p-2 text-slate-500 italic">{{ member.nickname }}</td>
-                            <td class="font-mono text-xs p-2">{{ member.surname }}</td>
-                            <td class="font-mono text-xs p-2">
-                                {% for role in member.assetRoles %}
-                                    <span class="text-cyan-400">{{ role.name }}</span>
-                                    {% if loop.index != loop.last %}
-                                        <span class="text-slate-600">/</span>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" data-controller="bulk-select">
+            {% if asset.crews|length > 0 %}
+                {% for member in asset.crews %}
+                    <div class="border border-slate-700 bg-slate-950/40 rounded-lg p-4 relative group hover:border-cyan-500/30 transition-all duration-300 shadow-lg hover:shadow-cyan-500/5">
+                        {# Header Section #}
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-0.5">
+                                    <h3 class="font-bold text-cyan-100 text-sm font-orbitron uppercase tracking-wider truncate">
+                                        {{ member.name }} {{ member.surname }}
+                                    </h3>
+                                    {% if member.captain %}
+                                        <div class="text-amber-400 shrink-0" title="Captain">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                            </svg>
+                                        </div>
                                     {% endif %}
-                                {% endfor %}
-                            </td>
-                            <td class="font-mono text-xs p-2">
-                                {% if member.activeDay and member.activeYear %}
-                                    {{ member.activeDay|imperial_date(member.activeYear) }}
-                                {% else %}
-                                    <span class="text-slate-600">—</span>
-                                {% endif %}
-                            </td>
-                            <td class="p-2">
-                                {% if member.captain %}
-                                    <div class="flex justify-center text-amber-400">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                        </svg>
-                                    </div>
-                                {% endif %}
-                            </td>
-                            <td class="p-2 text-right">
-                                <div class="flex gap-2 justify-end">
-
-                                    {{ tooltip.button(
-                                        "Update the crew member's asset roles",
-                                        'Update roles',
-                                        'icons/roles.html.twig',
-                                        {
-                                            position: 'tooltip-left',
-                                            dim: 14,
-                                            buttonClass: 'btn btn-ghost btn-xs text-cyan-400 hover:bg-cyan-500/20',
-                                            attrs: {
-                                                onclick: "document.getElementById('crew_roles_" ~ member.id ~ "').showModal()"
-                                            }
-                                        }
-                                    ) }}
-
-                                    {{ tooltip.link('Remove this crew member from the asset',
-                                        'Remove crew',
-                                        'icons/action-trash.html.twig',
-                                        path('app_asset_crew_remove', {id: member.id}),
-                                        { 
-                                            position: 'tooltip-left',
-                                            dim: 14,
-                                            linkClass: 'btn btn-ghost btn-xs text-red-400 hover:bg-red-500/20' ~ (can_remove_crew ? '' : ' opacity-50 pointer-events-none'),
-                                            attrs: can_remove_crew ? {} : {'aria-disabled': 'true'}
-                                        }) }}
-
                                 </div>
-                            </td>
-                            </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="8" class="text-center text-xs text-slate-500 font-rajdhani uppercase tracking-widest py-8">// No crew assigned</td>
-                        </tr>
-                    {% endif %}
-                    </tbody>
-                </table>
-            </div>
+                                <p class="text-[10px] text-slate-500 italic font-mono truncate">{{ member.nickname ?: 'No Callsign' }}</p>
+                            </div>
+                            <div class="font-mono text-[9px] text-slate-400 bg-slate-900 border border-slate-700/50 px-2 py-0.5 rounded shadow-inner shrink-0 scale-90 origin-right">
+                                {% include 'components/code_with_copy.html.twig' with { code: member.code } %}
+                            </div>
+                        </div>
+
+                        {# Data Section #}
+                        <div class="space-y-4 mb-5">
+                            <div>
+                                <div class="flex items-baseline h-5 mb-1">
+                                    <span class="text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Bridge Roles</span>
+                                </div>
+                                <div class="flex flex-wrap gap-1.5 min-h-[20px]">
+                                    {% if member.assetRoles|length > 0 %}
+                                        {% for role in member.assetRoles %}
+                                            <span class="bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-[9px] px-1.5 py-0.5 rounded font-mono uppercase tracking-tighter">{{ role.name }}</span>
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="text-slate-600 text-[9px] uppercase font-mono tracking-widest">// No roles assigned</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <div class="flex items-baseline h-5 mb-1">
+                                        <span class="text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Active Date</span>
+                                    </div>
+                                    <p class="font-mono text-xs text-slate-300 bg-slate-900/40 px-2 py-1 rounded border border-slate-800/50 text-center">
+                                        {% if member.activeDay and member.activeYear %}
+                                            {{ member.activeDay|imperial_date(member.activeYear) }}
+                                        {% else %}
+                                            <span class="text-slate-600">—</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div>
+                                    <div class="flex items-baseline h-5 mb-1">
+                                        <span class="text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Status</span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5 px-2 py-1 bg-emerald-500/5 border border-emerald-500/20 rounded">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                        <span class="text-[9px] text-emerald-400/80 font-bold font-orbitron uppercase tracking-widest">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Actions Section #}
+                        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-800/80">
+                            {% set role_label = 'Bridge Assignments' %}
+                            {% if asset.category == 'base' %}
+                                {% set role_label = 'Command Roster' %}
+                            {% elseif asset.category == 'team' %}
+                                {% set role_label = 'Tactical Roles' %}
+                            {% endif %}
+                            {{ tooltip.button(
+                                "Configure tactical clearance and operational " ~ (asset.category == 'ship' ? 'bridge' : (asset.category == 'base' ? 'station' : 'team')) ~ " assignments",
+                                role_label,
+                                'icons/roles.html.twig',
+                                {
+                                    position: 'tooltip-left',
+                                    dim: 14,
+                                    showLabel: true,
+                                    buttonClass: 'btn btn-ghost btn-xs text-cyan-400 hover:bg-cyan-500/20 px-2 gap-2 font-bold font-orbitron uppercase tracking-[0.2em] scale-90 origin-right',
+                                    attrs: {
+                                        onclick: "document.getElementById('crew_roles_" ~ member.id ~ "').showModal()"
+                                    }
+                                }
+                            ) }}
+
+                            {{ tooltip.link('Remove this crew member from the asset',
+                                'Remove crew',
+                                'icons/action-trash.html.twig',
+                                path('app_asset_crew_remove', {id: member.id}),
+                                { 
+                                    position: 'tooltip-left',
+                                    dim: 14,
+                                    linkClass: 'btn btn-ghost btn-xs text-red-500/60 hover:text-red-400 hover:bg-red-500/10 px-2 group/btn' ~ (can_remove_crew ? '' : ' opacity-30 pointer-events-none'),
+                                    attrs: can_remove_crew ? {} : {'aria-disabled': 'true'}
+                                }) }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-span-full border-2 border-dashed border-slate-800 rounded-xl p-12 text-center bg-slate-900/20">
+                    <div class="flex flex-col items-center gap-3">
+                        <div class="p-3 rounded-full bg-slate-800 border border-slate-700 text-slate-500">
+                            {% include 'icons/crew.html.twig' with { dim: 24 } %}
+                        </div>
+                        <p class="text-xs text-slate-500 font-rajdhani uppercase tracking-widest font-bold">// No crew assigned to this asset module</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
         </div>
 
         <section class="mt-10 space-y-4">

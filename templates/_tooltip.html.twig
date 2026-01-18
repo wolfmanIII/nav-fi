@@ -10,6 +10,9 @@
                 {{ name }}="{{ value }}"
             {% endfor %}>
         {{ include(icon, { dim: dim }) }}
+        {% if options.showLabel|default(false) %}
+            <span class="ml-2">{{ label }}</span>
+        {% endif %}
     </button>
 </div>
 {% endmacro %}
@@ -27,6 +30,9 @@
            {{ name }}="{{ value }}"
        {% endfor %}>
         {{ include(icon, { dim: dim }) }}
+        {% if options.showLabel|default(false) %}
+            <span class="ml-2">{{ label }}</span>
+        {% endif %}
     </a>
 </div>
 {% endmacro %}

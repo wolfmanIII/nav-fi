@@ -86,21 +86,25 @@
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Asset Deployment</legend>
 
             <div class="col-span-2 md:col-span-1">
-                {{ form_label(form.campaign) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.campaign, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.campaign, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
                 {{ form_errors(form.campaign) }}
             </div>
 
             <div class="col-span-2 md:col-span-1">
-                {{ form_label(form.asset) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.asset, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.asset, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
                 {{ form_errors(form.asset) }}
             </div>
 
             <div class="col-span-2 md:col-span-1">
-                <label class="label">
-                    <span class="label-text">First Installment Date</span>
-                </label>
+                <div class="flex items-baseline h-5 mb-1">
+                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">First Installment Date</label>
+                </div>
                 <div class="flex items-center gap-2">
                     <input type="text" readonly disabled
                         class="input input-bordered w-full bg-slate-950/50 border-slate-700 text-slate-400"
@@ -115,13 +119,17 @@
             </div>
 
             <div class="col-span-2 md:col-span-1">
-                {{ form_label(form.company) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.company, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.company, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
                 {{ form_errors(form.company) }}
             </div>
 
             <div class="col-span-2">
-                {{ form_label(form.localLaw) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.localLaw, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.localLaw, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
                 {{ form_errors(form.localLaw) }}
             </div>
@@ -131,19 +139,25 @@
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Financial Architecture</legend>
 
             <div class="col-span-1 md:col-span-1 lg:col-span-1">
-                {{ form_label(form.discount) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.discount, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.discount, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.discount) }}
             </div>
 
             <div class="col-span-1 md:col-span-1 lg:col-span-1">
-                {{ form_label(form.assetShares) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.assetShares, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.assetShares, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.assetShares) }}
             </div>
 
             <div class="col-span-1 md:col-span-1 lg:col-span-1">
-                {{ form_label(form.advancePayment) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.advancePayment, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.advancePayment, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.advancePayment) }}
             </div>
@@ -167,11 +181,11 @@
         {% endif %}
 
         <div class="flex items-center justify-end gap-3 mb-10">
-            <a href="{{ path('app_mortgage_index') }}" class="btn btn-outline btn-sm font-orbitron uppercase text-[10px] tracking-widest">Abort Changes</a>
+            <a href="{{ path('app_mortgage_index') }}" class="btn btn-ghost font-orbitron uppercase text-[10px] tracking-widest text-slate-500 hover:text-slate-300 font-bold">Abort Changes</a>
 
             {% if mortgage.id %}
                 {% set disabledClass = mortgage.signed ? '' : ' opacity-60 pointer-events-none' %}
-                <a href="{{ path('app_mortgage_unsign', {id: mortgage.id}) }}" class="btn btn-outline btn-error btn-sm font-orbitron uppercase text-[10px] tracking-widest {{ disabledClass }}">Unsign Asset</a>
+                <a href="{{ path('app_mortgage_unsign', {id: mortgage.id}) }}" class="btn btn-outline btn-error btn-sm font-orbitron uppercase text-[10px] tracking-widest font-bold {{ disabledClass }}">Unsign Asset</a>
             {% endif %}
 
             {% if not mortgage.signed and mortgage.asset and not mortgage.asset.hasCaptain %}
@@ -249,7 +263,7 @@
                 {% endif %}
                 <div class="modal-action mt-6 gap-3">
                     <form method="dialog">
-                        <button class="btn btn-ghost btn-sm font-orbitron uppercase text-[10px] tracking-widest font-bold">Terminate Session</button>
+                        <button class="btn btn-ghost btn-sm font-orbitron uppercase text-[10px] tracking-widest font-bold text-slate-500 hover:text-slate-200">Terminate Session</button>
                     </form>
                 </div>
             </div>
@@ -268,7 +282,7 @@
                 </p>
                 <div class="modal-action mt-6 gap-3">
                     <form method="dialog">
-                        <button class="btn btn-ghost btn-sm font-orbitron uppercase text-[10px] tracking-widest font-bold">Terminate Session</button>
+                        <button class="btn btn-ghost btn-sm font-orbitron uppercase text-[10px] tracking-widest font-bold text-slate-500 hover:text-slate-200">Terminate Session</button>
                     </form>
                 </div>
             </div>
@@ -294,7 +308,9 @@
                     <fieldset class="bg-slate-950/40 border border-slate-800 p-4 rounded-xl shadow-inner relative group hover:border-cyan-500/30 transition-colors duration-300">
                         <legend class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-[9px] font-bold font-orbitron tracking-[0.2em] text-cyan-500/80 uppercase mb-2">Location Data</legend>
                         <div class="form-control gap-1">
-                            {{ form_label(sign_form.signingLocation, null, {'label_attr': {'class': 'text-[10px] font-bold font-rajdhani tracking-widest text-slate-400 uppercase'}}) }}
+                            <div class="flex items-baseline h-5 mb-1">
+                                {{ form_label(sign_form.signingLocation, null, {'label_attr': {'class': 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50'}}) }}
+                            </div>
                             {{ form_widget(sign_form.signingLocation, {'attr': {'class': 'input input-bordered w-full bg-slate-950/80 border-slate-700/50 focus:border-cyan-500/50 focus:bg-slate-900 font-rajdhani text-sm py-2 h-10 transition-all placeholder:text-slate-700'}}) }}
                             {{ form_errors(sign_form.signingLocation) }}
                         </div>
@@ -304,8 +320,8 @@
                         <legend class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-[9px] font-bold font-orbitron tracking-[0.2em] text-amber-500/80 uppercase mb-2">Payment Schedule [Optional]</legend>
                          
                         <div class="form-control" data-controller="imperial-date">
-                             <div class="flex justify-between items-center mb-2">
-                                {{ form_label(sign_form.startDate, null, {'label_attr': {'class': 'text-[10px] font-bold font-rajdhani tracking-widest text-slate-400 uppercase'}}) }}
+                             <div class="flex items-baseline justify-between h-5 mb-1">
+                                {{ form_label(sign_form.startDate, null, {'label_attr': {'class': 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50'}}) }}
                                 <span class="badge badge-xs badge-ghost text-[9px] uppercase tracking-widest opacity-50">Manual Override</span>
                              </div>
                              
@@ -354,6 +370,7 @@
                 </header>
                 {{ form_start(start_date_form) }}
                     <fieldset class="bg-slate-900/40 border border-slate-800 gap-4 p-4 rounded-xl shadow-inner w-full mb-6 relative">
+                        <legend class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[9px] font-bold font-orbitron tracking-[0.2em] text-cyan-500/80 uppercase">Scheduling Protocol</legend>
                          {% if mortgage.signingYear is defined and mortgage.signingYear is not null %}
                             <div class="alert alert-info py-2 px-3 mb-4 rounded border-cyan-500/30 bg-cyan-900/20 text-xs">
                                 <span class="font-semibold text-cyan-200">Signed Date:</span> {{ mortgage.signingDay }}/{{ mortgage.signingYear }}
@@ -361,7 +378,9 @@
                         {% endif %}
 
                         <div class="col-span-2" data-controller="imperial-date">
-                            {{ form_label(start_date_form.startDate) }}
+                            <div class="flex items-baseline h-5 mb-1">
+                                {{ form_label(start_date_form.startDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                            </div>
                             {{ form_widget(start_date_form.startDate.display, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50', 'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
                             {{ form_widget(start_date_form.startDate.year) }}
                             {{ form_widget(start_date_form.startDate.day) }}
@@ -377,7 +396,7 @@
                         </div>
                     </fieldset>
                     <div class="modal-action mt-6 gap-3">
-                        <button type="button" class="btn btn-ghost btn-sm font-orbitron uppercase text-[10px] tracking-widest font-bold" onclick="document.getElementById('start_date_modal').close();">Cancel</button>
+                        <button type="button" class="btn btn-ghost btn-sm font-orbitron uppercase text-[10px] tracking-widest font-bold text-slate-500 hover:text-slate-200" onclick="document.getElementById('start_date_modal').close();">Cancel Protocol</button>
                         <button
                             type="submit"
                             class="btn btn-warning btn-sm px-6 font-orbitron uppercase text-[10px] tracking-widest font-bold shadow-lg shadow-amber-500/10"
@@ -405,21 +424,25 @@
                     <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-4 p-4 rounded-xl shadow-inner w-full mb-6 relative">
                         <legend class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[9px] font-bold font-orbitron tracking-[0.2em] text-cyan-500/80 uppercase">Installment Authorization</legend>
                         <div class="col-span-2" data-controller="imperial-date">
-                            {{ form_label(payment_form.paymentDate) }}
+                            <div class="flex items-baseline h-5 mb-1">
+                                {{ form_label(payment_form.paymentDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                            </div>
                             {{ form_widget(payment_form.paymentDate.display, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50', 'data-imperial-date-prev-icon': '«', 'data-imperial-date-next-icon': '»'} }) }}
                             {{ form_widget(payment_form.paymentDate.year) }}
                             {{ form_widget(payment_form.paymentDate.day) }}
                             {{ form_errors(payment_form.paymentDate.display) }}
                         </div>
                         <div class="col-span-2">
-                            {{ form_label(payment_form.payment) }}
+                            <div class="flex items-baseline h-5 mb-1">
+                                {{ form_label(payment_form.payment, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                            </div>
                             {{ form_widget(payment_form.payment, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 font-mono text-sm' } }) }}
                             {{ form_errors(payment_form.payment) }}
                         </div>
                     </fieldset>
 
                     <div class="modal-action mt-6 gap-3">
-                        <a href="{{ path('app_mortgage_edit', {id: mortgage.id}) }}" role="button" class="btn btn-ghost btn-sm font-orbitron uppercase text-[10px] tracking-widest font-bold">Abort Protocol</a>
+                        <a href="{{ path('app_mortgage_edit', {id: mortgage.id}) }}" role="button" class="btn btn-ghost btn-sm font-orbitron uppercase text-[10px] tracking-widest font-bold text-slate-500 hover:text-slate-200">Abort Protocol</a>
                         <button
                             type="submit"
                             name="action" value="save"

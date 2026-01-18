@@ -40,7 +40,9 @@
 
             {% if route.id %}
                 <div class="col-span-2">
-                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron mb-1 opacity-50">Route Code // Navigation ID</label>
+                    <div class="flex items-baseline h-5 mb-1">
+                        <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Route Code // Navigation ID</label>
+                    </div>
                     <div class="px-3 py-2 rounded bg-slate-950/50 border border-slate-800 font-mono text-cyan-400 text-sm"><b>{{ route.code }}</b></div>
                 </div>
             {% endif %}
@@ -105,7 +107,9 @@
                 {{ form_errors(form.distance) }}
             </div>
             <div class="col-span-1">
-                {{ form_label(form.fuelEstimate, null, { label_attr: { class: 'mb-1 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.fuelEstimate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.fuelEstimate, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 <p class="text-[10px] text-slate-500 mt-1 italic uppercase tracking-wider font-rajdhani">Estimated tons per jump segment.</p>
                 {{ form_errors(form.fuelEstimate) }}
@@ -115,7 +119,9 @@
         <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Flight Schedule</legend>
             <div class="col-span-1" data-controller="imperial-date">
-                {{ form_label(form.startDate) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.startDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.startDate.display, {
                     attr: {
                         class: 'input input-bordered w-full bg-slate-950/50 border-slate-700',
@@ -128,7 +134,9 @@
                 {{ form_errors(form.startDate.display) }}
             </div>
             <div class="col-span-1" data-controller="imperial-date">
-                {{ form_label(form.destDate) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.destDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.destDate.display, {
                     attr: {
                         class: 'input input-bordered w-full bg-slate-950/50 border-slate-700',
@@ -159,34 +167,46 @@
                                 data-action="route-waypoints#removeItem">&times;</button>
                         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                             <div>
-                                {{ form_label(child.hex) }}
+                                <div class="flex items-baseline h-5 mb-1">
+                                    {{ form_label(child.hex, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                                </div>
                                 {{ form_widget(child.hex, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50' } }) }}
                                 {{ form_errors(child.hex) }}
                             </div>
                             <div>
-                                {{ form_label(child.sector) }}
+                                <div class="flex items-baseline h-5 mb-1">
+                                    {{ form_label(child.sector, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                                </div>
                                 {{ form_widget(child.sector, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50' } }) }}
                                 {{ form_errors(child.sector) }}
                                 <p class="text-[9px] text-slate-500 mt-1 uppercase tracking-wider font-rajdhani">Abbrev. (e.g. Spin)</p>
                             </div>
                             <div>
-                                {{ form_label(child.world) }}
+                                <div class="flex items-baseline h-5 mb-1">
+                                    {{ form_label(child.world, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                                </div>
                                 {{ form_widget(child.world, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50' } }) }}
                                 {{ form_errors(child.world) }}
                             </div>
                             <div class="route-waypoint-highlight">
-                                {{ form_label(child.uwp) }}
+                                <div class="flex items-baseline h-5 mb-1">
+                                    {{ form_label(child.uwp, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                                </div>
                                 {{ form_widget(child.uwp, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono' } }) }}
                                 {{ form_errors(child.uwp) }}
                             </div>
                             <div class="route-waypoint-highlight">
-                                {{ form_label(child.jumpDistance) }}
+                                <div class="flex items-baseline h-5 mb-1">
+                                    {{ form_label(child.jumpDistance, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                                </div>
                                 {{ form_widget(child.jumpDistance, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono' } }) }}
                                 {{ form_errors(child.jumpDistance) }}
                             </div>
                         </div>
                         <div class="mt-3">
-                            {{ form_label(child.notes) }}
+                            <div class="flex items-baseline h-5 mb-1">
+                                {{ form_label(child.notes, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                            </div>
                             {{ form_widget(child.notes, { attr: { class: 'textarea textarea-bordered textarea-sm w-full bg-slate-950/50 border-slate-800 h-16 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Node specific notes...' } }) }}
                             {{ form_errors(child.notes) }}
                         </div>
@@ -239,12 +259,16 @@
         <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-slate-400 uppercase">Route Notes</legend>
             <div class="mb-4">
-                {{ form_label(form.description) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.description, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.description, { attr: { class: 'textarea textarea-bordered w-full bg-slate-950/50 border-slate-700 h-24 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Dossier summary...' } }) }}
                 {{ form_errors(form.description) }}
             </div>
             <div>
-                {{ form_label(form.notes) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.notes, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.notes, { attr: { class: 'textarea textarea-bordered w-full bg-slate-950/50 border-slate-700 h-32 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Enter detailed tactical notes here...' } }) }}
                 {{ form_errors(form.notes) }}
             </div>

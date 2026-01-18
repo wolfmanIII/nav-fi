@@ -29,7 +29,9 @@
 
             {% if company.id %}
                 <div class="col-span-2">
-                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron mb-1 opacity-50">Corporate ID // Entity Code</label>
+                    <div class="flex items-baseline h-5 mb-1">
+                        <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Corporate ID // Entity Code</label>
+                    </div>
                     <div class="px-3 py-2 rounded bg-slate-950/50 border border-slate-800 font-mono text-cyan-400 text-sm"><b>{{ company.code }}</b></div>
                 </div>
             {% endif %}
@@ -73,7 +75,9 @@
         <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-8 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-slate-400 uppercase">Operational Notes</legend>
             <div>
-                {{ form_label(form.notes) }}
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.notes, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
                 {{ form_widget(form.notes, { attr: { class: 'textarea textarea-bordered w-full bg-slate-950/50 border-slate-700 h-32 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Enter company-specific tactical notes or administrative details...' } }) }}
                 {{ form_errors(form.notes) }}
             </div>

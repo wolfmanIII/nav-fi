@@ -105,12 +105,10 @@
             {% endif %}
 
             <div class="col-span-1">
-                <div class="col-span-2">
-                    <div class="flex items-baseline h-5 mb-1">
-                        <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Fleet Asset // Category</label>
-                    </div>
-                    <div class="px-3 py-2 rounded bg-slate-950/50 border border-slate-800 font-mono text-cyan-400 text-sm"><b>{{ asset.category }}</b></div>
+                <div class="flex items-baseline h-5 mb-1">
+                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Fleet Asset // Category</label>
                 </div>
+                <div class="px-3 py-2 rounded bg-slate-950/50 border border-slate-800 font-mono text-cyan-400 text-sm"><b>{{ asset.category|capitalize }}</b></div>
             </div>
 
             <div class="col-span-1" data-asset-target="nameField">

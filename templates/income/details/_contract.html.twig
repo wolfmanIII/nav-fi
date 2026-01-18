@@ -28,9 +28,9 @@
 
     {% set job_help_id = detail_form.jobType.vars.id ~ '-help' %}
     <div>
-        <div class="flex items-center gap-2">
-            {{ form_label(detail_form.jobType) }}
-            <label for="{{ job_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        <div class="flex items-baseline justify-between h-5 mb-1">
+            {{ form_label(detail_form.jobType, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            <label for="{{ job_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
         </div>
         {{ form_widget(detail_form.jobType) }}
         {{ form_errors(detail_form.jobType) }}
@@ -49,9 +49,9 @@
     <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set location_help_id = detail_form.location.vars.id ~ '-help' %}
         <div>
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.location) }}
-                <label for="{{ location_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            <div class="flex items-baseline justify-between h-5 mb-1">
+                {{ form_label(detail_form.location, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                <label for="{{ location_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
             {{ form_widget(detail_form.location) }}
             {{ form_errors(detail_form.location) }}
@@ -68,9 +68,9 @@
         </div>
         {% set objective_help_id = detail_form.objective.vars.id ~ '-help' %}
         <div>
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.objective) }}
-                <label for="{{ objective_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            <div class="flex items-baseline justify-between h-5 mb-1">
+                {{ form_label(detail_form.objective, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                <label for="{{ objective_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
             {{ form_widget(detail_form.objective) }}
             {{ form_errors(detail_form.objective) }}
@@ -87,9 +87,9 @@
         </div>
         {% set success_help_id = detail_form.successCondition.vars.id ~ '-help' %}
         <div>
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.successCondition) }}
-                <label for="{{ success_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            <div class="flex items-baseline justify-between h-5 mb-1">
+                {{ form_label(detail_form.successCondition, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                <label for="{{ success_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
             {{ form_widget(detail_form.successCondition) }}
             {{ form_errors(detail_form.successCondition) }}

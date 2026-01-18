@@ -28,9 +28,9 @@
 
     {% set location_help_id = detail_form.location.vars.id ~ '-help' %}
     <div>
-        <div class="flex items-center gap-2">
-            {{ form_label(detail_form.location) }}
-            <label for="{{ location_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        <div class="flex items-baseline justify-between h-5 mb-1">
+            {{ form_label(detail_form.location, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            <label for="{{ location_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
         </div>
         {{ form_widget(detail_form.location) }}
         {{ form_errors(detail_form.location) }}
@@ -47,9 +47,9 @@
     </div>
     {% set transfer_point_help_id = detail_form.transferPoint.vars.id ~ '-help' %}
     <div>
-        <div class="flex items-center gap-2">
-            {{ form_label(detail_form.transferPoint) }}
-            <label for="{{ transfer_point_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        <div class="flex items-baseline justify-between h-5 mb-1">
+            {{ form_label(detail_form.transferPoint, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            <label for="{{ transfer_point_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
         </div>
         {{ form_widget(detail_form.transferPoint) }}
         {{ form_errors(detail_form.transferPoint) }}
@@ -66,9 +66,9 @@
     </div>
     {% set transfer_condition_help_id = detail_form.transferCondition.vars.id ~ '-help' %}
     <div>
-        <div class="flex items-center gap-2">
-            {{ form_label(detail_form.transferCondition) }}
-            <label for="{{ transfer_condition_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+        <div class="flex items-baseline justify-between h-5 mb-1">
+            {{ form_label(detail_form.transferCondition, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            <label for="{{ transfer_condition_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
         </div>
         {{ form_widget(detail_form.transferCondition) }}
         {{ form_errors(detail_form.transferCondition) }}
@@ -87,9 +87,9 @@
     <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set qty_help_id = detail_form.qty.vars.id ~ '-help' %}
         <div>
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.qty) }}
-                <label for="{{ qty_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            <div class="flex items-baseline justify-between h-5 mb-1">
+                {{ form_label(detail_form.qty, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                <label for="{{ qty_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
             {{ form_widget(detail_form.qty) }}
             {{ form_errors(detail_form.qty) }}
@@ -106,9 +106,9 @@
         </div>
         {% set grade_help_id = detail_form.grade.vars.id ~ '-help' %}
         <div>
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.grade) }}
-                <label for="{{ grade_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            <div class="flex items-baseline justify-between h-5 mb-1">
+                {{ form_label(detail_form.grade, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                <label for="{{ grade_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
             {{ form_widget(detail_form.grade) }}
             {{ form_errors(detail_form.grade) }}
@@ -125,9 +125,9 @@
         </div>
         {% set unit_help_id = detail_form.unitPrice.vars.id ~ '-help' %}
         <div>
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.unitPrice) }}
-                <label for="{{ unit_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            <div class="flex items-baseline justify-between h-5 mb-1">
+                {{ form_label(detail_form.unitPrice, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                <label for="{{ unit_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
             {{ form_widget(detail_form.unitPrice) }}
             {{ form_errors(detail_form.unitPrice) }}
@@ -147,9 +147,9 @@
     <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set goods_help_id = detail_form.goodsDescription.vars.id ~ '-help' %}
         <div>
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.goodsDescription) }}
-                <label for="{{ goods_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            <div class="flex items-baseline justify-between h-5 mb-1">
+                {{ form_label(detail_form.goodsDescription, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                <label for="{{ goods_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
             {{ form_widget(detail_form.goodsDescription) }}
             {{ form_errors(detail_form.goodsDescription) }}
@@ -166,9 +166,9 @@
         </div>
         {% set batch_help_id = detail_form.batchIds.vars.id ~ '-help' %}
         <div>
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.batchIds) }}
-                <label for="{{ batch_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            <div class="flex items-baseline justify-between h-5 mb-1">
+                {{ form_label(detail_form.batchIds, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                <label for="{{ batch_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
             {{ form_widget(detail_form.batchIds) }}
             {{ form_errors(detail_form.batchIds) }}
@@ -189,9 +189,9 @@
         <div class="col-span-1 grid grid-cols-2 gap-4">
             {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
             <div>
-                <div class="flex items-center gap-2">
-                    {{ form_label(detail_form.paymentTerms) }}
-                    <label for="{{ pay_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+                <div class="flex items-baseline justify-between h-5 mb-1">
+                    {{ form_label(detail_form.paymentTerms, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    <label for="{{ pay_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
                 </div>
                 {{ form_widget(detail_form.paymentTerms) }}
                 {{ form_errors(detail_form.paymentTerms) }}
@@ -212,9 +212,9 @@
             {% set delivery_value = (delivery_day is not null and delivery_year is not null) ? (delivery_day|imperial_date(delivery_year)) : '' %}
             {% set delivery_help_id = detail_form.deliveryDate.vars.id ~ '-help' %}
             <div data-controller="imperial-date">
-                <div class="flex items-center gap-2">
-                    {{ form_label(detail_form.deliveryDate) }}
-                    <label for="{{ delivery_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+                <div class="flex items-baseline justify-between h-5 mb-1">
+                    {{ form_label(detail_form.deliveryDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    <label for="{{ delivery_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
                 </div>
                 {{ form_widget(detail_form.deliveryDate.display, {
                     attr: {
@@ -243,9 +243,9 @@
         <div class="col-span-1 grid grid-cols-2 gap-4">
             {% set asis_help_id = detail_form.asIsOrWarranty.vars.id ~ '-help' %}
             <div>
-                <div class="flex items-center gap-2">
-                    {{ form_label(detail_form.asIsOrWarranty) }}
-                    <label for="{{ asis_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+                <div class="flex items-baseline justify-between h-5 mb-1">
+                    {{ form_label(detail_form.asIsOrWarranty, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    <label for="{{ asis_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
                 </div>
                 {{ form_widget(detail_form.asIsOrWarranty) }}
                 {{ form_errors(detail_form.asIsOrWarranty) }}
@@ -268,9 +268,9 @@
         <div class="col-span-1 grid grid-cols-2 gap-4">
             {% set method_help_id = detail_form.deliveryMethod.vars.id ~ '-help' %}
             <div>
-                <div class="flex items-center gap-2">
-                    {{ form_label(detail_form.deliveryMethod) }}
-                    <label for="{{ method_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+                <div class="flex items-baseline justify-between h-5 mb-1">
+                    {{ form_label(detail_form.deliveryMethod, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    <label for="{{ method_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
                 </div>
                 {{ form_widget(detail_form.deliveryMethod) }}
                 {{ form_errors(detail_form.deliveryMethod) }}
@@ -287,9 +287,9 @@
             </div>
             {% set warranty_help_id = detail_form.warrantyText.vars.id ~ '-help' %}
             <div>
-                <div class="flex items-center gap-2">
-                    {{ form_label(detail_form.warrantyText) }}
-                    <label for="{{ warranty_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+                <div class="flex items-baseline justify-between h-5 mb-1">
+                    {{ form_label(detail_form.warrantyText, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    <label for="{{ warranty_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
                 </div>
                 {{ form_widget(detail_form.warrantyText) }}
                 {{ form_errors(detail_form.warrantyText) }}
@@ -308,9 +308,9 @@
         <div class="col-span-1 grid grid-cols-2 gap-4">
             {% set claim_help_id = detail_form.claimWindow.vars.id ~ '-help' %}
             <div>
-                <div class="flex items-center gap-2">
-                    {{ form_label(detail_form.claimWindow) }}
-                    <label for="{{ claim_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+                <div class="flex items-baseline justify-between h-5 mb-1">
+                    {{ form_label(detail_form.claimWindow, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    <label for="{{ claim_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
                 </div>
                 {{ form_widget(detail_form.claimWindow) }}
                 {{ form_errors(detail_form.claimWindow) }}
@@ -327,9 +327,9 @@
             </div>
             {% set return_help_id = detail_form.returnPolicy.vars.id ~ '-help' %}
             <div>
-                <div class="flex items-center gap-2">
-                    {{ form_label(detail_form.returnPolicy) }}
-                    <label for="{{ return_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+                <div class="flex items-baseline justify-between h-5 mb-1">
+                    {{ form_label(detail_form.returnPolicy, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    <label for="{{ return_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
                 </div>
                 {{ form_widget(detail_form.returnPolicy) }}
                 {{ form_errors(detail_form.returnPolicy) }}
@@ -350,9 +350,9 @@
     <div class="col-span-2 grid grid-cols-3 gap-4">
         {% set proof_ref_help_id = detail_form.deliveryProofRef.vars.id ~ '-help' %}
         <div>
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.deliveryProofRef) }}
-                <label for="{{ proof_ref_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            <div class="flex items-baseline justify-between h-5 mb-1">
+                {{ form_label(detail_form.deliveryProofRef, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                <label for="{{ proof_ref_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
             {{ form_widget(detail_form.deliveryProofRef) }}
             {{ form_errors(detail_form.deliveryProofRef) }}
@@ -372,9 +372,9 @@
         {% set proof_value = (proof_day is not null and proof_year is not null) ? (proof_day|imperial_date(proof_year)) : '' %}
         {% set proof_date_help_id = detail_form.deliveryProofDate.vars.id ~ '-help' %}
         <div data-controller="imperial-date">
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.deliveryProofDate) }}
-                <label for="{{ proof_date_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            <div class="flex items-baseline justify-between h-5 mb-1">
+                {{ form_label(detail_form.deliveryProofDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                <label for="{{ proof_date_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
             {{ form_widget(detail_form.deliveryProofDate.display, {
                 attr: {
@@ -401,9 +401,9 @@
         </div>
         {% set proof_received_help_id = detail_form.deliveryProofReceivedBy.vars.id ~ '-help' %}
         <div>
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.deliveryProofReceivedBy) }}
-                <label for="{{ proof_received_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            <div class="flex items-baseline justify-between h-5 mb-1">
+                {{ form_label(detail_form.deliveryProofReceivedBy, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                <label for="{{ proof_received_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
             {{ form_widget(detail_form.deliveryProofReceivedBy) }}
             {{ form_errors(detail_form.deliveryProofReceivedBy) }}
