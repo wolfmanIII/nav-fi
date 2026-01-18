@@ -17,20 +17,57 @@
             <div class="relative p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <div class="flex items-start gap-4">
                     <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
-                        {% include 'icons/far-trader.html.twig' %}
+                        {% set active_category = app.request.query.get('category') %}
+                        {% set is_categorical = app.request.query.get('view') == 'categorical' %}
+                        
+                        {% if is_categorical %}
+                            {% if active_category == 'ship' %}
+                                {% include 'icons/far-trader.html.twig' %}
+                            {% elseif active_category == 'base' %}
+                                {% include 'icons/spaceport.html.twig' %}
+                            {% elseif active_category == 'team' %}
+                                {% include 'icons/team.html.twig' %}
+                            {% endif %}
+                        {% else %}
+                            {% include 'icons/assets.html.twig' %}
+                        {% endif %}
                     </div>
                     <div>
-                        <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Fleet manifest</p>
-                        <h1 class="text-3xl font-semibold text-cyan-100 leading-tight">Assets</h1>
-                        <p class="text-sm text-cyan-100/80">Classes, mortgages and crewed hulls ready for the next jump.</p>
+                        <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Registry manifest</p>
+                        <h1 class="text-3xl font-semibold text-cyan-100 leading-tight">
+                            {% if is_categorical %}
+                                {{ active_category|capitalize }} Assets
+                            {% else %}
+                                Global Assets
+                            {% endif %}
+                        </h1>
+                        <p class="text-sm text-cyan-100/80">Registry of mission-critical assets, hulls, and tactical units.</p>
                     </div>
                 </div>
-                <div class="flex gap-2">
-                    {{ tooltip.link('Launch a new asset',
-                                    'Add Asset',
-                                    'icons/far-trader.html.twig',
-                                    path('app_asset_new', { category: app.request.query.get('category') }),
-                                    { position: 'tooltip-left', dim: 24, linkClass: 'btn btn-outline btn-primary btn-sm' }) }}
+                <div class="flex flex-wrap gap-2">
+                    {% if not is_categorical or active_category == 'ship' %}
+                        {{ tooltip.link('Launch a new vessel',
+                                        'Add Ship',
+                                        'icons/far-trader.html.twig',
+                                        path('app_asset_new', { category: 'ship' }),
+                                        { position: 'tooltip-left', dim: 20, linkClass: 'btn btn-outline btn-primary btn-sm gap-2' }) }}
+                    {% endif %}
+                    
+                    {% if not is_categorical or active_category == 'base' %}
+                        {{ tooltip.link('Establish a new station',
+                                        'Add Base',
+                                        'icons/spaceport.html.twig',
+                                        path('app_asset_new', { category: 'base' }),
+                                        { position: 'tooltip-left', dim: 20, linkClass: 'btn btn-outline btn-amber btn-sm gap-2' }) }}
+                    {% endif %}
+
+                    {% if not is_categorical or active_category == 'team' %}
+                        {{ tooltip.link('Register a tactical unit',
+                                        'Add Team',
+                                        'icons/team.html.twig',
+                                        path('app_asset_new', { category: 'team' }),
+                                        { position: 'tooltip-left', dim: 20, linkClass: 'btn btn-outline btn-emerald btn-sm gap-2' }) }}
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -49,6 +86,20 @@
                     {% endfor %}
                 </select>
             </div>
+            {% if not is_categorical %}
+                <div>
+                    <label class="label text-xs uppercase tracking-[0.2em] text-cyan-500/60 font-bold">CATEGORY</label>
+                    <select name="category" class="select w-full bg-slate-950/50 border-slate-800 text-cyan-100 focus:border-cyan-500/50">
+                        <option value="">ALL_CATEGORIES</option>
+                        <option value="base" {% if filters.category == 'base' %}selected{% endif %}>Base</option>
+                        <option value="ship" {% if filters.category == 'ship' %}selected{% endif %}>Ship</option>
+                        <option value="team" {% if filters.category == 'team' %}selected{% endif %}>Team</option>
+                    </select>
+                </div>
+            {% else %}
+                <input type="hidden" name="category" value="{{ active_category }}">
+                <input type="hidden" name="view" value="categorical">
+            {% endif %}
             <div>
                 <label class="label text-xs uppercase tracking-[0.2em] text-cyan-500/60 font-bold">ASSET_NAME</label>
                 <input type="text" name="name" value="{{ filters.name }}" class="input w-full bg-slate-950/50 border-slate-800 text-cyan-100 placeholder:text-slate-600 focus:border-cyan-500/50" placeholder="Search by name...">
@@ -62,10 +113,10 @@
             form_id: 'asset-filters',
             action: path('app_asset_index'),
             legend: 'Asset search',
-            grid_class: 'md:grid-cols-3',
+            grid_class: is_categorical ? 'md:grid-cols-3' : 'md:grid-cols-4',
             fields: filter_fields,
-            reset_path: path('app_asset_index'),
-            is_filtered: filters.campaign or filters.name or filters.type_class
+            reset_path: path('app_asset_index', is_categorical ? { category: active_category, view: 'categorical' } : {}),
+            is_filtered: filters.campaign or filters.name or filters.type_class or (not is_categorical and filters.category)
         } %}
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">

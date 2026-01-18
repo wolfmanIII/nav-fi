@@ -72,13 +72,14 @@ class MortgageType extends AbstractType
                 ],
             ])
             ->add('asset', EntityType::class, [
+                'label' => 'Asset // Name // Price',
                 'placeholder' => '-- Select an Asset --',
                 'class' => Asset::class,
                 'choice_label' => fn(Asset $asset) =>
                 sprintf(
                     '%s - %s - %s',
+                    ucfirst($asset->getCategory()),
                     $asset->getName(),
-                    $asset->getType(),
                     number_format((float) $asset->getPrice(), 2, ',', '.') . " Cr"
                 ),
                 'choice_attr' => function (Asset $asset): array {
@@ -97,6 +98,8 @@ class MortgageType extends AbstractType
                         $qb->andWhere('s.user = :user')->setParameter('user', $user);
                     }
                     $qb->andWhere('s.campaign IS NOT NULL');
+                    $qb->andWhere('s.category IN (:mortgageable)')
+                        ->setParameter('mortgageable', [Asset::CATEGORY_SHIP, Asset::CATEGORY_BASE]);
                     if ($currentAssetId) {
                         $qb->andWhere('(m.id IS NULL OR s.id = :currentAsset)')
                             ->setParameter('currentAsset', $currentAssetId);

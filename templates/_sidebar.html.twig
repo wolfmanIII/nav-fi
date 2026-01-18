@@ -64,26 +64,33 @@
                             </a>
                         </li>
                         <li data-sidebar-module-target="item">
-                            <details {% if current_route == 'app_asset_index' %}open{% endif %}>
-                                <summary class="{% if current_route == 'app_asset_index' %}text-cyan-400 font-bold{% endif %} text-xs uppercase tracking-widest">
+                            {% set is_asset_module = current_route starts with 'app_asset_' %}
+                            <details {% if is_asset_module %}open{% endif %}>
+                                <summary class="{% if is_asset_module %}text-cyan-400 font-bold{% endif %} text-xs uppercase tracking-widest">
                                     {% include 'icons/assets.html.twig' with {'dim': '18'} %}
                                     <span>Asset Manifest</span>
                                 </summary>
                                 <ul>
                                     <li>
-                                        <a href="{{ path('app_asset_index', {category: 'base'}) }}" class="{% if app.request.query.get('category') == 'base' %}text-cyan-400 font-bold{% endif %} capitalize tracking-widest pl-8">
+                                        <a href="{{ path('app_asset_index') }}" class="{% if current_route == 'app_asset_index' and not app.request.query.get('view') %}text-cyan-400 font-bold{% endif %} capitalize tracking-widest pl-8">
+                                            {% include 'icons/assets.html.twig' with {'dim': '18'} %}
+                                            <span>All Assets</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ path('app_asset_index', {category: 'base', view: 'categorical'}) }}" class="{% if (app.request.query.get('category') == 'base' and app.request.query.get('view') == 'categorical') or (asset is defined and asset.category == 'base' and current_route == 'app_asset_edit') %}text-cyan-400 font-bold{% endif %} capitalize tracking-widest pl-8">
                                             {% include 'icons/spaceport.html.twig' with {'dim': '18'} %}
                                             <span>Base // Station</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ path('app_asset_index', {category: 'ship'}) }}" class="{% if app.request.query.get('category') == 'ship' %}text-cyan-400 font-bold{% endif %} capitalize tracking-widest pl-8">
+                                        <a href="{{ path('app_asset_index', {category: 'ship', view: 'categorical'}) }}" class="{% if (app.request.query.get('category') == 'ship' and app.request.query.get('view') == 'categorical') or (asset is defined and asset.category == 'ship' and current_route == 'app_asset_edit') %}text-cyan-400 font-bold{% endif %} capitalize tracking-widest pl-8">
                                             {% include 'icons/far-trader.html.twig' with {'dim': '18'} %}
                                             <span>Ship // Vessel</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ path('app_asset_index', {category: 'team'}) }}" class="{% if app.request.query.get('category') == 'team' %}text-cyan-400 font-bold{% endif %} capitalize tracking-widest pl-8">
+                                        <a href="{{ path('app_asset_index', {category: 'team', view: 'categorical'}) }}" class="{% if (app.request.query.get('category') == 'team' and app.request.query.get('view') == 'categorical') or (asset is defined and asset.category == 'team' and current_route == 'app_asset_edit') %}text-cyan-400 font-bold{% endif %} capitalize tracking-widest pl-8">
                                             {% include 'icons/team.html.twig' with {'dim': '18'} %}
                                             <span>Team // Unit</span>
                                         </a>

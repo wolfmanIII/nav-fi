@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class AssetType extends AbstractType
 {
@@ -25,13 +26,26 @@ class AssetType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
-            ])
-            ->add('type', TextType::class, [
-                'attr' => ['class' => 'input m-1 w-full'],
-            ])
-            ->add('class', TextType::class, [
-                'attr' => ['class' => 'input m-1 w-full'],
-            ])
+            ]);
+
+        if ($asset->getCategory() !== Asset::CATEGORY_TEAM) {
+            $builder
+                ->add('type', TextType::class, [
+                    'attr' => ['class' => 'input m-1 w-full'],
+                    'constraints' => [
+                        new NotBlank(['message' => 'Please provide an asset type.']),
+                    ],
+                ])
+                ->add('class', TextType::class, [
+                    'attr' => ['class' => 'input m-1 w-full'],
+                    'constraints' => [
+                        new NotBlank(['message' => 'Please provide an asset class.']),
+                    ],
+                ])
+            ;
+        }
+
+        $builder
             ->add('campaign', EntityType::class, [
                 'class' => Campaign::class,
                 'placeholder' => '-- Select a Mission --',
@@ -44,6 +58,10 @@ class AssetType extends AbstractType
             ])
             ->add('price', TravellerMoneyType::class, [
                 'label' => 'Price(Cr)',
+                'attr' => ['class' => 'input m-1 w-full'],
+            ])
+            ->add('credits', TravellerMoneyType::class, [
+                'label' => 'Initial Credits',
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
             ->add('assetDetails', AssetDetailsType::class, [

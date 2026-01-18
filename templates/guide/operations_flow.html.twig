@@ -130,11 +130,15 @@
          <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
              <div class="flex items-center gap-2 text-cyan-500/50 group-hover:text-cyan-400 mb-3 transition-colors">
                 {% include 'icons/far-trader.html.twig' with { dim: 20 } %}
-                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Hull Manifest</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Asset Manifest</p>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Asset</h3>
+                <div class="text-cyan-500/50 group-hover:text-cyan-400 transition-colors">
+                    {% include 'icons/assets.html.twig' with { dim: 20 } %}
+                </div>
+            </div>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Register Assets</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Assets are the core entity. Each hull has a single mortgage, a crew roster, and a detailed specification sheet (JSON components) for PDF printing.
+                Assets are the core entity. Each asset (Ship, Base, Team) has a crew roster and optional Financial Core modules. Ships also have detailed specification sheets.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
@@ -160,7 +164,7 @@
             </div>
             <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Asset Amendments</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Signed hulls change only through amendments. Each amendment is tied to a SHIP_GEAR/SHIP_SOFTWARE cost and inherits its payment date as the effective day/year.
+                Signed assets change through amendments. Link each amendment to a technical cost with payment date; that payment date becomes the amendment’s effective day/year.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">

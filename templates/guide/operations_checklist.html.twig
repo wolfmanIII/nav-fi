@@ -57,11 +57,11 @@
             <div class="flex items-center justify-between mb-4">
                 <p class="text-[10px] uppercase tracking-[0.25em] text-cyan-500 font-bold bg-cyan-950/20 px-2 py-1 rounded border border-cyan-500/10">Step 02</p>
                 <div class="text-cyan-500/50 group-hover:text-cyan-400 transition-colors">
-                    {% include 'icons/far-trader.html.twig' with { dim: 20 } %}
+                    {% include 'icons/assets.html.twig' with { dim: 20 } %}
                 </div>
             </div>
             <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Register Assets</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Drop in hulls for PCs or NPCs. Give them class/type, price, and details if needed. NPC assets can sail without mortgages, costs, or income if they’re just scenery in your sector.</p>
+            <p class="text-sm text-slate-400 leading-relaxed">Drop in <strong>Ships, Bases, or Teams</strong>. Give them class, price, and details. NPC assets (e.g., a rival mercenary company) can sail without mortgages or costs if they’re just scenery.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
                 Asset Registry
@@ -159,7 +159,7 @@
                 </div>
             </div>
             <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Set up Mortgages</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">For financed hulls: set rate, insurance, installments; sign with session date + location; print the PDF (draft or signed).</p>
+            <p class="text-sm text-slate-400 leading-relaxed">For financed assets (Ships/Bases): set rate, insurance, installments; sign with session date + location; print the PDF (draft or signed).</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
                 Bank Deck
@@ -207,7 +207,7 @@
                 </div>
             </div>
             <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Build Annual Budget</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">For each hull: aggregate income, costs, and installments in the current year and read the balance strip + timeline. Use it to plan the next jump or spot when debt will bite.</p>
+            <p class="text-sm text-slate-400 leading-relaxed">For each asset: aggregate income, costs, and installments in the current year and read the balance strip + timeline. Use it to plan the next jump or sector operation.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
                 Year Strip

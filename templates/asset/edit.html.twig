@@ -106,7 +106,7 @@
 
             <div class="col-span-1">
                 <div class="flex items-baseline h-5 mb-1">
-                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Fleet Asset // Category</label>
+                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Asset // Category</label>
                 </div>
                 <div class="px-3 py-2 rounded bg-slate-950/50 border border-slate-800 font-mono text-cyan-400 text-sm"><b>{{ asset.category|capitalize }}</b></div>
             </div>
@@ -119,21 +119,25 @@
                 {{ form_errors(form.name) }}
             </div>
 
-            <div class="col-span-1">
-                <div class="flex items-baseline h-5 mb-1">
-                    {{ form_label(form.type, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            {% if form.type is defined %}
+                <div class="col-span-1">
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(form.type, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(form.type, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    {{ form_errors(form.type) }}
                 </div>
-                {{ form_widget(form.type, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
-                {{ form_errors(form.type) }}
-            </div>
+            {% endif %}
 
-            <div class="col-span-1">
-                <div class="flex items-baseline h-5 mb-1">
-                    {{ form_label(form.class, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            {% if form.class is defined %}
+                <div class="col-span-1">
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(form.class, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(form.class, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
+                    {{ form_errors(form.class) }}
                 </div>
-                {{ form_widget(form.class, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
-                {{ form_errors(form.class) }}
-            </div>
+            {% endif %}
         </fieldset>
 
         <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
@@ -152,6 +156,14 @@
                 </div>
                 {{ form_widget(form.price, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 font-mono text-amber-400' } }) }}
                 {{ form_errors(form.price) }}
+            </div>
+
+            <div class="col-span-1">
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.credits, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(form.credits, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 font-mono text-cyan-400' } }) }}
+                {{ form_errors(form.credits) }}
             </div>
         </fieldset>
 
