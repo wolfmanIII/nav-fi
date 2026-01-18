@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
 #[ORM\Table(name: 'ledger_transaction')]
 #[ORM\Index(name: 'idx_transaction_asset', columns: ['asset_id'])]
+#[ORM\Index(name: 'idx_transaction_sync', columns: ['asset_id', 'status', 'session_year', 'session_day'])]
+#[ORM\Index(name: 'idx_transaction_chronology', columns: ['asset_id', 'session_year', 'session_day', 'created_at'])]
 class Transaction
 {
     #[ORM\Id]
