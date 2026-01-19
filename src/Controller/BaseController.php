@@ -29,4 +29,11 @@ abstract class BaseController extends AbstractController
 
         return $response;
     }
+
+    protected function flashFormErrors(FormInterface $form): void
+    {
+        foreach ($form->getErrors(true) as $error) {
+            $this->addFlash('error', $error->getMessage());
+        }
+    }
 }

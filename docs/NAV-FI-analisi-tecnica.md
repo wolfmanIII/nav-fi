@@ -10,7 +10,7 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Nav-Fi 
 - **Date imperiali:** helper `ImperialDateHelper` + filtro Twig `imperial_date` per formattazione coerente `DDD/YYYY`.
 - **Tom Select (integrazione):** inizializzato via controller Stimulus `tom-select`; asset JS/CSS caricati da `assets/vendor/tom-select/` per evitare importmap bare‑module.
 - **Highlight.js:** usato per la formattazione dei JSON (session timeline Campaign) con asset locali in `assets/vendor/highlightjs/`.
-- **Persistenza:** Doctrine ORM con PostgreSQL/MySQL/SQLite.
+- **Persistenza:** Doctrine ORM con PostgreSQL/MySQL/SQLite. Indici ottimizzati (`idx_transaction_sync`, `idx_transaction_chronology`) su `Transaction`.
 - **Admin:** EasyAdmin per le entità di contesto.
 - **PDF:** wkhtmltopdf via KnpSnappy (binario da `WKHTMLTOPDF_PATH`), template contratti in `templates/pdf/contracts` e scheda nave in `templates/pdf/ship/SHEET.html.twig`.
 - **Parametri day/year:** limiti configurabili via env (`APP_DAY_MIN/MAX`, `APP_YEAR_MIN/MAX`) e iniettati nei form IntegerType/ImperialDateType dedicati ai campi giorno/anno.
@@ -20,6 +20,7 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Nav-Fi 
 ## Dominio applicativo
 - **Campagne e sessioni:** `Campaign` con calendario di sessione (giorno/anno) e relazione 1–N con Ship; le date sessione mostrate nelle liste/PDF derivano dalla Campaign della nave.
 - **Session timeline Campaign:** `CampaignSessionLog` registra ogni aggiornamento della session date con snapshot JSON (campaign + ships + log operativi) e lo mostra in pagina con highlight.
+- **Salaries:** Gestione buste paga equipaggio con ciclo di 28 giorni, pro-rata logica e relazione 1-N con Crew.
 - **Navi e mutui:** `Ship`, `Mortgage`, `MortgageInstallment`, `InterestRate`, `Insurance`; il mutuo conserva `signingDay/Year` derivati dalla sessione della Campaign e `signingLocation` raccolta via modale al momento della firma. Il PDF del mutuo è generato da template dedicato; i piani usano 13 periodi/anno (esempio: 5 anni ⇒ 65 rate).
 - **Dettagli nave strutturati:** `Ship.shipDetails` (JSON) con DTO/form (`ShipDetailsData`, `ShipDetailItemType`, `MDriveDetailItemType`, `JDriveDetailItemType`) per hull/drive/bridge e collezioni (weapons, craft, systems, staterooms, software). Il “Total Cost” dei componenti è calcolato lato client e salvato nel JSON, ma **non** modifica `Ship.price`.
 - **Amendment nave:** `ShipAmendment` registra modifiche post‑firma con `patchDetails` (stessa struttura di `Ship.shipDetails`) e **Cost reference obbligatoria** (categorie SHIP_GEAR/SHIP_SOFTWARE). La data effetto viene derivata dalla payment date del Cost selezionato; la select Cost usa ricerca (Tom Select) e filtra cost già usati da altri amendment.

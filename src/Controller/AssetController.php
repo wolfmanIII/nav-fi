@@ -400,6 +400,8 @@ final class AssetController extends BaseController
             $em->persist($crew);
             $em->flush();
             $this->addFlash('success', 'Crew roles updated.');
+        } elseif ($form->isSubmitted()) {
+            $this->flashFormErrors($form);
         }
 
         return $this->redirectToRoute('app_asset_crew', ['id' => $asset->getId()]);

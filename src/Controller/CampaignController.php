@@ -201,6 +201,10 @@ final class CampaignController extends BaseController
             return $this->redirectToRoute('app_campaign_details', ['id' => $campaign->getId()]);
         }
 
+        if ($assetForm->isSubmitted() && !$assetForm->isValid()) {
+            $this->flashFormErrors($assetForm);
+        }
+
         $calendarForm->handleRequest($request);
         if ($calendarForm->isSubmitted() && $calendarForm->isValid()) {
             /** @var ImperialDate $session */
@@ -232,6 +236,10 @@ final class CampaignController extends BaseController
             $this->addFlash('success', 'Session updated');
 
             return $this->redirectToRoute('app_campaign_details', ['id' => $campaign->getId()]);
+        }
+
+        if ($calendarForm->isSubmitted() && !$calendarForm->isValid()) {
+            $this->flashFormErrors($calendarForm);
         }
 
         $page = $listViewHelper->getPage($request);

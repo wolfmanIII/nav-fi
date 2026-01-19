@@ -64,7 +64,23 @@ Questo garantisce che, anche se l'importo di un costo cambia, la storia del ledg
     - **Pagamento Finale**: Il saldo rimanente (Totale + Bonus - Deposito) è programmato per la `paymentDate`.
     - **Cancellazione**: Se un Income viene cancellato, la logica controlla la data di cancellazione rispetto alla data di pagamento per eventualmente rendere Void la transazione.
 
-## 6. Diagramma Architetturale
+### D. Salary (Salari)
+**Novità v1.2.0**: Gestisce i pagamenti ricorrenti dell'equipaggio.
+- **Ciclo**: Fisso di 28 giorni (Regolamento Imperiale).
+- **Relazione**: 1-a-Molti con `Crew` (permette storico contrattuale).
+- **Transazioni**: Genera `SalaryPayment` collegati al Ledger.
+- **Pro-rata**: Calcolo automatico all'assunzione `(Salary / 28) * Days`.
+
+## 4. Performance & Ottimizzazione (v1.2.0)
+
+### 4.1. Indici Database
+Per garantire la scalabilità del Ledger, sono stati introdotti indici strategici:
+- `idx_transaction_sync` (`[account_id, date_time]`): Ottimizza la ricostruzione del saldo e la verifica della cronologia.
+- `idx_transaction_chronology` (`[date_time]`): Velocizza le query basate sul tempo (es. report annuali).
+
+### 4.2. Strategia "Cold Storage"
+
+## 5. Diagramma Architetturale
 
 ```mermaid
 graph TD
@@ -77,6 +93,7 @@ graph TD
     CMP -->|Sync: Date Change| L
 ```
 
-## 7. Raccomandazioni
+## 6. Raccomandazioni
 
 1. **Immutabilità Transazioni**: Attualmente, l'immutabilità rigorosa (append-only) è parzialmente implementata via reversal. Assicurarsi che non vengano MAI eseguiti `UPDATE` manuali su `Transaction.amount`.
+2. **Fiscal Year Closure (Cold Storage)**: Per mantenere il sistema performante negli anni, si raccomanda di implementare una chiusura annuale. Ogni 365 giorni, il sistema somma le transazioni `Posted`, crea uno Snapshot (Saldo Iniziale Anno X) e archivia le vecchie transazioni in una tabella "Cold Storage" esclusa dal loop di sincronizzazione quotidiano.

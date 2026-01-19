@@ -42,6 +42,10 @@
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
                     <span>3. Module Deep Dive</span>
                 </a>
+                <a href="#salary-module" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <span>3b. Salary & Payroll</span>
+                </a>
                 <a href="#workflows" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
                     <span>4. Practical Workflows</span>
@@ -269,10 +273,38 @@
                         </div>
                     </div>
 
+                    {# SALARY #}
+                    <div id="salary-module" class="scroll-mt-6">
+                        <h3 class="text-xl font-bold text-emerald-100 mb-4 border-b border-emerald-500/30 pb-2">
+                            C. Salary: 28-Day Imperial Cycle
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="prose prose-invert prose-sm">
+                                <p>
+                                    Managing a crew isn't free. The Salary module automates the rigid Imperial standard of the <strong>28-day lunar pay cycle</strong>.
+                                </p>
+                                <ul class="list-none space-y-2 pl-0">
+                                    <li class="pl-4 border-l-2 border-emerald-500/30">
+                                        <strong class="text-emerald-300">Pro-Rata Logic:</strong> New hires don't get a full month's pay. The system calculates `(Salary / 28) * Days` automatically for the first check.
+                                    </li>
+                                    <li class="pl-4 border-l-2 border-emerald-500/30">
+                                        <strong class="text-emerald-300">History:</strong> Every contract change (raise, promotion) is tracked. Old salary records are kept for historical ledger integrity.
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-950 rounded-lg border border-emerald-500/10 p-4">
+                                <div class="text-xs font-mono text-emerald-500/50 mb-2 uppercase">Payroll Ledger</div>
+                                <p class="text-xs text-slate-400 mb-3">
+                                    Payments are generated as <strong>SalaryPayment</strong> entities. They link directly to the Asset Ledger, ensuring your "Cash Flow" reports are accurate down to the credit.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                     {# MORTGAGE #}
                     <div>
                         <h3 class="text-xl font-bold text-cyan-100 mb-4 border-b border-cyan-500/30 pb-2">
-                            C. Mortgage: The Long Game
+                            D. Mortgage: The Long Game
                         </h3>
                         <div class="prose prose-invert prose-sm max-w-none">
                             <p>

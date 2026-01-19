@@ -12,6 +12,7 @@ flowchart TB
     Mortgage -->|1..N| MortgageInstallments
 
     Ships -->|1..N| Crew
+    Crew -->|1..N| Salaries
     Ships -->|1..N| Costs
     Costs -->|N..1| CostCategory
     Costs -->|N..1| Company
@@ -77,6 +78,13 @@ flowchart TB
 - Le date di pagamento sono in formato imperiale (day/year).
 - Le righe dettaglio (`detailItems`) alimentano il calcolo dell’amount, che resta read‑only in form.
 - I PDF riportano la **template version** per tracciabilità.
+
+## Flusso operativo: salary
+
+- Salary è legato a Crew (1-N) e segue il ciclo di 28 giorni.
+- **Pro-rata**: Al momento dell'assunzione (Active Date), il primo pagamento è calcolato proportionalmente: `(Salary / 28) * Days`.
+- **Storico**: Le modifiche di salario creano nuovi record, mantenendo lo storico per il Ledger.
+- **Ledger**: Il sistema genera automaticamente transazioni `SalaryPayment` alla scadenza del ciclo.
 
 ## Flusso operativo: annual budget
 

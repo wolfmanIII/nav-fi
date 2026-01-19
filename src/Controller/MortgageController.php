@@ -241,6 +241,8 @@ final class MortgageController extends BaseController
         if ($paymentForm->isSubmitted() && $paymentForm->isValid()) {
             $em->persist($payment);
             $em->flush();
+        } elseif ($paymentForm->isSubmitted()) {
+            $this->flashFormErrors($paymentForm);
         }
 
         return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
@@ -316,6 +318,7 @@ final class MortgageController extends BaseController
             $this->addFlash('success', 'Mortgage signed successfully.');
         } else {
             $this->addFlash('error', 'Form invalid.');
+            $this->flashFormErrors($form);
         }
 
         return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
@@ -382,6 +385,7 @@ final class MortgageController extends BaseController
             $em->flush();
         } else {
             $this->addFlash('error', 'Invalid date provided.');
+            $this->flashFormErrors($startDateForm);
         }
 
         return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);

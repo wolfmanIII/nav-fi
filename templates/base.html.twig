@@ -166,17 +166,17 @@
                     <div class="flex flex-col items-stretch gap-4">
                         {% for label, messages in app.flashes %}
                             {% for message in messages %}
-                                {% set alertClass = 'border-cyan-500/50 bg-cyan-500/5 text-cyan-200' %}
+                                {% set alertClass = 'border-l-4 border-cyan-500 bg-cyan-950/40 text-cyan-100 shadow-[0_0_15px_rgba(6,182,212,0.1)]' %}
                                 {% set iconDim = 24 %}
                                 {% if label == 'success' %}
-                                    {% set alertClass = 'border-emerald-500/50 bg-emerald-500/5 text-emerald-200' %}
+                                    {% set alertClass = 'border-l-4 border-emerald-500 bg-emerald-950/40 text-emerald-100 shadow-[0_0_15px_rgba(16,185,129,0.1)]' %}
                                 {% elseif label == 'error' or label == 'danger' %}
-                                    {% set alertClass = 'border-rose-500/50 bg-rose-500/5 text-rose-200' %}
+                                    {% set alertClass = 'border-l-4 border-rose-500 bg-rose-950/40 text-rose-100 shadow-[0_0_15px_rgba(244,63,94,0.1)]' %}
                                 {% elseif label == 'warning' %}
-                                    {% set alertClass = 'border-amber-500/50 bg-amber-500/5 text-amber-200' %}
+                                    {% set alertClass = 'border-l-4 border-amber-500 bg-amber-950/40 text-amber-100 shadow-[0_0_15px_rgba(245,158,11,0.1)]' %}
                                 {% endif %}
                                 
-                                <div role="alert" class="alert shadow-sm mb-4 {{ alertClass }} rounded-lg border flex items-start gap-4">
+                                <div role="alert" class="alert mb-4 {{ alertClass }} rounded-r-lg rounded-tl-none rounded-bl-none border-t-0 border-b-0 border-r-0 flex items-start gap-4 backdrop-blur-md">
                                     <div class="animate-spin-slow text-current pt-1">
                                         {% include 'icons/radar.html.twig' with { dim: iconDim } %}
                                     </div>
