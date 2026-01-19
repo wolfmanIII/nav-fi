@@ -29,6 +29,7 @@ I dati dei settori vengono scaricati e versionati localmente.
 - **Path**: `/data/sectors/{SectorName}_{Year}-{Month}.tab` (Naming normalizzato).
 - **Locking**: Meccanismo di lock per evitare download concorrenti dello stesso settore.
 - **Fallback**: Se il parser fallisce su una riga (dato corrotto), la riga viene saltata e loggata, senza fermare l'import.
+- **Shared Source**: Routes e Cube condividono lo stesso storage path e lo stesso parser, nessuna implementazione parallela.
 
 ### 2. Il concetto di "Broker Session"
 La generazione è incapsulata in una sessione persistente.
@@ -86,6 +87,6 @@ La generazione è incapsulata in una sessione persistente.
 ```
 
 ## Prossimi Passi (POC)
-1.  Estendere l'esistente `TravellerMapSectorLookup` (o creare wrapper dedicato) per testare il download/parsing di "Spinward Marches".
+1.  Estendere l'esistente `TravellerMapSectorLookup` per testare il download/persistenza di "Spinward Marches".
 2.  Implementare la formula della distanza esagonale (riusando `RouteMathHelper`).
 3.  Creare un comando CLI `app:cube:test <sector> <hex> <range>` per verificare l'output JSON.
