@@ -147,6 +147,20 @@ Applicazione **Symfony 7.4** per la gestione di navi, equipaggi, contratti e mut
 - Area admin: `https://127.0.0.1:8000/admin`
 - Login: `https://127.0.0.1:8000/login`
 
+## Docker
+### Build
+```bash
+docker build -t nav-fi-prod .
+```
+### Run
+```bash
+docker run \
+  --add-host=host.docker.internal:host-gateway \
+  -e DATABASE_URL="postgresql://user:pass@host.docker.internal:5432/app_db?serverVersion=18&charset=utf8" \
+  -p 8080:8080 \
+  nav-fi-prod
+```
+
 ## Note
 - Il calendario di sessione (giorno/anno) è centralizzato sulla Campaign; le Ship ne ereditano la visualizzazione nelle liste e nei PDF.
 - La form dettagli nave salva un JSON (`shipDetails`) e alimenta la stampa PDF della scheda nave.

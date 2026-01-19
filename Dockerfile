@@ -1,78 +1,60 @@
 # ==============================================================================
-# STAGE 1: Base Image & Dependencies
+# STAGE 1: Build Dependencies (PHP/Composer)
 # ==============================================================================
-FROM php:8.3-fpm-bookworm
+FROM composer:2 AS build_composer
 
-# Impostiamo la shell su bash per far funzionare NVM
-SHELL ["/bin/bash", "-c"]
+WORKDIR /app
+COPY composer.json composer.lock ./
+# Install only production dependencies
+RUN composer install --no-dev --no-scripts --prefer-dist --optimize-autoloader --ignore-platform-reqs
 
-# 1. Installazione dipendenze di sistema, Nginx, Supervisor e librerie per PDF
+# ==============================================================================
+# STAGE 2: Build Frontend Assets (Node.js)
+# ==============================================================================
+FROM node:20-bookworm AS build_assets
+
+WORKDIR /app
+COPY package.json package-lock.json ./
+# Install node dependencies
+RUN npm ci
+
+# Copy only file needed for build
+COPY assets ./assets
+# Build assets (copies libs to assets/vendor)
+RUN npm run build
+
+# ==============================================================================
+# STAGE 3: Final Production Image
+# ==============================================================================
+FROM php:8.3-fpm-bookworm AS app_php
+
+# 1. System Dependencies (Runtime only)
 RUN apt-get update && apt-get install -y \
-    curl \
-    gnupg \
-    git \
-    unzip \
-    libicu-dev \
-    libzip-dev \
-    libpq-dev \
     nginx \
     supervisor \
-    # PostgreSQL client tools (pg_dump, pg_restore, psql)
     postgresql-client \
-    # ImageMagick per generazione favicon
     imagemagick \
-    # Dipendenze grafiche per wkhtmltopdf
+    # Libs required for wkhtmltopdf & PHP extensions
     libxrender1 \
     libfontconfig1 \
     libx11-dev \
     libjpeg62-turbo \
     xfonts-75dpi \
     xfonts-base \
-    wget \
-    # Pulizia cache apt per ridurre dimensioni immagine
-    && rm -rf /var/lib/apt/lists/*
-
-# ==============================================================================
-# STAGE 2: Node.js (via NVM) & Wkhtmltopdf
-# ==============================================================================
-
-# 2. Installazione NVM e Node.js LTS
-ENV NVM_DIR=/usr/local/nvm
-RUN mkdir -p $NVM_DIR
-
-# Scarica e installa NVM
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-
-# Installa Node LTS e configura i PATH globali
-# Nota: "source" serve per caricare nvm in questo singolo layer
-RUN source $NVM_DIR/nvm.sh \
-    && nvm install --lts \
-    && nvm alias default lts/* \
-    && nvm use default
-
-# Aggiunge Node e NPM al PATH in modo permanente per tutti i processi successivi
-ENV NODE_PATH=$NVM_DIR/versions/node/v*/lib/node_modules
-ENV PATH=$NVM_DIR/versions/node/v*/bin:$PATH
-
-# 3. Installazione Wkhtmltopdf (Debian Bookworm)
-RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
-    && apt-get install -y ./wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
-    && rm wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
-
-# ==============================================================================
-# STAGE 3: PHP Extensions & Configuration
-# ==============================================================================
-
-# 4. Installazione dipendenze per estensioni PHP
-RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
     libxml2-dev \
     libcurl4-openssl-dev \
+    libicu-dev \
+    libzip-dev \
+    libpq-dev \
+    libonig-dev \
+    curl \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# Configurazione e installazione estensioni PHP
+# 2. PHP Extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
     intl \
@@ -86,50 +68,71 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     dom \
     simplexml
 
-# 5. Copia configurazioni Nginx e Supervisor
-# Assicurati che questi file esistano nella root del progetto!
+# 3. WKHTMLTOPDF Installation (Runtime dependency)
+RUN curl -L -o wkhtmltox.deb https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
+    && apt-get install -y ./wkhtmltox.deb \
+    && rm wkhtmltox.deb
+
+# 4. Nginx & Supervisor Config
 COPY nginx.conf /etc/nginx/sites-available/default
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# ==============================================================================
-# STAGE 4: Application Setup & Build
-# ==============================================================================
-
+# 5. Application Setup
 WORKDIR /var/www/html
 
-# 6. Copia codice sorgente
+# 5. Application Setup
+WORKDIR /var/www/html
+
+# Copy Source Code (First, so we don't overwrite vendor/assets later if they overlap)
 COPY . .
 
-# 7. Installazione dipendenze PHP (Composer)
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-RUN composer install --no-dev --optimize-autoloader
+# Copy Vendor from Stage 1 (Overwrites local vendor if present)
+COPY --from=build_composer /app/vendor /var/www/html/vendor
 
-# 8. Build Frontend (Node.js)
-# Questo esegue "npm install" e poi il tuo script "build" nel package.json
-# che copierà tom-select e highlight.js nelle cartelle assets/vendor
-RUN npm install
-RUN npm run build
+# Copy Assets from Stage 2 (Overwrites local assets/vendor if present)
+COPY --from=build_assets /app/assets /var/www/html/assets
 
-# (Opzionale ma raccomandato per Symfony 7.4) Compila AssetMapper
+# 6. Final PHP/Symfony Setup
+ENV APP_ENV=prod
+
+# WKHTMLTOPDF Path
+ENV WKHTMLTOPDF_PATH="/usr/local/bin/wkhtmltopdf"
+
+# Limiti per i campi Day/Year
+ENV APP_DAY_MIN=1
+ENV APP_DAY_MAX=365
+ENV APP_YEAR_MIN=0
+ENV APP_YEAR_MAX=9999
+
+# Compila AssetMapper (requires PHP & Vendor)
 RUN php bin/console asset-map:compile
 
-# Cache warmup per produzione
-ENV APP_ENV=prod
+# Cache warmup for production
 RUN php bin/console cache:warmup --env=prod
 
-# 9. Permessi finali (Cruciale per cache, log e assets di Symfony)
+# 7. Permissions & User
+# Set permissions for www-data (Nginx/PHP-FPM user)
 RUN chown -R www-data:www-data /var/www/html/var /var/www/html/public
 
-# ==============================================================================
-# STAGE 5: Entrypoint
-# ==============================================================================
+# Switch to non-root user for security
+# Ensure /var/run and other paths are writable if needed by supervisor/nginx
+# Nginx typically needs access to /var/log/nginx and /var/lib/nginx
+# Supervisor needs access to log and run directories
+RUN mkdir -p /var/log/supervisor /var/run/supervisor \
+    && chown -R www-data:www-data /var/log/supervisor /var/run/supervisor /var/log/nginx /var/lib/nginx /var/www/html \
+    # Create the pid file and give ownership to www-data so nginx can write to it
+    && touch /run/nginx.pid \
+    && chown www-data:www-data /run/nginx.pid
 
-# Copy and set executable permissions for entrypoint script
+# 8. Entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# Ensure entrypoint is owned by www-data or readable/executable
+# Since we switch USER, entrypoint runs as www-data
 
-# Espone la porta 8080 (standard per Cloud Run)
 EXPOSE 8080
 
-# Avvia entrypoint che esegue migrations e poi supervisor
+# Switch User
+USER www-data
+
 CMD ["/usr/local/bin/docker-entrypoint.sh"]
