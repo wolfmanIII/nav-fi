@@ -100,12 +100,18 @@
         </div>
 
         {% if asset.mortgageSigned %}
-            <div class="alert alert-info alert-outline border-cyan-500/50 bg-cyan-500/5 mb-6">
+            <div class="alert alert-info alert-outline border-cyan-500/50 bg-cyan-950/30 mb-6">
                 <div class="animate-spin-slow text-cyan-500">
                     {% include 'icons/radar.html.twig' with { dim: 24 } %}
                 </div>
-                <div class="text-sm font-rajdhani uppercase tracking-widest font-bold text-cyan-200">
-                    Asset has a <span class="text-cyan-500">SIGNED MORTGAGE</span>. Amendments are recommended, but direct tactical overrides are authorized.
+                <div>
+                   <div class="text-[10px] font-rajdhani uppercase tracking-widest font-bold text-cyan-500 mb-1">
+                        Imperial Bank Protocol // Active Lien
+                   </div>
+                   <div class="text-sm text-cyan-100 font-light">
+                        MORTGAGE LOCK DETECTED. Hull specifications are bound to asset collateral.
+                        <span class="opacity-70">Direct overrides are authorized but will be flagged for audit. Use AMENDMENTS for authorized upgrades.</span>
+                   </div>
                 </div>
             </div>
         {% endif %}

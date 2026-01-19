@@ -31,12 +31,18 @@
         </div>
 
         {% if asset.mortgageSigned %}
-            <div class="alert alert-info alert-outline w-full mb-6">
-                <div class="flex items-center gap-3">
-                    <span class="flex items-center justify-center animate-spin-slow">
-                        {% include 'icons/radar.html.twig' %}
-                    </span>
-                    <span>The Asset has Mortgage signed! Crew members can not be removed.</span>
+            <div class="alert alert-info alert-outline border-cyan-500/50 bg-cyan-950/30 mb-6">
+                <div class="animate-spin-slow text-cyan-500">
+                    {% include 'icons/radar.html.twig' with { dim: 24 } %}
+                </div>
+                <div>
+                   <div class="text-[10px] font-rajdhani uppercase tracking-widest font-bold text-cyan-500 mb-1">
+                        Imperial Bank Protocol // Active Lien
+                   </div>
+                   <div class="text-sm text-cyan-100 font-light">
+                        MORTGAGE LOCK DETECTED. Personnel manifest is bound to asset valuation.
+                        <span class="opacity-70">Direct overrides are authorized but will be flagged for audit.</span>
+                   </div>
                 </div>
             </div>
         {% endif %}
