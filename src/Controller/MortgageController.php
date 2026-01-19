@@ -136,15 +136,13 @@ final class MortgageController extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
-
-
-
-
-            $em->persist($mortgage);
             $em->flush();
-            return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
+            $this->addFlash('warning', 'LEDGER INTEGRITY EVENT. Correction appended. Original error archived for forensic audit.');
+
+            return $this->redirectToRoute('app_mortgage_index');
         }
+
+
 
         $summary = $mortgage->calculate();
 

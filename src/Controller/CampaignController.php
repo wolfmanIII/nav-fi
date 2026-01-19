@@ -233,7 +233,16 @@ final class CampaignController extends BaseController
             }
 
             $em->flush();
-            $this->addFlash('success', 'Session updated');
+            $em->flush();
+            $this->addFlash('success', 'TEMPORAL RECONCILIATION COMPLETE. Future liabilities converted to current debt. Solvency recalculated.');
+
+            // Check for Hard Deck Breach (Negative Balance)
+            foreach ($campaign->getAssets() as $asset) {
+                if ($asset->getCredits() < 0) {
+                    $this->addFlash('error', 'HARD DECK BREACHED. Asset ' . $asset->getName() . ' is operating below fiscal viability protocols. Seizure risk: IMMINENT.');
+                }
+            }
+            // For now, let's keep it simple. If we had a service method, we'd call it.
 
             return $this->redirectToRoute('app_campaign_details', ['id' => $campaign->getId()]);
         }

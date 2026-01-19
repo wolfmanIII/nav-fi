@@ -117,6 +117,7 @@ final class IncomeController extends BaseController
             $this->clearUnusedDetails($income, $em);
             $em->persist($income);
             $em->flush();
+            $this->addFlash('warning', 'LEDGER INTEGRITY EVENT. Correction appended. Original error archived for forensic audit.');
 
             return $this->redirectToRoute('app_income_index');
         }

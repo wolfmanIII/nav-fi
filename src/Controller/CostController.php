@@ -117,6 +117,7 @@ final class CostController extends BaseController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
+            $this->addFlash('warning', 'LEDGER INTEGRITY EVENT. Correction appended. Original error archived for forensic audit.');
 
             return $this->redirectToRoute('app_cost_index');
         }

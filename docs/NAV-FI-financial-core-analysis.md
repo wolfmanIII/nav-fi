@@ -97,3 +97,11 @@ graph TD
 
 1. **Immutabilità Transazioni**: Attualmente, l'immutabilità rigorosa (append-only) è parzialmente implementata via reversal. Assicurarsi che non vengano MAI eseguiti `UPDATE` manuali su `Transaction.amount`.
 2. **Fiscal Year Closure (Cold Storage)**: Per mantenere il sistema performante negli anni, si raccomanda di implementare una chiusura annuale. Ogni 365 giorni, il sistema somma le transazioni `Posted`, crea uno Snapshot (Saldo Iniziale Anno X) e archivia le vecchie transazioni in una tabella "Cold Storage" esclusa dal loop di sincronizzazione quotidiano.
+## 6. UX: Voice of the Machine
+L'interfaccia adotta un tono "Tactical Sci-Fi" per le notifiche di sistema, trattando l'utente come un ufficiale di comando.
+
+### Protocolli di Notifica
+- **Temporal Reconciliation**: Conferma il successo della sincronizzazione temporale e il ricalcolo della solvibilità.
+- **Ledger Integrity Event**: Avvisa di modifiche dirette a transazioni passate (Reversal), indicando l'archiviazione per audit.
+- **Causality Locked**: Indica transazioni future (Pending) in attesa dell'arrivo del Cursore Temporale.
+- **Hard Deck Breach**: Allarme critico per saldo negativo (insolvenza imminente).

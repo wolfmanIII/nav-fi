@@ -94,10 +94,12 @@
                                         VOID
                                     </span>
                                 {% else %}
-                                    <div class="tooltip" data-tip="Future Transaction - pending date arrival">
-                                        <span class="badge badge-xs badge-warning gap-1 bg-amber-500/10 text-amber-400 border-amber-500/20 cursor-help">
-                                            PENDING
+                                    <div class="tooltip tooltip-left" data-tip="CAUSALITY LOCKED. Effective upon Temporal Cursor arrival.">
+                                        <span class="badge badge-xs badge-warning gap-1 bg-amber-500/10 text-amber-400 border-amber-500/20 cursor-help font-rajdhani tracking-widest font-bold">
+                                            LOCKED
                                         </span>
+                                    </div>
+                                {% endif %}
                                     </div>
                                 {% endif %}
                             </td>
