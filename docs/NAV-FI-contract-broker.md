@@ -57,7 +57,10 @@ La generazione è incapsulata in una sessione persistente.
     - `status` (Proposed, Saved, Converted)
 
 ### Servizi
-1.  **`SectorDataManager`**: Gestisce download, caching e parsing dei file `.tab`.
+1.  **`TravellerMapSectorLookup` (Evolved)**:
+    - Attualmente gestisce lookup effimeri.
+    - Verrà esteso per gestire download/persistenza dei file `.tab` (sostituendo la cache semplice con storage su file versionati).
+    - Servirà sia il modulo Route (lookup singolo) sia The Cube (batch generation).
 2.  **`TheCubeEngine`**: Logica di business per generare opportunità casuali basate sui Trade Codes.
 3.  **`BrokerService`**: Gestisce il flusso sessione (save opportunity, convert to income).
 
