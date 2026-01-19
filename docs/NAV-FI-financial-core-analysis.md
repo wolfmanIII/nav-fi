@@ -80,4 +80,3 @@ graph TD
 ## 7. Raccomandazioni
 
 1. **Immutabilità Transazioni**: Attualmente, l'immutabilità rigorosa (append-only) è parzialmente implementata via reversal. Assicurarsi che non vengano MAI eseguiti `UPDATE` manuali su `Transaction.amount`.
-2. **Performance**: Il processo `processCampaignSync` itera su tutti gli asset e transazioni. Con la crescita della cronologia, potrebbe essere necessaria un'ottimizzazione degli indici su `sessionYear, sessionDay`.
