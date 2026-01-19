@@ -5,7 +5,7 @@ Applicazione Symfony dedicata alla gestione di navi, equipaggi, contratti e mutu
 Questo documento descrive in modo discorsivo l’architettura attuale di Nav-Fi³ Web, le sue dipendenze, i componenti applicativi principali e alcuni punti di attenzione operativi.
 
 ## Stack e infrastruttura
-- **Framework:** Symfony 7.3 (PHP ≥ 8.2), asset mapper, Stimulus, Twig, Tailwind 4 + DaisyUI per la UI (tema Abyss), Tom Select per le select con ricerca.
+- **Framework:** Symfony 7.4 (PHP ≥ 8.2), asset mapper, Stimulus, Twig, Tailwind 4 + DaisyUI per la UI (tema Abyss), Tom Select per le select con ricerca.
 - **Security & Voter:** Regole strict su ownership. La cancellazione di asset è inibita se presenti dipendenze (Mortgage, Financials), mentre l'edit è permesso al proprietario.
 - **MFA:** Integrazione `scheb/2fa-bundle` per Two-Factor Authentication (Google Authenticator/TOTP) e `knpuniversity/oauth2-client-bundle` per Google Login integration.
 - **Date imperiali:** helper `ImperialDateHelper` + filtro Twig `imperial_date` per formattazione coerente `DDD/YYYY`.
@@ -37,7 +37,7 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Nav-Fi�
 - **CompanyRole.shortDescription:** etichetta breve usata nelle select e nelle liste per rendere i ruoli immediati.
 - **LocalLaw:** codice, descrizione breve e disclaimer giurisdizionale; referenziato da Cost, Income, Mortgage.
 - **Income dettagliato per categoria:** relazioni 1–1 (Freight, Passengers, Contract, Trade, Subsidy, Services, Insurance, Interest, Mail, Prize, Salvage, Charter, ecc.) con campi specifici; le sottoform sono attivate da `IncomeDetailsSubscriber` in base a `IncomeCategory.code` (mappa opzionale consultabile in `ContractFieldConfig`). Lo status è **Draft/Signed** e viene impostato automaticamente dalla signing date (se completa → Signed).
-- **Tracciamento utente:** FK `user` (nullable) su Ship, Crew, Mortgage, MortgageInstallment, Cost, Income, AnnualBudget e Company. Un listener Doctrine (`AssignUserSubscriber`) assegna l’utente loggato in `prePersist`.
+- **Tracciamento utente:** FK `user` presente su tutte le entità core; può essere nullable per legacy, ma il runtime è ownership-strict e richiede backfill/fallback. Un listener Doctrine (`AssignUserSubscriber`) assegna l’utente loggato in `prePersist`.
 - **Company cross-campaign:** le controparti (`Company`, `CompanyRole`, `LocalLaw`) vengono definite una volta e riutilizzate su più campagne; questo garantisce consistenza nei costi/entrate e nei PDF, tenendo separati contesto e sessione.
 
 ### Relazioni principali

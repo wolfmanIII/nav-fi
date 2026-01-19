@@ -8,8 +8,8 @@ Questo documento descrive l'implementazione del sistema di tracciamento rotte in
 - **Route**
   - `id`, `code` (uuid v7)
   - `name`, `description`
-  - `campaign` (ManyToOne, opzionale)
-  - `ship` (ManyToOne Ship, **required**: una Ship può avere molte Route)
+  - `campaign` (ManyToOne, opzionale e derivata dalla Ship se presente)
+  - `ship` (ManyToOne Ship, **required**: la Route appartiene alla nave)
   - `plannedAt` (datetime immutable, default now)
   - `notes` (text, opzionale)
   - `startHex` (string, opzionale: es. "1234"), `destHex` (string, opzionale)
