@@ -71,16 +71,20 @@ Questo garantisce che, anche se l'importo di un costo cambia, la storia del ledg
 - **Transazioni**: Genera `SalaryPayment` collegati al Ledger.
 - **Pro-rata**: Calcolo automatico all'assunzione `(Salary / 28) * Days`.
 
-## 4. Performance & Ottimizzazione (v1.2.0)
+## 6. Performance & Ottimizzazione (v1.2.0)
 
-### 4.1. Indici Database
+### 6.1. Indici Database
 Per garantire la scalabilità del Ledger, sono stati introdotti indici strategici:
 - `idx_transaction_sync` (`[account_id, date_time]`): Ottimizza la ricostruzione del saldo e la verifica della cronologia.
 - `idx_transaction_chronology` (`[date_time]`): Velocizza le query basate sul tempo (es. report annuali).
 
-### 4.2. Strategia "Cold Storage"
+### 6.2. Strategia "Cold Storage" (Fiscal Year Closure)
+[IMPLEMENTED] Per mantenere il sistema performante, è stato implementato il meccanismo di chiusura annuale.
+- **TransactionArchive**: Le transazioni vengono spostate in una tabella di archivio separata (`transaction_archive`).
+- **Snapshot**: Viene creato un movimento "Rendiconto Iniziale" (Snapshot) per l'anno successivo che preserva il saldo.
+- **CLI**: Il comando `app:fiscal-close` permette di eseguire l'operazione in sicurezza (irreversibile).
 
-## 5. Diagramma Architetturale
+## 7. Diagramma Architetturale
 
 ```mermaid
 graph TD
@@ -88,20 +92,25 @@ graph TD
     D -->|Event: postPersist/onFlush| S[FinancialEventSubscriber]
     S -->|Call| L[LedgerService]
     L -->|Create/Update| T[Transaction]
-    L -->|Read| CMP[Campaign (Time Cursor)]
-    T -->|Update Balance (if Posted)| A[Asset]
+    L -->|Read| CMP["Campaign (Time Cursor)"]
+    T -->|"Update Balance (if Posted)"| A[Asset]
     CMP -->|Sync: Date Change| L
 ```
 
-## 6. Raccomandazioni
+## 8. Raccomandazioni e UX
 
-1. **Immutabilità Transazioni**: Attualmente, l'immutabilità rigorosa (append-only) è parzialmente implementata via reversal. Assicurarsi che non vengano MAI eseguiti `UPDATE` manuali su `Transaction.amount`.
-2. **Fiscal Year Closure (Cold Storage)**: Per mantenere il sistema performante negli anni, si raccomanda di implementare una chiusura annuale. Ogni 365 giorni, il sistema somma le transazioni `Posted`, crea uno Snapshot (Saldo Iniziale Anno X) e archivia le vecchie transazioni in una tabella "Cold Storage" esclusa dal loop di sincronizzazione quotidiano.
-## 6. UX: Voice of the Machine
+### 8.1. Immutabilità
+Attualmente, l'immutabilità rigorosa (append-only) è parzialmente implementata via reversal. Assicurarsi che non vengano MAI eseguiti `UPDATE` manuali su `Transaction.amount`.
+
+### 8.2. UX: Voice of the Machine
 L'interfaccia adotta un tono "Tactical Sci-Fi" per le notifiche di sistema, trattando l'utente come un ufficiale di comando.
 
-### Protocolli di Notifica
+#### Protocolli di Notifica
 - **Temporal Reconciliation**: Conferma il successo della sincronizzazione temporale e il ricalcolo della solvibilità.
 - **Ledger Integrity Event**: Avvisa di modifiche dirette a transazioni passate (Reversal), indicando l'archiviazione per audit.
 - **Causality Locked**: Indica transazioni future (Pending) in attesa dell'arrivo del Cursore Temporale.
 - **Hard Deck Breach**: Allarme critico per saldo negativo (insolvenza imminente).
+
+### 8.3. Suggerimenti Futuri: Income Cycle
+La gestione attuale "Deposito -> Pagamento Finale" è solida.
+- **Late Fee (Penale)**: In futuro, se la data di consegna viene mancata (`Time Cursor > Payment Date` senza trigger dell'evento consegna), si potrebbe applicare una penale automatica per incentivare la puntualità, aggiungendo realismo "cattivo" all'universo Nav-Fi.
