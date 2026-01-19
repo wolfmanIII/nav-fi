@@ -1,5 +1,7 @@
 # Feasibility Study: The Cube (TravellerMap Contract Broker)
 
+> **Ambito**: Design Memo. Specifica i requisiti e l'architettura del futuro modulo "Contract Broker", definendo i principi di design e i limiti operativi.
+
 ## Design Philosophy: "The Hard Deck" (Guardrails & Determinism)
 
 The Cube è un generatore di contenuto che impatta l'economia di gioco. Per evitare di rompere il bilanciamento della campagna o introdurre complessità ingestibile, il sistema segue questi principi non negoziabili:
@@ -81,6 +83,6 @@ La generazione è incapsulata in una sessione persistente.
 ```
 
 ## Prossimi Passi (POC)
-1.  Creare `TravellerMapService` e testare il download/parsing di "Spinward Marches".
-2.  Implementare la formula della distanza esagonale.
+1.  Estendere l'esistente `TravellerMapSectorLookup` (o creare wrapper dedicato) per testare il download/parsing di "Spinward Marches".
+2.  Implementare la formula della distanza esagonale (riusando `RouteMathHelper`).
 3.  Creare un comando CLI `app:cube:test <sector> <hex> <range>` per verificare l'output JSON.

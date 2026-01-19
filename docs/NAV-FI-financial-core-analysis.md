@@ -1,5 +1,7 @@
 # Analisi del Financial Core di Nav-Fi³
 
+> **Ambito**: Design Memo e Analisi Architetturale. Questo documento descrive i principi di design e la logica interna, non è una guida utente.
+
 Questo documento fornisce un'analisi approfondita dell'architettura finanziaria di Nav-Fi³, concentrandosi sul **Ledger Service** (Servizio Mastro), sulle **Entità Finanziarie** e sulla logica del **Time Cursor** (Cursore Temporale).
 
 ## 1. Filosofia Core: Ledger Event-Driven
@@ -17,9 +19,9 @@ L'entità `Transaction` è l'unica fonte di verità per il saldo di un Asset.
 ### Campi Chiave
 - **Amount**: `DECIMAL(15,2)` salvato come stringa (compatibile con BCMath). Positivo per depositi, negativo per prelievi.
 - **Status**:
-    - `Verified (Posted)`: La transazione è avvenuta e ha influenzato il saldo.
+    - `Posted`: La transazione è avvenuta e ha influenzato il saldo.
     - `Pending`: La transazione è programmata per una data futura (logica Time Cursor).
-    - `Verified (Void)`: La transazione è stata annullata/stornata.
+    - `Void`: La transazione è stata annullata/stornata.
 - **Session Date**: La Data Imperiale di gioco (`Day`, `Year`) in cui avviene la transazione.
 - **Relazioni**: Collegata a un `Asset` e opzionalmente a un'entità sorgente (`relatedType`/`relatedId`) per tracciabilità.
 
