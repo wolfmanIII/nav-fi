@@ -55,9 +55,9 @@ ENV NODE_PATH=$NVM_DIR/versions/node/v*/lib/node_modules
 ENV PATH=$NVM_DIR/versions/node/v*/bin:$PATH
 
 # 3. Installazione Wkhtmltopdf (Debian Bookworm)
-RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.bookworm_amd64.deb \
-    && apt-get install -y ./wkhtmltox_0.12.6.1-2.bookworm_amd64.deb \
-    && rm wkhtmltox_0.12.6.1-2.bookworm_amd64.deb
+RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
+    && apt-get install -y ./wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
+    && rm wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
 
 # ==============================================================================
 # STAGE 3: PHP Extensions & Configuration
