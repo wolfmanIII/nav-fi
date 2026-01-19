@@ -1,6 +1,7 @@
-# Integrazione TravellerMap – Piano tecnico dettagliato
+# Integrazione TravellerMap in Nav-Fi³
+Piano tecnico dettagliato
 
-Obiettivo: tracciare e visualizzare rotte Traveller dentro Nav-Fi, sfruttando TravellerMap (embed e API) mantenendo coerenza con Campaign/Ship e con la UI sci-fi esistente.
+Obiettivo: tracciare e visualizzare rotte Traveller dentro Nav-Fi³, sfruttando TravellerMap (embed e API) mantenendo coerenza con Campaign/Ship e con la UI sci-fi esistente.
 
 > Nota: questa proposta separa ciò che è fattibile **senza API ufficiali** (link/iframe) da ciò che richiede **verifica sulla documentazione di TravellerMap**.
 > Quando avremo accesso alla doc ufficiale, confermeremo endpoint, parametri, limiti e CORS.

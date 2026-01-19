@@ -1,6 +1,6 @@
-# Analisi del Financial Core di Nav-Fi
+# Analisi del Financial Core di Nav-Fi³
 
-Questo documento fornisce un'analisi approfondita dell'architettura finanziaria di Nav-Fi, concentrandosi sul **Ledger Service** (Servizio Mastro), sulle **Entità Finanziarie** e sulla logica del **Time Cursor** (Cursore Temporale).
+Questo documento fornisce un'analisi approfondita dell'architettura finanziaria di Nav-Fi³, concentrandosi sul **Ledger Service** (Servizio Mastro), sulle **Entità Finanziarie** e sulla logica del **Time Cursor** (Cursore Temporale).
 
 ## 1. Filosofia Core: Ledger Event-Driven
 
@@ -25,7 +25,7 @@ L'entità `Transaction` è l'unica fonte di verità per il saldo di un Asset.
 
 ## 3. La Logica "Time Cursor"
 
-Nav-Fi supporta il "Viaggio nel Tempo" (Time Travel). L'entità `Campaign` mantiene la **Data di Sessione Corrente** (`sessionDay`, `sessionYear`). Questa data agisce come un cursore che determina quali transazioni sono effettive.
+Nav-Fi³ supporta il "Viaggio nel Tempo" (Time Travel). L'entità `Campaign` mantiene la **Data di Sessione Corrente** (`sessionDay`, `sessionYear`). Questa data agisce come un cursore che determina quali transazioni sono effettive.
 
 ### La Regola "Effective" nel `LedgerService`
 Una transazione influenza il saldo dell'Asset (Crediti) **solo se**:
@@ -41,7 +41,7 @@ Quando la data della Campagna cambia (aggiornamento `CampaignSessionLog`), viene
 Per mantenere l'integrità dei dati durante le modifiche, il sistema utilizza una **Strategia di Reversal** tramite `FinancialEventSubscriber`.
 
 Se un'entità finanziaria (es. un `Cost`) viene aggiornata:
-1. **Reverse**: Il sistema trova le transazioni esistenti per quell'entità e crea contro-transazioni (importo negativo dell'originale) per azzerarle.
+1. **Reverse**: Nav-Fi³ non modifica mai l'importo di una transazione esistente per evitare disallineamenti. Il sistema trova le transazioni esistenti per quell'entità e crea contro-transazioni (importo negativo dell'originale) per azzerarle.
 2. **Re-Create**: Vengono create nuove transazioni basate sui dati aggiornati dell'entità.
 
 Questo garantisce che, anche se l'importo di un costo cambia, la storia del ledger rifletta la correzione anziché mutare semplicemente la riga originale (sebbene in alcuni casi si usi `Void`, il reversal permette una contabilità rigorosa).

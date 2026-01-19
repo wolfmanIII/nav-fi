@@ -1,6 +1,6 @@
 # Cloud Run Deployment Guide
 
-Complete guide to deploy **Nav-Fi** to Google Cloud Run.
+Complete guide to deploy **Nav-Fi³** to Google Cloud Run.
 
 ---
 

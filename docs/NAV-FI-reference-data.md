@@ -1,4 +1,4 @@
-# Nav-Fi Technical Reference Data
+# Nav-Fi³ Technical Reference Data
 
 Questo documento raccoglie i codici di riferimento e le costanti utilizzate per le entità di contesto dell'applicazione.
 Questi valori sono utilizzati nei Seed e nella logica di business.

@@ -50,7 +50,7 @@ Gestisce lo storico dei pagamenti effettuati.
 - **transaction**: Gestito via `relatedEntityId` nel Ledger (Transaction).
 
 ## Esperienza Utente & Uniformità
-Il modulo segue i rigorosi standard UI/UX del progetto Nav-Fi:
+Il modulo segue i rigorosi standard UI/UX del progetto Nav-Fi³:
 - **Index View (Cyan Theme)**: Tutte le liste finanziarie usano il tema Primary/Cyan per le azioni e l'Hero, garantendo coerenza tra i vari ledger.
 - **REF Badge**: Ogni record è identificato dal badge `REF: SAL-{{ id }}`.
 - **Cascading Filters**: Il form di creazione permette di filtrare i membri dell'equipaggio selezionando prima la Campagna e poi l'Asset.
