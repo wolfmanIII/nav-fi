@@ -6,7 +6,8 @@ Questo documento descrive in modo discorsivo l’architettura attuale di Nav-Fi�
 
 ## Stack e infrastruttura
 - **Framework:** Symfony 7.3 (PHP ≥ 8.2), asset mapper, Stimulus, Twig, Tailwind 4 + DaisyUI per la UI (tema Abyss), Tom Select per le select con ricerca.
-- **Security & MFA:** Integrazione `scheb/2fa-bundle` per Two-Factor Authentication (Google Authenticator/TOTP) e `knpuniversity/oauth2-client-bundle` per Google Login integration.
+- **Security & Voter:** Regole strict su ownership. La cancellazione di asset è inibita se presenti dipendenze (Mortgage, Financials), mentre l'edit è permesso al proprietario.
+- **MFA:** Integrazione `scheb/2fa-bundle` per Two-Factor Authentication (Google Authenticator/TOTP) e `knpuniversity/oauth2-client-bundle` per Google Login integration.
 - **Date imperiali:** helper `ImperialDateHelper` + filtro Twig `imperial_date` per formattazione coerente `DDD/YYYY`.
 - **Tom Select (integrazione):** inizializzato via controller Stimulus `tom-select`; asset JS/CSS caricati da `assets/vendor/tom-select/` per evitare importmap bare‑module.
 - **Highlight.js:** usato per la formattazione dei JSON (session timeline Campaign) con asset locali in `assets/vendor/highlightjs/`.

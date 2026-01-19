@@ -1,16 +1,14 @@
-# Integrazione TravellerMap in Nav-Fi³
-Piano tecnico dettagliato
+# Specifica Modulo Rotte & TravellerMap
 
-Obiettivo: tracciare e visualizzare rotte Traveller dentro Nav-Fi³, sfruttando TravellerMap (embed e API) mantenendo coerenza con Campaign/Ship e con la UI sci-fi esistente.
+Questo documento descrive l'implementazione del sistema di tracciamento rotte in Nav-Fi³, integrato con TravellerMap (embed e API).
 
-> Nota: questa proposta separa ciò che è fattibile **senza API ufficiali** (link/iframe) da ciò che richiede **verifica sulla documentazione di TravellerMap**.
-> Quando avremo accesso alla doc ufficiale, confermeremo endpoint, parametri, limiti e CORS.
+> **Stato**: IMPLEMENTATO (v1.x)
 
 ## Modello dati
-- **Route** (nuova entità)
-  - `id` (int/uuid), `code` (uuid v7 per coerenza con altre entità visibili in UI)
-  - `name` (string), `description` (text, opzionale)
-  - `campaign` (ManyToOne Campaign, opzionale ma se ship ha campaign dovrebbe ereditare quella)
+- **Route**
+  - `id`, `code` (uuid v7)
+  - `name`, `description`
+  - `campaign` (ManyToOne, opzionale)
   - `ship` (ManyToOne Ship, **required**: una Ship può avere molte Route)
   - `plannedAt` (datetime immutable, default now)
   - `notes` (text, opzionale)

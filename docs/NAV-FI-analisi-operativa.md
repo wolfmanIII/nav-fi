@@ -52,8 +52,7 @@ flowchart TB
 - La scheda dettagli è editata via `ShipDetailsType` e salvata come JSON su `Ship.shipDetails`.
 - M‑Drive/J‑Drive hanno campi extra `thrust` e `jump` nel form.
 - “Total Cost” è calcolato client‑side sommando i `cost_mcr` e viene salvato nel JSON, ma **non** modifica `Ship.price`.
-- Se il mutuo è firmato, la scheda nave è bloccata: le modifiche ai componenti passano tramite **Ship Amendment** con `patchDetails` (stessa struttura di `shipDetails`) e **Cost reference obbligatoria** (SHIP_GEAR/SHIP_SOFTWARE). La data effetto viene derivata dalla payment date del Cost selezionato.
-- La select del Cost reference supporta ricerca testuale (Tom Select) e filtra i costi già usati da altri amendment.
+- **Ship Amendment**: Sebbene la modifica diretta sia possibile, per mantenere un audit trail accurato è consigliato utilizzare il sistema di Amendment per installare nuovi componenti.
 - Le date in UI/PDF sono formattate in `DDD/YYYY` tramite helper condiviso.
 
 ## Flusso operativo: mutuo
@@ -94,15 +93,16 @@ flowchart TB
 
 ## Flusso operativo: routes
 
-- Le Routes sono agganciate a **Campaign + Ship** e costruite tramite waypoint in sequenza.
-- I waypoints richiedono `hex` (4 cifre) e `sector` (nome o abbreviazione T5SS) per aprire la mappa `travellermap.com/go/{sector}/{hex}`.
-- `startHex/destHex` sono auto‑seal dai waypoints; jumpDistance e fuelEstimate sono calcolati al submit secondo `docs/Traveller-Fuel-Management.md`.
+- Le Routes sono agganciate a **Campaign + Ship**.
+- I waypoints permettono lookup automatico su TravellerMap (via `TravellerMapSectorLookup` service e API).
+- La vista dettagli genera automaticamente l'embed della mappa e i link diretti per `travellermap.com/go/{sector}/{hex}`.
+- `startHex`/`destHex` sono derivati automaticamente dal primo e ultimo waypoint.
 
 ## Ownership e sicurezza (operativa)
 
 - Entità principali filtrate per utente (owner) in repository e controller.
 - `AssignUserSubscriber` assegna automaticamente l’utente in prePersist.
-- I voter bloccano edit/delete se non si è owner o se il mutuo è firmato.
+- I voter bloccano **delete** se esistono dipendenze critiche (mutui, campaign link, financial records). L'edit rimane aperto per correzioni.
 
 ## UI e UX Tattica (v2.0.x)
 

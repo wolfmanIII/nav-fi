@@ -1,30 +1,44 @@
 # Feasibility Study: The Cube (TravellerMap Contract Broker)
 
-## Obiettivo
-Implementare un "Motore di Generazione Contratti" (The Cube) che, dato un input (Settore, Sistema di Partenza, Raggio in Parsec), interroghi **TravellerMap**, recuperi i sistemi vicini e generi automaticamente opportunità di **Income** (Freight, Passengers, Mail, Charter) coerenti con la lore.
+## Design Philosophy: "The Hard Deck" (Guardrails & Determinism)
+
+The Cube è un generatore di contenuto che impatta l'economia di gioco. Per evitare di rompere il bilanciamento della campagna o introdurre complessità ingestibile, il sistema segue questi principi non negoziabili:
+
+### 1. Determinismo come Default
+Ogni `BrokerSession` possiede un **Seed** fisso.
+- A parità di Sector Data e Seed, la sequenza di generazione è identica.
+- Questo garantisce testabilità, debuggabilità e previene il "save scumming" disonesto, ma permette il "replay" legittimo di una sessione tecnica.
+
+### 2. Economia con Guardrail
+I payout non sono "magia random", ma formule leggibili e controllate.
+- **Formula Pubblica**: `BaseAmount * DistanceMult * RiskFactor + Bonus`.
+- **Clamping**: Ogni valore ha un `MIN` e un `MAX` hardcodato per categoria (es. Freight non può pagare più di X Cr/ton).
+- **Graceful Degradation**: Se i dati TravellerMap sono sporchi (es. manca UWP o Trade Code), il sistema non crasha ma usa valori di fallback conservativi (Low Payout).
+
+### 3. Conversione Pulita (No Surprises)
+- Il passaggio `BrokerOpportunity` -> `Income` è una trasformazione rigorosa.
+- L'entità `Income` generata è indistinguibile da una creata a mano: categorie corrette (FREIGHT, PASSENGERS, MAIL), status `Draft`, date coerenti.
+- Nessun dato "speciale" o "magico" nel JSON che alteri il comportamento del Ledger.
 
 ## Strategia Tecnica: "Local-First & Session"
 
-### 1. Gestione Dati Settore (Minimizzare API Calls)
-Per evitare dipendenza diretta e latenza, i dati dei settori verranno scaricati e versionati localmente.
-- **Cartella Dati**: `/data/sectors/{SectorName}_{Year}-{Month}.tab`
-- **Logica**: Il sistema controlla se esiste un file locale valido per il mese corrente.
-    - *Se esiste*: Usa il file locale.
-    - *Se manca/vecchio*: Scarica da `travellermap.com/data/.../tab`, salva su disco e usa quello.
-- **Vantaggio**: Resilienza offline, velocità in fase di generazione e rispetto dei rate limit API.
+### 1. Gestione Dati Settore (Disciplinata)
+I dati dei settori vengono scaricati e versionati localmente.
+- **Path**: `/data/sectors/{SectorName}_{Year}-{Month}.tab` (Naming normalizzato).
+- **Locking**: Meccanismo di lock per evitare download concorrenti dello stesso settore.
+- **Fallback**: Se il parser fallisce su una riga (dato corrotto), la riga viene saltata e loggata, senza fermare l'import.
 
 ### 2. Il concetto di "Broker Session"
-La generazione non è "usa e getta" ma una sessione di lavoro persistente.
+La generazione è incapsulata in una sessione persistente.
 
-**Flusso Operativo:**
-1.  **Setup**: L'Arbitro avvia una sessione indicando *Settore*, *Origine*, *Range*.
-2.  **Generate**: Il Cubo propone un batch (es. 5) di opportunità casuali.
-3.  **Selection**: L'Arbitro seleziona quelle interessanti ("Keep").
-    - Le opportunità salvate vengono persistite nel DB collegate alla Sessione.
-    - Le scartate svaniscono.
-4.  **Iterate**: Si possono generare altri batch finché non si raggiunge il "Cap" della sessione (es. 10 contratti salvati).
-5.  **Terminal View**: La sessione finalizzata diventa un'interfaccia "Mission Board" da mostrare ai giocatori.
-6.  **Accept**: Quando i giocatori accettano un contratto, questo viene convertito in una vera entità `Income`.
+**Flusso Operativo (MVP):**
+1.  **Setup**: L'Arbitro crea sessione con seed (auto o manuale), *Settore*, *Origine*, *Range*.
+2.  **Generate**: Il Cubo usa il seed per estrarre 5 candidate (ignorando i dati sporchi).
+3.  **Selection**: L'Arbitro clicca "Keep" su quelle valide.
+    - Le opportunità salvate vengono persistite su DB.
+4.  **Convert**: "Accetta" un'opportunità salvata -> Crea `Income`. Fine.
+
+*Funzioni avanzate (Mission Board UI, Publish) rimandate post-MVP.*
 
 ## Architettura Software
 
