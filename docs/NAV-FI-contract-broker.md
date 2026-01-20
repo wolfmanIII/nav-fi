@@ -11,11 +11,31 @@ Ogni `BrokerSession` possiede un **Seed** fisso.
 - A parità di Sector Data e Seed, la sequenza di generazione è identica.
 - Questo garantisce testabilità, debuggabilità e previene il "save scumming" disonesto, ma permette il "replay" legittimo di una sessione tecnica.
 
-### 2. Economia con Guardrail
-I payout non sono "magia random", ma formule leggibili e controllate.
-- **Formula Pubblica**: `BaseAmount * DistanceMult * RiskFactor + Bonus`.
-- **Clamping**: Ogni valore ha un `MIN` e un `MAX` hardcodato per categoria (es. Freight non può pagare più di X Cr/ton).
-- **Graceful Degradation**: Se i dati TravellerMap sono sporchi (es. manca UWP o Trade Code), il sistema non crasha ma usa valori di fallback conservativi (Low Payout).
+### 2. Economia Tabellare (Standardized Pricing)
+I payout seguono la tabella ufficiale (**Traveller Core Update 2022**), definita nel file di configurazione (`the_cube.yaml`) per flessibilità.
+*Nota: Il costo scala con la distanza ed è inteso per "singolo salto" (single jump).*
+
+**Pricing Table (Parsecs):**
+| Dist | High   | Middle | Basic | Low   | Freight |
+|------|--------|--------|-------|-------|---------|
+| 1    | 9,000  | 6,500  | 2,000 | 700   | 1,000   |
+| 2    | 14,000 | 10,000 | 3,000 | 1,300 | 1,600   |
+| 3    | 21,000 | 14,000 | 5,000 | 2,200 | 2,600   |
+| 4    | 34,000 | 23,000 | 8,000 | 3,900 | 4,400   |
+| 5    | 60,000 | 40,000 | 14,000| 7,200 | 8,500   |
+| 6    | 210,000| 130,000| 55,000| 27,000| 32,000  |
+
+- **Modifiers**:
+    - Risk Factors (Amber/Red Zone) applicati come moltiplicatori.
+    - Trade Codes (Rich, Industrial) applicati come bonus fissi.
+- **Mail**: Tariffa flat 25,000 Cr per container (5 ton), non scala con la distanza (All-or-Nothing).
+- **Charter**: Prezzo base per Tonnellata di scafo (es. 900 Cr/ton per 2 settimane).
+- **Trade**: Generazione "Offerte Commerciali" (Speculative Trade) con moltiplicatori di acquisto/vendita basati sui Trade Code.
+- **Contract**: Missioni generiche (Patron) con pagamento forfettario (es. 1000 - 5000 Cr) e bonus opzionali.
+- **Service**: Prestazioni professionali (es. Riparazioni, Training, Medical) pagate a forfait o a giornata.
+- **Salvage**: Vendita "Diritti di Recupero" (Tip-off su relitti) o gestione operazioni di salvataggio.
+- **Prize**: Gestione legale e vendita di scafi catturati (Prize Court brokerage).
+- **Graceful Degradation**: Se mancano dati UWP, fallback a Distanza 1 e Risk 1.0.
 
 ### 3. Conversione Pulita (No Surprises)
 - Il passaggio `BrokerOpportunity` -> `Income` è una trasformazione rigorosa.
@@ -64,6 +84,101 @@ La generazione è incapsulata in una sessione persistente.
     - Servirà sia il modulo Route (lookup singolo) sia The Cube (batch generation).
 2.  **`TheCubeEngine`**: Logica di business per generare opportunità casuali basate sui Trade Codes.
 3.  **`BrokerService`**: Gestisce il flusso sessione (save opportunity, convert to income).
+
+
+
+### Configurazione
+Struttura del file `config/packages/the_cube.yaml`:
+```yaml
+parameters:
+    # Path where TravellerMap sector data (.tab) will be stored
+    app.cube.sector_storage_path: '%kernel.project_dir%/var/data/sectors'
+
+    # Economic Constants (Traveller Core Update 2022)
+    app.cube.economy:
+        # --- FREIGHT (Merci) ---
+        # Costo per Tonnellata (Cr/dt) in base alla distanza del salto.
+        # Es: Spostare 1 tonnellata a 2 parsec paga 1600 Cr.
+        freight_pricing:
+            1: 1000
+            2: 1600
+            3: 2600
+            4: 4400
+            5: 8500
+            6: 32000
+        
+        # --- PASSENGERS (Passeggeri) ---
+        # Costo del biglietto per singola persona (Cr/pax).
+        # High: Lusso, include bagaglio e stasi opzionale.
+        # Middle: Standard, cabina condivisa o piccola.
+        # Basic: Essenziale, spazi comuni (introdotto in Core 2022).
+        # Low: Crio-stasi (rischio morte/malattia).
+        passenger_pricing:
+            1: { high: 9000,   middle: 6500,   basic: 2000,  low: 700 }
+            2: { high: 14000,  middle: 10000,  basic: 3000,  low: 1300 }
+            3: { high: 21000,  middle: 14000,  basic: 5000,  low: 2200 }
+            4: { high: 34000,  middle: 23000,  basic: 8000,  low: 3900 }
+            5: { high: 60000,  middle: 40000,  basic: 14000, low: 7200 }
+            6: { high: 210000, middle: 130000, basic: 55000, low: 27000 }
+        
+        # --- MODIFIERS (Variabili Ambientali) ---
+        modifiers:
+            risk_amber: 1.5      # Moltiplicatore per zone pericolose (Amber Zone)
+            risk_red: 2.0        # Moltiplicatore per zone interdette (Red Zone)
+            trade_bonus: 500     # Bonus fisso (Cr) se i Trade Codes matchano (es. Rich -> Industrial)
+        
+        # --- CHARTER (Noleggio Nave) ---
+        # Si paga l'intero scafo per un periodo.
+        charter:
+            base_rate: 900       # Cr per tonnellata di scafo (es. nave 200t = 180k Cr)
+            min_weeks: 2         # Durata minima standard del contratto
+            
+        # --- MAIL (Posta Prioritaria) ---
+        # Contenitori sicuri, pagamento fisso "tutto o niente".
+        mail:
+            flat_rate: 25000     # Pagamento fisso per colpo (Cr)
+            tons_per_container: 5 # Spazio richiesto per container
+            max_containers_dice: '1d6' # Formula dadi per quanti container generare
+            
+        # --- TRADE (Speculazione) ---
+        # Moltiplicatori per generare prezzi di mercato "fluttuanti".
+        trade:
+            # Se compri in un sistema con questi codici...
+            purchase_modifiers:
+                In: 0.8          # Industrial: Merce costa l'80% del base (Sconto 20%)
+                Ag: 0.7          # Agricultural: Cibo costa il 70% del base
+            # Se vendi in un sistema con questi codici...
+            sale_modifiers:
+                Rich: 1.2        # Rich: Pagano il 120% (Bonus 20%)
+                Poor: 1.3        # Poor: Pagano il 130%
+                
+        # --- CONTRACT (Missioni) ---
+        # Missioni generiche "Patron" (es. Scorta, Trasporto VIP, Sorveglianza).
+        contract:
+            base_reward_min: 1000  # Paga base minima
+            base_reward_max: 5000  # Paga base massima
+            bonus_chance: 0.3      # Probabilità di avere un bonus (30%)
+            bonus_multiplier: 0.5  # Bonus vale il 50% della reward base
+            
+        # --- SERVICE (Servizi) ---
+        # Prestazioni professionali (es. Riparazioni, Training, Medical, Intrattenimento)
+        service:
+            # Similar to Contracts but usually shorter term or skill-based
+            base_reward_min: 500
+            base_reward_max: 2000
+            types: ['Maintenance', 'Training', 'Medical', 'Entertainment', 'Legal']
+            
+        # --- SALVAGE (Recupero) ---
+        # Brokeraggio di diritti di salvataggio (Tip-off).
+        salvage:
+            base_finder_fee_min: 2000    # Costo per comprare la "dritta" (o valore della reward)
+            base_finder_fee_max: 10000
+            
+        # --- PRIZE (Prede) ---
+        # Commissioni legali per la gestione di navi catturate.
+        prize:
+            legal_fee_percent: 0.10      # Il broker prende il 10% del valore stimato per legalizzare la preda
+```
 
 ## Esempio Interfaccia (Mockup)
 - **Top Bar**: "Session: Spinward Marches @ 1910 [3/10 Saved]"
