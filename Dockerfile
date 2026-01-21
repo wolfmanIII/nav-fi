@@ -101,11 +101,16 @@ ENV APP_DAY_MAX=365
 ENV APP_YEAR_MIN=0
 ENV APP_YEAR_MAX=9999
 
-# Build Arguments
-ARG APP_SECRET
-ARG DATABASE_URL
-ARG GOOGLE_CLIENT_ID
-ARG GOOGLE_CLIENT_SECRET
+# Build Arguments: Defaults allow build to pass without flags
+# These are overridden by Cloud Run environment variables at runtime
+ARG APP_SECRET=build_placeholder_secret
+ARG DATABASE_URL=sqlite:///%kernel.project_dir%/var/build.db
+ARG GOOGLE_CLIENT_ID=placeholder_client_id
+ARG GOOGLE_CLIENT_SECRET=placeholder_client_secret
+
+# Make these available to the RUN commands below (cache:warmup needs them)
+ENV APP_SECRET=$APP_SECRET
+ENV DATABASE_URL=$DATABASE_URL
 
 # Compila AssetMapper (requires PHP & Vendor)
 RUN php bin/console asset-map:compile
