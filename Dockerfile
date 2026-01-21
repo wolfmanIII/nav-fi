@@ -107,12 +107,6 @@ ARG DATABASE_URL
 ARG GOOGLE_CLIENT_ID
 ARG GOOGLE_CLIENT_SECRET
 
-# Set Env Vars from Args (so they are available during build and runtime)
-ENV APP_SECRET=$APP_SECRET
-ENV DATABASE_URL=$DATABASE_URL
-ENV GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
-ENV GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
-
 # Compila AssetMapper (requires PHP & Vendor)
 RUN php bin/console asset-map:compile
 

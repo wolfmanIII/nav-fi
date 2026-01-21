@@ -148,17 +148,24 @@ Applicazione **Symfony 7.4** per la gestione di navi, equipaggi, contratti e mut
 - Login: `https://127.0.0.1:8000/login`
 
 ## Docker
-### Build
+
 ```bash
-docker build -t nav-fi-prod .
-```
-### Run
-```bash
+export $(cat .env.local | grep -v ^# | xargs)
+docker build \
+  --build-arg APP_SECRET=$APP_SECRET \
+  --build-arg DATABASE_URL=$DATABASE_URL \
+  --build-arg GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID \
+  --build-arg GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET \
+  -t nav-fi .
+
 docker run \
   --add-host=host.docker.internal:host-gateway \
-  -e DATABASE_URL="postgresql://user:pass@host.docker.internal:5432/app_db?serverVersion=18&charset=utf8" \
+  -e DATABASE_URL=$DATABASE_URL_DOCKER \
+  -e APP_SECRET=$APP_SECRET \
+  -e GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID \
+  -e GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET \
   -p 8080:8080 \
-  nav-fi-prod
+  nav-fi
 ```
 
 ## Note
