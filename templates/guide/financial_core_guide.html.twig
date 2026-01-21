@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nav-Fi³ - Financial Core Guide{% endblock %}
+{% block title %}Nav-Fi³ - Guida Financial Core{% endblock %}
 
 {% block pageContent %}
     <div class="min-h-[80vh] space-y-8">
@@ -16,9 +16,9 @@
                         <span class="text-2xl font-bold text-amber-400 font-orbitron">Cr</span>
                     </div>
                     <div>
-                        <p class="uppercase text-[10px] tracking-[0.3em] text-amber-300/70 font-bold font-orbitron mb-1">Complete Reference</p>
-                        <h1 class="text-3xl font-bold text-amber-100 leading-tight font-orbitron uppercase">Financial Core User Guide</h1>
-                        <p class="text-sm text-amber-100/60 font-rajdhani tracking-widest uppercase mt-1">Master the credit flow: time travel, organization management, and automated ledgers.</p>
+                        <p class="uppercase text-[10px] tracking-[0.3em] text-amber-300/70 font-bold font-orbitron mb-1">Riferimento Completo</p>
+                        <h1 class="text-3xl font-bold text-amber-100 leading-tight font-orbitron uppercase">Guida Utente Financial Core</h1>
+                        <p class="text-sm text-amber-100/60 font-rajdhani tracking-widest uppercase mt-1">Padroneggia il flusso di crediti: viaggi nel tempo, gestione organizzazioni e ledger automatizzati.</p>
                     </div>
                 </div>
             </div>
@@ -27,32 +27,32 @@
         {# Table of Contents #}
         <div class="rounded-xl bg-slate-900/60 border border-slate-800 p-6 mb-8">
             <h2 class="text-lg font-bold text-cyan-100 font-orbitron uppercase mb-4 flex items-center gap-2">
-                <span class="text-cyan-400">///</span> Table of Contents
+                <span class="text-cyan-400">///</span> Indice
             </h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
                 <a href="#core-concepts" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                    <span>1. Core Concepts & "The Asset"</span>
+                    <span>1. Concetti Base & "L'Asset"</span>
                 </a>
                 <a href="#time-cursor" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                    <span>2. Session Date as Time Cursor</span>
+                    <span>2. Data Sessione come Cursore Temporale</span>
                 </a>
                 <a href="#modules" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                    <span>3. Module Deep Dive</span>
+                    <span>3. Approfondimento Moduli</span>
                 </a>
                 <a href="#salary-module" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    <span>3b. Salary & Payroll</span>
+                    <span>3b. Stipendi & Buste Paga</span>
                 </a>
                 <a href="#workflows" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                    <span>4. Practical Workflows</span>
+                    <span>4. Workflow Pratici</span>
                 </a>
                 <a href="#cancellation" class="flex items-center gap-2 text-slate-400 hover:text-rose-400 transition-colors">
                     <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-                    <span>5. Cancellation & VOID Tech</span>
+                    <span>5. Cancellazione & Tecnologia VOID</span>
                 </a>
             </div>
         </div>
@@ -61,13 +61,13 @@
         <section id="core-concepts" class="mb-12 scroll-mt-6">
             <div class="rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-cyan-950/10 border border-slate-800 p-8">
                 <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2 font-orbitron">
-                    <span class="text-cyan-400">01 ///</span> Core Concepts & The Entity of "The Asset"
+                    <span class="text-cyan-400">01 ///</span> Concetti Base & L'Entità "Asset"
                 </h2>
                 
                 <div class="space-y-6">
                     <div class="prose prose-invert prose-sm max-w-none">
                         <p class="text-slate-300 leading-relaxed mb-4">
-                            Nav-Fi³ is not just a spreadsheet; it is a relational financial engine. To function, it requires a central anchor point for all data.
+                            Nav-Fi³ non è solo un foglio di calcolo; è un motore finanziario relazionale. Per funzionare, richiede un punto di ancoraggio centrale per tutti i dati.
                         </p>
                         
                         <div class="grid lg:grid-cols-2 gap-8 mt-6">
@@ -75,16 +75,16 @@
                             <div class="rounded-lg bg-cyan-950/20 border border-cyan-500/20 p-5">
                                 <h3 class="text-lg font-bold text-cyan-100 mb-3 flex items-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20h20"/><path d="M5 20v-8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8"/><path d="M12 10V4"/></svg>
-                                    The "Asset" is Mandatory
+                                    L' "Asset" è Obbligatorio
                                 </h3>
                                 <p class="text-slate-400 text-sm mb-4">
-                                    In Nav-Fi³, the <strong>Asset</strong> is the fundamental accounting unit. All Incomes, Costs, Mortgages, and Budgets <em>must</em> belong to an Asset. 
+                                    In Nav-Fi³, l' <strong>Asset</strong> è l'unità contabile fondamentale. Tutte le Entrate, Costi, Mutui e Budget <em>devono</em> appartenere a un Asset.
                                 </p>
                                 <div class="alert alert-info bg-cyan-950/30 border-cyan-500/30 text-cyan-200 text-xs">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                     <span>
-                                        <strong>For Players:</strong> An Asset entity is <strong>REQUIRED</strong>. You cannot track player finances without it.<br/>
-                                        <strong>For NPCs/Adversaries:</strong> Optional. You can create fully detailed assets with fits/crew for combat, but you can skip the <em>Financial Core</em> tracking unless you specifically want to simulate their economy.
+                                        <strong>Per i Giocatori:</strong> Un'entità Asset è <strong>RICHIESTA</strong>. Non puoi tracciare le finanze dei giocatori senza di essa.<br/>
+                                        <strong>Per NPC/Avversari:</strong> Opzionale. Puoi creare asset dettagliati con equipaggiamenti/crew per i combattimenti, ma puoi saltare il tracciamento del <em>Financial Core</em> a meno che tu non voglia specificamente simulare la loro economia.
                                     </span>
                                 </div>
                             </div>
@@ -93,23 +93,23 @@
                             <div class="rounded-lg bg-emerald-950/20 border border-emerald-500/20 p-5">
                                 <h3 class="text-lg font-bold text-emerald-100 mb-3 flex items-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                     No Starship? Use a "Team"
+                                     Niente Nave? Usa un "Team"
                                  </h3>
                                  <p class="text-slate-400 text-sm mb-3">
-                                     Running a mercenary campaign? Or a ground-based trade company? The "Asset" entity is flexible.
+                                     Gestisci una campagna di mercenari? O una compagnia commerciale di terra? L'entità "Asset" è flessibile.
                                  </p>
                                  <ul class="text-slate-300 text-sm space-y-2 list-disc pl-4">
-                                     <li>Create an Asset named <strong>"Alpha Squad"</strong> or <strong>"Trade Corp"</strong>.</li>
-                                     <li>Leave the <strong>Components/Fit</strong> empty (it's optional!).</li>
-                                     <li>Use this abstract "Asset" to track all your team's credits, contracts, and salary costs.</li>
+                                     <li>Crea un Asset chiamato <strong>"Squadra Alpha"</strong> o <strong>"Corp Commerciale"</strong>.</li>
+                                     <li>Lascia i <strong>Componenti/Fit</strong> vuoti (è opzionale!).</li>
+                                     <li>Usa questo "Asset" astratto per tracciare tutti i crediti, contratti e costi salariali del tuo team.</li>
                                  </ul>
                                   <p class="text-xs text-emerald-400/80 mt-3 italic">
-                                     The Financial Core works perfectly for any organization by treating it as an "Asset" container.
+                                     Il Financial Core funziona perfettamente per qualsiasi organizzazione trattandola come un contenitore "Asset".
                                  </p>
                                  <div class="mt-4 p-3 bg-slate-950/60 border-l-2 border-emerald-500/50 rounded-r shadow-sm">
-                                     <h4 class="text-[10px] font-bold text-emerald-300 uppercase tracking-widest mb-1">Tactical Transition</h4>
+                                     <h4 class="text-[10px] font-bold text-emerald-300 uppercase tracking-widest mb-1">Transizione Tattica</h4>
                                      <p class="text-[11px] text-slate-400 leading-relaxed">
-                                         If your <strong>Team</strong> acquires a ship or base, you must create a <strong>new Asset</strong> (category: Ship/Base) to unlock technical fits and mortgage eligibility. Reassemble your crew onto the new asset to maintain continuity.
+                                         Se il tuo <strong>Team</strong> acquisisce una nave o una base, devi creare un <strong>nuovo Asset</strong> (categoria: Nave/Base) per sbloccare i fit tecnici e l'idoneità al mutuo. Riassegna il tuo equipaggio al nuovo asset per mantenere la continuità.
                                      </p>
                                  </div>
                              </div>
@@ -123,14 +123,14 @@
         <section id="time-cursor" class="mb-12 scroll-mt-6">
             <div class="rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/10 border border-amber-500/30 p-8">
                 <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2 font-orbitron">
-                    <span class="text-amber-400">02 ///</span> The Time Cursor: Historical & Future Analysis
+                    <span class="text-amber-400">02 ///</span> Il Cursore Temporale: Analisi Storica & Futura
                 </h2>
 
                 <div class="grid md:grid-cols-3 gap-6">
                     <div class="md:col-span-2 space-y-4">
                         <p class="text-slate-300 text-sm leading-relaxed">
-                            The <strong>Mission Session Date</strong> is not just a "current date" field. it acts as a <strong class="text-amber-300">Time Cursor</strong> for the entire financial simulation. 
-                            By moving this date, you are effectively moving the "Now" point of your campaign's financial reality.
+                            La <strong>Data Sessione Missione</strong> non è solo un campo "data corrente". Agisce come un <strong class="text-amber-300">Cursore Temporale</strong> per l'intera simulazione finanziaria.
+                            Spostando questa data, stai effettivamente spostando il punto "Adesso" della realtà finanziaria della tua campagna.
                         </p>
                         
                         <div class="space-y-4 mt-6">
@@ -141,10 +141,10 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <h4 class="text-slate-200 font-bold mb-1">Looking into the Past</h4>
+                                    <h4 class="text-slate-200 font-bold mb-1">Guardando al Passato</h4>
                                     <p class="text-slate-400 text-xs">
-                                        If you set the Session Date to a past year, the <strong>Ledger</strong> and <strong>Budget</strong> will recalculate to show you the state of finances <em>at that exact moment</em>. 
-                                        Future transactions (relative to that past date) become "Pending" again. This allows accurate historical auditing.
+                                        Se imposti la Data Sessione a un anno passato, il <strong>Ledger</strong> e il <strong>Budget</strong> si ricalcoleranno per mostrarti lo stato delle finanze <em>in quell'esatto momento</em>.
+                                        Le transazioni future (relative a quella data passata) diventano di nuovo "Pending" (In Attesa). Questo permette un audit storico accurato.
                                     </p>
                                 </div>
                             </div>
@@ -156,11 +156,11 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <h4 class="text-amber-200 font-bold mb-1">Projecting the Future</h4>
+                                    <h4 class="text-amber-200 font-bold mb-1">Proiettando il Futuro</h4>
                                     <p class="text-slate-400 text-xs">
-                                        Advance the Session Date into the future to see what happens when "Pending" transactions hit. 
-                                        Will the mortgage payment clear? Will that big contract payout arrive in time? 
-                                        <strong class="text-amber-300">The Ledger simulates the future</strong> based on the data you've entered.
+                                        Avanza la Data Sessione nel futuro per vedere cosa succede quando transazioni "Pending" scattano.
+                                        La rata del mutuo passerà? Quel grosso pagamento contrattuale arriverà in tempo?
+                                        <strong class="text-amber-300">Il Ledger simula il futuro</strong> basandosi sui dati che hai inserito.
                                     </p>
                                 </div>
                             </div>
@@ -169,23 +169,23 @@
 
                     <div class="space-y-4">
                         <div class="rounded-lg bg-amber-950/20 border border-amber-500/20 p-5">
-                            <h3 class="text-sm font-bold text-amber-100 uppercase tracking-wider mb-2">Automated Ledger Logic</h3>
+                            <h3 class="text-sm font-bold text-amber-100 uppercase tracking-wider mb-2">Logica Ledger Automatizzata</h3>
                             <ul class="space-y-3 text-xs text-slate-300">
                                 <li class="flex gap-2">
                                     <span class="text-emerald-400 font-mono">1.</span>
-                                    <span><strong>Effective Date:</strong> If a Transaction Date <= Session Date, it is <strong>POSTED</strong> (Green) and affects the balance.</span>
+                                    <span><strong>Data Effettiva:</strong> Se Data Transazione <= Data Sessione, è <strong>POSTED</strong> (Verde) e influenza il saldo.</span>
                                 </li>
                                 <li class="flex gap-2">
                                     <span class="text-amber-400 font-mono">2.</span>
-                                    <span><strong>Pending Date:</strong> If a Transaction Date > Session Date, it is <strong>PENDING</strong> (Yellow) and does not yet touch the credits.</span>
+                                    <span><strong>Data Pending:</strong> Se Data Transazione > Data Sessione, è <strong>PENDING</strong> (Giallo) e non tocca ancora i crediti.</span>
                                 </li>
                                 <li class="flex gap-2">
                                     <span class="text-cyan-400 font-mono">3.</span>
-                                    <span><strong>Auto-Correction:</strong> Moving the Session Cursor automatically flips transactions between POSTED and PENDING statuses.</span>
+                                    <span><strong>Auto-Correzione:</strong> Spostare il Cursore di Sessione inverte automaticamente le transazioni tra stati POSTED e PENDING.</span>
                                 </li>
                                 <li class="flex gap-2">
                                     <span class="text-rose-400 font-mono">4.</span>
-                                    <span><strong>Void Logic:</strong> Cancelled contracts trigger <strong>VOID</strong> status for all transactions scheduled <em>after</em> the cancellation date.</span>
+                                    <span><strong>Logica Void:</strong> I contratti cancellati attivano lo status <strong>VOID</strong> per tutte le transazioni schedulate <em>dopo</em> la data di cancellazione.</span>
                                 </li>
                             </ul>
                         </div>
@@ -198,7 +198,7 @@
         <section id="modules" class="mb-12 scroll-mt-6">
             <div class="rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-purple-950/10 border border-slate-800 p-8">
                 <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2 font-orbitron">
-                    <span class="text-purple-400">03 ///</span> Module Deep Dive
+                    <span class="text-purple-400">03 ///</span> Approfondimento Moduli
                 </h2>
 
                 <div class="space-y-12">
@@ -206,36 +206,36 @@
                     {# INCOME #}
                     <div>
                         <h3 class="text-xl font-bold text-emerald-100 mb-4 border-b border-emerald-500/30 pb-2">
-                            A. Income: Smart Transactions
+                            A. Entrate (Income): Transazioni Smart
                         </h3>
                         <div class="grid md:grid-cols-2 gap-8">
                             <div class="prose prose-invert prose-sm">
                                 <p>
-                                    Income in Nav-Fi³ is "Smart". When you create an income record (like a Cargo Contract), the system doesn't just add a number. It analyzes your <strong>Signing Date</strong> and <strong>Payment Date</strong>.
+                                    Le entrate in Nav-Fi³ sono "Smart". Quando crei un record di entrata (come un Contratto Cargo), il sistema non aggiunge solo un numero. Analizza la tua <strong>Data Firma</strong> e <strong>Data Pagamento</strong>.
                                 </p>
                                 <ul class="list-none space-y-2 pl-0">
                                     <li class="pl-4 border-l-2 border-emerald-500/30">
-                                        <strong class="text-emerald-300">Deposit Handling:</strong> If you specify a deposit (e.g., 10% on signing), the system creates an immediate transaction for that amount on the <em>Signing Date</em>.
+                                        <strong class="text-emerald-300">Gestione Deposito:</strong> Se specifichi un deposito (es. 10% alla firma), il sistema crea una transazione immediata per quell'importo alla <em>Data Firma</em>.
                                     </li>
                                     <li class="pl-4 border-l-2 border-emerald-500/30">
-                                        <strong class="text-emerald-300">Final Balance:</strong> The remaining amount waits in "Pending" status until the <em>Payment Date</em> arrives.
+                                        <strong class="text-emerald-300">Saldo Finale:</strong> L'importo rimanente aspetta in stato "Pending" finché non arriva la <em>Data Pagamento</em>.
                                     </li>
                                     <li class="pl-4 border-l-2 border-emerald-500/30">
-                                        <strong class="text-emerald-300">Bonus Logic:</strong> Crushed the deadline? Add a bonus. It gets added to the Final Balance transaction automatically.
+                                        <strong class="text-emerald-300">Logica Bonus:</strong> Scadenza anticipata? Aggiungi un bonus. Viene sommato alla transazione di Saldo Finale automaticamente.
                                     </li>
                                 </ul>
                             </div>
                             <div class="bg-slate-950 rounded-lg border border-emerald-500/10 p-4">
-                                <div class="text-xs font-mono text-emerald-500/50 mb-2 uppercase">Example Flow</div>
+                                <div class="text-xs font-mono text-emerald-500/50 mb-2 uppercase">Esempio Flusso</div>
                                 <div class="space-y-2 text-xs">
                                     <div class="flex justify-between p-2 bg-slate-900 rounded border border-emerald-500/20">
-                                        <span class="text-slate-300">Sign Contract</span>
-                                        <span class="text-emerald-400">+10,000 Cr (Deposit)</span>
+                                        <span class="text-slate-300">Firma Contratto</span>
+                                        <span class="text-emerald-400">+10,000 Cr (Deposito)</span>
                                     </div>
-                                    <div class="flex justify-center text-slate-600">↓ Time Passes ↓</div>
+                                    <div class="flex justify-center text-slate-600">↓ Tempo Passa ↓</div>
                                     <div class="flex justify-between p-2 bg-slate-900 rounded border border-emerald-500/20">
-                                        <span class="text-slate-300">Deliver Goods</span>
-                                        <span class="text-emerald-400">+90,000 Cr (Balance)</span>
+                                        <span class="text-slate-300">Consegna Merci</span>
+                                        <span class="text-emerald-400">+90,000 Cr (Saldo)</span>
                                     </div>
                                 </div>
                             </div>
@@ -245,29 +245,29 @@
                     {# COSTS #}
                     <div>
                         <h3 class="text-xl font-bold text-amber-100 mb-4 border-b border-amber-500/30 pb-2">
-                            B. Costs: Granular Tracking
+                            B. Costi: Tracciamento Granulare
                         </h3>
                          <div class="grid md:grid-cols-2 gap-8">
                              <div class="prose prose-invert prose-sm">
                                 <p>
-                                    Costs are the heartbeat of the simulation. Every credit spent is categorized and timestamped.
+                                    I costi sono il battito cardiaco della simulazione. Ogni credito speso è categorizzato e marcato temporalmente.
                                 </p>
                                 <ul class="list-none space-y-2 pl-0">
                                     <li class="pl-4 border-l-2 border-amber-500/30">
-                                        <strong class="text-amber-300">Categories:</strong> Fuel, Life Support, Maintenance, Salaries, Berthing. Consistent use of these categories powers the Annual Budget analysis.
+                                        <strong class="text-amber-300">Categorie:</strong> Carburante, Supporto Vitale, Manutenzione, Stipendi, Ormeggio. L'uso coerente di queste categorie alimenta l'analisi del Budget Annuale.
                                     </li>
                                     <li class="pl-4 border-l-2 border-amber-500/30">
-                                        <strong class="text-amber-300">Legal Context:</strong> You can tag costs with a "Local Law" or Jurisdiction. This is vital for campaigns where compliance matters (or where bribes need to be tracked casually).
+                                        <strong class="text-amber-300">Contesto Legale:</strong> Puoi taggare i costi con una "Legge Locale" o Giurisdizione. Vitale per campagne dove la conformità conta (o dove le tangenti devono essere tracciate).
                                     </li>
                                     <li class="pl-4 border-l-2 border-amber-500/30">
-                                        <strong class="text-amber-300">Detail Items:</strong> A single "Cost" record (e.g., "Starport Resupply") can have multiple line items (Fuel x50 tons, Life Support x2 weeks), creating a detailed manifest.
+                                        <strong class="text-amber-300">Voci di Dettaglio:</strong> Un singolo record "Costo" (es. "Rifornimento Spazioporto") può avere righe multiple (Carburante x50 ton, Supporto Vitale x2 settimane), creando un manifesto dettagliato.
                                     </li>
                                 </ul>
                             </div>
                              <div class="bg-slate-950 rounded-lg border border-amber-500/10 p-4">
-                                <div class="text-xs font-mono text-amber-500/50 mb-2 uppercase">Budget Impact</div>
+                                <div class="text-xs font-mono text-amber-500/50 mb-2 uppercase">Impatto Budget</div>
                                 <p class="text-xs text-slate-400 mb-3">
-                                    Costs are deducted on their <strong>Payment Date</strong>. If you defer payment (put it on a tab), set the date to the future. The debt will loom in your ledger until that day comes.
+                                    I costi sono dedotti alla loro <strong>Data Pagamento</strong>. Se differisci il pagamento (lo metti "sul conto"), imposta la data nel futuro. Il debito incomberà nel tuo ledger fino all'arrivo di quel giorno.
                                 </p>
                             </div>
                         </div>
@@ -276,26 +276,26 @@
                     {# SALARY #}
                     <div id="salary-module" class="scroll-mt-6">
                         <h3 class="text-xl font-bold text-emerald-100 mb-4 border-b border-emerald-500/30 pb-2">
-                            C. Salary: 28-Day Imperial Cycle
+                            C. Stipendi: Ciclo Imperiale di 28 Giorni
                         </h3>
                         <div class="grid md:grid-cols-2 gap-8">
                             <div class="prose prose-invert prose-sm">
                                 <p>
-                                    Managing a crew isn't free. The Salary module automates the rigid Imperial standard of the <strong>28-day lunar pay cycle</strong>.
+                                    Gestire un equipaggio non è gratis. Il modulo Salari automatizza il rigido standard Imperiale del <strong>ciclo di paga lunare di 28 giorni</strong>.
                                 </p>
                                 <ul class="list-none space-y-2 pl-0">
                                     <li class="pl-4 border-l-2 border-emerald-500/30">
-                                        <strong class="text-emerald-300">Pro-Rata Logic:</strong> New hires don't get a full month's pay. The system calculates `(Salary / 28) * Days` automatically for the first check.
+                                        <strong class="text-emerald-300">Logica Pro-Rata:</strong> I nuovi assunti non prendono un mese pieno. Il sistema calcola `(Stipendio / 28) * Giorni` automaticamente per il primo assegno.
                                     </li>
                                     <li class="pl-4 border-l-2 border-emerald-500/30">
-                                        <strong class="text-emerald-300">History:</strong> Every contract change (raise, promotion) is tracked. Old salary records are kept for historical ledger integrity.
+                                        <strong class="text-emerald-300">Storico:</strong> Ogni cambio di contratto (aumento, promozione) è tracciato. I vecchi record salariali sono conservati per integrità storica del ledger.
                                     </li>
                                 </ul>
                             </div>
                             <div class="bg-slate-950 rounded-lg border border-emerald-500/10 p-4">
-                                <div class="text-xs font-mono text-emerald-500/50 mb-2 uppercase">Payroll Ledger</div>
+                                <div class="text-xs font-mono text-emerald-500/50 mb-2 uppercase">Ledger Buste Paga</div>
                                 <p class="text-xs text-slate-400 mb-3">
-                                    Payments are generated as <strong>SalaryPayment</strong> entities. They link directly to the Asset Ledger, ensuring your "Cash Flow" reports are accurate down to the credit.
+                                    I pagamenti sono generati come entità <strong>SalaryPayment</strong>. Si collegano direttamente al Ledger Asset, assicurando che i report di "Flusso di Cassa" siano accurati al credito.
                                 </p>
                             </div>
                         </div>
@@ -304,31 +304,31 @@
                     {# MORTGAGE #}
                     <div>
                         <h3 class="text-xl font-bold text-cyan-100 mb-4 border-b border-cyan-500/30 pb-2">
-                            D. Mortgage: The Long Game
+                            D. Mutuo: La Partita Lunga
                         </h3>
                         <a href="/" class="text-2xl font-bold font-orbitron tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 hover:to-cyan-300 transition-all duration-300">
                         NAV-FI³
                     </a>
                         <div class="prose prose-invert prose-sm max-w-none">
                             <p>
-                                The classic Traveller burden. Nav-Fi³ handles the math so you can focus on the stress.
+                                Il classico fardello del Traveller. Nav-Fi³ gestisce la matematica così tu puoi concentrarti sullo stress.
                             </p>
                             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
                                 <div class="p-3 bg-slate-900 rounded border border-cyan-500/20">
-                                    <strong class="block text-cyan-300 text-xs uppercase mb-1">Asset Eligibility</strong>
-                                    <span class="text-slate-400 text-xs text-balance">Only <strong>Ships</strong> and <strong>Bases</strong> are mortgageable. Teams are too transient for Imperial bank financing.</span>
+                                    <strong class="block text-cyan-300 text-xs uppercase mb-1">Eleggibilità Asset</strong>
+                                    <span class="text-slate-400 text-xs text-balance">Solo <strong>Navi</strong> e <strong>Basi</strong> sono ipotecabili. I Team sono troppo transitori per il finanziamento bancario Imperiale.</span>
                                 </div>
                                 <div class="p-3 bg-slate-900 rounded border border-cyan-500/20">
-                                    <strong class="block text-cyan-300 text-xs uppercase mb-1">Standard Terms</strong>
-                                    <span class="text-slate-400 text-xs">40 Years, 480 payments. The default Traveller standard.</span>
+                                    <strong class="block text-cyan-300 text-xs uppercase mb-1">Termini Standard</strong>
+                                    <span class="text-slate-400 text-xs">40 Anni, 480 pagamenti. Lo standard Traveller di default.</span>
                                 </div>
                                 <div class="p-3 bg-slate-900 rounded border border-cyan-500/20">
-                                    <strong class="block text-cyan-300 text-xs uppercase mb-1">Amortization</strong>
-                                    <span class="text-slate-400 text-xs">Calculates principal vs interest for every month automatically.</span>
+                                    <strong class="block text-cyan-300 text-xs uppercase mb-1">Ammortamento</strong>
+                                    <span class="text-slate-400 text-xs">Calcola capitale vs interessi per ogni mese automaticamente.</span>
                                 </div>
                                 <div class="p-3 bg-slate-900 rounded border border-cyan-500/20">
-                                    <strong class="block text-cyan-300 text-xs uppercase mb-1">The Captain</strong>
-                                    <span class="text-slate-400 text-xs">A mortgage <strong>requires</strong> a Captain. Links crew hierarchy to the debt.</span>
+                                    <strong class="block text-cyan-300 text-xs uppercase mb-1">Il Capitano</strong>
+                                    <span class="text-slate-400 text-xs">Un mutuo <strong>richiede</strong> un Capitano. Collega la gerarchia crew al debito.</span>
                                 </div>
                             </div>
                         </div>
@@ -341,42 +341,42 @@
         {# 4. SYSTEM PROTOCOLS #}
         <section id="protocols" class="mb-12 scroll-mt-6">
             <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2 font-orbitron">
-                <span class="text-cyan-400">04 ///</span> System Protocols (Voice of the Machine)
+                <span class="text-cyan-400">04 ///</span> Protocolli di Sistema (Voice of the Machine)
             </h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {# SYNC #}
                 <div class="p-4 rounded-lg bg-emerald-500/5 border border-emerald-500/20">
-                    <div class="text-[10px] uppercase tracking-widest text-emerald-400 mb-2 font-bold font-rajdhani">System Event</div>
-                    <h3 class="text-sm font-bold text-white mb-2">Temporal Reconciliation</h3>
+                    <div class="text-[10px] uppercase tracking-widest text-emerald-400 mb-2 font-bold font-rajdhani">Evento Sistema</div>
+                    <h3 class="text-sm font-bold text-white mb-2">Riconciliazione Temporale</h3>
                     <p class="text-xs text-slate-400 leading-relaxed">
-                        Triggered when confirming the Session Date. Future liabilities are converted to current debt and solvency is recalculated.
+                        Attivato confermando la Data Sessione. Passività future sono convertite in debito corrente e la solvibilità è ricalcolata.
                     </p>
                 </div>
 
                 {# REVERSAL #}
                 <div class="p-4 rounded-lg bg-amber-500/5 border border-amber-500/20">
-                    <div class="text-[10px] uppercase tracking-widest text-amber-400 mb-2 font-bold font-rajdhani">Audit Alert</div>
-                    <h3 class="text-sm font-bold text-white mb-2">Ledger Integrity</h3>
+                    <div class="text-[10px] uppercase tracking-widest text-amber-400 mb-2 font-bold font-rajdhani">Allarme Audit</div>
+                    <h3 class="text-sm font-bold text-white mb-2">Integrità Ledger</h3>
                     <p class="text-xs text-slate-400 leading-relaxed">
-                        Triggered when modifying a past record. The correction is appended, and the original error is archived for forensic audit.
+                        Attivato modificando un record passato. La correzione è accodata e l'errore originale archiviato per audit forense.
                     </p>
                 </div>
 
                 {# PENDING #}
                 <div class="p-4 rounded-lg bg-cyan-500/5 border border-cyan-500/20">
-                    <div class="text-[10px] uppercase tracking-widest text-cyan-400 mb-2 font-bold font-rajdhani">Status State</div>
-                    <h3 class="text-sm font-bold text-white mb-2">Causality Locked</h3>
+                    <div class="text-[10px] uppercase tracking-widest text-cyan-400 mb-2 font-bold font-rajdhani">Stato Status</div>
+                    <h3 class="text-sm font-bold text-white mb-2">Causalità Bloccata (Locked)</h3>
                     <p class="text-xs text-slate-400 leading-relaxed">
-                        Transactions scheduled for a future date. They remain ineffective until the Temporal Cursor (Session Date) arrives.
+                        Transazioni schedulate per una data futura. Rimangono inefficaci finché il Cursore Temporale (Data Sessione) non arriva.
                     </p>
                 </div>
 
                 {# HARD DECK #}
                 <div class="p-4 rounded-lg bg-rose-500/5 border border-rose-500/20">
-                    <div class="text-[10px] uppercase tracking-widest text-rose-400 mb-2 font-bold font-rajdhani">Critical Warning</div>
-                    <h3 class="text-sm font-bold text-white mb-2">Hard Deck Breach</h3>
+                    <div class="text-[10px] uppercase tracking-widest text-rose-400 mb-2 font-bold font-rajdhani">Avviso Critico</div>
+                    <h3 class="text-sm font-bold text-white mb-2">Violazione Hard Deck</h3>
                     <p class="text-xs text-slate-400 leading-relaxed">
-                        Fiscal viability protocol violation. Your asset is operating with negative credits. Seizure risk is imminent.
+                        Violazione protocollo sostenibilità fiscale. Il tuo asset sta operando con crediti negativi. Rischio di sequestro imminente.
                     </p>
                 </div>
             </div>
@@ -386,43 +386,43 @@
         <section id="workflows" class="mb-12 scroll-mt-6">
             <div class="rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-cyan-950/10 border border-slate-800 p-8">
                 <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2 font-orbitron">
-                    <span class="text-cyan-400">05 ///</span> Practical Workflows
+                    <span class="text-cyan-400">05 ///</span> Workflow Pratici
                 </h2>
                 <div class="grid md:grid-cols-2 gap-6">
                     {# Standard Campaign #}
                     <div class="rounded-lg bg-slate-900/60 border border-cyan-500/20 p-6">
-                        <h3 class="text-lg font-bold text-cyan-100 mb-4 font-orbitron uppercase">Workflow: The Free Trader</h3>
+                        <h3 class="text-lg font-bold text-cyan-100 mb-4 font-orbitron uppercase">Workflow: Il Commerciante Libero</h3>
                         <ol class="space-y-4 text-sm text-slate-300 list-decimal pl-4 marker:text-cyan-500 font-medium">
                             <li>
-                                <strong>Start Session:</strong> Check the <em>Mission Date</em>. Update it to "Now".
+                                <strong>Inizio Sessione:</strong> Controlla la <em>Data Missione</em>. Aggiornala a "Oggi".
                             </li>
                             <li>
-                                <strong>Check Ledger:</strong> Look at the Asset's Ledger. Did any automated payments (Mortgage, Salaries) trigger when you advanced the date?
+                                <strong>Controlla Ledger:</strong> Guarda il Ledger dell'Asset. Qualche pagamento automatico (Mutuo, Stipendi) è scattato quando hai avanzato la data?
                             </li>
                             <li>
-                                <strong>Log Activity:</strong> Add new Incomes (Contracts) and Costs (Fuel, Repairs) as they happen at the table.
+                                <strong>Log Attività:</strong> Aggiungi nuove Entrate (Contratti) e Costi (Carburante, Riparazioni) mentre accadono al tavolo.
                             </li>
                             <li>
-                                <strong>End Session:</strong> Advance the date if time passed. The Ledger will lock "Posted" transactions.
+                                <strong>Fine Sessione:</strong> Avanza la data se è passato tempo. Il Ledger bloccherà le transazioni "Posted".
                             </li>
                         </ol>
                     </div>
 
                     {# Mercenary / No Ship #}
                     <div class="rounded-lg bg-slate-900/60 border border-emerald-500/20 p-6">
-                        <h3 class="text-lg font-bold text-emerald-100 mb-4 font-orbitron uppercase">Workflow: The Ground Unit (No Ship)</h3>
+                        <h3 class="text-lg font-bold text-emerald-100 mb-4 font-orbitron uppercase">Workflow: Unità di Terra (No Nave)</h3>
                         <ol class="space-y-4 text-sm text-slate-300 list-decimal pl-4 marker:text-emerald-500 font-medium">
                             <li>
-                                <strong>Create "Team":</strong> Create an Asset entity named "Bravo Company". Leave fittings blank.
+                                <strong>Crea "Team":</strong> Crea un'entità Asset chiamata "Compagnia Bravo". Lascia equipaggiamenti vuoti.
                             </li>
                             <li>
-                                <strong>Log Logistics:</strong> Use "Costs" to track ammo, rations, and bribes. Categorize them under "Maintenance" or "Life Support".
+                                <strong>Log Logistica:</strong> Usa "Costi" per tracciare munizioni, razioni e tangenti. Categorizzali sotto "Manutenzione" o "Supporto Vitale".
                             </li>
                             <li>
-                                <strong>Contracts:</strong> Use "Income" to log your mercenary tickets. The partial payment logic (Deposit vs Completion) is perfect for merc contracts.
+                                <strong>Contratti:</strong> Usa "Entrate" per loggare i tuoi ticket mercenari. La logica di pagamento parziale (Deposito vs Completamento) è perfetta per i contratti mercenari.
                             </li>
                             <li>
-                                <strong>Payroll:</strong> Standard Crew Salary functions work perfectly for your squad members.
+                                <strong>Buste Paga:</strong> Le funzioni standard di Stipendio Equipaggio funzionano perfettamente per i membri della tua squadra.
                             </li>
                         </ol>
                     </div>
@@ -432,13 +432,13 @@
 
         {# Footer CTA #}
         <div class="rounded-xl bg-gradient-to-r from-cyan-900/20 to-amber-900/20 border border-slate-700 p-8 text-center sticky bottom-4 backdrop-blur-sm">
-            <h3 class="text-xl font-bold text-white mb-3 font-orbitron">Ready to Master Your Credits?</h3>
+            <h3 class="text-xl font-bold text-white mb-3 font-orbitron">Pronto a Padroneggiare i tuoi Crediti?</h3>
             <div class="flex items-center justify-center gap-4">
                 <a href="{{ path('app_campaign_index') }}" class="btn btn-primary btn-sm px-6 font-orbitron uppercase text-[10px] tracking-widest font-bold">
-                    Create Mission
+                    Crea Missione
                 </a>
                 <a href="{{ path('app_home') }}" class="btn btn-outline btn-secondary btn-sm px-6 font-orbitron uppercase text-[10px] tracking-widest font-bold">
-                    Back to Home
+                    Torna alla Home
                 </a>
             </div>
         </div>

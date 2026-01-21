@@ -1,177 +1,91 @@
-# Analisi operativa – Nav-Fi³ Web
+# Nav-Fi³ Web – Analisi Operativa
 
-## Mappa relazioni (operativa)
+> **Obiettivo**: Definire i flussi di lavoro standard per l'ufficiale di rotta e il Referee.
+
+## 1. Mappa Concettuale delle Relazioni
 
 ```mermaid
-flowchart TB
-    User -->|1..N| Ships
-    User -->|1..N| Companies
-    User -->|1..N| Campaigns
-
-    Ships -->|1..1| Mortgage
-    Mortgage -->|1..N| MortgageInstallments
-
-    Ships -->|1..N| Crew
-    Crew -->|1..N| Salaries
-    Ships -->|1..N| Costs
-    Costs -->|N..1| CostCategory
-    Costs -->|N..1| Company
-    Costs -->|N..1| LocalLaw
-
-    Ships -->|1..N| Incomes
-    Incomes -->|N..1| IncomeCategory
-    Incomes -->|1..1| IncomeDetails["Details per categoria"]
-    Incomes -->|N..1| Company
-    Incomes -->|N..1| LocalLaw
-
-    Ships -->|1..N| AnnualBudgets
-    Ships -->|1..N| Routes
-    Ships -->|JSON| ShipDetails["shipDetails (JSON)"]
-    Ships -->|1..N| ShipAmendments
-    ShipAmendments -->|N..1| Costs
-    Routes -->|1..N| RouteWaypoints
-
-    Companies -->|N..1| CompanyRole
-    Mortgage -->|N..1| Company
-    Mortgage -->|N..1| LocalLaw
-
-    Campaigns -->|1..N| Ships
+graph TD
+    User((Utente)) --> Campaign
+    User --> Company["Company (Cross-Campaign)"]
+    
+    Campaign["Campaign (Time Cursor)"] --> Ship
+    
+    Ship --> Crew
+    Ship --> Mortgage
+    Ship --> Route
+    Ship --> Ledger["Ledger (Financial Core)"]
+    
+    Ledger --> Income
+    Ledger --> Cost
+    Ledger --> SalaryPayment
+    Ledger --> MortgageInstallment
 ```
 
-## Flusso operativo: setup campagna
+## 2. Flusso: Setup Iniziale "Commissioning"
 
-1. Definire i **registri di contesto** (Directory): `InterestRate`, `Insurance`, `ShipRole`, `CostCategory`, `IncomeCategory`, `CompanyRole`, `LocalLaw`.
-2. Creare una **Campaign** con calendario imperiale (giorno/anno).
-   - Ogni cambio della session date crea un **log di sessione** con snapshot JSON (Campaign + Ships + log operativi), visibile in pagina dettagli.
-3. Creare la **Ship** e compilare la scheda dettagli (JSON `shipDetails`) con M‑Drive/J‑Drive e componenti.
-4. I partner commerciali (**Company**) sono **cross-campaign**: li definisci una volta e li riutilizzi su costi, entrate e mutui di qualsiasi campagna per mantenere la coerenza contrattuale.
-5. Collegare **Crew**, **Mortgage**, **Cost** e **Income** alla nave.
+1.  **Context Load**: Assicurarsi che le tabelle di contesto (`ShipRole`, `LocalLaw`, ecc.) siano popolate.
+2.  **Campaign Init**: Creare la Campagna. Impostare la data iniziale (es. 001-1105).
+3.  **Ship Registration**:
+    *   Compilare i dati base (Nome, Classe).
+    *   Definire i dettagli tecnici (Hull, Drives) nella scheda JSON.
+    *   *Nota*: Il "Prezzo" della nave è un campo manuale, ma può essere derivato dalla somma dei componenti.
+4.  **Mortgage Signing**:
+    *   Se la nave non è pagata cash, creare un Mutuo.
+    *   Firmare il mutuo alla data corrente della campagna.
+    *   Questo genera il PDF "Atto di Mutuo".
 
-## Flusso operativo: scheda nave
+## 3. Flusso: Ciclo Operativo di Missione
 
-- La scheda dettagli è editata via `ShipDetailsType` e salvata come JSON su `Ship.shipDetails`.
-- M‑Drive/J‑Drive hanno campi extra `thrust` e `jump` nel form.
-- “Total Cost” è calcolato client‑side sommando i `cost_mcr` e viene salvato nel JSON, ma **non** modifica `Ship.price`.
-- **Ship Amendment**: Sebbene la modifica diretta sia possibile, per mantenere un audit trail accurato è consigliato utilizzare il sistema di Amendment per installare nuovi componenti.
-- Le date in UI/PDF sono formattate in `DDD/YYYY` tramite helper condiviso.
+### Fase 1: Briefing & Rotta
+1.  **Definizione Rotta**: Usare il modulo `Routes`.
+    *   Inserire Hex partenza e destinazione.
+    *   Verificare distanza (Jump-1, Jump-2...) e consumo fuel.
+    *   Consultare TravellerMap via link integrato per rischi di sistema (Amber/Red Zones).
+2.  **Reclutamento**: Assegnare Crew dalla lista "Unassigned".
+    *   Lo status passa ad `Active`.
+    *   La data di attivazione diventa la data corrente.
 
-## Flusso operativo: mutuo
+### Fase 2: Contratti (Income)
+1.  Creare un `Income` (es. "Freight - 200 tonnellate").
+2.  Collegare una `Company` come controparte.
+3.  Impostare:
+    *   `Signing Date` (Oggi).
+    *   `Payment Date` (Prevista all'arrivo).
+4.  Il sistema calcola eventuali depositi (anticipi) e li posta subito sul Ledger (`Transaction` POSTED).
+5.  Il saldo finale viene creato come `Transaction` PENDING (futura).
 
-1. Creare il Mortgage sulla Ship (vincolo 1‑1).
-2. Firmare il mutuo (richiede `signing_location` e usa data sessione dalla Campaign).
-3. Registrare rate: creare `MortgageInstallment` con day/year.
-4. Stampare PDF del mutuo tramite template dedicato.
-5. L’equipaggio mostrato nel mutuo (UI + PDF) esclude `Missing (MIA)` e `Deceased` e include solo crew con **active date >= signing date**.
+### Fase 3: Esecuzione & Spese (Cost)
+1.  Registrare spese correnti: Fuel, Life Support, Berthing Fees.
+2.  Ogni spesa riduce il saldo immediatamente (se pagata cash) o alla data indicata.
 
-## Flusso operativo: entrate (Income)
+### Fase 4: Chiusura & Salto Temporale
+1.  **Arrivo a destinazione**: Il Referee avanza la data della Campagna (es. +7 giorni per il salto + 1 giorno manovra).
+2.  **Sync**: Il sistema rileva il cambio data.
+    *   Le transazioni PENDING (il saldo del contratto Freight) diventano POSTED.
+    *   I fondi vengono accreditati.
+    *   Vengono generati i ratei stipendio (se scaduti i 28 giorni).
 
-- Income è legato a Ship + IncomeCategory + Company + LocalLaw.
-- Ogni categoria ha una tabella dettagli dedicata (Freight, Contract, Trade, Prize, ecc.).
-- La form usa `IncomeDetailsSubscriber` per agganciare la sottoform corretta in base alla categoria; `ContractFieldConfig` mantiene la mappa dei campi opzionali.
-- Lo **status** è automatico: `Draft` di default, `Signed` quando la signing date è completa.
-- PDF contratto: selezione template in `templates/pdf/contracts` e sostituzione placeholder.
+## 4. Gestione Anomalie
 
-## Flusso operativo: costi
+### Annullamento Contratti (Void)
+Se una missione fallisce:
+1.  Andare sul dettaglio `Income`.
+2.  Impostare `Cancel Date`.
+3.  La transazione PENDING del saldo finale viene marcata `VOID` (Annullata).
+4.  Il PDF del contratto riceve un watermark "VOID".
 
-- Cost è legato a Ship + CostCategory (+ LocalLaw, Company).
-- Le date di pagamento sono in formato imperiale (day/year).
-- Le righe dettaglio (`detailItems`) alimentano il calcolo dell’amount, che resta read‑only in form.
-- I PDF riportano la **template version** per tracciabilità.
+### Ristrutturazione Debito
+Se il mutuo non può essere pagato:
+1.  Non modificare le rate passate.
+2.  Usare il comando di "Refinance" (se implementato) o annotare l'evento nel Log di Campagna.
+3.  Il sistema segnalerà "Hard Deck Breach" (Insolvenza) se il saldo va sotto zero.
 
-## Flusso operativo: salary
-
-- Salary è legato a Crew (1-N) e segue il ciclo di 28 giorni.
-- **Pro-rata**: Al momento dell'assunzione (Active Date), il primo pagamento è calcolato proportionalmente: `(Salary / 28) * Days`.
-- **Storico**: Le modifiche di salario creano nuovi record, mantenendo lo storico per il Ledger.
-- **Ledger**: Il sistema genera automaticamente transazioni `SalaryPayment` alla scadenza del ciclo.
-
-## Flusso operativo: annual budget
-
-- Ogni budget è per **una singola nave**.
-- Timeline aggrega **Income**, **Cost** e **MortgageInstallment** per periodo.
-- Le chiavi day/year sono normalizzate da helper e i filtri accettano `DDD/YYYY` o solo `YYYY`.
-
-## Flusso operativo: routes
-
-- Le Routes sono agganciate a **Campaign + Ship**.
-- I waypoints permettono lookup automatico su TravellerMap (via `TravellerMapSectorLookup` service e API).
-- La vista dettagli genera automaticamente l'embed della mappa e i link diretti per `travellermap.com/go/{sector}/{hex}`.
-- `startHex`/`destHex` sono derivati automaticamente dal primo e ultimo waypoint.
-
-## Ownership e sicurezza (operativa)
-
-- Entità principali filtrate per utente (owner) in repository e controller.
-- `AssignUserSubscriber` assegna automaticamente l’utente in prePersist.
-- I voter bloccano **delete** se esistono dipendenze critiche (mutui, campaign link, financial records). L'edit rimane aperto per correzioni.
-
-## UI e UX Tattica (v2.0.x)
-
-- **Bridge Interface**: Asset caricati via Asset Mapper con Tailwind 4 e DaisyUI, ottimizzati per un'estetica sci-fi "Abyss" ad alto contrasto.
-- **Tactical Search Terminals**: Le liste (Ship, Crew, Financials) integrano moduli di ricerca con labeling tecnico (`TITLEDATA`, `VESSELNAV`) e design a terminale bridge.
-- **Nav-Ops Dashboard**: Sidebar con badge operativi (`Beacon // Dock Ready`) e separatori di sezione per una navigazione intuitiva tra i moduli missione.
-- **Data Telemetry Layouts**: Massimizzazione dello spazio orizzontale per i moduli critici (Mortgage, Annual Budget), permettendo la visualizzazione simultanea di metriche, grafici e log azioni.
-- **Unified Action Language**: Utilizzo della macro `_tooltip` per uniformare bottoni e interazioni, garantendo feedback visivo costante e assenza di artefatti grafici (protocollo `inline-flex`).
-- **Session Timeline**: Log delle modifiche alla Campaign formattato via Highlight.js per una facile lettura dei delta temporali della missione.
-
-## Perché è “Traveller‑centric”
-
-- Tutti i tempi usano day/year imperiale.
-- Mutuo e budget seguono cicli a 13 periodi/anno.
-- PDF contratti e placeholder mantengono narrativa di sessione.
-
-## Journey operativa (con esempi)
-
-### Sessione di gioco: dalla creazione nave → missione → pagamento → aggiornamento budget
-
-1. **Creazione nave**
-   - Ship:
-     - `name`: *ISS Far Horizon*
-     - `type`: *Far Trader*
-     - `class`: *A-1*
-     - `price`: *1450000.00*
-   - Ship Details (JSON):
-     - `hull.cost_mcr`: *450.00*
-     - `mDrive.cost_mcr`: *120.00*, `mDrive.thrust`: *2*
-     - `jDrive.cost_mcr`: *200.00*, `jDrive.jump`: *2*
-     - `powerPlant.cost_mcr`: *90.00*
-     - **Total Cost** (auto): *860.00* MCr
-
-2. **Missione / Contratto (Income)**
-   - Income (FREIGHT):
-     - `title`: *Astan Cargo Run*
-     - `amount`: *22000.00*
-     - `signingDay/year`: *112/1105*
-     - `paymentDay/year`: *118/1105*
-   - Freight Details:
-     - `origin`: *Astan*
-     - `destination`: *Rhylanor*
-     - `cargoDescription`: *Refined alloys*
-     - `cargoQty`: *40 dtons*
-
-3. **Pagamenti e Costi**
-   - Cost (Fuel):
-     - `amount`: *4200.00*
-     - `paymentDay/year`: *115/1105*
-   - MortgageInstallment:
-     - `payment`: *7400.00*
-     - `paymentDay/year`: *117/1105*
-
-4. **Aggiornamento budget annuale**
-   - AnnualBudget (Ship: ISS Far Horizon):
-     - `startDay/year`: *101/1105*
-     - `endDay/year`: *200/1105*
-   - Risultati grafico:
-     - **Income**: 22,000.00 Cr
-     - **Costs**: 4,200.00 Cr + 7,400.00 Cr (rate mutuo)
-    - Timeline con picchi alle date 115, 117, 118.
-
-## Gestione equipaggio (status e date)
-
-- Gli status disponibili sono: **Active**, **On Leave**, **Retired**, **Missing (MIA)**, **Deceased**.
-- Status e data relativa sono richiesti solo quando la ship è selezionata; la data appare insieme allo status nella form.
-- Quando si assegna un crew alla ship dalla lista “unassigned”, lo status diventa **Active** e la data attiva è impostata alla **session date** corrente (Campaign se presente, altrimenti Ship).
-- Quando un crew viene **sganciato** dalla ship:
-  - `status` viene azzerato se non è `Missing (MIA)`/`Deceased`;
-  - le date **Active/On Leave/Retired** vengono azzerate;
-  - le date **MIA/Deceased** restano intatte (storico eventi).
-- La lista degli **unassigned crew** esclude i profili `Missing (MIA)` e `Deceased`.
+## 5. Interfaccia Tattica (UX Guide)
+*   **Dashboard**: Monitorare i widget "Solvency" e "Fuel".
+*   **Color Codes**:
+    *   Cyan/Azure: Operativo / Normale.
+    *   Emerald: Finanziario Positivo (Entrate).
+    *   Amber: Attenzione / Pending.
+    *   Red: Critico / Debito / Spesa.
+*   **Badge**: Usare i badge rapidi per vedere a colpo d'occhio stato contratti e crew (es. "MIA", "SIGNED").

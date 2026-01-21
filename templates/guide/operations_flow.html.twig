@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Operations Flow{% endblock %}
+{% block title %}Flusso Operativo{% endblock %}
 
 {% block pageContent %}
 <div class="min-h-[80vh] space-y-8">
@@ -16,18 +16,18 @@
                     <circle cx="12" cy="12" r="3"></circle>
                     <path d="M3 12h18M8 7l-2 5 2 5M16 7l2 5-2 5"></path>
                 </svg>
-                <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">Standard Operating Procedure</p>
+                <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">Procedura Operativa Standard</p>
             </div>
             <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight leading-none font-orbitron">
-                Operations <span class="text-cyan-500">Flow</span>
+                Flusso <span class="text-cyan-500">Operativo</span>
             </h1>
             <p class="text-lg text-slate-400 leading-relaxed font-light">
-                Operational dossier: from mission clock to signed credits. This briefing lays out the full administrative flow: Mission, Company, Crew, Asset, Mortgage, Income, Cost, Annual Budget and the rules that keep them coherent. 
-                <span class="text-amber-400/80 font-bold italic">Coherence is fully advisory: the Referee has total tactical control over all data.</span>
+                Dossier operativo: dall'orologio di missione ai crediti firmati. Questo briefing espone l'intero flusso amministrativo: Missione, Compagnia, Equipaggio, Asset, Mutuo, Entrate, Costi, Budget Annuale e le regole che li mantengono coerenti.
+                <span class="text-amber-400/80 font-bold italic">La coerenza è puramente consultiva: l'Arbitro ha il controllo tattico totale su tutti i dati.</span>
             </p>
             
             <div class="flex flex-wrap gap-2 mt-2">
-                {% for tag in ['Cross-mission Companies', 'Imperial Dates', 'Crew Status Timeline', 'Session Timeline Logs', 'Mortgage Signature', 'Contract PDFs', 'Template Version', 'Asset Amendments', 'Routes & TRAVELLERMAP.COM'] %}
+                {% for tag in ['Compagnie Cross-missione', 'Date Imperiali', 'Status Crew Timeline', 'Log Timeline Sessione', 'Firma Mutuo', 'PDF Contratti', 'Versione Template', 'Asset Amendment', 'Rotte & TRAVELLERMAP.COM'] %}
                      <span class="px-3 py-1.5 rounded bg-slate-900 border border-slate-700 text-xs font-bold tracking-wider text-slate-400 uppercase">{{ tag }}</span>
                 {% endfor %}
             </div>
@@ -41,35 +41,35 @@
         <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
              <div class="flex items-center gap-2 text-cyan-500/50 group-hover:text-cyan-400 mb-3 transition-colors">
                 {% include 'icons/alien-structure-1.html.twig' with { dim: 20 } %}
-                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Mission Directive</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Direttiva Missione</p>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Mission</h3>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Missione</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-2">
-                The mission is the master clock. Set starting year and session date (day/year) and keep it updated as in‑game time advances. Every downstream date, limit, and PDF reads from this clock.
+                La missione è l'orologio principale. Imposta l'anno iniziale e la data della sessione (giorno/anno) e mantienila aggiornata man mano che il tempo di gioco avanza. Ogni data a valle, limite e PDF legge da questo orologio.
             </p>
             <p class="text-xs text-amber-400/80 italic mb-4 border-l-2 border-amber-500/30 pl-3">
-                A Mission can be an entire campaign or a single adventure—use whatever scope fits your table.
+                Una Missione può essere un'intera campagna o una singola avventura: usa l'ambito che si adatta al tuo tavolo.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Session date drives form limits and PDF “generated on” stamps.</span>
+                    <span>La data della sessione guida i limiti dei form e i timbri "generato il" dei PDF.</span>
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Assets inherit the mission calendar for all day/year fields.</span>
+                    <span>Gli asset ereditano il calendario della missione per tutti i campi giorno/anno.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Every update is logged as a session timeline entry with a JSON snapshot.</span>
+                    <span>Ogni aggiornamento viene registrato come voce nella timeline sessione con uno snapshot JSON.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Mission is the anchor for costs, income, and mortgage signatures.</span>
+                    <span>La missione è l'ancora per costi, entrate e firme di mutui.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Dates are normalized everywhere as DDD/YYYY.</span>
+                    <span>Le date sono normalizzate ovunque come DDD/YYYY.</span>
                 </li>
             </ul>
         </div>
@@ -78,24 +78,24 @@
         <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
              <div class="flex items-center gap-2 text-cyan-500/50 group-hover:text-cyan-400 mb-3 transition-colors">
                 {% include 'icons/company.html.twig' with { dim: 20 } %}
-                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Counterparty Registry</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Registro Controparti</p>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Company</h3>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Compagnia</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Companies are cross‑mission entities. Register them once with roles, contact data, and LocalLaw; reuse them in any mission without duplicating legal metadata.
+                Le Compagnie sono entità trasversali alle missioni. Registrale una volta con ruoli, dati di contatto e Leggi Locali (LocalLaw); riusale in qualsiasi missione senza duplicare i metadati legali.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>LocalLaw data flows into Cost/Income/Mortgage PDFs.</span>
+                    <span>I dati LocalLaw confluiscono nei PDF di Costi/Entrate/Mutui.</span>
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Company roles clarify counterparties across all contracts.</span>
+                    <span>I ruoli aziendali chiariscono le controparti in tutti i contratti.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Cross‑mission reuse keeps signatures consistent.</span>
+                    <span>Il riutilizzo cross-missione mantiene coerenti le firme.</span>
                 </li>
             </ul>
         </div>
@@ -104,24 +104,24 @@
          <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
              <div class="flex items-center gap-2 text-cyan-500/50 group-hover:text-cyan-400 mb-3 transition-colors">
                 {% include 'icons/crew.html.twig' with { dim: 20 } %}
-                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Roster Protocol</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Protocollo Ruolino</p>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Crew</h3>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Equipaggio</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Crew status is a timeline. When assigned from the unassigned roster, the crew member is set to Active and stamped with the session date.
+                Lo status dell'equipaggio è una timeline. Quando assegnato dal ruolino "non assegnati", il membro dell'equipaggio viene impostato su Attivo e timbrato con la data della sessione.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Statuses: Active, On Leave, Retired, Missing (MIA), Deceased.</span>
+                    <span>Status: Attivo, In Congedo (On Leave), Ritirato, Disperso (MIA), Deceduto.</span>
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Unassigned lists exclude Missing/Deceased by default.</span>
+                    <span>Le liste non assegnati escludono Dispersi/Deceduti per default.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Detaching a crew from an asset clears Active/On Leave/Retired dates and status.</span>
+                    <span>Sganciare un equipaggio da un asset azzera le date Attivo/Congedo/Ritirato e lo status.</span>
                 </li>
             </ul>
         </div>
@@ -130,24 +130,24 @@
          <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
              <div class="flex items-center gap-2 text-cyan-500/50 group-hover:text-cyan-400 mb-3 transition-colors">
                 {% include 'icons/assets.html.twig' with { dim: 20 } %}
-                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Asset Manifest</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Manifesto Asset</p>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Register Assets</h3>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Registra Asset</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Assets are the core entity. Each asset (Ship, Base, Team) has a crew roster and optional Financial Core modules. Ships also have detailed specification sheets.
+                Gli Asset sono l'entità centrale. Ogni asset (Nave, Base, Team) ha un ruolino equipaggio e moduli Financial Core opzionali. Le Navi hanno anche schede tecniche dettagliate.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Asset details track drives, systems, and total component cost.</span>
+                    <span>I dettagli Asset tracciano propulsori, sistemi e costo totale componenti.</span>
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Mission association synchronizes all day/year fields.</span>
+                    <span>L'associazione alla missione sincronizza tutti i campi giorno/anno.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Crew assignments and roles are managed per asset.</span>
+                    <span>Le assegnazioni equipaggio e ruoli sono gestiti per singolo asset.</span>
                 </li>
             </ul>
         </div>
@@ -156,24 +156,24 @@
          <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
              <div class="flex items-center gap-2 text-cyan-500/50 group-hover:text-cyan-400 mb-3 transition-colors">
                 {% include 'icons/ship-components.html.twig' with { dim: 20 } %}
-                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Patch Log</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Log Patch</p>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Asset Amendments</h3>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Amendment Asset</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Signed assets change through amendments. Link each amendment to a technical cost with payment date; that payment date becomes the amendment’s effective day/year.
+                Gli asset firmati cambiano tramite Amendment (emendamenti). Collega ogni amendment a un costo tecnico con data di pagamento; quella data diventa il giorno/anno effettivo dell'amendment.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Cost ref is mandatory and must have payment day/year.</span>
+                    <span>Il rif. Costo è obbligatorio e deve avere giorno/anno di pagamento.</span>
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Costs already used by other amendments are excluded.</span>
+                    <span>I Costi già usati da altri amendment sono esclusi.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Amendments are logged in the asset PDF for auditing.</span>
+                    <span>Gli Amendment sono registrati nel PDF dell'asset per audit.</span>
                 </li>
             </ul>
         </div>
@@ -182,24 +182,24 @@
          <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
              <div class="flex items-center gap-2 text-cyan-500/50 group-hover:text-cyan-400 mb-3 transition-colors">
                 {% include 'icons/routes.html.twig' with { dim: 20 } %}
-                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Nav Dossier</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Dossier Nav</p>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Routes</h3>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Rotte</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Routes are built from waypoints and tied to an Asset + Mission. Each waypoint carries a sector name or T5SS abbreviation plus its 4‑digit hex for TravellerMap.
+                Le Rotte (Routes) sono costruite da waypoints e legate a Asset + Missione. Ogni waypoint porta un nome settore o abbreviazione T5SS più il suo esagono a 4 cifre per TravellerMap.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Start/Destination hex are auto‑sealed from the first and last waypoint.</span>
+                    <span>L'esagono Partenza/Destinazione è auto-sigillato dal primo e ultimo waypoint.</span>
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Jump distances and fuel estimate are calculated on submit.</span>
+                    <span>Le distanze di salto e la stima carburante sono calcolate all'invio.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Map links open `TRAVELLERMAP.COM` via coordinate sync for quick visual checks.</span>
+                    <span>I link mappa aprono `TRAVELLERMAP.COM` via sync coordinate per controlli visivi rapidi.</span>
                 </li>
             </ul>
         </div>
@@ -208,24 +208,24 @@
          <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
              <div class="flex items-center gap-2 text-cyan-500/50 group-hover:text-cyan-400 mb-3 transition-colors">
                 {% include 'icons/handbook.html.twig' with { dim: 20 } %}
-                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Lien File</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">File Pegni</p>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Mortgage</h3>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Mutuo (Mortgage)</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Mortgages are signed using the mission session date and a recorded signing location. A signed mortgage can be printed as an official record or kept as a draft.
+                I mutui sono firmati usando la data sessione missione e una località di firma registrata. Un mutuo firmato può essere stampato come record ufficiale o tenuto come bozza.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Signing stamps day/year + location and locks PDF metadata.</span>
+                    <span>La firma timbra giorno/anno + località e blocca i metadati PDF.</span>
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Crew panels in UI/PDF only show Active crew on or after the signing date.</span>
+                    <span>I pannelli Crew in UI/PDF mostrano solo l'equipaggio Attivo alla data di firma o successiva.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Installments follow the Traveller 13‑period year.</span>
+                    <span>Le rate seguono l'anno Traveller di 13 periodi.</span>
                 </li>
             </ul>
         </div>
@@ -234,24 +234,24 @@
          <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
              <div class="flex items-center gap-2 text-cyan-500/50 group-hover:text-cyan-400 mb-3 transition-colors">
                 {% include 'icons/income.html.twig' with { dim: 20 } %}
-                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Revenue Docket</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Fascicolo Entrate</p>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Income</h3>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Entrate (Income)</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Records all revenue streams with automated logic to handle deposits, bonuses, and final payments. Now includes a <strong>Cancellation Workflow</strong> with visual VOID badges and PDF watermarking.
+                Registra tutti i flussi di entrata con logica automatizzata per gestire depositi, bonus e pagamenti finali. Ora include un <strong>Workflow di Cancellazione</strong> con badge visivi VOID e watermark PDF.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>System auto-splits Deposits (Signing Date) and Balances (Payment Date).</span>
+                    <span>Il sistema auto-divide Depositi (Data Firma) e Saldi (Data Pagamento).</span>
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span><strong>CancelDate Support:</strong> Automatically markers related future transactions as VOID.</span>
+                    <span><strong>Supporto CancelDate:</strong> Marca automaticamente le transazioni future correlate come VOID.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Contract PDFs for cancelled incomes feature a high-visibility watermark.</span>
+                    <span>I PDF contrattuali per entrate cancellate mostrano un watermark ad alta visibilità.</span>
                 </li>
             </ul>
         </div>
@@ -260,24 +260,24 @@
          <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
              <div class="flex items-center gap-2 text-cyan-500/50 group-hover:text-cyan-400 mb-3 transition-colors">
                 {% include 'icons/cost.html.twig' with { dim: 20 } %}
-                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Expense Ledger</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Libro Spese</p>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Cost</h3>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Costi (Cost)</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Costs are logged per asset with detailed line items. LocalLaw and counterparties are printed in PDF for jurisdictional clarity.
+                I costi sono loggati per asset con voci di dettaglio. Legge Locale (LocalLaw) e controparti sono stampate in PDF per chiarezza giurisdizionale.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Detail items feed the computed amount field (read‑only).</span>
+                    <span>Le voci di dettaglio alimentano il campo importo calcolato (sola lettura).</span>
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Payment dates use imperial day/year.</span>
+                    <span>Le date di pagamento usano giorno/anno imperiale.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>PDF formatting stays consistent across contracts (template versioned).</span>
+                    <span>La formattazione PDF rimane coerente tra i contratti (template versionati).</span>
                 </li>
             </ul>
         </div>
@@ -286,24 +286,24 @@
          <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
              <div class="flex items-center gap-2 text-cyan-500/50 group-hover:text-cyan-400 mb-3 transition-colors">
                 {% include 'icons/annual-budget.html.twig' with { dim: 20 } %}
-                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Balance Strip</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Striscia Bilancio</p>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Annual Budget</h3>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Budget Annuale (Annual Budget)</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                 Annual Budget is the asset’s fiscal strip for the session year: it aggregates Income, Cost, and mortgage installments into a single operational readout.
+                 Il Budget Annuale è la striscia fiscale dell'asset per l'anno di sessione: aggrega Entrate, Costi e rate del mutuo in un'unica lettura operativa.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>One budget per asset, tied to imperial start/end day/year.</span>
+                    <span>Un budget per asset, legato a giorno/anno imperiale di inizio/fine.</span>
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Timeline blends payouts, upkeep, and debt across 13 periods.</span>
+                    <span>La timeline fonde pagamenti, mantenimento e debito attraverso 13 periodi.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Use it to forecast solvency before the next jump.</span>
+                    <span>Usalo per prevedere la solvibilità prima del prossimo salto.</span>
                 </li>
             </ul>
         </div>
@@ -312,33 +312,33 @@
         <div class="md:col-span-2 group relative flex flex-col rounded-xl border border-amber-500/20 bg-gradient-to-br from-slate-950 via-amber-950/5 to-slate-950 p-6 shadow-lg transition-all hover:border-amber-500/40">
              <div class="flex items-center gap-2 text-amber-500/50 group-hover:text-amber-400 mb-3 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Referee Tactical Control</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Controllo Tattico Arbitro</p>
             </div>
-            <h3 class="text-xl font-bold text-amber-100 group-hover:text-amber-400 transition-colors font-orbitron mb-3">Advisory Validation & Referee Control</h3>
+            <h3 class="text-xl font-bold text-amber-100 group-hover:text-amber-400 transition-colors font-orbitron mb-3">Validazione Consultiva & Controllo Arbitro</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Nav-Fi&sup3; uses an advisory validation model. The system provides guidance through alerts but never hard-locks records based on signed/paid status or session dates.
+                Nav-Fi&sup3; usa un modello di validazione consultivo. Il sistema fornisce guida tramite allarmi ma non blocca mai record "hard" basandosi su status firmato/pagato o date sessione.
             </p>
             <div class="grid md:grid-cols-2 gap-6">
                 <ul class="space-y-2">
                     <li class="flex items-start gap-2 text-xs text-slate-300">
                         <span class="mt-1 w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                        <span><strong class="text-white">Informational Notices:</strong> Timeline inconsistencies (e.g., payment before mission start) display informational notices without blocking saves. The Referee maintains full control over data coherence.</span>
+                        <span><strong class="text-white">Avvisi Informativi:</strong> Incoerenze di timeline (es. pagamento prima dell'inizio missione) mostrano avvisi informativi senza bloccare i salvataggi. L'Arbitro mantiene il controllo totale sulla coerenza dei dati.</span>
                     </li>
                     <li class="pl-4 border-l-2 border-amber-500/30">
                         <span class="mt-1 w-1.5 h-1.5 rounded-full bg-amber-500"></span>
                         <span>
-                            <strong class="text-white">Unrestricted Editing:</strong> Paid costs, signed incomes, and signed mortgages remain editable. Use this power to correct tactical errors or reflect narrative changes.
+                            <strong class="text-white">Modifica Illimitata:</strong> Costi pagati, entrate firmate e mutui firmati rimangono modificabili. Usa questo potere per correggere errori tattici o riflettere cambiamenti narrativi.
                         </span>
                     </li>
                 </ul>
                 <ul class="space-y-2">
                     <li class="flex items-start gap-2 text-xs text-slate-300">
                         <span class="mt-1 w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                        <span><strong class="text-white">Cascading Deletion:</strong> Removing a primary object (especially an <strong class="text-white">Asset</strong>) will automatically delete all linked history: Mortgage, Installments, Costs, Incomes, and Routes.</span>
+                        <span><strong class="text-white">Cancellazione a Cascata:</strong> Rimuovere un oggetto primario (specialmente un <strong class="text-white">Asset</strong>) cancellerà automaticamente tutta la cronologia collegata: Mutuo, Rate, Costi, Entrate e Rotte.</span>
                     </li>
                     <li class="flex items-start gap-2 text-xs text-slate-300">
                         <span class="mt-1 w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                        <span><strong class="text-white">Data Permanent Removal:</strong> Exercise tactical caution when deleting assets; once confirmed, the associated ledger cannot be recovered via standard UI.</span>
+                        <span><strong class="text-white">Rimozione Permanente Dati:</strong> Esercita cautela tattica quando cancelli asset; una volta confermato, il ledger associato non può essere recuperato via UI standard.</span>
                     </li>
                 </ul>
             </div>
