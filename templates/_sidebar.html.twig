@@ -133,6 +133,21 @@
                     </ul>
                 </details>
             </li>
+            
+            <li>
+                {% set broker_active = current_route starts with 'app_cube' %}
+                <details {% if broker_active %}open{% endif %} data-controller="sidebar-module" data-action="toggle->sidebar-module#toggle">
+                    <summary data-sidebar-module-target="summary" class="text-xs uppercase tracking-widest text-slate-400 hover:text-cyan-300 relative overflow-hidden">Contract Brokerage</summary>
+                    <ul data-sidebar-module-target="content">
+                        <li data-sidebar-module-target="item">
+                            <a href="{{ path('app_cube_index') }}" class="{% if current_route == 'app_cube_index' %}text-cyan-400 font-bold{% endif %}">
+                                {% include 'icons/cube.html.twig' with {'dim': '18'} %}
+                                <span>The Cube // Gen</span>
+                            </a>
+                        </li>
+                    </ul>
+                </details>
+            </li>
 
             {# FINANCE MODULE #}
             <li class="menu-title mt-6">

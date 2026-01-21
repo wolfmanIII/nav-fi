@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nav-Fi&sup3; - Ponte di Comando{% endblock %}
+{% block title %}Nav-Fi - Asset Log{% endblock %}
 
 {% block pageContent %}
     <div class="space-y-6">
@@ -19,7 +19,7 @@
                         <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">Traveller // Imperial Drift Lane</p>
                     </div>
                     <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight">
-                        Ponte di Comando
+                        Bridge Operations
                     </h1>
                 </div>
                 </div>
@@ -34,33 +34,33 @@
                      
                      <h2 class="text-xs uppercase tracking-[0.2em] text-cyan-400 font-bold mb-6 flex items-center gap-2">
                         <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                        Comando Tattico
+                        Tactical Command
                      </h2>
 
                      <div class="grid grid-cols-2 gap-3">
                          <a href="{{ path('app_operation_guide') }}" class="flex flex-col items-center justify-center p-4 rounded-lg bg-slate-950 border border-slate-800 hover:border-cyan-500/30 hover:bg-slate-900 transition-all text-center group">
                             <div class="text-cyan-500 mb-2 group-hover:scale-110 transition-transform">{% include 'icons/operations-checklist.html.twig' with { dim: 20 } %}</div>
-                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">CHECKLIST OPS</span>
+                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">OPS CHECKLIST</span>
                         </a>
 
                          <a href="{{ path('app_operations_flow') }}" class="flex flex-col items-center justify-center p-4 rounded-lg bg-slate-950 border border-slate-800 hover:border-cyan-500/30 hover:bg-slate-900 transition-all text-center group">
                             <div class="text-cyan-500 mb-2 group-hover:scale-110 transition-transform">{% include 'icons/operations-flow.html.twig' with { dim: 20 } %}</div>
-                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">FLUSSO MISSIONE</span>
+                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">MISSION FLOW</span>
                         </a>
 
                         <a href="{{ path('app_campaign_index') }}" class="flex flex-col items-center justify-center p-4 rounded-lg bg-slate-950 border border-slate-800 hover:border-purple-500/30 hover:bg-slate-900 transition-all text-center group">
                             <div class="text-purple-400 mb-2 group-hover:scale-110 transition-transform">{% include 'icons/alien-structure-1.html.twig' with { dim: 20 } %}</div>
-                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">INIZIA MISSIONE</span>
+                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">INIT MISSION</span>
                         </a>
 
                          <a href="{{ path('app_asset_index') }}" class="flex flex-col items-center justify-center p-4 rounded-lg bg-slate-950 border border-slate-800 hover:border-blue-500/30 hover:bg-slate-900 transition-all text-center group">
                             <div class="text-blue-400 mb-2 group-hover:scale-110 transition-transform">{% include 'icons/far-trader.html.twig' with { dim: 20 } %}</div>
-                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">FLOTTA (ASSET)</span>
+                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">ASSETS</span>
                         </a>
 
                         <a href="{{ path('app_route_index') }}" class="col-span-2 flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-950 border border-slate-800 hover:border-emerald-500/30 hover:bg-slate-900 transition-all group">
                              <div class="text-emerald-400 group-hover:text-white">{% include 'icons/routes.html.twig' with { dim: 16 } %}</div>
-                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">TRACCIA ROTTA</span>
+                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">CHART ROUTES</span>
                         </a>
                      </div>
                 </div>
@@ -68,12 +68,12 @@
                 <div class="rounded-2xl bg-slate-900/50 border border-slate-800 p-6">
                     <h3 class="text-xs uppercase tracking-[0.2em] text-slate-500 font-bold mb-4 flex items-center justify-between">
                         Financial Core
-                        <span class="px-1.5 py-0.5 rounded bg-cyan-500/10 text-[9px] font-bold text-cyan-400 border border-cyan-500/20 animate-pulse">AGGIORNATO</span>
+                        <span class="px-1.5 py-0.5 rounded bg-cyan-500/10 text-[9px] font-bold text-cyan-400 border border-cyan-500/20 animate-pulse">UPDATED</span>
                     </h3>
                     <div class="grid grid-cols-2 gap-3">
                          <a href="{{ path('app_mortgage_index') }}" class="flex flex-col items-center justify-center p-4 rounded-lg bg-slate-950 border border-slate-800 hover:border-red-500/30 hover:bg-slate-900 transition-all text-center group">
                             <div class="text-red-400 mb-2 group-hover:scale-110 transition-transform">{% include 'icons/handbook.html.twig' with { dim: 20 } %}</div>
-                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">DEBITO</span>
+                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">DEBT</span>
                         </a>
                         <a href="{{ path('app_annual_budget_index') }}" class="flex flex-col items-center justify-center p-4 rounded-lg bg-slate-950 border border-slate-800 hover:border-amber-500/30 hover:bg-slate-900 transition-all text-center group">
                             <div class="text-amber-400 mb-2 group-hover:scale-110 transition-transform">{% include 'icons/annual-budget.html.twig' with { dim: 20 } %}</div>
@@ -81,11 +81,11 @@
                         </a>
                         <a href="{{ path('app_salary_index') }}" class="flex flex-col items-center justify-center p-4 rounded-lg bg-slate-950 border border-slate-800 hover:border-emerald-500/30 hover:bg-slate-900 transition-all text-center group">
                             <div class="text-emerald-400 mb-2 group-hover:scale-110 transition-transform">{% include 'icons/credits.html.twig' with { dim: 20 } %}</div>
-                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">STIPENDI</span>
+                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">PAYROLL</span>
                         </a>
                          <a href="{{ path('app_cost_index') }}" class="col-span-2 flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-950 border border-slate-800 hover:border-slate-600 hover:bg-slate-900 transition-all group">
                              <div class="text-slate-400 group-hover:text-white">{% include 'icons/cost.html.twig' with { dim: 16 } %}</div>
-                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">ARCHIVIO SPESE MISSIONE</span>
+                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">MISSION OUTFLOW LOGS</span>
                         </a>
                     </div>
                 </div>
@@ -99,19 +99,19 @@
                     <div class="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
                     
                     <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                        <span class="text-cyan-400">///</span> Briefing Missione
+                        <span class="text-cyan-400">///</span> Mission Briefing
                     </h2>
                     
                     <div class="prose prose-invert prose-sm max-w-none text-slate-400 leading-relaxed">
                         <p>
-                            <strong class="text-white">Nav-Fi&sup3;</strong> è l'olo-console per la tua campagna Traveller. 
-                            I protocolli <strong class="text-cyan-100">Voice of the Machine</strong> sono attivi, fornendo feedback tattico in tempo reale sulla riconciliazione temporale, l'integrità del ledger e i limiti di solvibilità "Hard Deck".
+                            <strong class="text-white">Nav-Fi</strong> is the holo-console for your Traveller campaign. 
+                            The <strong class="text-cyan-100">Voice of the Machine</strong> protocols are now engaged, providing real-time tactical feedback on temporal reconciliation, ledger integrity, and hard deck solvency limits.
                         </p>
                         <p class="mt-2 text-sm border-l-2 border-amber-500/30 pl-4 py-1 italic text-slate-300">
-                            <strong class="text-amber-400">Ledger Tattico & Cancellazione</strong>: Il sistema supporta l'annullamento contratti con watermark diagonale VOID e riconciliazione automatica delle transazioni nel ledger.
+                            <strong class="text-amber-400">Tactical Ledger & Cancellation</strong>: The system supports contract cancellation with diagonal VOID watermarking and automatic reconciliation of ledger transactions.
                         </p>
                         <p class="mt-2 text-xs border-l-2 border-cyan-500/30 pl-4 py-1 italic">
-                            <strong class="text-cyan-400">Controllo Tattico dell'Arbitro</strong>: Strumenti di smart resync assicurano che il ledger rimanga coerente anche se modifichi la cronologia o viaggi nel tempo attraverso gli anni della campagna.
+                            <strong class="text-cyan-400">Referee Tactical Control</strong>: Smart resync tools ensure your ledger remains consistent even if you edit history or time-travel across campaign years.
                         </p>
                     </div>
 
@@ -132,9 +132,9 @@
                             </div>
                             <span class="text-[10px] text-cyan-700 font-bold tracking-widest uppercase bg-cyan-950/20 px-2 py-1 rounded">Reg_Fleet</span>
                          </div>
-                         <h3 class="text-lg font-bold text-white mb-1">Registro Asset</h3>
+                         <h3 class="text-lg font-bold text-white mb-1">Asset Registry</h3>
                          <p class="text-sm text-slate-500 leading-relaxed">
-                             Navi, Basi e Team. Traccia specifiche, mutui e manifesti di assegnazione in una vista unificata.
+                             Ships, Bases, and Teams. Track specs, mortgages, and assignment manifests in one unified view.
                          </p>
                      </div>
 
@@ -145,9 +145,9 @@
                             </div>
                             <span class="text-[10px] text-purple-700 font-bold tracking-widest uppercase bg-purple-950/20 px-2 py-1 rounded">Crew_Mann</span>
                          </div>
-                         <h3 class="text-lg font-bold text-white mb-1">Ruolino Personale</h3>
+                         <h3 class="text-lg font-bold text-white mb-1">Personnel Roster</h3>
                          <p class="text-sm text-slate-500 leading-relaxed">
-                             Gestisci assegnazioni, equipaggio di ponte, comandi di stazione e unità tattiche di terra.
+                             Manage assignments for bridge crews, station commands, and tactical ground units.
                          </p>
                      </div>
 
@@ -158,9 +158,9 @@
                             </div>
                             <span class="text-[10px] text-red-700 font-bold tracking-widest uppercase bg-red-950/20 px-2 py-1 rounded">Liabilities</span>
                          </div>
-                         <h3 class="text-lg font-bold text-white mb-1">Debiti & Contratti</h3>
+                         <h3 class="text-lg font-bold text-white mb-1">Debt & Contracts</h3>
                          <p class="text-sm text-slate-500 leading-relaxed">
-                             Traccia tassi, depositi, penali e accordi firmati pronti per la fatturazione.
+                             Track rates, deposits, penalties, and signed agreements ready for billing.
                          </p>
                      </div>
 
@@ -171,9 +171,9 @@
                             </div>
                             <span class="text-[10px] text-emerald-700 font-bold tracking-widest uppercase bg-emerald-950/20 px-2 py-1 rounded">Cycle_Bal</span>
                          </div>
-                         <h3 class="text-lg font-bold text-white mb-1">Matrice Performance</h3>
+                         <h3 class="text-lg font-bold text-white mb-1">Performance Matrix</h3>
                          <p class="text-sm text-slate-500 leading-relaxed">
-                             Entrate aggregate (c/ bonus), mantenimento e debito su una singola striscia di missione.
+                             Aggregated income (w/ bonuses), upkeep, and debt on a single mission strip.
                          </p>
                      </div>
 
@@ -197,9 +197,9 @@
             
             <div class="relative">
                 <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
-                    <span class="text-amber-400">///</span> Guida al Financial Core
+                    <span class="text-amber-400">///</span> Financial Core Usage Guide
                 </h2>
-                <p class="text-xs text-amber-400/60 uppercase tracking-widest mb-6">Quando usare ogni modulo</p>
+                <p class="text-xs text-amber-400/60 uppercase tracking-widest mb-6">When to use each module</p>
                 
                 <div class="grid md:grid-cols-2 gap-6">
                     {# Full Campaign #}
@@ -208,28 +208,28 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M12 2l3 7 7 .5-5.5 4.5 1.8 7-6.3-4-6.3 4 1.8-7L2 9.5 9 9z"></path>
                             </svg>
-                            <h3 class="text-lg font-bold text-emerald-100 font-orbitron uppercase">Campagne Complete</h3>
+                            <h3 class="text-lg font-bold text-emerald-100 font-orbitron uppercase">Full Campaigns</h3>
                         </div>
                         <p class="text-sm text-slate-400 mb-4">
-                            Per campagne continuative, il <strong class="text-white">Financial Core</strong> brilla quando usato interamente:
+                            For ongoing campaigns, the <strong class="text-white">Financial Core</strong> shines when used in its entirety:
                         </p>
                         <ul class="space-y-2 text-xs text-slate-400">
                             <li class="flex items-start gap-2">
                                 <span class="mt-1 w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0"></span>
-                                <span><strong class="text-emerald-300">Mortgage (Mutuo):</strong> Traccia il finanziamento asset negli anni</span>
+                                <span><strong class="text-emerald-300">Mortgage:</strong> Track asset financing over years</span>
                             </li>
                             <li class="flex items-start gap-2">
                                 <span class="mt-1 w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0"></span>
-                                <span><strong class="text-emerald-300">Income & Costs:</strong> Logica automatizzata (Depositi/Bonus)</span>
+                                <span><strong class="text-emerald-300">Income & Costs:</strong> Automated logic (Deposits/Bonuses)</span>
                             </li>
                             <li class="flex items-start gap-2">
                                 <span class="mt-1 w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0"></span>
-                                <span><strong class="text-emerald-300">Annual Budget:</strong> Proietta il flusso di cassa annuo</span>
+                                <span><strong class="text-emerald-300">Annual Budget:</strong> Project yearly cash flow</span>
                             </li>
                         </ul>
                         <div class="mt-4 pt-4 border-t border-emerald-500/10">
                             <p class="text-xs text-emerald-400/80 italic">
-                                Raccomandato per campagne su sessioni multiple e anni in-game
+                                Recommended for campaigns spanning multiple sessions and in-game years
                             </p>
                         </div>
                     </div>
@@ -240,28 +240,28 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
                             </svg>
-                            <h3 class="text-lg font-bold text-amber-100 font-orbitron uppercase">Oneshot & Avventure Brevi</h3>
+                            <h3 class="text-lg font-bold text-amber-100 font-orbitron uppercase">Oneshots & Short Adventures</h3>
                         </div>
                         <p class="text-sm text-slate-400 mb-4">
-                            Per sessioni singole o brevi, puoi <strong class="text-white">semplificare o saltare</strong>:
+                            For single-session or short adventures, you can <strong class="text-white">skip or simplify</strong>:
                         </p>
                         <ul class="space-y-2 text-xs text-slate-400">
                             <li class="flex items-start gap-2">
                                 <span class="mt-1 w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0"></span>
-                                <span><strong class="text-amber-300">Mortgage:</strong> Salta completamente a meno che vitale per la trama</span>
+                                <span><strong class="text-amber-300">Mortgage:</strong> Skip entirely unless narrative-driven</span>
                             </li>
                             <li class="flex items-start gap-2">
                                 <span class="mt-1 w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0"></span>
-                                <span><strong class="text-amber-300">Annual Budget:</strong> Non necessario su tempi brevi</span>
+                                <span><strong class="text-amber-300">Annual Budget:</strong> Not needed for short timeframes</span>
                             </li>
                             <li class="flex items-start gap-2">
                                 <span class="mt-1 w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0"></span>
-                                <span><strong class="text-amber-300">Income & Costs:</strong> Traccia solo se rilevante</span>
+                                <span><strong class="text-amber-300">Income & Costs:</strong> Track only if relevant to the story</span>
                             </li>
                         </ul>
                         <div class="mt-4 pt-4 border-t border-amber-500/10">
                             <p class="text-xs text-amber-400/80 italic">
-                                Usa solo ciò che serve alla tua storia — Nav-Fi&sup3; si adatta al tuo tavolo
+                                Use only what serves your narrative—Nav-Fi adapts to your table's needs
                             </p>
                         </div>
                     </div>
@@ -269,13 +269,13 @@
                 
                 {# CTA to Full Guide #}
                 <div class="mt-8 pt-6 border-t border-amber-500/10 text-center">
-                    <p class="text-sm text-slate-400 mb-4">Vuoi approfondire come e quando usare ogni modulo?</p>
+                    <p class="text-sm text-slate-400 mb-4">Want to learn more about when and how to use each module?</p>
                     <a href="{{ path('app_financial_core_guide') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500/50 transition-all font-orbitron uppercase text-xs tracking-widest font-bold">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                         </svg>
-                        Leggi Guida Completa
+                        Read Full Guide
                     </a>
                 </div>
             </div>
@@ -286,10 +286,10 @@
         {# BOTTOM GRID: FEATURES (Tighter) #}
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-slate-800/50 mt-8">
              {% for feature in [
-                 { icon: 'M2 12h2 M20 12h2 M7 12h10 M12 5a7 7 0 1 0 0 14', title: 'Regole Snelle', desc: 'Interfacce solo essenziali.', code: 'SCEN_ARCH' },
-                 { icon: 'M12 3l7 4v6c0 4-3 6-7 8-4-2-7-4-7-8V7z M12 11a2.5 2.5 0 1 0 0-5', title: 'Ownership', desc: 'Ledger scafo sicuri.', code: 'SEC_UPLINK' },
-                 { icon: 'M12 2l3 7 7 .5-5.5 4.5 1.8 7-6.3-4-6.3 4 1.8-7L2 9.5 9 9z', title: 'Briefing', desc: 'Specifiche lavoro allineate.', code: 'DEBRIEF' },
-                 { icon: 'M3 18v-2l5-4 4 3 4-6 5 4v5H3z M3 14v-1 M3 22h18', title: 'Smart Ledger', desc: 'Pagamenti auto-split.', code: 'AUTO_BAL' },
+                 { icon: 'M2 12h2 M20 12h2 M7 12h10 M12 5a7 7 0 1 0 0 14', title: 'Lean Rules', desc: 'Essentials-only interfaces.', code: 'SCEN_ARCH' },
+                 { icon: 'M12 3l7 4v6c0 4-3 6-7 8-4-2-7-4-7-8V7z M12 11a2.5 2.5 0 1 0 0-5', title: 'Ownership', desc: 'Secure hull ledgers.', code: 'SEC_UPLINK' },
+                 { icon: 'M12 2l3 7 7 .5-5.5 4.5 1.8 7-6.3-4-6.3 4 1.8-7L2 9.5 9 9z', title: 'Briefing', desc: 'Aligned job specs.', code: 'DEBRIEF' },
+                 { icon: 'M3 18v-2l5-4 4 3 4-6 5 4v5H3z M3 14v-1 M3 22h18', title: 'Smart Ledger', desc: 'Auto-split payments.', code: 'AUTO_BAL' },
              ] %}
             <div class="p-4 rounded-xl bg-slate-900/30 border border-slate-800/60 hover:bg-slate-800/60 transition-colors group">
                 <div class="flex items-center gap-2 text-cyan-600 mb-2 group-hover:text-cyan-400">
