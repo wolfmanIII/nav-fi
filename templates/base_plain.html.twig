@@ -49,19 +49,23 @@
                     <div class="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-indigo-500 blur-3xl"></div>
                 </div>
                 <div class="relative">
-                    {% if watermark is defined %}{{ watermark|raw }}{% else %}{{ '{{WATERMARK}}' }}{% endif %}
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    <div role="alert" class="alert alert-{{ label }} alert-outline mb-3 w-full">
-                        <div class="animate-spin-slow text-current">
-                            {% include 'icons/radar.html.twig' with { dim: 24 } %}
-                        </div>
-                        <div>{{ message|raw }}</div>
-                    </div>
-                {% endfor %}
-            {% endfor %}
+                    {% if watermark is defined %}
+                        {{ watermark|raw }}
+                    {% elseif render_watermark_placeholder is defined %}
+                        {{ '{{WATERMARK}}' }}
+                    {% endif %}
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div role="alert" class="alert alert-{{ label }} alert-outline mb-3 w-full">
+                                <div class="animate-spin-slow text-current">
+                                    {% include 'icons/radar.html.twig' with { dim: 24 } %}
+                                </div>
+                                <div>{{ message|raw }}</div>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
 
-            {% block pageContent %}{% endblock %}
+                    {% block pageContent %}{% endblock %}
                 </div>
             </div>
         </div>

@@ -80,9 +80,6 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # 5. Application Setup
 WORKDIR /var/www/html
 
-# 5. Application Setup
-WORKDIR /var/www/html
-
 # Copy Source Code (First, so we don't overwrite vendor/assets later if they overlap)
 COPY . .
 

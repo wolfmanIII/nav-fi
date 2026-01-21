@@ -165,7 +165,7 @@ final class IncomeController extends BaseController
 
         return $this->renderTurbo('income/edit.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
-            'controller_name' => self::CONTROLLER_NAME,
+
             'income' => $income,
             'form' => $form,
             'asset' => $income->getAsset(),
@@ -214,7 +214,7 @@ final class IncomeController extends BaseController
         $template = $this->resolveTemplate($income);
         $placeholders = $this->buildPlaceholderMap($income);
 
-        $html = $this->renderView($template);
+        $html = $this->renderView($template, ['render_watermark_placeholder' => true]);
         $html = strtr($html, $placeholders);
 
         $pdf = $pdfGenerator->renderFromHtml($html, [
