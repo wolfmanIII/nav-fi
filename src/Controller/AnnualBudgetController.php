@@ -181,10 +181,6 @@ final class AnnualBudgetController extends BaseController
             'labels' => $labels,
             'incomeSeries' => $incomeSeries,
             'costSeries' => $costSeries,
-            'budget' => $budget,
-            'labels' => $labels,
-            'incomeSeries' => $incomeSeries,
-            'costSeries' => $costSeries,
             'asset' => $budget->getAsset(),
         ]);
     }
