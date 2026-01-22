@@ -1,15 +1,15 @@
 const nameCheck = /^[-_a-zA-Z0-9]{4,22}$/;
 const tokenCheck = /^[-_/+a-zA-Z0-9]{24,}$/;
 
-// Generate and double-submit a CSRF token in a form field and a cookie, as defined by Symfony's SameOriginCsrfTokenManager
-// Use `form.requestSubmit()` to ensure that the submit event is triggered. Using `form.submit()` will not trigger the event
-// and thus this event-listener will not be executed.
+// Genera e invia due volte un token CSRF in un campo form e in un cookie, come definito da SameOriginCsrfTokenManager di Symfony
+// Usa `form.requestSubmit()` per assicurarti che l'evento submit venga emesso. Usare `form.submit()` non attiva l'evento
+// e quindi questo gestore eventi non verrà eseguito.
 document.addEventListener('submit', function (event) {
     generateCsrfToken(event.target);
 }, true);
 
-// When @hotwired/turbo handles form submissions, send the CSRF token in a header in addition to a cookie
-// The `framework.csrf_protection.check_header` config option needs to be enabled for the header to be checked
+// Quando @hotwired/turbo gestisce gli invii del form, invia il token CSRF in un header oltre che nel cookie
+// L'opzione di config `framework.csrf_protection.check_header` deve essere abilitata per verificare l'header
 document.addEventListener('turbo:submit-start', function (event) {
     const h = generateCsrfHeaders(event.detail.formSubmission.formElement);
     Object.keys(h).map(function (k) {
@@ -17,7 +17,7 @@ document.addEventListener('turbo:submit-start', function (event) {
     });
 });
 
-// When @hotwired/turbo handles form submissions, remove the CSRF cookie once a form has been submitted
+// Quando @hotwired/turbo gestisce gli invii del form, rimuovi il cookie CSRF una volta inviato il form
 document.addEventListener('turbo:submit-end', function (event) {
     removeCsrfToken(event.detail.formSubmission.formElement);
 });

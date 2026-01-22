@@ -47,7 +47,7 @@ class CostRepositoryTest extends KernelTestCase
 
     public function testFindForUserWithFilters(): void
     {
-        // 1. Setup User & Campaign
+        // 1. Setup Utente e Campagna
         $user = new User();
         $user->setEmail('test@cost.com');
         $user->setPassword('hash');
@@ -67,7 +67,7 @@ class CostRepositoryTest extends KernelTestCase
 
         $assetB = new Asset();
         $assetB->setUser($user);
-        $assetB->setName('Asset B'); // No campaign or different one
+        $assetB->setName('Asset B'); // Nessuna campagna o diversa
         $this->em->persist($assetB);
 
         $catFuel = new CostCategory();
@@ -80,7 +80,7 @@ class CostRepositoryTest extends KernelTestCase
         $catRepair->setDescription('Repairs');
         $this->em->persist($catRepair);
 
-        // 2. Create Costs
+        // 2. Crea costi
         $cost1 = new Cost();
         $cost1->setTitle('Fuel Purchase');
         $cost1->setUser($user);
@@ -99,27 +99,27 @@ class CostRepositoryTest extends KernelTestCase
 
         $this->em->flush();
 
-        // 3. Test Filters
+        // 3. Test filtri
 
-        // Filter by Title
+        // Filtra per titolo
         $res = $this->repository->findForUserWithFilters($user, ['title' => 'Fuel', 'category' => null, 'asset' => null, 'campaign' => null], 1, 10);
         self::assertCount(1, $res['items']);
         self::assertSame('Fuel Purchase', $res['items'][0]->getTitle());
 
-        // Filter by Category
+        // Filtra per categoria
         $res = $this->repository->findForUserWithFilters($user, ['title' => null, 'category' => $catRepair->getId(), 'asset' => null, 'campaign' => null], 1, 10);
         self::assertCount(1, $res['items']);
         self::assertSame('Engine Repair', $res['items'][0]->getTitle());
 
-        // Filter by Asset
+        // Filtra per asset
         $res = $this->repository->findForUserWithFilters($user, ['title' => null, 'category' => null, 'asset' => $assetA->getId(), 'campaign' => null], 1, 10);
         self::assertCount(1, $res['items']);
         self::assertSame('Fuel Purchase', $res['items'][0]->getTitle());
 
-        // Filter by Campaign
+        // Filtra per campagna
         $res = $this->repository->findForUserWithFilters($user, ['title' => null, 'category' => null, 'asset' => null, 'campaign' => $campaign->getId()], 1, 10);
         self::assertCount(1, $res['items']);
-        self::assertSame('Fuel Purchase', $res['items'][0]->getTitle()); // Only AssetA is in Campaign A
+        self::assertSame('Fuel Purchase', $res['items'][0]->getTitle()); // Solo AssetA è nella Campagna A
     }
 
     protected function tearDown(): void

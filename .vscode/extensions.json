@@ -21,6 +21,7 @@
     "openai.chatgpt",
     "phproberto.vscode-php-getters-setters",
     "redhat.vscode-yaml",
+    "shd101wyy.markdown-preview-enhanced",
     "thenouillet.symfony-vscode",
     "xdebug.php-debug"
   ]

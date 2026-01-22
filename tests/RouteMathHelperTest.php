@@ -41,9 +41,9 @@ class RouteMathHelperTest extends TestCase
         $route = $this->createMock(Route::class);
         $route->method('getAsset')->willReturn($asset);
 
-        // Scenario: 2 jumps of 1 parsec each
-        // Hull 200 -> 10% = 20 tons per parsec
-        // Total route would be 40, but LAST segment is 1 parsec = 20.00 tons
+        // Scenario: 2 salti da 1 parsec ciascuno
+        // Scafo 200 -> 10% = 20 tonnellate per parsec
+        // Totale rotta sarebbe 40, ma l'ULTIMO segmento è 1 parsec = 20.00 tonnellate
         $distances = [null, 1, 1];
 
         $fuel = $this->helper->estimateJumpFuel($route, $distances);
@@ -60,9 +60,9 @@ class RouteMathHelperTest extends TestCase
         $route = $this->createMock(Route::class);
         $route->method('getAsset')->willReturn($asset);
 
-        // Scenario: Jump A (1 parsec) + Jump B (2 parsecs)
-        // Hull 400 -> 10% = 40 tons per parsec
-        // LAST segment is 2 parsecs -> 80.00 tons
+        // Scenario: Salto A (1 parsec) + Salto B (2 parsec)
+        // Scafo 400 -> 10% = 40 tonnellate per parsec
+        // L'ULTIMO segmento è 2 parsec -> 80.00 tonnellate
         $distances = [null, 1, 2];
 
         $fuel = $this->helper->estimateJumpFuel($route, $distances);
@@ -89,7 +89,7 @@ class RouteMathHelperTest extends TestCase
     public function testEstimateJumpFuelReturnsNullIfNoShipDetails(): void
     {
         $asset = $this->createMock(Asset::class);
-        $asset->method('getAssetDetails')->willReturn([]); // No hull info
+        $asset->method('getAssetDetails')->willReturn([]); // Nessuna info scafo
 
         $route = $this->createMock(Route::class);
         $route->method('getAsset')->willReturn($asset);
@@ -110,7 +110,7 @@ class RouteMathHelperTest extends TestCase
         $route = $this->createMock(Route::class);
         $route->method('getAsset')->willReturn($asset);
 
-        $distances = [null]; // Only starting point
+        $distances = [null]; // Solo punto iniziale
 
         $fuel = $this->helper->estimateJumpFuel($route, $distances);
         $this->assertNull($fuel);
@@ -125,7 +125,7 @@ class RouteMathHelperTest extends TestCase
         $route->setJumpRating(2);
         $this->assertEquals(2, $helper->resolveJumpRating($route));
 
-        // Test fallback to asset
+        // Test fallback su asset
         $route->setJumpRating(null);
         $asset = new Asset();
         $asset->setAssetDetails(['jDrive' => ['jump' => 3]]);
@@ -143,15 +143,15 @@ class RouteMathHelperTest extends TestCase
         $route = $this->createMock(Route::class);
         $route->method('getAsset')->willReturn($asset);
 
-        // Waypoints: A -> (1pc) -> B -> (2pc) -> C
-        // Hull 200 -> 10% = 20 tons/parsec
-        // Total: (1 * 20) + (2 * 20) = 60.00 tons
+        // Punti di passaggio: A -> (1pc) -> B -> (2pc) -> C
+        // Scafo 200 -> 10% = 20 tonnellate/parsec
+        // Totale: (1 * 20) + (2 * 20) = 60.00 tonnellate
         $w1 = new \App\Entity\RouteWaypoint();
         $w1->setHex('0101');
         $w2 = new \App\Entity\RouteWaypoint();
-        $w2->setHex('0102'); // Distance 1
+        $w2->setHex('0102'); // Distanza 1
         $w3 = new \App\Entity\RouteWaypoint();
-        $w3->setHex('0104'); // Distance 2
+        $w3->setHex('0104'); // Distanza 2
 
         $route->method('getWaypoints')->willReturn(new \Doctrine\Common\Collections\ArrayCollection([$w1, $w2, $w3]));
 

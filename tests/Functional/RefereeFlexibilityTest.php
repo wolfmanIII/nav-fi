@@ -68,10 +68,10 @@ final class RefereeFlexibilityTest extends WebTestCase
         $crawler = $this->client->request('GET', '/cost/edit/' . $cost->getId());
         self::assertResponseIsSuccessful();
 
-        // Verify informational alert is present (Advisory Mode)
+        // Verifica che l'alert informativo sia presente (modalità avviso)
         self::assertStringContainsString('Cost is marked as PAID', $crawler->filter('.alert-info')->text());
 
-        // Try to save changes
+        // Prova a salvare le modifiche
         $this->client->submit($crawler->filter('button.btn-primary')->form(), [
             'cost[title]' => 'Edited Paid bill',
         ]);
@@ -113,10 +113,10 @@ final class RefereeFlexibilityTest extends WebTestCase
         $crawler = $this->client->request('GET', '/mortgage/edit/' . $mortgage->getId());
         self::assertResponseIsSuccessful();
 
-        // Verify advisory alert
+        // Verifica alert di avviso
         self::assertStringContainsString('Mortgage is SIGNED', $crawler->filter('.alert-info')->text());
 
-        // Submit change
+        // Invia la modifica
         $this->client->submit($crawler->filter('button.btn-primary')->form(), [
             'mortgage[assetShares]' => 10,
         ]);
@@ -204,7 +204,7 @@ final class RefereeFlexibilityTest extends WebTestCase
 
         $this->client->loginUser($user);
 
-        // Use direct EM remove to test database cascade configuration
+        // Usa remove diretto su EM per testare la configurazione di cascata del DB
         $this->em->remove($asset);
         $this->em->flush();
 
@@ -224,8 +224,8 @@ final class RefereeFlexibilityTest extends WebTestCase
 
         $category = $this->createCostCategory('SUPPLY', 'Supplies');
 
-        // Cost date BEFORE campaign date (alert should trigger)
-        // Campaign is 10/1105. Let's set cost to 5/1105.
+        // Data costo PRIMA della data campagna (l'alert dovrebbe attivarsi)
+        // La campagna è 10/1105. Impostiamo il costo a 5/1105.
         $cost = (new Cost())
             ->setUser($user)
             ->setAsset($asset)
@@ -246,10 +246,10 @@ final class RefereeFlexibilityTest extends WebTestCase
         $crawler = $this->client->request('GET', '/cost/edit/' . $cost->getId());
 
         self::assertResponseIsSuccessful();
-        // Index != Session -> Chronological Verification
+        // Indice != Sessione -> Verifica cronologica
         self::assertStringContainsString('Chronological Verification', $crawler->filter('body')->text());
 
-        // Test with another date discrepancy
+        // Test con un'altra discrepanza di data
         $cost->setPaymentDay(15);
         $this->em->flush();
         $crawler = $this->client->request('GET', '/cost/edit/' . $cost->getId());

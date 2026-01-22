@@ -14,8 +14,8 @@ use Doctrine\ORM\EntityManagerInterface;
 class FinancialAutomationService
 {
     private const IMPERIAL_YEAR_DAYS = 365;
-    private const MORTGAGE_PERIOD_DAYS = 28; // Standard 4-week period
-    private const SALARY_PERIOD_DAYS = 28; // Standard 4-week period
+    private const MORTGAGE_PERIOD_DAYS = 28; // Periodo standard di 4 settimane
+    private const SALARY_PERIOD_DAYS = 28; // Periodo standard di 4 settimane
 
     public function __construct(
         private EntityManagerInterface $entityManager,
@@ -71,7 +71,7 @@ class FinancialAutomationService
             $payment->setPaymentDay($nextDueDay);
             $payment->setPaymentYear($nextDueYear);
 
-            // Calculate Amount (Pro-rata for first payment)
+            // Calcola importo (pro-rata per il primo pagamento)
             if (!$lastPayment && $crew->getActiveDay() !== null) {
                 $totalDays = ($nextDueYear * self::IMPERIAL_YEAR_DAYS + $nextDueDay) - ($crew->getActiveYear() * self::IMPERIAL_YEAR_DAYS + $crew->getActiveDay());
                 $amount = bcmul(bcdiv($salary->getAmount(), (string) self::SALARY_PERIOD_DAYS, 10), (string)$totalDays, 2);
@@ -81,9 +81,9 @@ class FinancialAutomationService
 
             $payment->setAmount($amount);
             $this->entityManager->persist($payment);
-            $this->entityManager->flush(); // Need ID for FinancialEventSubscriber
+            $this->entityManager->flush(); // Serve l'ID per FinancialEventSubscriber
 
-            // Subscriber will handle transaction creation
+            // Il subscriber gestirà la creazione della transazione
 
             $lastPayment = $payment;
             [$nextDueDay, $nextDueYear] = $this->addDays($nextDueDay, $nextDueYear, self::SALARY_PERIOD_DAYS);
@@ -104,9 +104,9 @@ class FinancialAutomationService
             return;
         }
 
-        // Determine Last Payment Date
+        // Determina la data dell'ultimo pagamento
         $installments = $mortgage->getMortgageInstallments()->toArray();
-        // Sort to ensure we get the chronological last
+        // Ordina per ottenere l'ultimo in ordine cronologico
         usort($installments, function ($a, $b) {
             if ($a->getPaymentYear() !== $b->getPaymentYear()) {
                 return $a->getPaymentYear() <=> $b->getPaymentYear();
@@ -120,37 +120,37 @@ class FinancialAutomationService
             $lastDay = $lastInstallment->getPaymentDay();
             $lastYear = $lastInstallment->getPaymentYear();
 
-            // Next Due = Last Payment + Period
+            // Prossima scadenza = ultimo pagamento + periodo
             [$nextDueDay, $nextDueYear] = $this->addDays($lastDay, $lastYear, self::MORTGAGE_PERIOD_DAYS);
         } else {
-            // No payments yet. 
-            // If "Start Date" is "First Payment Date", then First Due = Start Date.
+            // Nessun pagamento ancora.
+            // Se "Start Date" è "First Payment Date", allora la prima scadenza = Start Date.
             $nextDueDay = $startDay;
             $nextDueYear = $startYear;
         }
 
-        // Calculate Monthly Payment Amount
+        // Calcola l'importo del pagamento mensile
         $summary = $mortgage->calculate();
         $paymentAmount = $summary['total_monthly_payment'] ?? '0.00';
 
-        // Loop to generate all missing installments up to current date
+        // Ciclo per generare tutte le rate mancanti fino alla data corrente
         while ($this->isDateBeforeOrEqual($nextDueDay, $nextDueYear, $currentDay, $currentYear)) {
 
-            // Create Installment Record
+            // Crea record rata
             $installment = new MortgageInstallment();
-            $installment->setMortgage($mortgage); // Sets owning side
-            $mortgage->addMortgageInstallment($installment); // Updates inverse side (in memory)
+            $installment->setMortgage($mortgage); // Imposta il lato proprietario
+            $mortgage->addMortgageInstallment($installment); // Aggiorna il lato inverso (in memoria)
 
             $installment->setPaymentDay($nextDueDay);
             $installment->setPaymentYear($nextDueYear);
             $installment->setPayment($paymentAmount);
-            $installment->setUser($asset->getUser()); // Optional tracking
+            $installment->setUser($asset->getUser()); // Tracciamento opzionale
 
             $this->entityManager->persist($installment);
-            // We need to flush to get ID for linking
+            // Serve fare flush per ottenere l'ID per il collegamento
             $this->entityManager->flush();
 
-            // Create Ledger Withdrawal
+            // Crea prelievo nel libro mastro
             $this->ledgerService->withdraw(
                 $asset,
                 $paymentAmount,
@@ -161,7 +161,7 @@ class FinancialAutomationService
                 $installment->getId()
             );
 
-            // Advance to next period
+            // Avanza al periodo successivo
             [$nextDueDay, $nextDueYear] = $this->addDays($nextDueDay, $nextDueYear, self::MORTGAGE_PERIOD_DAYS);
         }
     }

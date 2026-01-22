@@ -116,7 +116,7 @@ export default class extends Controller {
             }
         }
 
-        // process any trailing buffer as plain text
+        // processa qualsiasi buffer residuo come testo semplice
         if (buffer.trim()) {
             fullText += buffer.trim();
             this.setBubbleText(bubbleElement, fullText);

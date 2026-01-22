@@ -1,9 +1,9 @@
 import './stimulus_bootstrap.js';
 /*
- * Welcome to your app's main JavaScript file!
+ * Benvenuto nel file JavaScript principale della tua app!
  *
- * This file will be included onto the page via the importmap() Twig function,
- * which should already be in your base.html.twig.
+ * Questo file verrà incluso nella pagina tramite la funzione Twig importmap(),
+ * che dovrebbe già essere presente nel tuo base.html.twig.
  */
 import './styles/app.css';
 

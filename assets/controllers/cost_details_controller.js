@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 
-// Gestione collection detailItems per i costi (add/remove).
+// Gestione collezione detailItems per i costi (aggiunta/rimozione).
 export default class extends Controller {
     static targets = ['collection', 'list', 'prototype'];
 
@@ -56,7 +56,7 @@ export default class extends Controller {
     recalcTotal() {
         const inputs = this.element.querySelectorAll('input[name$="[quantity]"], input[name$="[cost]"]');
         let total = 0;
-        // iterate pairs by row
+        // itera le coppie per riga
         this.listTarget.querySelectorAll('.collection-item').forEach((item) => {
             const qtyInput = item.querySelector('input[name$="[quantity]"]');
             const costInput = item.querySelector('input[name$="[cost]"]');

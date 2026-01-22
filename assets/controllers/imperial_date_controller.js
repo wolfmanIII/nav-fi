@@ -21,7 +21,7 @@ export default class extends Controller {
     static targets = ['display', 'day', 'year'];
 
     connect() {
-        this.currentMonth = MONTHS[1]; // default Month 1
+        this.currentMonth = MONTHS[1]; // mese 1 predefinito
         this.popover = null;
 
         const initialDay = parseInt(
@@ -52,7 +52,7 @@ export default class extends Controller {
 
         document.addEventListener('click', this.handleOutsideClick, true);
 
-        // Listen for year limits changes from year-limit controller
+        // Ascolta i cambiamenti dei limiti anno dal controller year-limit
         this.element.addEventListener('year-limits-changed', this.handleYearLimitsChanged);
     }
 
@@ -63,7 +63,7 @@ export default class extends Controller {
     }
 
     handleYearLimitsChanged = (event) => {
-        // Update year input in popover if it's open
+        // Aggiorna l'input anno nel popover se è aperto
         if (this.yearInputEl) {
             this.yearInputEl.min = event.detail.min || '';
             this.yearInputEl.max = event.detail.max || '';
@@ -175,7 +175,7 @@ export default class extends Controller {
         host.appendChild(wrapper);
         this.popover = wrapper;
 
-        // assicura che la month view rifletta il valore selezionato
+        // assicura che la vista mese rifletta il valore selezionato
         const currentDay = parseInt(this.dayTarget.value || '', 10);
         if (Number.isFinite(currentDay)) {
             const month = MONTHS.find((m) => currentDay >= m.start && currentDay <= m.end);
@@ -220,7 +220,7 @@ export default class extends Controller {
         this.titleEl.textContent = `${this.currentMonth.label}`;
         this.gridEl.innerHTML = '';
 
-        // Read day limits from hidden year input attributes
+        // Legge i limiti dei giorni dagli attributi dell'input anno nascosto
         const minDay = parseInt(this.yearTarget.dataset.minDay || '1', 10);
         const maxDay = parseInt(this.yearTarget.dataset.maxDay || '365', 10);
 
@@ -280,7 +280,7 @@ export default class extends Controller {
             this.displayTarget.value = '';
         }
 
-        // keep month synced
+        // mantieni il mese sincronizzato
         const numericDay = parseInt(day, 10);
         if (Number.isFinite(numericDay)) {
             const month = MONTHS.find((m) => numericDay >= m.start && numericDay <= m.end);

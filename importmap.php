@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Returns the importmap for this application.
+ * Restituisce l'importmap per questa applicazione.
  *
- * - "path" is a path inside the asset mapper system. Use the
- *     "debug:asset-map" command to see the full list of paths.
+ * - "path" è un percorso all'interno del sistema asset mapper. Usa il
+ *     comando "debug:asset-map" per vedere l'elenco completo dei percorsi.
  *
- * - "entrypoint" (JavaScript only) set to true for any module that will
- *     be used as an "entrypoint" (and passed to the importmap() Twig function).
+ * - "entrypoint" (solo JavaScript) impostato a true per qualsiasi modulo che
+ *     verrà usato come "entrypoint" (e passato alla funzione Twig importmap()).
  *
- * The "importmap:require" command can be used to add new entries to this file.
+ * Il comando "importmap:require" può essere usato per aggiungere nuove voci a questo file.
  */
 return [
     'app' => [

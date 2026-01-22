@@ -17,18 +17,18 @@ class FiscalYearService
     ) {}
 
     /**
-     * Closes the fiscal year for an asset.
+     * Chiude l'anno fiscale per un asset.
      * 
-     * Steps:
-     * 1. Check if there are unposted transactions in the target year (blocker).
-     * 2. Calculate total of transactions for that year.
-     * 3. Archive transactions.
-     * 4. Remove original transactions.
-     * 5. Create "Initial Balance" transaction for Year + 1.
+     * Passaggi:
+     * 1. Controlla se ci sono transazioni non postate nell'anno target (bloccante).
+     * 2. Calcola il totale delle transazioni per quell'anno.
+     * 3. Archivia transazioni.
+     * 4. Rimuovi transazioni originali.
+     * 5. Crea transazione "Saldo Iniziale" per Anno + 1.
      */
     public function closeFiscalYear(Asset $asset, int $year): void
     {
-        // 1. Validation
+        // 1. Validazione
         $pendingQuery = $this->transactionRepository->createQueryBuilder('t')
             ->select('count(t.id)')
             ->where('t.asset = :asset')
@@ -43,7 +43,7 @@ class FiscalYearService
             throw new \RuntimeException("Cannot close fiscal year $year: There are pending or void transactions.");
         }
 
-        // 2. Fetch Transactions to Archive
+        // 2. Recupera Transazioni da Archiviare
         $transactions = $this->transactionRepository->findBy([
             'asset' => $asset,
             'sessionYear' => $year
@@ -57,24 +57,24 @@ class FiscalYearService
         $transactionCount = 0;
 
         foreach ($transactions as $transaction) {
-            // Archive
+            // Archivia
             $archive = TransactionArchive::fromTransaction($transaction);
             $this->em->persist($archive);
 
-            // Sum
+            // Somma
             $yearTotal = bcadd($yearTotal, $transaction->getAmount(), 2);
 
-            // Delete Original
+            // Cancella Originale
             $this->em->remove($transaction);
             $transactionCount++;
         }
 
-        // 3. Create Snapshot
+        // 3. Creazione snapshot
         $nextYear = $year + 1;
 
-        // 3. Create Snapshot
-        // We manually create the transaction to avoid LedgerService adding the amount to the Asset balance again.
-        // The Asset balance is already correct (it represents the sum of the archived transactions).
+        // 3. Crea Snapshot
+        // Creiamo manualmente la transazione per evitare che LedgerService aggiunga nuovamente l'importo al saldo dell'Asset.
+        // Il saldo dell'Asset è già corretto (rappresenta la somma delle transazioni archiviate).
         $nextYear = $year + 1;
 
         $snapshot = new Transaction();

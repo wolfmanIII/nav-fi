@@ -45,13 +45,13 @@ export default class extends Controller {
         const p = document.createElement('div');
         p.className = "text-xs font-mono truncate opacity-60";
 
-        // Random hex code prefix for "tech" feel
+        // Prefisso esadecimale casuale per un effetto "tech"
         const prefix = "0x" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0').toUpperCase();
         p.textContent = `[${prefix}] ${line}`;
 
         this.outputTarget.appendChild(p);
 
-        // Keep only last 20 lines to prevent DOM bloat
+        // Mantieni solo le ultime 20 righe per evitare la crescita del DOM
         if (this.outputTarget.children.length > 20) {
             this.outputTarget.removeChild(this.outputTarget.firstChild);
         }

@@ -42,27 +42,27 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
 
                 $email = strtolower($googleUser->getEmail());
 
-                // 1) have they logged in with Google before?
+                // 1) hanno già fatto login con Google?
                 $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['googleId' => $googleUser->getId()]);
 
                 if ($existingUser) {
                     return $existingUser;
                 }
 
-                // 2) do we have a matching user by email?
+                // 2) esiste un utente con email corrispondente?
                 $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
 
                 if (!$user) {
-                    // 3) Create new user
-                    // Note: You might want to randomize the password or make it nullable
+                    // 3) Crea nuovo utente
+                    // Nota: potresti randomizzare la password o renderla nullable
                     $user = new User();
                     $user->setEmail($email);
                     $user->setGoogleId($googleUser->getId());
-                    // Set a random password as it won't be used (or handle it in entity)
+                    // Imposta una password casuale perché non verrà usata (o gestiscila nell'entità)
                     $user->setPassword(base64_encode(random_bytes(20)));
                     $this->entityManager->persist($user);
                 } else {
-                    // 2b) Update existing user with googleId
+                    // 2b) Aggiorna l'utente esistente con googleId
                     $user->setGoogleId($googleUser->getId());
                 }
 
@@ -75,7 +75,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        // Change this to your home route
+        // Cambia questa con la tua route home
         return new RedirectResponse($this->router->generate('app_home'));
     }
 

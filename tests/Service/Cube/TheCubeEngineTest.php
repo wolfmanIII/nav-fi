@@ -45,10 +45,10 @@ class TheCubeEngineTest extends TestCase
 
         $originData = ['trade_codes' => ['In', 'Ri']];
 
-        // First Run
+        // Prima esecuzione
         $batch1 = $this->engine->generateBatch($session, $originData, 5);
 
-        // Second Run (Same Seed)
+        // Seconda esecuzione (stesso seed)
         $batch2 = $this->engine->generateBatch($session, $originData, 5);
 
         $this->assertEquals($batch1, $batch2, 'Generation should be identical for same session state');
@@ -63,7 +63,7 @@ class TheCubeEngineTest extends TestCase
         $session1->setOriginHex('1910');
 
         $session2 = new BrokerSession();
-        $session2->setSeed('SEED_B'); // Different
+        $session2->setSeed('SEED_B'); // Diverso
         $session2->setSector('Spinward Marches');
         $session2->setOriginHex('1910');
 

@@ -2,10 +2,10 @@
 set -e
 
 # ==============================================================================
-# NAV-FI Deployment Script
+# Script di deploy NAV-FI
 # ==============================================================================
 
-# 1. Configuration - EDIT THESE IF NEEDED
+# 1. Configurazione - MODIFICA SE NECESSARIO
 PROJECT_ID=$(gcloud config get-value project)
 REGION="europe-west8"
 SERVICE_NAME="nav-fi"
@@ -32,11 +32,11 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 1
 fi
 
-# 2. Build & Push
+# 2. Build e Push
 echo ""
 echo "📦 Building and Pushing Docker Image..."
 echo "--------------------------------------------------------"
-# Uses Google Cloud Build (no local Docker needed, faster)
+# Usa Google Cloud Build (niente Docker locale, più veloce)
 gcloud builds submit --tag $IMAGE_NAME
 
 # 3. Deploy
@@ -44,8 +44,8 @@ echo ""
 echo "🚀 Deploying to Cloud Run..."
 echo "--------------------------------------------------------"
 
-# Note: We use the secrets created in the guide.
-# If you haven't created them yet, this step will fail.
+# Nota: usiamo i segreti creati nella guida.
+# Se non li hai ancora creati, questo step fallirà.
 gcloud run deploy $SERVICE_NAME \
   --image $IMAGE_NAME \
   --platform managed \

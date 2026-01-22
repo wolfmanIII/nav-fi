@@ -21,7 +21,7 @@ class TravellerMapSectorLookup
 
     public function lookupWorld(string $sector, string $hex): ?array
     {
-        // Graceful fallback for empty input
+        // Fallback elegante per input vuoto
         if (empty(trim($sector)) || empty(trim($hex))) {
             return null;
         }
@@ -54,8 +54,8 @@ class TravellerMapSectorLookup
     }
 
     /**
-     * Downloads and parses sector data.
-     * returns array of ['hex' => '...', 'name' => '...', 'uwp' => '...', 'trade_codes' => [], ...]
+     * Scarica e analizza i dati del settore.
+     * restituisce un array di ['hex' => '...', 'name' => '...', 'uwp' => '...', 'trade_codes' => [], ...]
      */
     public function parseSector(string $sectorName): array
     {
@@ -64,7 +64,7 @@ class TravellerMapSectorLookup
         $lines = preg_split('/\r\n|\r|\n/', $content) ?: [];
         $systems = [];
 
-        // Default column mapping (Standard T5)
+        // Mappatura colonne default (Standard T5)
         $colMap = [
             'hex' => 0,
             'name' => 1,
@@ -79,15 +79,15 @@ class TravellerMapSectorLookup
                 continue;
             }
 
-            // Split by tabs
+            // Dividi per tabulazioni
             $parts = preg_split('/\t+/', $line);
 
-            // Check for Header Line
-            // If the line contains "Hex" and "Name", we treat it as a header and remap columns
+            // Controlla Riga Intestazione
+            // Se la riga contiene "Hex" e "Name", la trattiamo come intestazione e rimappiamo le colonne
             $upperLine = strtoupper($line);
             if (str_contains($upperLine, 'HEX') && str_contains($upperLine, 'NAME')) {
-                // Remap columns based on header
-                // We normalize headers to UPPERCASE to find indexes
+                // Rimappa colonne basandosi sull'intestazione
+                // Normalizziamo le intestazioni a MAIUSCOLO per trovare gli indici
                 $headerParts = array_map('strtoupper', array_map('trim', $parts));
 
                 $hexIndex = array_search('HEX', $headerParts);
@@ -99,7 +99,7 @@ class TravellerMapSectorLookup
                     $colMap['hex'] = $hexIndex;
                     $colMap['name'] = $nameIndex;
                     $colMap['uwp'] = $uwpIndex;
-                    // Remarks is optional or might be named differently (Comments?) but usually Remarks
+                    // Remarks è opzionale o potrebbe chiamarsi diversamente (Comments?) ma di solito Remarks
                     if ($remarksIndex !== false) {
                         $colMap['remarks'] = $remarksIndex;
                     }
@@ -108,30 +108,30 @@ class TravellerMapSectorLookup
                 continue;
             }
 
-            // If we haven't found a header yet, and the line doesn't look like data (no hex at expected pos), 
-            // maybe it's a pre-header line?
-            // But if we trust the default map, we check if default hex col is valid.
+            // Se non abbiamo ancora trovato un'intestazione, e la riga non sembra dati (nessun hex alla pos prevista), 
+            // forse è una riga pre-intestazione?
+            // Ma se ci fidiamo della mappa default, controlliamo se la col hex default è valida.
             $potentialHex = $parts[$colMap['hex']] ?? '';
             if (!preg_match('/^\d{4}$/', $potentialHex) && !$headerFound) {
-                // Try to guess if this is a header line that we missed or just garbage?
-                // If it's the "Sector SS Hex" format but no header line was found yet (unlikely if file has header)
-                // But let's assume valid data lines MUST have a valid hex at the mapped position.
+                // Proviamo a indovinare se questa è una riga intestazione che abbiamo perso o solo spazzatura?
+                // Se è il formato "Sector SS Hex" ma nessuna riga intestazione è stata ancora trovata (improbabile se il file ha intestazione)
+                // Ma assumiamo che le righe dati valide DEBBANO avere un hex valido alla posizione mappata.
                 continue;
             }
 
-            // Extract Data
+            // Estrai Dati
             $hex = trim($parts[$colMap['hex']] ?? '');
             $name = trim($parts[$colMap['name']] ?? '');
             $uwp = trim($parts[$colMap['uwp']] ?? '');
             $remarks = isset($colMap['remarks']) ? trim($parts[$colMap['remarks']] ?? '') : '';
 
-            // Validate Hex (strict 4 digits)
+            // Valida Hex (stretto 4 cifre)
             if (!preg_match('/^\d{4}$/', $hex)) {
                 continue;
             }
 
-            // Validate UWP (Basic length check)
-            if (strlen($uwp) < 7) { // X000000-0 is 9 chars usually, but maybe some allow fewer? standard is 9. Let's say 7 to be safe.
+            // Valida UWP (Controllo lunghezza base)
+            if (strlen($uwp) < 7) { // X000000-0 è 9 car solitamente, ma forse alcuni ne permettono meno? standard è 9. Diciamo 7 per sicurezza.
                 continue;
             }
 
@@ -140,7 +140,7 @@ class TravellerMapSectorLookup
                 'name' => $name,
                 'uwp' => $uwp,
                 'trade_codes' => $this->parseTradeCodes($remarks),
-                'ix' => '', // Ext data not critical for now
+                'ix' => '', // Dati estesi non critici per ora
                 'ex' => '',
                 'cx' => '',
             ];
@@ -153,7 +153,7 @@ class TravellerMapSectorLookup
     {
         $fs = new Filesystem();
         $safeName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $sectorName);
-        // Use a simple versioning by date (daily cache)
+        // Usa un versionamento semplice per data (cache giornaliera)
         $date = date('Y-m-d');
         $filename = sprintf('%s_%s.tab', $safeName, $date);
         $fullPath = Path::join($this->storagePath, $filename);
@@ -170,12 +170,12 @@ class TravellerMapSectorLookup
             $response = $this->client->request('GET', $url);
             $content = $response->getContent();
 
-            // Simple validation: check if it looks like a tab file
+            // Validazione semplice: controlla se sembra un file tab
             if (!str_contains($content, 'Hex') && !str_contains($content, 'Name')) {
                 throw new \RuntimeException('Invalid sector data received');
             }
 
-            // Cleanup old files for this sector
+            // Pulisci vecchi file per questo settore
             $this->cleanupOldFiles($safeName);
 
             $fs->dumpFile($fullPath, $content);
@@ -189,13 +189,13 @@ class TravellerMapSectorLookup
 
     private function parseTradeCodes(string $remarks): array
     {
-        // Remarks include Trade Codes (Ba, In, Hi) and comments.
-        // Trade codes are typically 2 chars, title or upper case.
-        // We split by space
+        // Remarks include Trade Codes (Ba, In, Hi) e commenti.
+        // Trade codes sono tipicamente 2 car, titolo o maiuscolo.
+        // Dividiamo per spazio
         $parts = explode(' ', $remarks);
         $codes = [];
         foreach ($parts as $part) {
-            // Filter common trade codes (2-4 chars, letters)
+            // Filtra trade codes comuni (2-4 car, lettere)
             if (preg_match('/^[A-Za-z]{2,4}$/', $part)) {
                 $codes[] = $part;
             }
@@ -215,7 +215,7 @@ class TravellerMapSectorLookup
             try {
                 $fs->remove($file);
             } catch (\Exception $e) {
-                // Ignore delete errors
+                // Ignora errori cancellazione
             }
         }
     }

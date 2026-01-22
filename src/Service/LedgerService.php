@@ -16,8 +16,8 @@ class LedgerService
     ) {}
 
     /**
-     * Reverses all transactions associated with a specific entity.
-     * Used when an entity is updated or deleted.
+     * Inverte tutte le transazioni associate a una specifica entità.
+     * Usato quando un'entità viene aggiornata o cancellata.
      * @return Transaction[]
      */
     public function reverseTransactions(string $relatedType, int $relatedId, bool $autoFlush = true): array
@@ -29,7 +29,7 @@ class LedgerService
 
         $created = [];
         foreach ($transactions as $tx) {
-            // Simply create a reversal transaction
+            // Crea semplicemente una transazione di inversione
             $reversalAmount = bcmul($tx->getAmount(), '-1', 2);
             $asset = $tx->getAsset();
 
@@ -52,7 +52,7 @@ class LedgerService
         return $created;
     }
     /**
-     * process a deposit (credit) to the asset's account.
+     * processa un deposito (accredito) sul conto dell'asset.
      */
     public function deposit(Asset $asset, string $amount, string $description, int $day, int $year, ?string $relatedType = null, ?int $relatedId = null, ?string $status = null, bool $autoFlush = true): Transaction
     {
@@ -60,8 +60,8 @@ class LedgerService
     }
 
     /**
-     * Process a withdrawal (debit) from the asset's account.
-     * Amount should be positive, it will be negated internally.
+     * Processa un prelievo (addebito) dal conto dell'asset.
+     * L'importo deve essere positivo, verrà negato internamente.
      */
     public function withdraw(Asset $asset, string $amount, string $description, int $day, int $year, ?string $relatedType = null, ?int $relatedId = null, ?string $status = null, bool $autoFlush = true): Transaction
     {
@@ -97,10 +97,10 @@ class LedgerService
             $transaction->setStatus($status);
         }
 
-        // CHRONOLOGICAL RULE:
-        // Update balance ONLY if transaction date <= Campaign's Current Session Date
-        // AND status is not VOID.
-        // Status is set to POSTED if effective, PENDING otherwise.
+        // REGOLA CRONOLOGICA:
+        // Aggiorna saldo SOLO se data transazione <= Data Sessione Corrente Campagna
+        // E lo stato non è VOID.
+        // Lo stato è impostato su POSTED se effettivo, PENDING altrimenti.
 
         if ($transaction->getStatus() !== Transaction::STATUS_VOID) {
             if ($this->isEffective($asset, $day, $year)) {
@@ -110,7 +110,7 @@ class LedgerService
                 $newBalance = bcadd($currentBalance, $amount, 2);
                 $asset->setCredits($newBalance);
             } elseif ($transaction->getStatus() !== Transaction::STATUS_VOID) {
-                // Only set to pending if not void (redundant check but safe)
+                // Imposta su pending solo se non void (controllo ridondante ma sicuro)
                 $transaction->setStatus(Transaction::STATUS_PENDING);
             }
         }
@@ -138,45 +138,45 @@ class LedgerService
             return true;
         }
 
-        // Compare Years
+        // Confronta anni
         if ($year < $currentYear) return true;
         if ($year > $currentYear) return false;
 
-        // Same Year, Compare Days
+        // Stesso anno, confronta giorni
         return $day <= $currentDay;
     }
 
-    // Method to synchronize Ledger with Campaign Date (Time Travel)
+    // Metodo per sincronizzare il Libro Mastro con la Data Campagna (Viaggio nel Tempo)
     public function processCampaignSync(\App\Entity\Campaign $campaign): void
     {
         $currentDay = $campaign->getSessionDay() ?? 0;
         $currentYear = $campaign->getSessionYear() ?? 0;
 
         foreach ($campaign->getAssets() as $asset) {
-            // 1. Forward Time: Find Pending transactions that are now effective
+            // 1. Avanti nel Tempo: Trova transazioni Pending che sono ora effettive
             $pending = $this->transactionRepository->findPendingEffective($asset, $currentDay, $currentYear);
             foreach ($pending as $tx) {
-                // Apply funds
+                // Applica fondi
                 $currentBalance = $asset->getCredits() ?? '0.00';
                 $newBalance = bcadd($currentBalance, $tx->getAmount(), 2);
                 $asset->setCredits($newBalance);
 
-                // Mark as Posted
+                // Segna come Posted
                 $tx->setStatus(Transaction::STATUS_POSTED);
             }
 
-            // 2. Backward Time: Find Posted transactions that are now in the future (Time Travel Undo)
-            // If the user moves date back, we must reverted "Future" transactions to PENDING
-            // and remove the funds.
+            // 2. Indietro nel Tempo: Trova transazioni Posted che sono ora nel futuro (Annulla Viaggio nel Tempo)
+            // Se l'utente sposta la data indietro, dobbiamo riportare le transazioni "Future" a PENDING
+            // e rimuovere i fondi.
             $postedFuture = $this->transactionRepository->findPostedFuture($asset, $currentDay, $currentYear);
             foreach ($postedFuture as $tx) {
-                // Revert funds (subtract the amount)
-                // Note: If original amount was negative (Cost), subtracting it ADDS funds back. Correct.
+                // Inverti fondi (sottrai l'importo)
+                // Nota: Se l'importo originale era negativo (Costo), sottraendolo si AGGIUNGONO fondi. Corretto.
                 $currentBalance = $asset->getCredits() ?? '0.00';
                 $newBalance = bcsub($currentBalance, $tx->getAmount(), 2);
                 $asset->setCredits($newBalance);
 
-                // Mark back to Pending
+                // Segna di nuovo come Pending
                 $tx->setStatus(Transaction::STATUS_PENDING);
             }
         }

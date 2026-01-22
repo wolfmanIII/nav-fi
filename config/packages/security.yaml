@@ -33,19 +33,19 @@ security:
                 target: app_home
 
             two_factor:
-                auth_form_path: 2fa_login # The route name you have used in the routes.yaml
-                check_path: 2fa_login_check # The route name you have used in the routes.yaml
+                auth_form_path: 2fa_login # Il nome della route che hai usato in routes.yaml
+                check_path: 2fa_login_check # Il nome della route che hai usato in routes.yaml
 
             custom_authenticator: App\Security\GoogleAuthenticator
 
-            # activate different ways to authenticate
+            # attiva diversi modi per autenticarsi
             # https://symfony.com/doc/current/security.html#the-firewall
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
 
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
+    # Modo semplice per controllare l'accesso a grandi sezioni del tuo sito
+    # Nota: Solo il *primo* controllo accessi corrispondente verrà usato
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/2fa, roles: PUBLIC_ACCESS }
@@ -66,12 +66,12 @@ security:
 when@test:
     security:
         password_hashers:
-            # By default, password hashers are resource intensive and take time. This is
-            # important to generate secure password hashes. In tests however, secure hashes
-            # are not important, waste resources and increase test times. The following
-            # reduces the work factor to the lowest possible values.
+            # Di default, gli hasher delle password sono intensivi in risorse e richiedono tempo. Questo è
+            # importante per generare hash di password sicuri. Nei test tuttavia, gli hash sicuri
+            # non sono importanti, sprecano risorse e aumentano i tempi di test. Il seguente
+            # riduce il fattore di lavoro ai valori più bassi possibili.
             Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
                 algorithm: auto
-                cost: 4 # Lowest possible value for bcrypt
-                time_cost: 3 # Lowest possible value for argon
-                memory_cost: 10 # Lowest possible value for argon
+                cost: 4 # Valore più basso possibile per bcrypt
+                time_cost: 3 # Valore più basso possibile per argon
+                memory_cost: 10 # Valore più basso possibile per argon

@@ -43,7 +43,7 @@ class FinancialResyncCommand extends Command
         $createdCount = 0;
         $skippedCount = 0;
 
-        // Process Incomes
+        // Processa gli income
         foreach ($incomes as $income) {
             if ($this->hasTransaction('Income', $income->getId())) {
                 $skippedCount++;
@@ -53,7 +53,7 @@ class FinancialResyncCommand extends Command
             $asset = $income->getAsset();
             if (!$asset) continue;
 
-            // 1. Calculate Deposit (Advance) from Contract and Charter
+            // 1. Calcola deposito (anticipo) da contratto e charter
             $deposit = '0.00';
             if ($income->getContractDetails()) {
                 $deposit = bcadd($deposit, $income->getContractDetails()->getDeposit() ?? '0.00', 2);
@@ -62,14 +62,14 @@ class FinancialResyncCommand extends Command
                 $deposit = bcadd($deposit, $income->getCharterDetails()->getDeposit() ?? '0.00', 2);
             }
 
-            // 2. Calculate Bonus (Added to Final Payment) from Contract
+            // 2. Calcola bonus (aggiunto al pagamento finale) dal contratto
             $bonus = '0.00';
             if ($income->getContractDetails()) {
                 $bonus = bcadd($bonus, $income->getContractDetails()->getBonus() ?? '0.00', 2);
             }
 
             if (bccomp($deposit, '0.00', 2) > 0) {
-                // A. Deposit
+                // A. Deposito
                 $signingDay = $income->getSigningDay();
                 $signingYear = $income->getSigningYear();
                 if ($signingDay !== null && $signingYear !== null) {
@@ -85,7 +85,7 @@ class FinancialResyncCommand extends Command
                     $createdCount++;
                 }
 
-                // B. Balance
+                // B. Saldo
                 $paymentDay = $income->getPaymentDay();
                 $paymentYear = $income->getPaymentYear();
                 if ($paymentDay !== null && $paymentYear !== null) {
@@ -111,10 +111,10 @@ class FinancialResyncCommand extends Command
                         $createdCount++;
                     }
                 }
-                continue; // Done with this item
+                continue; // Fine elemento
             }
 
-            // STANDARD LOGIC (No Deposit)
+            // LOGICA STANDARD (nessun deposito)
             $day = $income->getPaymentDay();
             $year = $income->getPaymentYear();
 
@@ -141,7 +141,7 @@ class FinancialResyncCommand extends Command
             $createdCount++;
         }
 
-        // Process Costs
+        // Processa i costi
         foreach ($costs as $cost) {
             if ($this->hasTransaction('Cost', $cost->getId())) {
                 $skippedCount++;
@@ -155,7 +155,7 @@ class FinancialResyncCommand extends Command
             $year = $cost->getPaymentYear();
 
             if ($day === null || $year === null || $cost->getAmount() === null || $cost->getAmount() <= 0) {
-                // Skip invalid or zero-cost items
+                // Salta elementi non validi o a costo zero
                 continue;
             }
 

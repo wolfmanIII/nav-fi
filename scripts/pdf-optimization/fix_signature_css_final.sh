@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Script to fix signature table CSS for flexible 2/3 column support
+# Script per correggere il CSS delle tabelle firme con supporto flessibile 2/3 colonne
 
 echo "Fixing signature table CSS for flexible column support..."
 echo "=========================================================="
 
-# List of contract templates (CONTRACT already fixed manually)
+# Elenco template contratti (CONTRACT già corretto manualmente)
 CONTRACTS=(
     "CHARTER"
     "FREIGHT"
@@ -26,10 +26,10 @@ for contract in "${CONTRACTS[@]}"; do
     if [ -f "$FILE" ]; then
         echo "Processing: $FILE"
         
-        # Replace the unconditional nth-child(2) with conditional nth-child(2):nth-last-child(2)
+        # Sostituisci l'nth-child(2) incondizionato con nth-child(2):nth-last-child(2) condizionato
         sed -i.bak4 '
-            # Find and replace the nth-child(2) center alignment
-            s/\.signature-table th:nth-child(2),$/        \/\* Center alignment ONLY for middle column in 3-column tables \*\/\n        .signature-table th:nth-child(2):nth-last-child(2),/
+            # Trova e sostituisci l'allineamento centrale di nth-child(2)
+            s/\.signature-table th:nth-child(2),$/        \/\* Allineamento centrale SOLO per la colonna centrale nelle tabelle a 3 colonne \*\/\n        .signature-table th:nth-child(2):nth-last-child(2),/
             s/\.signature-table td:nth-child(2) { text-align: center; }/.signature-table td:nth-child(2):nth-last-child(2) { text-align: center; }/
         ' "$FILE"
         

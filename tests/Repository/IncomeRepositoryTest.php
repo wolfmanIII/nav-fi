@@ -46,7 +46,7 @@ class IncomeRepositoryTest extends KernelTestCase
 
     public function testFindAllNotCanceledForUserExcludesCancelledIncome(): void
     {
-        // 1. Setup User & Campaign
+        // 1. Setup Utente e Campagna
         $user = new User();
         $user->setEmail('test@repo.com');
         $user->setPassword('hash');
@@ -69,7 +69,7 @@ class IncomeRepositoryTest extends KernelTestCase
         $category->setDescription('Test Category');
         $this->em->persist($category);
 
-        // 2. Create Active Income
+        // 2. Crea Income attivo
         $activeIncome = new Income();
         $activeIncome->setTitle('Active Job');
         $activeIncome->setUser($user);
@@ -80,7 +80,7 @@ class IncomeRepositoryTest extends KernelTestCase
         $activeIncome->setAmount('5000.00');
         $this->em->persist($activeIncome);
 
-        // 3. Create Cancelled Income
+        // 3. Crea Income cancellato
         $cancelledIncome = new Income();
         $cancelledIncome->setTitle('Cancelled Job');
         $cancelledIncome->setUser($user);
@@ -91,14 +91,14 @@ class IncomeRepositoryTest extends KernelTestCase
         $cancelledIncome->setCancelYear(1105);
         $cancelledIncome->setIncomeCategory($category);
         $cancelledIncome->setAmount('1000.00');
-        // Note: Repository relies on cancelDay/Year being NOT NULL, status is derived or separate.
-        // But let's set status too for completeness, though repository query checks fields directly.
+        // Nota: il repository si basa su cancelDay/Year NON NULL, lo status è derivato o separato.
+        // Ma impostiamo lo status per completezza, anche se la query del repository controlla i campi direttamente.
         $cancelledIncome->setStatus(Income::STATUS_CANCELLED);
         $this->em->persist($cancelledIncome);
 
         $this->em->flush();
 
-        // 4. Test Repository Method
+        // 4. Test del metodo del repository
         $results = $this->repository->findAllNotCanceledForUser($user);
 
         self::assertCount(1, $results);

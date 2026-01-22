@@ -3,7 +3,7 @@ framework:
         chatter_transports:
         texter_transports:
         channel_policy:
-            # use chat/slack, chat/telegram, sms/twilio or sms/nexmo
+            # usa chat/slack, chat/telegram, sms/twilio oppure sms/nexmo
             urgent: ['email']
             high: ['email']
             medium: ['email']

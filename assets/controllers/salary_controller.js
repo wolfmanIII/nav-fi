@@ -33,28 +33,28 @@ export default class extends Controller {
         const campaignId = this.campaignTarget.value;
         const assetId = this.assetTarget.value;
 
-        // Filter Assets by Campaign
+        // Filtra gli asset per campagna
         Array.from(this.assetTarget.options).forEach(option => {
             if (option.value === '') return;
             const optionCampaignId = option.dataset.campaign;
             option.hidden = campaignId !== '' && optionCampaignId !== campaignId;
         });
 
-        // If current asset is hidden, reset it
+        // Se l'asset corrente è nascosto, resetta
         if (this.assetTarget.selectedOptions[0] && this.assetTarget.selectedOptions[0].hidden) {
             this.assetTarget.value = '';
         }
 
         const effectiveAssetId = this.assetTarget.value;
 
-        // Filter Crew by Asset
+        // Filtra l'equipaggio per asset
         Array.from(this.crewTarget.options).forEach(option => {
             if (option.value === '') return;
             const optionAssetId = option.dataset.asset;
             option.hidden = effectiveAssetId !== '' && optionAssetId !== effectiveAssetId;
         });
 
-        // If current crew is hidden, reset it
+        // Se l'equipaggio corrente è nascosto, resetta
         if (this.crewTarget.selectedOptions[0] && this.crewTarget.selectedOptions[0].hidden) {
             this.crewTarget.value = '';
         }
@@ -81,7 +81,7 @@ export default class extends Controller {
             return;
         }
 
-        // Formula: (Monthly Salary / 28) * (Total days from activation to payday)
+        // Formula: (Salario mensile / 28) * (Giorni totali da attivazione al giorno di pagamento)
         const DAYS_IN_YEAR = 365;
         const totalDaysAct = (yearAct * DAYS_IN_YEAR) + dayAct;
         const totalDaysPay = (yearPay * DAYS_IN_YEAR) + dayPay;

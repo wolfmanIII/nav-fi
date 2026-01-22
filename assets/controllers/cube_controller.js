@@ -80,13 +80,13 @@ export default class extends Controller {
             if (response.ok) {
                 const data = await response.json();
 
-                // Remove from Stream with animation
+                // Rimuovi dal flusso con animazione
                 cardElement.style.transition = 'all 0.5s ease-out';
                 cardElement.style.opacity = '0';
                 cardElement.style.transform = 'translateX(50px)';
                 setTimeout(() => cardElement.remove(), 500);
 
-                // Add to Storage with ID from response
+                // Aggiungi allo storage con ID dalla risposta
                 this.renderStorageItem(item, data.id);
 
             } else {
@@ -121,17 +121,17 @@ export default class extends Controller {
             if (response.ok) {
                 const result = await response.json();
 
-                // Remove from Storage with animation
+                // Rimuovi dallo storage con animazione
                 cardElement.style.transition = 'all 0.4s ease-in';
                 cardElement.style.opacity = '0';
                 cardElement.style.transform = 'translateX(-50px)';
 
                 setTimeout(() => {
                     cardElement.remove();
-                    // If storage is empty, could show message (omitted for brevity or handled by observer)
+                    // Se lo storage è vuoto, potremmo mostrare un messaggio (omesso per brevità o gestito da osservatore)
                 }, 400);
 
-                // Re-render in Stream
+                // Ridisegna nel flusso
                 this.renderStreamItem(result.data);
             } else {
                 alert('Failed to return contract to stream.');
@@ -146,7 +146,7 @@ export default class extends Controller {
     renderStorageItem(item, id) {
         const container = document.getElementById('storage-container');
 
-        // Remove empty state if present
+        // Rimuovi lo stato vuoto se presente
         const emptyMsg = container.querySelector('.opacity-50');
         if (emptyMsg && emptyMsg.textContent.includes('Storage Empty')) {
             emptyMsg.remove();
@@ -160,7 +160,7 @@ export default class extends Controller {
         clone.querySelector('[data-slot="type"]').textContent = item.type;
         clone.querySelector('[data-slot="amount"]').textContent = new Intl.NumberFormat().format(item.amount) + ' Cr';
 
-        // Setup Buttons
+        // Imposta i pulsanti
         const unsaveBtn = clone.querySelector('[data-slot="unsave-btn"]');
         unsaveBtn.dataset.id = id;
 

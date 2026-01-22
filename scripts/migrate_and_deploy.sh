@@ -2,7 +2,7 @@
 set -e
 
 # ==============================================================================
-# NAV-FI: MIGRATE & DEPLOY
+# NAV-FI: MIGRAZIONE E DEPLOY
 # ==============================================================================
 # Questo script gestisce il ciclo completo professionale:
 # 1. Build Immagine
@@ -20,12 +20,12 @@ echo "========================================================"
 echo "🚀 NAV-FI: MIGRATE & DEPLOY SYSTEM"
 echo "========================================================"
 
-# 1. Build & Push
+# 1. Build e Push
 echo ""
 echo "📦 1. Building Docker Image..."
 gcloud builds submit --tag $IMAGE_NAME
 
-# 2. Update/Create Migration Job
+# 2. Aggiorna/Crea Job di Migrazione
 echo ""
 echo "🛠️  2. Updating Migration Job..."
 # Usiamo --force per aggiornare il job esistente o crearlo se manca
@@ -50,14 +50,14 @@ gcloud run jobs $COMMAND $JOB_NAME \
   --max-retries 0 \
   --task-timeout 10m
 
-# 3. Execute Migration
+# 3. Esegui Migrazione
 echo ""
 echo "🗄️  3. Executing Database Migrations..."
 gcloud run jobs execute $JOB_NAME --region $REGION --wait
 
 echo "✅ Database Migrations Complete."
 
-# 4. Deploy Application
+# 4. Deploy Applicazione
 echo ""
 echo "🚀 4. Deploying Application..."
 gcloud run deploy $SERVICE_NAME \

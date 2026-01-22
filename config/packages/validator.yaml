@@ -1,7 +1,7 @@
 framework:
     validation:
-        # Enables validator auto-mapping support.
-        # For instance, basic validation constraints will be inferred from Doctrine's metadata.
+        # Abilita il supporto di auto-mapping del validator.
+        # Per esempio, i vincoli di validazione base verranno inferiti dai metadati di Doctrine.
         #auto_mapping:
         #    App\Entity\: []
 

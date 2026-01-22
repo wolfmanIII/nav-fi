@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 
-// Gestione collection waypoints per le rotte (add/remove).
+// Gestione collezione waypoints per le rotte (aggiunta/rimozione).
 export default class extends Controller {
     static targets = ['collection', 'list', 'prototype'];
     static values = {
@@ -61,7 +61,7 @@ export default class extends Controller {
                 uwpInput.value = data.uwp ?? '';
             }
         } catch (error) {
-            // Ignore lookup failures to avoid blocking edits.
+            // Ignora i fallimenti di ricerca per evitare di bloccare le modifiche.
         }
     }
 }

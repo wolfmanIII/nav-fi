@@ -2,7 +2,7 @@
 set -e
 
 # ==============================================================================
-# NAV-FI SECRETS WIZARD
+# NAV-FI WIZARD SEGRETI
 # ==============================================================================
 # Questo script ti aiuta a caricare i "valori veri" su Google Cloud Secret Manager.
 # Cloud Run userà questi valori al posto di quelli "finti" del Dockerfile.

@@ -4,7 +4,7 @@ export default class extends Controller {
     change(event) {
         const value = event.target.value;
 
-        // Find the turbo-frame for income details
+        // Trova il turbo-frame per i dettagli reddito
         const detailsFrame = document.getElementById('income-details-frame');
 
         if (!detailsFrame) {
@@ -12,7 +12,7 @@ export default class extends Controller {
             return;
         }
 
-        // Build URL with category parameter
+        // Costruisci l'URL con il parametro categoria
         const url = new URL(window.location.href);
         if (value) {
             url.searchParams.set("category", value);
@@ -20,7 +20,7 @@ export default class extends Controller {
             url.searchParams.delete("category");
         }
 
-        // Update the turbo-frame src to load new details
+        // Aggiorna il src del turbo-frame per caricare i nuovi dettagli
         detailsFrame.src = url.toString();
     }
 }

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Script to add center column "Signing location & Date" to all contract signature tables
+# Script per aggiungere la colonna centrale "Signing location & Date" a tutte le tabelle firme dei contratti
 
 echo "Adding center column to signature tables..."
 echo "============================================"
 
-# List of contract templates (excluding MORTGAGE which already has 3 columns)
+# Elenco template contratti (escludendo MORTGAGE che ha già 3 colonne)
 CONTRACTS=(
     "CHARTER"
     "CONTRACT"
@@ -26,16 +26,16 @@ for contract in "${CONTRACTS[@]}"; do
     if [ -f "$FILE" ]; then
         echo "Processing: $FILE"
         
-        # Use sed to add the center column in the signature table
-        # 1. Add <th> in thead after "Patron"
-        # 2. Add <td> in tbody after first <td>
+        # Usa sed per aggiungere la colonna centrale nella tabella firme
+        # 1. Aggiungi <th> in thead dopo "Patron"
+        # 2. Aggiungi <td> in tbody dopo il primo <td>
         
         sed -i.bak2 '
-            # In the signature-table thead, add center column header after Patron
+            # Nel thead della signature-table, aggiungi l'intestazione della colonna centrale dopo Patron
             /<table class="signature-table text-sm">/,/<\/thead>/ {
                 s|<th>Patron</th>|<th>Patron</th>\n                        <th>Signing location \&amp; Date</th>|
             }
-            # In the signature-table tbody, add center column cell after first td
+            # Nel tbody della signature-table, aggiungi la cella della colonna centrale dopo il primo td
             /<table class="signature-table text-sm">/,/<\/tbody>/ {
                 s|<td><em>{{ '"'"'{{PATRON_SIGN}}'"'"' }}</em></td>|<td><em>{{ '"'"'{{PATRON_SIGN}}'"'"' }}</em></td>\n                        <td>{{ '"'"'{{SIGNING_LOCATION}}'"'"' }} - {{ '"'"'{{SIGNING_DATE}}'"'"' }}</td>|
             }

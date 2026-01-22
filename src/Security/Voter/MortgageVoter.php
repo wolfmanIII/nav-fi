@@ -42,7 +42,7 @@ final class MortgageVoter extends Voter
     {
         $user = $token->getUser();
 
-        // if the user is anonymous, do not grant access
+        // se l'utente è anonimo, non concedere accesso
         if (!$user instanceof UserInterface) {
             return false;
         }

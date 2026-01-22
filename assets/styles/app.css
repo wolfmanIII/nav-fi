@@ -264,7 +264,7 @@
         @apply text-xs mt-1;
     }
 
-    /* Sci-fi Reveal Animations */
+    /* Animazioni di rivelazione sci-fi */
     @keyframes spin {
         from {
             transform: rotate(0deg);
@@ -348,7 +348,7 @@
         animation: scan-line 0.8s linear infinite;
     }
 
-    /* Tactical Button System */
+    /* Sistema bottoni tattici */
     .btn-tactical {
         @apply relative overflow-hidden transition-all duration-300 px-6 py-2.5 text-xs uppercase tracking-[0.25em] font-bold text-cyan-100 flex items-center justify-center gap-3 bg-slate-950/40 border border-cyan-500/30;
         font-family: 'Orbitron', sans-serif;
@@ -376,7 +376,7 @@
         @apply opacity-100;
     }
 
-    /* Tactical Ornamentation */
+    /* Ornamenti tattici */
     .hull-glitch:hover {
         animation: flicker 0.1s infinite;
     }

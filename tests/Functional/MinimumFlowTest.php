@@ -166,7 +166,7 @@ final class MinimumFlowTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/crew/index?page=2');
         self::assertResponseIsSuccessful();
-        // Crew perPage is 9, so page 2 of 12 is records 10-12
+        // Crew perPage è 9, quindi la pagina 2 di 12 contiene i record 10-12
         self::assertStringContainsString('LOG_SECTOR: 10-12', $crawler->filter('#pagination-metrics')->text());
         self::assertStringContainsString('TOTAL_RECORDS: 12', $crawler->filter('#pagination-metrics')->text());
 

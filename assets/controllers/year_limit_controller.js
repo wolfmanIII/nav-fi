@@ -30,20 +30,20 @@ export default class extends Controller {
             min = Math.max(defaultMin, startYear);
         }
 
-        // Find all year inputs in the same form
+        // Trova tutti gli input anno nello stesso form
         const form = this.element.closest('form');
         if (!form) {
             return;
         }
 
-        // Find all inputs with name ending in [year] that have data-min-year attribute
+        // Trova tutti gli input con nome che termina in [year] che hanno data-min-year
         const yearInputs = form.querySelectorAll('input[name$="[year]"][data-min-year]');
 
         yearInputs.forEach((input) => {
             input.min = min;
             input.setAttribute('data-min-year', min);
 
-            // Find the imperial-date controller container and dispatch event
+            // Trova il container del controller imperial-date e invia l'evento
             const imperialDateContainer = input.closest('[data-controller*="imperial-date"]');
             if (imperialDateContainer) {
                 imperialDateContainer.dispatchEvent(new CustomEvent('year-limits-changed', {

@@ -42,7 +42,7 @@ class FinancialEventSubscriberTest extends TestCase
         $asset = new Asset();
         $income->setAsset($asset);
 
-        // Not cancelled
+        // Non cancellato
 
         $em = $this->createMock(\Doctrine\ORM\EntityManagerInterface::class);
         $args = new PostPersistEventArgs($income, $em);
@@ -72,7 +72,7 @@ class FinancialEventSubscriberTest extends TestCase
         $income->setAmount('5000.00');
         $income->setPaymentDay(200);
         $income->setPaymentYear(1105);
-        $income->setCancelDay(150); // Cancelled BEFORE payment
+        $income->setCancelDay(150); // Cancellato PRIMA del pagamento
         $income->setCancelYear(1105);
 
         $asset = new Asset();
@@ -81,9 +81,9 @@ class FinancialEventSubscriberTest extends TestCase
         $em = $this->createMock(\Doctrine\ORM\EntityManagerInterface::class);
         $args = new PostPersistEventArgs($income, $em);
 
-        // Date Helper Logic Mocking
-        // Payment Date Key = 1105200
-        // Cancel Date Key = 1105150
+        // Mock della logica Date Helper
+        // Chiave data pagamento = 1105200
+        // Chiave data cancellazione = 1105150
         $this->dateHelper->method('toKey')->willReturnMap([
             [200, 1105, 1105200],
             [150, 1105, 1105150],
@@ -99,7 +99,7 @@ class FinancialEventSubscriberTest extends TestCase
                 1105,
                 'Income',
                 2,
-                Transaction::STATUS_VOID // Expect VOID status
+                Transaction::STATUS_VOID // Atteso status VOID
             );
 
         $this->subscriber->postPersist($args);
@@ -114,7 +114,7 @@ class FinancialEventSubscriberTest extends TestCase
         $income->setAmount('2000.00');
         $income->setPaymentDay(50);
         $income->setPaymentYear(1105);
-        $income->setCancelDay(60); // Cancelled AFTER payment (rare but legacy data possible)
+        $income->setCancelDay(60); // Cancellato DOPO il pagamento (raro ma possibile con dati legacy)
         $income->setCancelYear(1105);
 
         $asset = new Asset();
@@ -123,9 +123,9 @@ class FinancialEventSubscriberTest extends TestCase
         $em = $this->createMock(\Doctrine\ORM\EntityManagerInterface::class);
         $args = new PostPersistEventArgs($income, $em);
 
-        // Date Helper Logic Mocking
-        // Payment Date Key = 1105050
-        // Cancel Date Key = 1105060
+        // Mock della logica Date Helper
+        // Chiave data pagamento = 1105050
+        // Chiave data cancellazione = 1105060
         $this->dateHelper->method('toKey')->willReturnMap([
             [50, 1105, 1105050],
             [60, 1105, 1105060],
@@ -141,7 +141,7 @@ class FinancialEventSubscriberTest extends TestCase
                 1105,
                 'Income',
                 3,
-                null // Valid transaction because date <= cancel date
+                null // Transazione valida perché data <= data cancellazione
             );
 
         $this->subscriber->postPersist($args);

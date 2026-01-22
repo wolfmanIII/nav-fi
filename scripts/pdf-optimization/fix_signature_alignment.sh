@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Script to update signature table CSS for flexible column alignment
-# - 2 columns: left, right
-# - 3 columns: left, center, right
+# Script per aggiornare il CSS della tabella firme con allineamento colonne flessibile
+# - 2 colonne: sinistra, destra
+# - 3 colonne: sinistra, centro, destra
 
 echo "Updating signature table CSS for flexible alignment..."
 echo "======================================================"
 
-# List of all contract templates
+# Elenco di tutti i template contratti
 CONTRACTS=(
     "CHARTER"
     "CONTRACT"
@@ -29,20 +29,20 @@ for contract in "${CONTRACTS[@]}"; do
     if [ -f "$FILE" ]; then
         echo "Processing: $FILE"
         
-        # Replace the signature-table CSS section with flexible alignment
-        # Remove old nth-child(2) rule and update to be more flexible
+        # Sostituisci la sezione CSS signature-table con allineamento flessibile
+        # Rimuovi la vecchia regola nth-child(2) e aggiorna in modo più flessibile
         sed -i.bak3 '
-            # Remove the old center alignment for nth-child(2)
+            # Rimuovi il vecchio allineamento centrale per nth-child(2)
             /\.signature-table th:nth-child(2),/,/\.signature-table td:nth-child(2) { text-align: center; }/d
             
-            # Update first-child and last-child rules to be on separate lines for clarity
+            # Aggiorna le regole first-child e last-child su righe separate per chiarezza
             s/\.signature-table th:first-child,/\.signature-table th:first-child { text-align: left; }/
             s/\.signature-table td:first-child { text-align: left; }/\.signature-table td:first-child { text-align: left; }/
             
-            # After the last-child rule, add the nth-child(2) rule for 3-column tables
+            # Dopo la regola last-child, aggiungi la regola nth-child(2) per tabelle a 3 colonne
             /\.signature-table td:last-child { text-align: right; }/ a\
         \
-        /* Center alignment for middle column (3-column tables only) */\
+        /* Allineamento centrale per la colonna centrale (solo tabelle a 3 colonne) */\
         .signature-table th:nth-child(2):nth-last-child(2),\
         .signature-table td:nth-child(2):nth-last-child(2) { text-align: center; }
         ' "$FILE"

@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 final class AssetVoter extends Voter
 {
     public const CREATE = 'ASSET_CREATE';
-    // Let's rename them to ASSET_
+    // Rinominiamoli in ASSET_
     public const VIEW = 'ASSET_VIEW';
     public const EDIT = 'ASSET_EDIT';
     public const DELETE = 'ASSET_DELETE';
@@ -30,7 +30,7 @@ final class AssetVoter extends Voter
         }
 
         return in_array($attribute, [
-            self::CREATE, // Note: CREATE on an instance usually checks valid subject or class? In controller: canCreate expects instance?
+            self::CREATE, // Nota: CREATE su un'istanza di solito verifica subject o classe? Nel controller: canCreate si aspetta un'istanza?
             self::EDIT,
             self::VIEW,
             self::DELETE,

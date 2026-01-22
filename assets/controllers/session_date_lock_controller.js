@@ -29,11 +29,11 @@ export default class extends Controller {
                     return found;
                 }
             } catch (e) {
-                // ignore
+                // ignora
             }
         }
 
-        // Fallback: cerca un input startingYear nello stesso form
+        // Alternativa: cerca un input startingYear nello stesso form
         const form = this.element.closest('form');
         if (form) {
             const candidate = form.querySelector("input[name$='[startingYear]']");
@@ -57,13 +57,13 @@ export default class extends Controller {
             }
         });
 
-        // Update min year for the year input based on startingYear
+        // Aggiorna l'anno minimo per l'input anno in base allo startingYear
         if (enabled && this.startingField) {
             const startingYear = parseInt(this.startingField.value, 10);
             if (!isNaN(startingYear)) {
                 this.yearInputTargets.forEach((el) => {
                     el.setAttribute('data-min-year', startingYear);
-                    // Also update the min attribute for HTML5 validation
+                    // Aggiorna anche l'attributo min per la validazione HTML5
                     el.setAttribute('min', startingYear);
                 });
             }

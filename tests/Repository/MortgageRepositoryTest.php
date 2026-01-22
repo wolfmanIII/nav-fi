@@ -46,7 +46,7 @@ class MortgageRepositoryTest extends KernelTestCase
 
     public function testFindForUserWithFilters(): void
     {
-        // 1. Setup User & Common Entities
+        // 1. Setup Utente ed entità comuni
         $user = new User();
         $user->setEmail('banker@mortgage.com');
         $user->setPassword('hash');
@@ -70,14 +70,14 @@ class MortgageRepositoryTest extends KernelTestCase
         $this->em->persist($assetB);
 
         $rate = new \App\Entity\InterestRate();
-        // $rate->setName('Standard'); // Field does not exist
+        // $rate->setName('Standard'); // Campo inesistente
         $rate->setPriceMultiplier('1.0');
         $rate->setPriceDivider(1);
         $rate->setDuration(240);
         $rate->setAnnualInterestRate('5.00');
         $this->em->persist($rate);
 
-        // 2. Create Mortgages
+        // 2. Crea mutui
         $mortgage1 = new Mortgage();
         $mortgage1->setName('MOR - Ship A');
         $mortgage1->setUser($user);
@@ -94,22 +94,22 @@ class MortgageRepositoryTest extends KernelTestCase
 
         $this->em->flush();
 
-        // 3. Test Filters
+        // 3. Test filtri
 
-        // Filter by Name
+        // Filtra per nome
         $res = $this->repository->findForUserWithFilters($user, ['name' => 'Ship A', 'asset' => null, 'campaign' => null], 1, 10);
         self::assertCount(1, $res['items']);
         self::assertSame('MOR - Ship A', $res['items'][0]->getName());
 
-        // Filter by Asset
+        // Filtra per asset
         $res = $this->repository->findForUserWithFilters($user, ['name' => null, 'asset' => $assetB->getId(), 'campaign' => null], 1, 10);
         self::assertCount(1, $res['items']);
         self::assertSame('MOR - Ship B', $res['items'][0]->getName());
 
-        // Filter by Campaign
+        // Filtra per campagna
         $res = $this->repository->findForUserWithFilters($user, ['name' => null, 'asset' => null, 'campaign' => $campaign->getId()], 1, 10);
         self::assertCount(1, $res['items']);
-        self::assertSame('MOR - Ship A', $res['items'][0]->getName()); // Only A is in Campaign X
+        self::assertSame('MOR - Ship A', $res['items'][0]->getName()); // Solo A è nella Campagna X
     }
 
     protected function tearDown(): void

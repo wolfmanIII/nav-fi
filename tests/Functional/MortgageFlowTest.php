@@ -25,7 +25,7 @@ class MortgageFlowTest extends WebTestCase
     {
         $this->client = static::createClient();
 
-        // Use a separate DB for this functional test to avoid conflicts
+        // Usa un DB separato per questo test funzionale per evitare conflitti
         $dbPath = dirname(__DIR__, 2) . '/var/test_mortgage_flow.db';
         if (is_file($dbPath)) {
             unlink($dbPath);
@@ -43,7 +43,7 @@ class MortgageFlowTest extends WebTestCase
 
     public function testMortgageCreationAndPayment(): void
     {
-        // 1. Setup Data
+        // 1. Setup dati
         $user = $this->createUser();
         $this->login($user);
 
@@ -92,13 +92,13 @@ class MortgageFlowTest extends WebTestCase
 
         $this->em->flush();
 
-        // 2. Create Mortgage via UI
+        // 2. Crea mutuo via UI
         $crawler = $this->client->request('GET', '/mortgage/new');
         self::assertResponseIsSuccessful();
 
         $form = $crawler->selectButton('Confirm Allocation // Commit to Log')->form([
             'mortgage[asset]' => $asset->getId(),
-            'mortgage[campaign]' => $campaign->getId(), // Mapped=false but used for query filter logic? No, form builder adds it.
+            'mortgage[campaign]' => $campaign->getId(), // mapped=false ma usato per logica filtro? No, lo aggiunge il costruttore del form.
             'mortgage[company]' => $company->getId(),
             'mortgage[localLaw]' => $law->getId(),
             'mortgage[interestRate]' => $rate->getId(),
@@ -111,27 +111,27 @@ class MortgageFlowTest extends WebTestCase
         self::assertResponseRedirects('/mortgage/index');
         $this->client->followRedirect();
 
-        // 3. Verify Mortgage Exists
+        // 3. Verifica che il mutuo esista
         $mortgage = $this->em->getRepository(Mortgage::class)->findOneBy(['name' => 'MOR - Freighter M']);
         self::assertNotNull($mortgage);
         self::assertEquals(100000.00, (float) $mortgage->getAdvancePayment());
 
-        // Manually sign it to enable payment (bypass UI signing flow for brevity)
-        // $mortgage->setSigned(true); // Method does not exist, derived from date
+        // Firma manualmente per abilitare il pagamento (bypass del flusso UI per brevità)
+        // $mortgage->setSigned(true); // Metodo inesistente, derivato dalla data
         $mortgage->setSigningDay(100);
         $mortgage->setSigningYear(1105);
         $this->em->flush();
 
-        // 4. Pay Installment
+        // 4. Paga rata
         $crawler = $this->client->request('GET', '/mortgage/edit/' . $mortgage->getId());
         self::assertResponseIsSuccessful();
 
-        // Update: Use selectButton on the edit page (which contains the modal form)
+        // Aggiornamento: usa selectButton sulla pagina di modifica (che contiene il form modale)
         $form = $crawler->selectButton('Execute Transfer')->form([
             'mortgage_installment[paymentDate][day]' => 105,
             'mortgage_installment[paymentDate][year]' => 1105,
-            // 'mortgage_installment[payment]' => '865.38', // Readonly, might be ignored or not needed if logic calculates it?
-            // But if we want to be sure:
+            // 'mortgage_installment[payment]' => '865.38', // Sola lettura, potrebbe essere ignorato o non necessario se lo calcola la logica?
+            // Ma se vogliamo essere sicuri:
             'mortgage_installment[payment]' => '865.38',
         ]);
 
@@ -139,26 +139,26 @@ class MortgageFlowTest extends WebTestCase
 
         self::assertResponseRedirects('/mortgage/edit/' . $mortgage->getId());
 
-        // 5. Verify Transaction in Ledger (Expected to FAIL currently)
+        // 5. Verifica transazione nel libro mastro (atteso fallimento al momento)
         $transaction = $this->em->getRepository(Transaction::class)->findOneBy([
-            'relatedEntityId' => $mortgage->getMortgageInstallments()->last()->getId(), // Get the last installment created
+            'relatedEntityId' => $mortgage->getMortgageInstallments()->last()->getId(), // Prendi l'ultima rata creata
             'relatedEntityType' => 'MortgageInstallment',
         ]);
 
-        // For now, let's assert it exists.
+        // Per ora, verifichiamo che esista.
         self::assertNotNull($transaction, 'Transaction should exist for Mortgage Installment Payment');
         self::assertEquals(-865.38, (float) $transaction->getAmount());
     }
 
-    // Helper to get CSRF token if needed, or stick to crawler.
-    // I'll stick to crawler finding the form on Edit page.
-    // If I can't finding it, I'll fail.
+    // Supporto per ottenere il token CSRF se necessario, o usare il crawler.
+    // Userò il crawler per trovare il form nella pagina di modifica.
+    // Se non riesco a trovarlo, fallirò.
 
     private function createUser(): User
     {
         $user = new User();
         $user->setEmail('mortgage@test.com');
-        $user->setPassword('$2y$13$thmMo1c1o..'); // hash
+        $user->setPassword('$2y$13$thmMo1c1o..'); // hash della password
         $this->em->persist($user);
         $this->em->flush();
         return $user;

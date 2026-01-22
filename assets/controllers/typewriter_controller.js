@@ -3,18 +3,18 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static targets = ['line'];
     static values = {
-        speed: { type: Number, default: 20 }, // ms per char
-        lineDelay: { type: Number, default: 300 } // ms between lines
+        speed: { type: Number, default: 20 }, // ms per carattere
+        lineDelay: { type: Number, default: 300 } // ms tra le righe
     };
 
     connect() {
         this.queue = this.lineTargets.map(target => {
-            const text = target.textContent.trim(); // Use textContent to read hidden text
+            const text = target.textContent.trim(); // Usa textContent per leggere il testo nascosto
 
-            // Clear content
+            // Svuota il contenuto
             target.textContent = '';
 
-            // Make visible but empty
+            // Rendi visibile ma vuoto
             target.style.visibility = 'visible';
 
             return { element: target, text: text };
@@ -55,7 +55,7 @@ export default class extends Controller {
 
         element.textContent += text.charAt(charIndex);
 
-        // Random variation for realism
+        // Variazione casuale per realismo
         const randomSpeed = this.speedValue + (Math.random() * 30 - 15);
 
         setTimeout(() => {

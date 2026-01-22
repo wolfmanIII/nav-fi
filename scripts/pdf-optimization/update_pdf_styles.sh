@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Script to update all PDF templates with printer-friendly CSS
-# This script replaces the old CSS styles with optimized, low-ink styles
+# Script per aggiornare tutti i template PDF con CSS adatto alla stampa
+# Questo script sostituisce i vecchi stili CSS con stili ottimizzati a basso consumo di inchiostro
 
-# Define the new CSS styles
+# Definisci i nuovi stili CSS
 read -r -d '' NEW_STYLES << 'EOF'
 {% block stylesheets %}
     <style>
-        /* Printer-friendly styles - Minimized ink usage */
+        /* Stili adatti alla stampa - uso inchiostro minimizzato */
         body { 
             font-family: 'Inter', 'Segoe UI', sans-serif; 
             font-size: 10px; 
@@ -15,7 +15,7 @@ read -r -d '' NEW_STYLES << 'EOF'
             color: #1f2937; 
         }
         
-        /* Card styling - Very light background */
+        /* Stile card - sfondo molto chiaro */
         .card { 
             border: 1px solid #e5e7eb; 
             border-radius: 6px; 
@@ -35,7 +35,7 @@ read -r -d '' NEW_STYLES << 'EOF'
             font-size: 0.95rem;
         }
         
-        /* Tables - White background, thin borders */
+        /* Tabelle - sfondo bianco, bordi sottili */
         .table { 
             width: 100%; 
             border-collapse: collapse; 
@@ -58,12 +58,12 @@ read -r -d '' NEW_STYLES << 'EOF'
             color: #1f2937;
         }
         
-        /* Alternate row colors for readability */
+        /* Colori alternati delle righe per leggibilità */
         .table tbody tr:nth-child(even) {
             background: #f9fafb;
         }
         
-        /* Borderless tables */
+        /* Tabelle senza bordi */
         .table-borderless { 
             width: 100%; 
             border-collapse: collapse; 
@@ -75,7 +75,7 @@ read -r -d '' NEW_STYLES << 'EOF'
             padding: 6px; 
         }
         
-        /* Signature table - No borders, white background */
+        /* Tabella firme - senza bordi, sfondo bianco */
         .signature-table { 
             width: 100%; 
             border-collapse: collapse; 
@@ -103,7 +103,7 @@ read -r -d '' NEW_STYLES << 'EOF'
         .signature-table th:last-child, 
         .signature-table td:last-child { text-align: right; }
         
-        /* Header table - White background */
+        /* Tabella header - sfondo bianco */
         .header-table { 
             width: 100%; 
             border-collapse: collapse; 
@@ -115,7 +115,7 @@ read -r -d '' NEW_STYLES << 'EOF'
         
         .logo { height: 64px; }
         
-        /* Utility classes */
+        /* Classi di utilità */
         .text-right { text-align: right; }
         .text-sm { font-size: 0.75rem; color: #6b7280; }
         .text-lg { font-size: 0.95rem; }
@@ -131,7 +131,7 @@ read -r -d '' NEW_STYLES << 'EOF'
 {% endblock %}
 EOF
 
-# List of contract templates to update (excluding CONTRACT.html.twig which is already done)
+# Elenco dei template contratti da aggiornare (escludendo CONTRACT.html.twig già fatto)
 CONTRACTS=(
     "CHARTER"
     "FREIGHT"
@@ -150,17 +150,17 @@ CONTRACTS=(
 echo "Starting PDF template optimization..."
 echo "======================================"
 
-# Update contract templates
+# Aggiorna i template contratti
 for contract in "${CONTRACTS[@]}"; do
     FILE="templates/pdf/contracts/${contract}.html.twig"
     if [ -f "$FILE" ]; then
         echo "Processing: $FILE"
         
-        # Create backup
+        # Crea backup
         cp "$FILE" "${FILE}.backup"
         
-        # Use sed to replace the stylesheet block
-        # This is a multi-line replacement using perl for better handling
+        # Usa sed per sostituire il blocco stylesheet
+        # Sostituzione multi-linea usando perl per gestire meglio il testo
         perl -i -0pe 's/{% block stylesheets %}.*?{% endblock %}/'"$(echo "$NEW_STYLES" | sed 's/[&/\]/\\&/g')"'/s' "$FILE"
         
         echo "  ✓ Updated $FILE"
@@ -173,7 +173,7 @@ echo ""
 echo "Contract templates completed!"
 echo ""
 
-# Note: COST and SHIP sheets need special handling due to different structure
+# Nota: i fogli COST e SHIP richiedono gestione speciale per struttura diversa
 echo "Note: cost/SHEET.html.twig and ship/SHEET.html.twig require manual review"
 echo "      due to their unique structure with gradients and special styling."
 echo ""

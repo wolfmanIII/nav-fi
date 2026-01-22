@@ -49,7 +49,7 @@ final class CostFlowTest extends WebTestCase
 
     public function testCostCreationCreatesTransaction(): void
     {
-        // 1. Setup User, Asset, Campaign
+        // 1. Setup Utente, Asset, Campagna
         $user = $this->createUser('quartermaster@cost.test');
         $this->login($user);
 
@@ -75,7 +75,7 @@ final class CostFlowTest extends WebTestCase
 
         $this->em->flush();
 
-        // 2. Create Cost via UI (Manual POST to handle dynamic collection)
+        // 2. Crea costo via UI (POST manuale per gestire la collezione dinamica)
         $crawler = $this->client->request('GET', '/cost/new');
         self::assertResponseIsSuccessful();
 
@@ -97,14 +97,14 @@ final class CostFlowTest extends WebTestCase
                 ],
                 '_token' => $token,
                 'note' => '',
-                'company' => '', // Assuming not required or handle validation
-                'localLaw' => '', // Assuming not required
+                'company' => '', // Presumo non richiesto o gestito dalla validazione
+                'localLaw' => '', // Presumo non richiesto
             ]
         ]);
         self::assertResponseRedirects('/cost/index');
         $this->client->followRedirect();
 
-        // 3. Verify Cost Created and Transaction Exists
+        // 3. Verifica costo creato e transazione esistente
         $cost = $this->em->getRepository(Cost::class)->findOneBy(['title' => 'Hydrogen Refuel']);
         self::assertNotNull($cost);
         self::assertEquals(500.00, (float) $cost->getAmount());

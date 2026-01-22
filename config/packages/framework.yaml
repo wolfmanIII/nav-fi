@@ -1,8 +1,8 @@
-# see https://symfony.com/doc/current/reference/configuration/framework.html
+# vedi https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     secret: '%env(APP_SECRET)%'
 
-    # Note that the session will be started ONLY if you read or write from it.
+    # Nota che la sessione verrà avviata SOLO se leggi o scrivi al suo interno.
     session: true
 
     #esi: true

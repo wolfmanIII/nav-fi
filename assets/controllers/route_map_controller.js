@@ -9,7 +9,7 @@ export default class extends Controller {
   };
 
   connect() {
-    // Show overlay on initial page load
+    // Mostra l'overlay al primo caricamento pagina
     if (this.hasOverlayTarget) {
       this.overlayTarget.classList.remove('hidden');
     }
@@ -24,7 +24,7 @@ export default class extends Controller {
       return;
     }
 
-    // Show loading overlay
+    // Mostra overlay di caricamento
     if (this.hasOverlayTarget) {
       this.overlayTarget.classList.remove('hidden');
     }
@@ -43,13 +43,13 @@ export default class extends Controller {
     if (!this.hasButtonTarget) return;
 
     this.buttonTargets.forEach((btn) => {
-      // Store original HTML if not already stored
+      // Salva l'HTML originale se non è già salvato
       if (!btn.dataset.originalHtml) {
         btn.dataset.originalHtml = btn.innerHTML;
       }
 
       const matchHex = btn.dataset.hex === hex;
-      // Handle the case where sector might be null or empty string differently
+      // Gestisci il caso in cui sector possa essere null o stringa vuota
       const btnSector = btn.dataset.sector || null;
       const targetSector = sector || null;
       const matchSector = btnSector === targetSector;
@@ -67,7 +67,7 @@ export default class extends Controller {
   }
 
   hideOverlay() {
-    // Keep overlay visible for at least 2 seconds to show the animation
+    // Mantieni l'overlay visibile per almeno 2 secondi per mostrare l'animazione
     if (this.hasOverlayTarget) {
       setTimeout(() => {
         this.overlayTarget.classList.add('hidden');

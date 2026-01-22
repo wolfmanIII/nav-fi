@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Script to add center alignment for signature tables with 3 columns
+# Script per aggiungere l'allineamento centrale nelle tabelle firme con 3 colonne
 
 echo "Updating signature table CSS for center column alignment..."
 echo "============================================================"
 
-# List of all contract templates
+# Elenco di tutti i template contratti
 CONTRACTS=(
     "CHARTER"
     "CONTRACT"
@@ -22,12 +22,12 @@ CONTRACTS=(
     "TRADE"
 )
 
-# CSS to add for center column (nth-child(2))
+# CSS da aggiungere per la colonna centrale (nth-child(2))
 CENTER_ALIGN_CSS="        
         .signature-table th:nth-child(2),
         .signature-table td:nth-child(2) { text-align: center; }
         
-        /* For MORTGAGE sign-table with 3 columns */
+        /* Per la sign-table di MORTGAGE con 3 colonne */
         .sign-table {
             width: 100%;
             border-collapse: collapse;
@@ -45,14 +45,14 @@ CENTER_ALIGN_CSS="
         .sign-table td:nth-child(2) { text-align: center; }
         .sign-table td:last-child { text-align: right; }"
 
-# Update each contract template
+# Aggiorna ogni template contratto
 for contract in "${CONTRACTS[@]}"; do
     FILE="templates/pdf/contracts/${contract}.html.twig"
     if [ -f "$FILE" ]; then
         echo "Processing: $FILE"
         
-        # Find the line with "signature-table td:last-child" and add center alignment after it
-        # Using awk for precise insertion
+        # Trova la riga con "signature-table td:last-child" e aggiungi l'allineamento centrale subito dopo
+        # Usa awk per un inserimento preciso
         awk '
         /\.signature-table td:last-child \{ text-align: right; \}/ {
             print
@@ -60,7 +60,7 @@ for contract in "${CONTRACTS[@]}"; do
             print "        .signature-table th:nth-child(2),"
             print "        .signature-table td:nth-child(2) { text-align: center; }"
             print ""
-            print "        /* For MORTGAGE sign-table with 3 columns */"
+            print "        /* Per la sign-table di MORTGAGE con 3 colonne */"
             print "        .sign-table {"
             print "            width: 100%;"
             print "            border-collapse: collapse;"

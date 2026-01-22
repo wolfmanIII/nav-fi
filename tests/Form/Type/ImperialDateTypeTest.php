@@ -50,7 +50,7 @@ class ImperialDateTypeTest extends TypeTestCase
 
         $form = $this->factory->create(ImperialDateType::class);
 
-        // $model will be populated by the form
+        // $model verrà popolato dal form
         $form->submit($formData);
 
         $this->assertTrue($form->isSynchronized());
@@ -63,7 +63,7 @@ class ImperialDateTypeTest extends TypeTestCase
         $view = $form->createView();
         $yearAttr = $view->children['year']->vars['attr'];
 
-        // Verify Data Attributes for Frontend
+        // Verifica attributi data per il frontend
         $this->assertSame(self::MIN_YEAR, $yearAttr['data-min-year']);
         $this->assertSame(self::MAX_YEAR, $yearAttr['data-max-year']);
         $this->assertSame(self::MIN_DAY, $yearAttr['data-min-day']);

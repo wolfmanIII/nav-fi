@@ -20,7 +20,7 @@ class SalaryFlowTest extends WebTestCase
 
     protected function setUp(): void
     {
-        // Use a separate DB for this functional test to avoid conflicts
+        // Usa un DB separato per questo test funzionale per evitare conflitti
         $dbPath = dirname(__DIR__, 2) . '/var/test_salary_flow.db';
         if (is_file($dbPath)) {
             unlink($dbPath);
@@ -40,7 +40,7 @@ class SalaryFlowTest extends WebTestCase
 
     public function testSalaryCreationFlow(): void
     {
-        // 1. Setup Data
+        // 1. Setup dati
         $user = $this->createUser();
         $this->login($user);
 
@@ -70,7 +70,7 @@ class SalaryFlowTest extends WebTestCase
 
         $this->em->flush();
 
-        // 2. Create Salary via UI
+        // 2. Crea stipendio via UI
         $crawler = $this->client->request('GET', '/salary/new');
         self::assertResponseIsSuccessful();
 
@@ -80,7 +80,7 @@ class SalaryFlowTest extends WebTestCase
             'salary[crew]' => $crew->getId(),
             'salary[amount]' => '2500.00',
             'salary[status]' => Salary::STATUS_ACTIVE,
-            'salary[firstPaymentDate][day]' => 56, // Global payday
+            'salary[firstPaymentDate][day]' => 56, // Giorno di pagamento globale
             'salary[firstPaymentDate][year]' => 1105,
         ]);
         $this->client->submit($form);
@@ -88,7 +88,7 @@ class SalaryFlowTest extends WebTestCase
         self::assertResponseRedirects('/salary/index');
         $this->client->followRedirect();
 
-        // 3. Verify Salary Exists
+        // 3. Verifica che lo stipendio esista
         /** @var Salary $salary */
         $salary = $this->em->getRepository(Salary::class)->findOneBy(['crew' => $crew]);
         self::assertNotNull($salary);
@@ -96,7 +96,7 @@ class SalaryFlowTest extends WebTestCase
         self::assertEquals(56, $salary->getFirstPaymentDay());
         self::assertEquals(1105, $salary->getFirstPaymentYear());
 
-        // 4. Verify Ledger Integration (SalaryPayment -> Transaction)
+        // 4. Verifica integrazione libro mastro (SalaryPayment -> Transaction)
         $payment = new SalaryPayment();
         $payment->setSalary($salary);
         $payment->setAmount('2500.00');
@@ -105,7 +105,7 @@ class SalaryFlowTest extends WebTestCase
         $this->em->persist($payment);
         $this->em->flush();
 
-        // Check if transaction was created by FinancialEventSubscriber
+        // Verifica che la transazione sia stata creata da FinancialEventSubscriber
         $transaction = $this->em->getRepository(Transaction::class)->findOneBy([
             'relatedEntityId' => $payment->getId(),
             'relatedEntityType' => 'SalaryPayment',
@@ -121,7 +121,7 @@ class SalaryFlowTest extends WebTestCase
     {
         $user = new User();
         $user->setEmail('salary_test@example.com');
-        $user->setPassword('$2y$13$thmMo1c1o..'); // Mock password
+        $user->setPassword('$2y$13$thmMo1c1o..'); // Password mock
         $this->em->persist($user);
         $this->em->flush();
         return $user;

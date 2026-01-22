@@ -49,7 +49,7 @@ final class CancellationFlowTest extends WebTestCase
 
     public function testIncomeCancellationFlow(): void
     {
-        // 1. Setup User, Asset, Campaign
+        // 1. Setup Utente, Asset, Campagna
         $user = $this->createUser('captain@cancel.test');
         $this->login($user);
 
@@ -75,7 +75,7 @@ final class CancellationFlowTest extends WebTestCase
 
         $this->em->flush();
 
-        // 2. Create Active Income
+        // 2. Crea Income attivo
         $crawler = $this->client->request('GET', '/income/new');
         self::assertResponseIsSuccessful();
 
@@ -84,7 +84,7 @@ final class CancellationFlowTest extends WebTestCase
             'income[amount]' => '5000.00',
             'income[signingDate][day]' => 100,
             'income[signingDate][year]' => 1105,
-            'income[paymentDate][day]' => 120, // Future payment
+            'income[paymentDate][day]' => 120, // Pagamento futuro
             'income[paymentDate][year]' => 1105,
             'income[asset]' => $asset->getId(),
             'income[incomeCategory]' => $category->getId(),
@@ -93,7 +93,7 @@ final class CancellationFlowTest extends WebTestCase
         self::assertResponseRedirects('/income/index');
         $this->client->followRedirect();
 
-        // 3. Verify Income Created and Ledger Pending
+        // 3. Verifica Income creato e libro mastro in Pending
         $income = $this->em->getRepository(Income::class)->findOneBy(['title' => 'Future Job']);
         self::assertNotNull($income);
         self::assertNotSame(Income::STATUS_CANCELLED, $income->getStatus());
@@ -105,11 +105,11 @@ final class CancellationFlowTest extends WebTestCase
         self::assertNotNull($transaction);
         self::assertSame(Transaction::STATUS_PENDING, $transaction->getStatus());
 
-        // 4. Cancel the Income
+        // 4. Cancella l'Income
         $crawler = $this->client->request('GET', '/income/edit/' . $income->getId());
         self::assertResponseIsSuccessful();
 
-        // Check if Cancellation warning is initially absent
+        // Verifica che l'avviso di cancellazione sia inizialmente assente
         self::assertSame(0, $crawler->filter('div:contains("Tactical Alert: Asset Income Voided")')->count());
 
         $form = $crawler->selectButton('Confirm Entry // Commit to Log')->form();
@@ -119,7 +119,7 @@ final class CancellationFlowTest extends WebTestCase
         $this->client->submit($form);
         self::assertResponseRedirects('/income/index');
 
-        // 5. Verify Status Updates
+        // 5. Verifica aggiornamenti di stato
         $this->em->clear();
         $this->em->getConnection()->close();
         $this->em->getConnection()->connect();
@@ -127,10 +127,10 @@ final class CancellationFlowTest extends WebTestCase
         $updatedIncome = $this->em->getRepository(Income::class)->find($income->getId());
         self::assertSame(Income::STATUS_CANCELLED, $updatedIncome->getStatus());
 
-        // Verify we have:
-        // 1. Original Pending (reversed, but still there unless we assert explicit reversal logic which just creates a correction tx)
-        // 2. Correction/Reversal
-        // 3. New Void Transaction
+        // Verifica che abbiamo:
+        // 1. Pending originale (invertito, ma ancora presente se non assertiamo la logica di inversione che crea solo una tx di correzione)
+        // 2. Correzione/Inversione
+        // 3. Nuova transazione Void
 
         $voidTx = $this->em->getRepository(Transaction::class)->findOneBy([
             'relatedEntityId' => $income->getId(),
@@ -139,9 +139,9 @@ final class CancellationFlowTest extends WebTestCase
         ]);
         self::assertNotNull($voidTx, 'Void Transaction should exist');
 
-        // 6. Verify UI Watermark presence by revisiting edit
+        // 6. Verifica presenza della filigrana UI rientrando in modifica
         $crawler = $this->client->request('GET', '/income/edit/' . $income->getId());
-        // Verify text content snippet from the alert
+        // Verifica lo snippet di testo dell'alert
         self::assertStringContainsString('Tactical Alert: Asset Income Voided', $crawler->html());
     }
 
