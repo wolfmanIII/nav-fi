@@ -27,15 +27,20 @@
             </div>
             
             {% if active_session %}
-            <div class="flex flex-col items-end">
-                <div class="text-xs text-slate-500 uppercase tracking-widest font-mono mb-1">Active Session</div>
-                <div class="flex items-center gap-4 text-xs font-mono bg-slate-900/50 border border-slate-800 rounded px-3 py-1.5">
-                    <span class="text-cyan-400 font-bold">SEED: {{ active_session.seed }}</span>
-                    <span class="text-slate-600">|</span>
-                    <span class="text-slate-300">{{ active_session.sector }}</span>
-                    <span class="text-slate-600">|</span>
-                    <span class="text-slate-300">HEX {{ active_session.originHex }}</span>
+            <div class="flex items-center gap-3">
+                <div class="flex flex-col items-end">
+                    <div class="text-xs text-slate-500 uppercase tracking-widest font-mono mb-1">Active Session</div>
+                    <div class="flex items-center gap-4 text-xs font-mono bg-slate-900/50 border border-slate-800 rounded px-3 py-1.5">
+                        <span class="text-cyan-400 font-bold">SEED: {{ active_session.seed }}</span>
+                        <span class="text-slate-600">|</span>
+                        <span class="text-slate-300">{{ active_session.sector }}</span>
+                        <span class="text-slate-600">|</span>
+                        <span class="text-slate-300">HEX {{ active_session.originHex }}</span>
+                    </div>
                 </div>
+                <a href="{{ path('app_cube_index', {campaign_id: campaign.id, force_new: 1}) }}" class="btn btn-outline btn-xs border-amber-500/30 text-amber-400 hover:bg-amber-500/10 hover:border-amber-400 font-mono uppercase tracking-widest">
+                    <i class="lucide-plus w-3 h-3 mr-1"></i> New Session
+                </a>
             </div>
             {% else %}
             <div class="flex items-center gap-2 text-amber-500 animate-pulse bg-amber-950/20 px-3 py-1 rounded border border-amber-500/20">
@@ -205,7 +210,7 @@
                 <!-- Content -->
                 <div class="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900" id="storage-container">
                     {% for opp in active_session.opportunities %}
-                        <div class="relative bg-slate-950 border border-slate-800 rounded-lg p-4 hover:border-amber-500/30 transition-all group">
+                        <a href="{{ path('app_cube_contract_show', {id: opp.id}) }}" class="block relative bg-slate-950 border border-slate-800 rounded-lg p-4 hover:border-amber-500/30 transition-all group cursor-pointer hover:scale-[1.01]">
                             <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50 rounded-l-lg"></div>
                             <div class="pl-2 flex justify-between items-start">
                                 <div>
@@ -219,7 +224,7 @@
                                     <span class="text-[10px] font-mono text-amber-500/60 uppercase border border-amber-500/20 px-2 py-1 rounded">SAVED</span>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     {% else %}
                         <div class="h-full flex flex-col items-center justify-center text-slate-600 opacity-50">
                             <span class="text-xs font-mono uppercase tracking-widest">Storage Empty</span>

@@ -200,16 +200,27 @@ class TheCubeEngine
 
     private function generateOpportunity(array $ctx): array
     {
+        // Placeholder for speculative trade
+        // For MVP, we generate a simple "buy low, sell high" opportunity
+        $resources = ['Radioactives', 'Metals', 'Crystals', 'Luxuries', 'Electronics', 'Pharmaceuticals'];
+        $resource = $resources[mt_rand(0, count($resources) - 1)];
+
+        $buyPrice = mt_rand(1000, 5000);
+        $markup = mt_rand(120, 180) / 100; // 1.2x to 1.8x
+        $estimatedProfit = (int)($buyPrice * ($markup - 1));
+
         return [
             'type' => 'TRADE',
-            'summary' => "Speculative Trade Opportunity",
-            'distance' => 0,
-            'amount' => 0,
+            'summary' => "Speculative Trade: $resource",
+            'distance' => 0, // Market-based, not route-based
+            'amount' => $estimatedProfit, // Estimated profit
             'details' => [
                 'origin' => $ctx['origin'],
                 'destination' => 'Market',
-                'resource' => 'Radioactive',
-                'buy_modifier' => 0.8
+                'resource' => $resource,
+                'buy_price' => $buyPrice,
+                'markup_estimate' => $markup,
+                'risk_level' => 'Medium'
             ]
         ];
     }

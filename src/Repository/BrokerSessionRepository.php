@@ -25,4 +25,17 @@ class BrokerSessionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findLatestDraftByCampaign(int $campaignId): ?BrokerSession
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.campaign = :campaignId')
+            ->andWhere('b.status = :status')
+            ->setParameter('campaignId', $campaignId)
+            ->setParameter('status', BrokerSession::STATUS_DRAFT)
+            ->orderBy('b.createdAt', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

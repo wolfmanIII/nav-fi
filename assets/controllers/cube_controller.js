@@ -30,7 +30,6 @@ export default class extends Controller {
 
         } catch (error) {
             console.error('Scan failed', error);
-            // Display specific error if available
             const msg = error.message || 'DATALINK OFFLINE';
             container.innerHTML = `<div class="text-center text-error text-xs py-10">SCAN ERROR: ${msg}</div>`;
         }
@@ -41,19 +40,16 @@ export default class extends Controller {
         const clone = template.content.cloneNode(true);
         const card = clone.querySelector('.card');
 
-        // Populate Data
         clone.querySelector('[data-slot="type"]').textContent = item.type;
         clone.querySelector('[data-slot="dist"]').textContent = item.distance > 0 ? `${item.distance} PC` : 'LOCAL';
         clone.querySelector('[data-slot="summary"]').textContent = item.summary;
         clone.querySelector('[data-slot="amount"]').textContent = new Intl.NumberFormat().format(item.amount);
 
-        // Pretty print details
         const details = Object.entries(item.details).map(([k, v]) => `${k}: ${v}`).join(' // ');
         clone.querySelector('[data-slot="details"]').textContent = details;
 
-        // Attach Data for Save
         const saveBtn = clone.querySelector('[data-action="cube#save"]');
-        saveBtn.dataset.payload = JSON.stringify(item); // Store full payload
+        saveBtn.dataset.payload = JSON.stringify(item);
         saveBtn.addEventListener('click', (e) => this.save(e, item, card));
 
         const discardBtn = clone.querySelector('[data-action="cube#discard"]');
@@ -64,7 +60,7 @@ export default class extends Controller {
 
     async save(event, item, cardElement) {
         const btn = event.currentTarget;
-        if (btn.disabled) return; // Prevent double submit
+        if (btn.disabled) return;
 
         btn.classList.add('loading');
         btn.disabled = true;
@@ -79,16 +75,16 @@ export default class extends Controller {
             });
 
             if (response.ok) {
-                // Success: Update UI Seamlessly
+                const data = await response.json();
 
-                // 1. Remove from Stream with animation
+                // Remove from Stream with animation
                 cardElement.style.transition = 'all 0.5s ease-out';
                 cardElement.style.opacity = '0';
                 cardElement.style.transform = 'translateX(50px)';
                 setTimeout(() => cardElement.remove(), 500);
 
-                // 2. Add to Storage
-                this.renderStorageItem(item);
+                // Add to Storage with ID from response
+                this.renderStorageItem(item, data.id);
 
             } else {
                 const text = await response.text();
@@ -105,21 +101,31 @@ export default class extends Controller {
         }
     }
 
-    renderStorageItem(item) {
+    renderStorageItem(item, id) {
         const container = document.getElementById('storage-container');
+
         // Remove empty state if present
-        if (container.querySelector('.opacity-50')) {
-            const emptyMsg = container.querySelector('.opacity-50');
-            if (emptyMsg.textContent.includes('Storage Empty')) emptyMsg.remove();
+        const emptyMsg = container.querySelector('.opacity-50');
+        if (emptyMsg && emptyMsg.textContent.includes('Storage Empty')) {
+            emptyMsg.remove();
         }
 
         const template = document.getElementById('storage-item-template');
         const clone = template.content.cloneNode(true);
+        const cardElement = clone.querySelector('.relative');
 
         clone.querySelector('[data-slot="summary"]').textContent = item.summary;
         clone.querySelector('[data-slot="type"]').textContent = item.type;
         clone.querySelector('[data-slot="amount"]').textContent = new Intl.NumberFormat().format(item.amount) + ' Cr';
 
-        container.prepend(clone); // Add to top
+        // Make clickable if ID provided
+        if (id) {
+            cardElement.classList.add('cursor-pointer', 'hover:scale-[1.01]', 'transition-transform');
+            cardElement.addEventListener('click', () => {
+                window.location.href = `/cube/contract/${id}`;
+            });
+        }
+
+        container.prepend(clone);
     }
 }

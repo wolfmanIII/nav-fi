@@ -42,13 +42,15 @@ class CubeController extends AbstractController
             ? $this->entityManager->getRepository(Campaign::class)->find($request->query->get('campaign_id'))
             : null;
 
-        // If no campaign, redirect to select or show error (Out of scope for this snippet, assuming context)
-        // For now, let's just render the dashboard with no session if no campaign
-
         $activeSession = null;
         if ($campaign) {
-            $sessions = $this->sessionRepo->findByCampaign($campaign->getId());
-            $activeSession = $sessions[0] ?? null; // Get latest
+            // Check if user wants to force a new session
+            $forceNew = $request->query->getBoolean('force_new', false);
+
+            if (!$forceNew) {
+                // Try to resume latest DRAFT session
+                $activeSession = $this->sessionRepo->findLatestDraftByCampaign($campaign->getId());
+            }
         }
 
         $allCampaigns = $this->entityManager->getRepository(Campaign::class)->findAll();
@@ -142,5 +144,18 @@ class CubeController extends AbstractController
 
             return $this->json(['error' => 'Persistence Failed: ' . $e->getMessage()], 500);
         }
+    }
+    #[Route('/contract/{id}', name: 'app_cube_contract_show', methods: ['GET'])]
+    public function show(int $id, EntityManagerInterface $em): Response
+    {
+        $opportunity = $em->getRepository(\App\Entity\BrokerOpportunity::class)->find($id);
+
+        if (!$opportunity) {
+            throw $this->createNotFoundException('Contract Manifest not found.');
+        }
+
+        return $this->render('cube/show.html.twig', [
+            'opportunity' => $opportunity,
+        ]);
     }
 }
