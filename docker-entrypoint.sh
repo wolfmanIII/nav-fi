@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Migration moved to Cloud Run Job (see scripts/migrate_and_deploy.sh)
+# Migrazione spostata su Cloud Run Job (vedi scripts/migrate_and_deploy.sh)
 # php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 
 echo "Starting supervisor..."

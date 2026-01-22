@@ -1,8 +1,8 @@
 parameters:
-    # Path where TravellerMap sector data (.tab) will be stored
-    app.cube.sector_storage_path: '%kernel.project_dir%/var/data/sectors'
+    # Percorso dove i dati del settore TravellerMap (.tab) verranno salvati
+    app.cube.sector_storage_path: "%kernel.project_dir%/var/data/sectors"
 
-    # Economic Constants (Traveller Core Update 2022)
+    # Costanti Economiche (Traveller Core Update 2022)
     app.cube.economy:
         # --- FREIGHT (Merci) ---
         # Costo per Tonnellata (Cr/dt) in base alla distanza del salto.
@@ -14,7 +14,7 @@ parameters:
             4: 4400
             5: 8500
             6: 32000
-        
+
         # --- PASSENGERS (Passeggeri) ---
         # Costo del biglietto per singola persona (Cr/pax).
         passengers:
@@ -50,61 +50,62 @@ parameters:
                 4: 3900
                 5: 7200
                 6: 27000
-        
+
         # --- MODIFIERS (Variabili Ambientali) ---
         modifiers:
-            risk_amber: 1.5      # Moltiplicatore per zone pericolose (Amber Zone)
-            risk_red: 2.0        # Moltiplicatore per zone interdette (Red Zone)
-            trade_bonus: 500     # Bonus fisso (Cr) se i Trade Codes matchano (es. Rich -> Industrial)
-        
+            risk_amber: 1.5 # Moltiplicatore per zone pericolose (Amber Zone)
+            risk_red: 2.0 # Moltiplicatore per zone interdette (Red Zone)
+            trade_bonus: 500 # Bonus fisso (Cr) se i Trade Codes matchano (es. Rich -> Industrial)
+
         # --- CHARTER (Noleggio Nave) ---
         # Si paga l'intero scafo per un periodo.
         charter:
-            base_rate: 900       # Cr per tonnellata di scafo (es. nave 200t = 180k Cr)
-            min_weeks: 2         # Durata minima standard del contratto
-            
+            base_rate: 900 # Cr per tonnellata di scafo (es. nave 200t = 180k Cr)
+            min_weeks: 2 # Durata minima standard del contratto
+
         # --- MAIL (Posta Prioritaria) ---
         # Contenitori sicuri, pagamento fisso "tutto o niente".
         mail:
-            flat_rate: 25000     # Pagamento fisso per colpo (Cr)
+            flat_rate: 25000 # Pagamento fisso per colpo (Cr)
             tons_per_container: 5 # Spazio richiesto per container
-            max_containers_dice: '1d6' # Formula dadi per quanti container generare
-            
+            max_containers_dice: "1d6" # Formula dadi per quanti container generare
+
         # --- TRADE (Speculazione) ---
         # Moltiplicatori per generare prezzi di mercato "fluttuanti".
         trade:
             # Se compri in un sistema con questi codici...
             purchase_modifiers:
-                In: 0.8          # Industrial: Merce costa l'80% del base (Sconto 20%)
-                Ag: 0.7          # Agricultural: Cibo costa il 70% del base
+                In: 0.8 # Industrial: Merce costa l'80% del base (Sconto 20%)
+                Ag: 0.7 # Agricultural: Cibo costa il 70% del base
             # Se vendi in un sistema con questi codici...
             sale_modifiers:
-                Ri: 1.2          # Rich: Pagano il 120% (Bonus 20%)
-                Po: 1.3          # Poor: Pagano il 130%
-                
+                Ri: 1.2 # Rich: Pagano il 120% (Bonus 20%)
+                Po: 1.3 # Poor: Pagano il 130%
+
         # --- CONTRACT (Missioni) ---
         # Missioni generiche "Patron" (es. Scorta, Trasporto VIP, Sorveglianza).
         contract:
-            base_reward_min: 1000  # Paga base minima
-            base_reward_max: 5000  # Paga base massima
-            bonus_chance: 0.3      # Probabilità di avere un bonus (30%)
-            bonus_multiplier: 0.5  # Bonus vale il 50% della reward base
-            
+            base_reward_min: 1000 # Paga base minima
+            base_reward_max: 5000 # Paga base massima
+            bonus_chance: 0.3 # Probabilità di avere un bonus (30%)
+            bonus_multiplier: 0.5 # Bonus vale il 50% della reward base
+
         # --- SERVICE (Servizi) ---
         # Prestazioni professionali (es. Riparazioni, Training, Medical, Intrattenimento)
         service:
-            # Similar to Contracts but usually shorter term or skill-based
+            # Simile ai Contratti ma solitamente a termine più breve o basato sulle abilità
             base_reward_min: 500
             base_reward_max: 2000
-            types: ['Maintenance', 'Training', 'Medical', 'Entertainment', 'Legal']
-            
+            types:
+                ["Maintenance", "Training", "Medical", "Entertainment", "Legal"]
+
         # --- SALVAGE (Recupero) ---
         # Brokeraggio di diritti di salvataggio (Tip-off).
         salvage:
-            base_finder_fee_min: 2000    # Costo per comprare la "dritta" (o valore della reward)
+            base_finder_fee_min: 2000 # Costo per comprare la "dritta" (o valore della reward)
             base_finder_fee_max: 10000
-            
+
         # --- PRIZE (Prede) ---
         # Commissioni legali per la gestione di navi catturate.
         prize:
-            legal_fee_percent: 0.10      # Il broker prende il 10% del valore stimato per legalizzare la preda
+            legal_fee_percent: 0.10 # Il broker prende il 10% del valore stimato per legalizzare la preda

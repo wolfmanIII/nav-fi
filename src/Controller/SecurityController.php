@@ -24,6 +24,6 @@ final class SecurityController extends BaseController
     #[Route('/logout', name: 'app_logout', methods: ['GET', 'POST'])]
     public function logout(): void
     {
-        // handled by Symfony
+        // gestito da Symfony
     }
 }

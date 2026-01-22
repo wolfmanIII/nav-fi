@@ -252,6 +252,7 @@ class Crew
     public function addAssetRole(AssetRole $assetRole): static
     {
         if (!$this->assetRoles->contains($assetRole)) {
+            // imposta il lato proprietario a null (a meno che non sia già cambiato)
             $this->assetRoles->add($assetRole);
         }
 

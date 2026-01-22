@@ -1,7 +1,7 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
+# Questo file è il punto di ingresso per configurare i tuoi servizi.
+# I file nella sottocartella packages/ configurano le tue dipendenze.
 
-# Put parameters here that don't need to change on each machine where the app is deployed
+# Metti qui i parametri che non devono cambiare su ogni macchina dove l'app è deployata
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     app.day_min: "%env(int:APP_DAY_MIN)%"
@@ -11,13 +11,13 @@ parameters:
     ai.backend: "%env(AI_BACKEND)%" # ollama | openai
 
 services:
-    # default configuration for services in *this* file
+    # configurazione di default per i servizi in *questo* file
     _defaults:
-        autowire: true # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autowire: true # Inietta automaticamente le dipendenze nei tuoi servizi.
+        autoconfigure: true # Registra automaticamente i tuoi servizi come comandi, event subscriber, ecc.
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
+    # rende le classi in src/ disponibili per essere usate come servizi
+    # crea un servizio per classe il cui id è il nome della classe fully-qualified
     App\:
         resource: "../src/"
 
@@ -39,8 +39,8 @@ services:
         arguments:
             $projectDir: "%kernel.project_dir%"
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    # aggiungi definizioni di servizi quando è necessaria una configurazione esplicita
+    # nota che le ultime definizioni *rimpiazzano* sempre quelle precedenti
 
     # Abilita i foreign keys su TUTTE le connessioni SQLite
     #Doctrine\DBAL\Driver\AbstractSQLiteDriver\Middleware\EnableForeignKeys:
@@ -50,7 +50,7 @@ services:
     App\EventSubscriber\AssignUserSubscriber:
         tags: ["doctrine.event_subscriber"]
 
-    # Fix for SchebTwoFactorBundle controller not being public/auto-wired
+    # Fix per il controller SchebTwoFactorBundle che non è public/auto-wired
     Scheb\TwoFactorBundle\Controller\FormController:
         alias: scheb_two_factor.form_controller
         public: true

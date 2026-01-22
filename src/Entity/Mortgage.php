@@ -15,7 +15,7 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Index(name: 'idx_mortgage_asset', columns: ['asset_id'])]
 class Mortgage
 {
-    public const ASSET_SHARE_VALUE = 1000000; // Keeping constant name for business rule compatibility
+    public const ASSET_SHARE_VALUE = 1000000; // Mantenuto nome costante per compatibilità regole di business
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -39,7 +39,7 @@ class Mortgage
     private ?int $startYear = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $assetShares = null; // Keeping field name
+    private ?int $assetShares = null; // Mantenuto nome campo
 
     #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2, nullable: true)]
     private ?string $advancePayment = null;
@@ -129,7 +129,7 @@ class Mortgage
     {
         $this->asset = $asset;
 
-        // ensure inverse side is synchronized
+        // assicura che il lato inverso sia sincronizzato
         if ($asset !== null && $asset->getMortgage() !== $this) {
             $asset->setMortgage($this);
         }
@@ -319,25 +319,25 @@ class Mortgage
         $assetPrice = $this->normalizeAmount($this->getAsset()?->getPrice());
         $rate = $this->getInterestRate();
 
-        // 1. Calculate Base (1% of Asset Price)
+        // 1. Calcola Base (1% del Prezzo Asset)
         $base = bcdiv($assetPrice, '100', 6);
 
-        // 2. Adjust Base with Multiplier/Divider
-        // Formula: Base * Multiplier / Divider
+        // 2. Aggiusta Base con moltiplicatore/divisore
+        // Formula: Base * Moltiplicatore / Divisore
         if ($rate) {
             $multiplier = $rate->getPriceMultiplier() ?? '1.0';
             $divider = $rate->getPriceDivider() ?? 1;
 
             if ($divider == 0) $divider = 1;
 
-            // TODO: If we want to use the "financed amount" instead of "full price" for interest calculations:
+            // TODO: Se vogliamo usare l'"importo finanziato" invece del "prezzo pieno" per il calcolo interessi:
             $assetCost = $this->calculateAssetCost();
-            // But standard Traveller rules often base recurring costs on the HULL price, not the financed amount.
-            // However, "Subsidized Merchant" example implies the cost is based on the remaining debt or special terms.
-            // For now, let's assume the interest rate structure given applies to the adjusted cost if multiplier is involved.
-            // OR strictly follow standard: Standard Mortgage is 1/240th of Cash Price per month for 480 months. (approx 0.41% pm)
+            // Ma le regole standard di Traveller spesso basano i costi ricorrenti sul prezzo dello SCAFO, non sull'importo finanziato.
+            // Tuttavia, l'esempio "Mercante Sovvenzionato" implica che il costo sia basato sul debito residuo o termini speciali.
+            // Per ora, assumiamo che la struttura dei tassi di interesse data si applichi al costo aggiustato se è coinvolto un moltiplicatore.
+            // O seguiamo strettamente lo standard: Il Mutuo Standard è 1/240esimo del Prezzo Cash al mese per 480 mesi. (circa 0.41% pm)
 
-            // Let's use the rate entity logic:
+            // Usiamo la logica dell'entità tasso:
             $totalMortgage = bcmul($assetCost, $multiplier, 6);
             $totalMortgage = bcdiv($totalMortgage, (string)$divider, 6);
 
@@ -440,7 +440,7 @@ class Mortgage
     public function removeMortgageInstallment(MortgageInstallment $mortgageInstallment): static
     {
         if ($this->mortgageInstallments->removeElement($mortgageInstallment)) {
-            // set the owning side to null (unless already changed)
+            // imposta il lato proprietario a null (a meno che non sia già cambiato)
             if ($mortgageInstallment->getMortgage() === $this) {
                 $mortgageInstallment->setMortgage(null);
             }

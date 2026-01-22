@@ -233,12 +233,12 @@ class Asset
 
     public function setMortgage(?Mortgage $mortgage): static
     {
-        // unset owning side of the relation if necessary
+        // rimuove il lato proprietario della relazione se necessario
         if ($mortgage === null && $this->mortgage !== null) {
             $this->mortgage->setAsset(null);
         }
 
-        // set the owning side of the relation if necessary
+        // imposta il lato proprietario della relazione se necessario
         if ($mortgage !== null && $mortgage->getAsset() !== $this) {
             $mortgage->setAsset($this);
         }
@@ -298,7 +298,7 @@ class Asset
     public function removeCrew(Crew $crew): static
     {
         if ($this->crews->removeElement($crew)) {
-            // set the owning side to null (unless already changed)
+            // imposta il lato proprietario a null (a meno che non sia già cambiato)
             if ($crew->getAsset() === $this) {
                 $crew->setAsset(null);
             }
@@ -439,7 +439,7 @@ class Asset
         return $this;
     }
 
-    // Retaining legacy getters but updating logic
+    // Conservazione dei getter legacy ma con aggiornamento della logica
     public function getJumpDriveRating(): ?int
     {
         $details = $this->getAssetDetails();

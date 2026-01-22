@@ -201,7 +201,7 @@ class RouteType extends AbstractType
 
             $distances = $this->routeMathHelper->segmentDistances($hexes);
 
-            // Auto-fill jump rating from asset if not specified
+            // Riempimento automatico jump rating dall'asset se non specificato
             if ($route->getJumpRating() === null) {
                 $assetRating = $this->routeMathHelper->getAssetJumpRating($route->getAsset());
                 if ($assetRating !== null) {
@@ -209,7 +209,7 @@ class RouteType extends AbstractType
                 }
             }
 
-            $jumpRating = $route->getJumpRating(); // Now strictly use what's on the route (or what we just filled)
+            $jumpRating = $route->getJumpRating(); // Ora usa strettamente ciò che è sulla rotta (o ciò che abbiamo appena riempito)
 
             $hullTons = $this->routeMathHelper->getAssetHullTonnage($route->getAsset());
             $fuelCapacity = $this->routeMathHelper->getAssetFuelCapacity($route->getAsset());
@@ -223,14 +223,14 @@ class RouteType extends AbstractType
                     continue;
                 }
 
-                // 1. Jump Rating check
+                // 1. Controllo Jump Rating
                 if ($jumpRating !== null && $distance !== null && $distance > $jumpRating) {
                     $form->get('waypoints')->addError(new FormError(
                         sprintf('Jump %d exceeds rating %d on segment #%d.', $distance, $jumpRating, $idx + 1)
                     ));
                 }
 
-                // 2. Fuel Capacity check (Any single jump must fit in tanks)
+                // 2. Controllo Capacità Carburante (Ogni singolo salto deve stare nei serbatoi)
                 if ($hullTons !== null && $fuelCapacity !== null && $distance !== null) {
                     $requiredForJump = 0.1 * $hullTons * $distance;
                     if ($requiredForJump > $fuelCapacity) {
@@ -251,11 +251,11 @@ class RouteType extends AbstractType
                 }
             }
 
-            // Always calculate the required fuel based on current waypoints
+            // Calcola sempre il carburante richiesto basandosi sui waypoint correnti
             $calculatedRequiredFuel = $this->routeMathHelper->estimateJumpFuel($route, $distances);
 
             if ($route->getFuelEstimate() !== null && $calculatedRequiredFuel !== null) {
-                // Check if the estimated fuel is sufficient for the calculated requirement
+                // Controlla se il carburante stimato è sufficiente per il requisito calcolato
                 if ((float) $route->getFuelEstimate() < (float) $calculatedRequiredFuel) {
                     $form->get('fuelEstimate')->addError(new FormError(
                         sprintf(
@@ -266,7 +266,7 @@ class RouteType extends AbstractType
                     ));
                 }
             } elseif ($route->getFuelEstimate() === null && $calculatedRequiredFuel !== null) {
-                // Auto-fill if empty
+                // Riempimento automatico se vuoto
                 $route->setFuelEstimate($calculatedRequiredFuel);
             }
         });

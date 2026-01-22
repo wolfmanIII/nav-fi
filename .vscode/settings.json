@@ -1,4 +1,5 @@
 {
+    "symfony-vscode.shellExecutable": "/usr/bin/php",
     "symfony-vscode.phpExecutablePath": "/usr/bin/php",
     "symfony-vscode.consolePath": "${workspaceFolder}/bin/console",
     "css.lint.unknownAtRules": "ignore",

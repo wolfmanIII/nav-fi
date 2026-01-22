@@ -273,7 +273,7 @@ final class AssetController extends BaseController
 
         $perPage = 10;
         $crewResult = $em->getRepository(Crew::class)
-            ->findUnassignedForAsset($user, $crewFilters, $crewPage, $perPage, $needCaptain); // TODO: Rename this method in CrewRepo
+            ->findUnassignedForAsset($user, $crewFilters, $crewPage, $perPage, $needCaptain); // TODO: Rinominare questo metodo in CrewRepo
 
         $rows = [];
         foreach ($crewResult['items'] as $crew) {
@@ -291,7 +291,7 @@ final class AssetController extends BaseController
 
             foreach ($selections as $selection) {
                 if ($selection->isSelected()) {
-                    // TODO: Update CrewAssignmentService to use Asset
+                    // TODO: Aggiornare CrewAssignmentService per usare Asset
                     $crewAssignmentService->assignToAsset($asset, $selection->getCrew());
                 }
             }
@@ -320,9 +320,9 @@ final class AssetController extends BaseController
 
         $roleForms = [];
         foreach ($asset->getCrews() as $crewMember) {
-            // AssetRoleAssignmentType likely needs Asset now.
+            // AssetRoleAssignmentType probabilmente necessita Asset ora.
             $assignmentForm = $this->createForm(AssetRoleAssignmentType::class, null, [
-                'asset' => $asset, // Form options probably expect 'asset' key
+                'asset' => $asset, // Le opzioni del form probabilmente si aspettano la chiave 'asset'
                 'user' => $user,
             ]);
             $assignmentForm->get('assetRoles')->setData($crewMember->getAssetRoles()->toArray());
@@ -433,7 +433,7 @@ final class AssetController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $crewAssignmentService->removeFromAsset($asset, $crew); // TODO: Rename method
+        $crewAssignmentService->removeFromAsset($asset, $crew); // TODO: Rinominare metodo
         $em->persist($asset);
         $em->persist($crew);
         $em->flush();

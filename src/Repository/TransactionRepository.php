@@ -17,7 +17,7 @@ class TransactionRepository extends ServiceEntityRepository
         parent::__construct($registry, Transaction::class);
     }
     /**
-     * Finds Pending transactions that have become effective (Date <= Current Date).
+     * Trova transazioni Pending che sono diventate effettive (Data <= Data Corrente).
      * @return Transaction[]
      */
     public function findPendingEffective(Asset $asset, int $currentDay, int $currentYear): array
@@ -35,8 +35,8 @@ class TransactionRepository extends ServiceEntityRepository
     }
 
     /**
-     * Finds Posted transactions that are now in the future (Date > Current Date).
-     * Used for undoing time travel (backtracking).
+     * Trova transazioni Posted che sono ora nel futuro (Data > Data Corrente).
+     * Usato per annullare il viaggio nel tempo (backtracking).
      * @return Transaction[]
      */
     public function findPostedFuture(Asset $asset, int $currentDay, int $currentYear): array
@@ -54,7 +54,7 @@ class TransactionRepository extends ServiceEntityRepository
     }
 
     /**
-     * Finds all transactions for an asset with pagination support.
+     * Trova tutte le transazioni per un asset con supporto paginazione.
      * @param Asset $asset
      * @param int $page
      * @param int $limit
