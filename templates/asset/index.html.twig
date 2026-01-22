@@ -10,67 +10,79 @@
 
     <div class="">
 
-        <div class="relative rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-900 shadow-lg mb-6">
-            <div class="absolute inset-0 rounded-xl opacity-30 mix-blend-screen pointer-events-none"
-                 style="background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(14,165,233,0.25), transparent 35%);">
-            </div>
-            <div class="relative p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                <div class="flex items-start gap-4">
-                    <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
-                        {% set active_category = app.request.query.get('category') %}
-                        {% set is_categorical = app.request.query.get('view') == 'categorical' %}
-                        
-                        {% if is_categorical %}
-                            {% if active_category == 'ship' %}
-                                {% include 'icons/far-trader.html.twig' %}
-                            {% elseif active_category == 'base' %}
-                                {% include 'icons/spaceport.html.twig' %}
-                            {% elseif active_category == 'team' %}
-                                {% include 'icons/team.html.twig' %}
-                            {% endif %}
-                        {% else %}
-                            {% include 'icons/assets.html.twig' %}
-                        {% endif %}
-                    </div>
-                    <div>
-                        <p class="uppercase text-xs tracking-[0.25em] text-cyan-300/70">Registry manifest</p>
-                        <h1 class="text-3xl font-semibold text-cyan-100 leading-tight">
-                            {% if is_categorical %}
-                                {{ active_category|capitalize }} Assets
-                            {% else %}
-                                Global Assets
-                            {% endif %}
-                        </h1>
-                        <p class="text-sm text-cyan-100/80">Registry of mission-critical assets, hulls, and tactical units.</p>
-                    </div>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    {% if not is_categorical or active_category == 'ship' %}
-                        {{ tooltip.link('Launch a new vessel',
-                                        'Add Ship',
-                                        'icons/far-trader.html.twig',
-                                        path('app_asset_new', { category: 'ship' }),
-                                        { position: 'tooltip-left', dim: 20, linkClass: 'btn btn-outline btn-primary btn-sm gap-2' }) }}
-                    {% endif %}
-                    
-                    {% if not is_categorical or active_category == 'base' %}
-                        {{ tooltip.link('Establish a new station',
-                                        'Add Base',
-                                        'icons/spaceport.html.twig',
-                                        path('app_asset_new', { category: 'base' }),
-                                        { position: 'tooltip-left', dim: 20, linkClass: 'btn btn-outline btn-amber btn-sm gap-2' }) }}
-                    {% endif %}
+    {# HEADER / STATUS BAR #}
+    <div class="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800 p-6 shadow-lg mb-6">
+        <div class="absolute top-0 right-0 p-4 opacity-10">
+            {% set active_category = app.request.query.get('category') %}
+            {% set is_categorical = app.request.query.get('view') == 'categorical' %}
+            
+            {# Determine icon and color based on category #}
+            {% set icon_template = 'icons/assets.html.twig' %}
+            {% set icon_color = 'text-slate-500' %}
+            
+            {% if is_categorical %}
+                {% if active_category == 'ship' %}
+                    {% set icon_template = 'icons/far-trader.html.twig' %}
+                    {% set icon_color = 'text-cyan-500' %}
+                {% elseif active_category == 'base' %}
+                    {% set icon_template = 'icons/spaceport.html.twig' %}
+                    {% set icon_color = 'text-amber-500' %}
+                {% elseif active_category == 'team' %}
+                    {% set icon_template = 'icons/team.html.twig' %}
+                    {% set icon_color = 'text-emerald-500' %}
+                {% endif %}
+            {% endif %}
 
-                    {% if not is_categorical or active_category == 'team' %}
-                        {{ tooltip.link('Register a tactical unit',
-                                        'Add Team',
-                                        'icons/team.html.twig',
-                                        path('app_asset_new', { category: 'team' }),
-                                        { position: 'tooltip-left', dim: 20, linkClass: 'btn btn-outline btn-emerald btn-sm gap-2' }) }}
-                    {% endif %}
+            {% include icon_template with { dim: 128, class: icon_color } %}
+        </div>
+        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+            <div>
+                 <div class="flex items-center gap-2 text-cyan-400/80 mb-1">
+                    {% include icon_template with { dim: 16 } %}
+                    <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">NAV-FI // REGISTRY</p>
                 </div>
+                <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight flex items-center gap-3 font-orbitron">
+                    {% if is_categorical %}
+                        {{ active_category|upper }} ASSETS
+                    {% else %}
+                        GLOBAL ASSETS
+                    {% endif %}
+                    <span class="text-xs align-top opacity-50 font-mono pt-2 normal-case tracking-normal text-slate-400">
+                        // Manifest
+                    </span>
+                </h1>
+                <p class="text-xs text-slate-500 font-mono uppercase tracking-wider mt-1">
+                    Registry of mission-critical assets, hulls, and tactical units.
+                </p>
+            </div>
+            
+            <div class="flex flex-wrap gap-2">
+                {% if not is_categorical or active_category == 'ship' %}
+                    {{ tooltip.link('Launch a new vessel',
+                                    'Add Ship',
+                                    'icons/far-trader.html.twig',
+                                    path('app_asset_new', { category: 'ship' }),
+                                    { position: 'tooltip-left', dim: 16, linkClass: 'btn btn-outline btn-primary btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase' }) }}
+                {% endif %}
+                
+                {% if not is_categorical or active_category == 'base' %}
+                     {{ tooltip.link('Establish a new station',
+                                    'Add Base',
+                                    'icons/spaceport.html.twig',
+                                    path('app_asset_new', { category: 'base' }),
+                                    { position: 'tooltip-left', dim: 16, linkClass: 'btn btn-outline btn-warning btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase' }) }}
+                {% endif %}
+
+                {% if not is_categorical or active_category == 'team' %}
+                     {{ tooltip.link('Register a tactical unit',
+                                    'Add Team',
+                                    'icons/team.html.twig',
+                                    path('app_asset_new', { category: 'team' }),
+                                    { position: 'tooltip-left', dim: 16, linkClass: 'btn btn-outline btn-success btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase' }) }}
+                {% endif %}
             </div>
         </div>
+    </div>
 
 
 
@@ -233,23 +245,53 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <div class="col-span-full py-12 text-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
-                    <p class="text-slate-500 font-rajdhani tracking-widest uppercase mb-4 text-sm">Registry is empty // No assets detected</p>
+                <div class="col-span-full py-12 text-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50 flex flex-col items-center justify-center">
+                    <p class="text-slate-500 font-rajdhani tracking-widest uppercase mb-6 text-sm">Registry is empty // No assets detected</p>
                     {% set category = app.request.query.get('category') %}
-                    {% set icon = 'icons/assets.html.twig' %}
-                    {% if category == 'ship' %}
-                        {% set icon = 'icons/far-trader.html.twig' %}
-                    {% elseif category == 'base' %}
-                        {% set icon = 'icons/spaceport.html.twig' %}
-                    {% elseif category == 'team' %}
-                        {% set icon = 'icons/team.html.twig' %}
-                    {% endif %}
+                    
+                    <div class="flex flex-wrap justify-center gap-4">
+                        {% if category %}
+                            {# Single Category View #}
+                            {% set icon = 'icons/assets.html.twig' %}
+                            {% set btn_class = 'btn btn-primary btn-sm btn-outline gap-2' %}
+                            
+                            {% if category == 'ship' %}
+                                {% set icon = 'icons/far-trader.html.twig' %}
+                                {% set btn_class = 'btn btn-outline btn-primary btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase' %}
+                            {% elseif category == 'base' %}
+                                {% set icon = 'icons/spaceport.html.twig' %}
+                                {% set btn_class = 'btn btn-outline btn-warning btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase' %}
+                            {% elseif category == 'team' %}
+                                {% set icon = 'icons/team.html.twig' %}
+                                {% set btn_class = 'btn btn-outline btn-success btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase' %}
+                            {% endif %}
+    
+                            {{ tooltip.link('Launch a new asset',
+                                            'Initialize ' ~ category|capitalize,
+                                            icon,
+                                            path('app_asset_new', { category: category }),
+                                            { position: 'tooltip-center', dim: 20, linkClass: btn_class }) }}
+                        {% else %}
+                            {# Global View: Show all options #}
+                             {{ tooltip.link('Launch a new vessel',
+                                            'Add Ship',
+                                            'icons/far-trader.html.twig',
+                                            path('app_asset_new', { category: 'ship' }),
+                                            { position: 'tooltip-bottom', dim: 20, linkClass: 'btn btn-outline btn-primary btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase' }) }}
 
-                     {{ tooltip.link('Launch a new asset',
-                                    'Initialize Asset',
-                                    icon,
-                                    path('app_asset_new', { category: category }),
-                                    { position: 'tooltip-center', dim: 20, linkClass: 'btn btn-primary btn-sm btn-outline gap-2' }) }}
+                             {{ tooltip.link('Establish a new station',
+                                            'Add Base',
+                                            'icons/spaceport.html.twig',
+                                            path('app_asset_new', { category: 'base' }),
+                                            { position: 'tooltip-bottom', dim: 20, linkClass: 'btn btn-outline btn-warning btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase' }) }}
+
+                             {{ tooltip.link('Register a tactical unit',
+                                            'Add Team',
+                                            'icons/team.html.twig',
+                                            path('app_asset_new', { category: 'team' }),
+                                            { position: 'tooltip-bottom', dim: 20, linkClass: 'btn btn-outline btn-success btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase' }) }}
+                        {% endif %}
+                    </div>
                 </div>
             {% endif %}
         </div>

@@ -11,6 +11,7 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: AssetRepository::class)]
 #[ORM\Index(name: 'idx_asset_user', columns: ['user_id'])]
+#[ORM\Index(name: 'idx_asset_user', columns: ['user_id'])]
 #[ORM\Index(name: 'idx_asset_campaign', columns: ['campaign_id'])]
 class Asset
 {
@@ -63,6 +64,39 @@ class Asset
      */
     #[ORM\OneToMany(targetEntity: Crew::class, mappedBy: 'asset')]
     private Collection $crews;
+
+    // ... (rest of getters/setters) ...
+
+    public function getAssetDetails(): ?array
+    {
+        return $this->assetDetails;
+    }
+
+    public function setAssetDetails(?array $assetDetails): static
+    {
+        $this->assetDetails = $assetDetails;
+
+        return $this;
+    }
+
+    // Conservazione dei getter legacy ma con aggiornamento della logica
+    public function getJumpDriveRating(): ?int
+    {
+        $details = $this->getAssetDetails();
+        if (isset($details['jDrive']['jump'])) {
+            return (int) $details['jDrive']['jump'];
+        }
+        return null;
+    }
+
+    public function getHullTons(): ?float
+    {
+        $details = $this->getAssetDetails();
+        if (isset($details['hull']['tons']) && is_numeric($details['hull']['tons'])) {
+            return (float) $details['hull']['tons'];
+        }
+        return null;
+    }
 
     /**
      * @var Collection<int, AssetAmendment>
@@ -427,36 +461,9 @@ class Asset
         return $this->getMortgage()?->isSigned() === true;
     }
 
-    public function getAssetDetails(): ?array
-    {
-        return $this->assetDetails;
-    }
 
-    public function setAssetDetails(?array $assetDetails): static
-    {
-        $this->assetDetails = $assetDetails;
 
-        return $this;
-    }
 
-    // Conservazione dei getter legacy ma con aggiornamento della logica
-    public function getJumpDriveRating(): ?int
-    {
-        $details = $this->getAssetDetails();
-        if (isset($details['jDrive']['jump'])) {
-            return (int) $details['jDrive']['jump'];
-        }
-        return null;
-    }
-
-    public function getHullTons(): ?float
-    {
-        $details = $this->getAssetDetails();
-        if (isset($details['hull']['tons']) && is_numeric($details['hull']['tons'])) {
-            return (float) $details['hull']['tons'];
-        }
-        return null;
-    }
 
     /**
      * @return Collection<int, Transaction>

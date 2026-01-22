@@ -46,10 +46,10 @@ class TheCubeEngineTest extends TestCase
         $originData = ['trade_codes' => ['In', 'Ri']];
 
         // Prima esecuzione
-        $batch1 = $this->engine->generateBatch($session, $originData, 5);
+        $batch1 = $this->engine->generateBatch($session, $originData, [], 5);
 
         // Seconda esecuzione (stesso seed)
-        $batch2 = $this->engine->generateBatch($session, $originData, 5);
+        $batch2 = $this->engine->generateBatch($session, $originData, [], 5);
 
         $this->assertEquals($batch1, $batch2, 'Generation should be identical for same session state');
         $this->assertCount(5, $batch1);
@@ -69,8 +69,8 @@ class TheCubeEngineTest extends TestCase
 
         $originData = ['trade_codes' => []];
 
-        $batch1 = $this->engine->generateBatch($session1, $originData, 5);
-        $batch2 = $this->engine->generateBatch($session2, $originData, 5);
+        $batch1 = $this->engine->generateBatch($session1, $originData, [], 5);
+        $batch2 = $this->engine->generateBatch($session2, $originData, [], 5);
 
         $this->assertNotEquals($batch1, $batch2, 'Different seeds should produce different results');
     }

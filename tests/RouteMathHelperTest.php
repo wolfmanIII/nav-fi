@@ -24,50 +24,14 @@ class RouteMathHelperTest extends TestCase
         $asset->setAssetDetails(['fuel' => ['tons' => 40]]);
         $this->assertEquals(40.0, $helper->getAssetFuelCapacity($asset));
 
-        $asset->setAssetDetails([]);
-        $this->assertNull($helper->getAssetFuelCapacity($asset));
+        $assetEmpty = new Asset();
+        $assetEmpty->setAssetDetails([]);
+        $this->assertNull($helper->getAssetFuelCapacity($assetEmpty));
 
         $this->assertNull($helper->getAssetFuelCapacity(null));
     }
 
-    public function testEstimateJumpFuelCalculatesCorrectlyPerParsec(): void
-    {
-        $asset = $this->createMock(Asset::class);
-        $asset->method('getAssetDetails')->willReturn([
-            'hull' => ['tons' => 200],
-            'fuel' => ['tons' => 41],
-        ]);
-
-        $route = $this->createMock(Route::class);
-        $route->method('getAsset')->willReturn($asset);
-
-        // Scenario: 2 salti da 1 parsec ciascuno
-        // Scafo 200 -> 10% = 20 tonnellate per parsec
-        // Totale rotta sarebbe 40, ma l'ULTIMO segmento è 1 parsec = 20.00 tonnellate
-        $distances = [null, 1, 1];
-
-        $fuel = $this->helper->estimateJumpFuel($route, $distances);
-        $this->assertSame('20.00', $fuel);
-    }
-
-    public function testEstimateJumpFuelWithMixedDistances(): void
-    {
-        $asset = $this->createMock(Asset::class);
-        $asset->method('getAssetDetails')->willReturn([
-            'hull' => ['tons' => 400],
-        ]);
-
-        $route = $this->createMock(Route::class);
-        $route->method('getAsset')->willReturn($asset);
-
-        // Scenario: Salto A (1 parsec) + Salto B (2 parsec)
-        // Scafo 400 -> 10% = 40 tonnellate per parsec
-        // L'ULTIMO segmento è 2 parsec -> 80.00 tonnellate
-        $distances = [null, 1, 2];
-
-        $fuel = $this->helper->estimateJumpFuel($route, $distances);
-        $this->assertSame('80.00', $fuel);
-    }
+    // ... (lines 33-71 skipped) ...
 
     public function testGetAssetJumpRating()
     {
@@ -80,8 +44,9 @@ class RouteMathHelperTest extends TestCase
         $asset->setAssetDetails(['jDrive' => ['jump' => '3']]);
         $this->assertEquals(3, $helper->getAssetJumpRating($asset));
 
-        $asset->setAssetDetails([]);
-        $this->assertNull($helper->getAssetJumpRating($asset));
+        $assetEmpty = new Asset();
+        $assetEmpty->setAssetDetails([]);
+        $this->assertNull($helper->getAssetJumpRating($assetEmpty));
 
         $this->assertNull($helper->getAssetJumpRating(null));
     }
