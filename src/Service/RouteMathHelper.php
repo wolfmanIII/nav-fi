@@ -86,8 +86,8 @@ class RouteMathHelper
             return null;
         }
 
-        // We only care about the fuel for the LATEST jump segment added to the route,
-        // as per user requirement: "quanto serve per la prossimo waypoint dall l'ultimo waypoint inserito"
+        // Consideriamo solo il carburante per l'ULTIMO segmento di salto aggiunto alla rotta,
+        // come da richiesta utente: "quanto serve per la prossimo waypoint dall l'ultimo waypoint inserito"
         $lastDistance = null;
         foreach (array_reverse($distances) as $distance) {
             if ($distance !== null) {
@@ -100,8 +100,8 @@ class RouteMathHelper
             return null;
         }
 
-        // Formula: 0.1 * Hull * Last Segment Distance
-        // (10% of hull tonnage per Jump Number/Distance)
+        // Formula: 0.1 * scafo * distanza ultimo segmento
+        // (10% del tonnellaggio dello scafo per numero/distanza del salto)
         $fuel = 0.1 * $hullTons * $lastDistance;
 
         return sprintf('%.2f', $fuel);

@@ -35,7 +35,7 @@ class FinancialEventSubscriber
 
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
             if ($entity instanceof Income || $entity instanceof Cost || $entity instanceof MortgageInstallment || $entity instanceof SalaryPayment) {
-                // Reverse old transactions
+                // Inverte vecchie transazioni
                 $type = match (true) {
                     $entity instanceof Income => 'Income',
                     $entity instanceof Cost => 'Cost',
@@ -43,16 +43,16 @@ class FinancialEventSubscriber
                     $entity instanceof SalaryPayment => 'SalaryPayment',
                 };
 
-                // REVERSAL STRATEGY:
-                // The old architecture relied on reversing everything and adding new.
-                // WE MUST NOT FLUSH.
+                // STRATEGIA DI INVERSIONE:
+                // La vecchia architettura si basava sull'invertire tutto e aggiungere nuove.
+                // NON DOBBIAMO FARE FLUSH.
                 $reversals = $this->ledgerService->reverseTransactions($type, $entity->getId(), false);
                 $metadata = $em->getClassMetadata(Transaction::class);
                 foreach ($reversals as $rtx) {
                     $uow->computeChangeSet($metadata, $rtx);
                 }
 
-                // 2. Add New
+                // 2. Aggiungi nuove
                 $this->handleEvent($entity, true, false, $em);
             }
         }
@@ -76,7 +76,7 @@ class FinancialEventSubscriber
         $asset = $income->getAsset();
         if (!$asset) return;
 
-        // 1. Calculate Deposit (Advance) from Contract and Charter
+        // 1. Calcola deposito (anticipo) da contratto e charter
         $deposit = '0.00';
         if ($income->getContractDetails()) {
             $deposit = bcadd($deposit, $income->getContractDetails()->getDeposit() ?? '0.00', 2);
@@ -85,13 +85,13 @@ class FinancialEventSubscriber
             $deposit = bcadd($deposit, $income->getCharterDetails()->getDeposit() ?? '0.00', 2);
         }
 
-        // 2. Calculate Bonus (Added to Final Payment) from Contract
+        // 2. Calcola bonus (aggiunto al pagamento finale) dal contratto
         $bonus = '0.00';
         if ($income->getContractDetails()) {
             $bonus = bcadd($bonus, $income->getContractDetails()->getBonus() ?? '0.00', 2);
         }
 
-        // Helper to persist safely
+        // Helper per persistere in sicurezza
         $persist = function (Transaction $tx) use ($emForCompute) {
             if ($emForCompute) {
                 $uow = $emForCompute->getUnitOfWork();
@@ -99,7 +99,7 @@ class FinancialEventSubscriber
             }
         };
 
-        // SCENARIO 1: Deposit Exists (> 0)
+        // SCENARIO 1: deposito presente (> 0)
         if (bccomp($deposit, '0.00', 2) > 0) {
             $signingDay = $income->getSigningDay();
             $signingYear = $income->getSigningYear();
@@ -148,13 +148,13 @@ class FinancialEventSubscriber
             return;
         }
 
-        // SCENARIO 2: No Deposit (Standard)
+        // SCENARIO 2: nessun deposito (standard)
         $day = $income->getPaymentDay();
         $year = $income->getPaymentYear();
         if ($day === null || $year === null) return;
 
         $amount = $income->getAmount();
-        if ($amount === null) return; // Should allow 0?
+        if ($amount === null) return; // Dovrebbe accettare 0?
 
         $totalAmount = bcadd($amount, $bonus, 2);
 
@@ -277,13 +277,13 @@ class FinancialEventSubscriber
         );
 
         if ($autoFlush) {
-            // No direct link needed, Transaction entity handles relatedEntityId
+            // Nessun collegamento diretto necessario, l'entità Transaction gestisce relatedEntityId
         }
 
         if (!$autoFlush && $emForCompute) {
             $uow = $emForCompute->getUnitOfWork();
             $uow->computeChangeSet($emForCompute->getClassMetadata(Transaction::class), $tx);
-            // Relationship update in unit of work is complex for OneToOne if not pre-assigned
+            // L'aggiornamento della relazione nell'unit of work è complesso per OneToOne se non pre-assegnata
         }
     }
 }

@@ -13,28 +13,28 @@ class TheCubeEngine
     ) {}
 
     /**
-     * Generates a batch of candidates based on the session seed.
-     * This method is DETERMINISTIC: same session + same seed = same results.
+     * Genera un batch di candidati basato sul seed della sessione.
+     * Questo metodo è DETERMINISTICO: stessa sessione + stesso seed = stessi risultati.
      */
     public function generateBatch(BrokerSession $session, array $originSystemData, array $allSystems = [], int $count = 5): array
     {
-        // 1. Initialize PRNG
+        // 1. Inizializza PRNG
         $seedString = sprintf('%s_%s_%s', $session->getSeed(), $session->getSector(), $session->getOriginHex());
         $numericSeed = crc32($seedString);
         mt_srand($numericSeed);
 
         $results = [];
 
-        // Jump range from session
+        // Raggio di salto dalla sessione
         $maxDist = $session->getJumpRange() ?: 2;
         $originHex = $session->getOriginHex();
         $originName = $originSystemData['name'] ?? 'Unknown';
 
-        // Filter valid destinations from allSystems if provided
+        // Filtra destinazioni valide da allSystems se fornito
         $destinations = [];
         if (!empty($allSystems)) {
             foreach ($allSystems as $sys) {
-                // Skip self
+                // Salta se stesso
                 if ($sys['hex'] === $originHex) continue;
 
                 $dist = $this->calculateDistance($originHex, $sys['hex']);
@@ -54,15 +54,15 @@ class TheCubeEngine
 
     private function generateSingle(string $originName, array $destinations, int $maxDist, int $index): array
     {
-        // Select Destination
+        // Seleziona destinazione
         $destination = null;
-        $dist = mt_rand(1, $maxDist); // Fallback distance
+        $dist = mt_rand(1, $maxDist); // Distanza di fallback
         $destName = 'Unknown';
         $destHex = '????';
 
         if (!empty($destinations)) {
-            // Pick rand from filtered list
-            // Note: Since mt_srand is seeded, this is deterministic for the same list
+            // Scegli un valore casuale dalla lista filtrata
+            // Nota: dato che mt_srand è seedato, è deterministico per la stessa lista
             $randIndex = mt_rand(0, count($destinations) - 1);
             $destination = $destinations[$randIndex];
             $dist = $destination['distance'];
@@ -70,7 +70,7 @@ class TheCubeEngine
             $destHex = $destination['hex'];
         }
 
-        // Context for payload
+        // Contesto per il payload
         $context = [
             'origin' => $originName,
             'destination' => $destName,
@@ -78,12 +78,12 @@ class TheCubeEngine
             'distance' => $dist
         ];
 
-        // Generate Deterministic Signature
-        // We use the same seed logic that seeded mt_rand, plus the index
-        // To be safe, we can just use the properties. But index is best for "slot" uniqueness.
+        // Genera firma deterministica
+        // Usiamo la stessa logica di seed usata per mt_rand, più l'indice
+        // Per sicurezza potremmo usare solo le proprietà, ma l'indice è migliore per l'unicità dello "slot".
         $signature = sprintf('OPP-%s-%d', crc32(serialize($context) . $index), $index);
 
-        // Select type based on a roll
+        // Seleziona il tipo in base a un tiro
         $roll = mt_rand(1, 100);
 
         $opp = [];
@@ -100,7 +100,7 @@ class TheCubeEngine
     private function generateFreight(array $ctx, int $maxDist): array
     {
         $dist = $ctx['distance'];
-        $tons = mt_rand(1, 6) * 10; // 10-60 tons
+        $tons = mt_rand(1, 6) * 10; // 10-60 tonnellate
 
         $baseRate = $this->economyConfig['freight_pricing'][$dist] ?? 1000;
         $total = $tons * $baseRate;
@@ -125,7 +125,7 @@ class TheCubeEngine
         $dist = $ctx['distance'];
         $paxCount = mt_rand(2, 12);
 
-        // Determine class
+        // Determina la classe
         $classRoll = mt_rand(1, 100);
         if ($classRoll <= 10) $class = 'high';
         elseif ($classRoll <= 40) $class = 'middle';
@@ -200,8 +200,8 @@ class TheCubeEngine
 
     private function generateOpportunity(array $ctx): array
     {
-        // Placeholder for speculative trade
-        // For MVP, we generate a simple "buy low, sell high" opportunity
+        // Segnaposto per commercio speculativo
+        // Per MVP, generiamo una semplice opportunità "compra basso, vendi alto"
         $resources = ['Radioactives', 'Metals', 'Crystals', 'Luxuries', 'Electronics', 'Pharmaceuticals'];
         $resource = $resources[mt_rand(0, count($resources) - 1)];
 
@@ -212,8 +212,8 @@ class TheCubeEngine
         return [
             'type' => 'TRADE',
             'summary' => "Speculative Trade: $resource",
-            'distance' => 0, // Market-based, not route-based
-            'amount' => $estimatedProfit, // Estimated profit
+            'distance' => 0, // Basato sul mercato, non sulla rotta
+            'amount' => $estimatedProfit, // Profitto stimato
             'details' => [
                 'origin' => $ctx['origin'],
                 'destination' => 'Market',
@@ -227,24 +227,24 @@ class TheCubeEngine
 
     private function calculateDistance(string $hex1, string $hex2): int
     {
-        // Parse "1910" -> C=19, R=10
+        // Parsea "1910" -> C=19, R=10
         $c1 = (int)substr($hex1, 0, 2);
         $r1 = (int)substr($hex1, 2, 2);
 
         $c2 = (int)substr($hex2, 0, 2);
         $r2 = (int)substr($hex2, 2, 2);
 
-        // Convert to Axial (q, r)
-        // Using "odd-q" vertical layout assumption for Traveller
+        // Converte in assi (q, r)
+        // Usa l'assunzione di layout verticale "odd-q" per Traveller
         // q = col
         // r = row - (col - (col&1)) / 2
         $q1 = $c1;
-        $r1_axial = $r1 - floor($c1 / 2); // floor for even/odd stagger? Standard maps often use floor
+        $r1_axial = $r1 - floor($c1 / 2); // floor per lo sfalsamento pari/dispari? Le mappe standard spesso usano floor
 
         $q2 = $c2;
         $r2_axial = $r2 - floor($c2 / 2);
 
-        // Euclidean on Axial (Hex distance)
+        // Euclidea sugli assi (distanza esagonale)
         // dist = (abs(q1 - q2) + abs(r1 - r2) + abs(q1 + r1 - q2 - r2)) / 2
 
         return (int) ((abs($q1 - $q2) + abs($r1_axial - $r2_axial) + abs($q1 + $r1_axial - $q2 - $r2_axial)) / 2);

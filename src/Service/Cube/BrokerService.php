@@ -24,7 +24,7 @@ class BrokerService
         $session->setOriginHex($hex);
         $session->setJumpRange($range);
 
-        // Auto-generate seed if not provided
+        // Genera il seed automaticamente se non fornito
         $seed = $seed ?? bin2hex(random_bytes(4));
         $session->setSeed($seed);
 
@@ -36,7 +36,7 @@ class BrokerService
 
     public function generateOpportunities(BrokerSession $session, array $originData, array $allSystems = []): array
     {
-        // This generates them in-memory but doesn't persist them until selected
+        // Genera in memoria ma non salva finché non vengono selezionate
         return $this->engine->generateBatch($session, $originData, $allSystems);
     }
 

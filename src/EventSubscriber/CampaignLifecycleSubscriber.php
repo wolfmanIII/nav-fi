@@ -19,16 +19,16 @@ class CampaignLifecycleSubscriber
 
     public function postUpdate(Campaign $campaign, PostUpdateEventArgs $event): void
     {
-        // When campaign is updated (likely session date change), sync the ledger.
+        // Quando la campagna viene aggiornata (probabile cambio data sessione), sincronizza il libro mastro.
 
-        // 1. Generate new items (Recurring Costs)
+        // 1. Genera nuovi elementi (costi ricorrenti)
         $this->financialAutomationService->processAutomatedFinancials($campaign);
 
-        // 2. Sync existing/new items based on date (Time Travel logic)
+        // 2. Sincronizza elementi esistenti/nuovi in base alla data (logica di viaggio nel tempo)
         $this->ledgerService->processCampaignSync($campaign);
 
-        // 3. Flush changes (Asset credits, Transactions, Installments)
-        // Safe provided we didn't modify Campaign itself.
+        // 3. Flush delle modifiche (crediti asset, transazioni, rate)
+        // Sicuro a patto di non aver modificato la Campaign stessa.
         $event->getObjectManager()->flush();
     }
 }
