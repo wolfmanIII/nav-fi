@@ -31,34 +31,40 @@ class CubeController extends AbstractController
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
-        // Assuming current campaign context logic or selecting first active campaign
-        // For MVP, we'll try to get the campaign from query param or session, fallback to latest
 
-        // Simpler: Just get the latest active session for the user's campaigns, or show setup
-        // We'll require a campaign_id in the query for now if not session bound
-
-        // Mocking campaign context for MVP: select first valid campaign
-        $campaign = $request->query->get('campaign_id')
-            ? $this->entityManager->getRepository(Campaign::class)->find($request->query->get('campaign_id'))
-            : null;
-
+        // Get session_id from query if provided
+        $sessionId = $request->query->get('session_id');
         $activeSession = null;
-        if ($campaign) {
-            // Check if user wants to force a new session
-            $forceNew = $request->query->getBoolean('force_new', false);
 
-            if (!$forceNew) {
-                // Try to resume latest DRAFT session
-                $activeSession = $this->sessionRepo->findLatestDraftByCampaign($campaign->getId());
+        if ($sessionId) {
+            $activeSession = $this->sessionRepo->find($sessionId);
+            // Verify ownership through campaign
+            if ($activeSession && $activeSession->getCampaign()->getUser() !== $user) {
+                $activeSession = null;
             }
         }
 
+        $campaign = $activeSession?->getCampaign();
+
+        // Get all campaigns
         $allCampaigns = $this->entityManager->getRepository(Campaign::class)->findAll();
+
+        // Get all DRAFT sessions for the user (across all campaigns)
+        $draftSessions = $this->sessionRepo->createQueryBuilder('s')
+            ->join('s.campaign', 'c')
+            ->where('c.user = :user')
+            ->andWhere('s.status = :status')
+            ->setParameter('user', $user)
+            ->setParameter('status', BrokerSession::STATUS_DRAFT)
+            ->orderBy('s.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
 
         return $this->render('cube/index.html.twig', [
             'active_session' => $activeSession,
             'campaign' => $campaign,
             'campaigns' => $allCampaigns,
+            'draft_sessions' => $draftSessions,
         ]);
     }
 
@@ -78,7 +84,7 @@ class CubeController extends AbstractController
         $session = $this->brokerService->createSession($campaign, $sector, $hex, $range);
 
         $this->addFlash('success', 'Broker Session initialized.');
-        return $this->redirectToRoute('app_cube_index', ['campaign_id' => $campaign->getId()]);
+        return $this->redirectToRoute('app_cube_index', ['session_id' => $session->getId()]);
     }
 
     #[Route('/generate/{id}', name: 'app_cube_generate', methods: ['GET'])]
@@ -145,6 +151,25 @@ class CubeController extends AbstractController
             return $this->json(['error' => 'Persistence Failed: ' . $e->getMessage()], 500);
         }
     }
+    #[Route('/unsave/{id}', name: 'app_cube_unsave', methods: ['POST'])]
+    public function unsave(int $id, EntityManagerInterface $em): JsonResponse
+    {
+        $opportunity = $em->getRepository(\App\Entity\BrokerOpportunity::class)->find($id);
+
+        if (!$opportunity) {
+            return $this->json(['error' => 'Opportunity not found'], 404);
+        }
+
+        $data = $opportunity->getData();
+        $em->remove($opportunity);
+        $em->flush();
+
+        return $this->json([
+            'status' => 'removed',
+            'data' => $data
+        ]);
+    }
+
     #[Route('/contract/{id}', name: 'app_cube_contract_show', methods: ['GET'])]
     public function show(int $id, EntityManagerInterface $em): Response
     {

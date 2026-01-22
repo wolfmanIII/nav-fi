@@ -38,9 +38,23 @@
                         <span class="text-slate-300">HEX {{ active_session.originHex }}</span>
                     </div>
                 </div>
-                <a href="{{ path('app_cube_index', {campaign_id: campaign.id, force_new: 1}) }}" class="btn btn-outline btn-xs border-amber-500/30 text-amber-400 hover:bg-amber-500/10 hover:border-amber-400 font-mono uppercase tracking-widest">
-                    <i class="lucide-plus w-3 h-3 mr-1"></i> New Session
-                </a>
+            </div>
+            {% elseif draft_sessions|length > 0 %}
+            <div class="w-full md:w-auto md:min-w-[340px]">
+                <label class="block text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1 font-orbitron opacity-50">Resume</label>
+                <select id="session-select" 
+                        class="select select-bordered select-sm w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 font-mono text-white text-xs"
+                        data-controller="tom-select" 
+                        data-tom-select-placeholder-value="Select..."
+                        data-tom-select-search-value="true"
+                        onchange="if(this.value) window.location.href='{{ path('app_cube_index') }}?session_id=' + this.value">
+                    <option value="">// RESUME SESSION</option>
+                    {% for session in draft_sessions %}
+                        <option value="{{ session.id }}">
+                            {{ session.sector|slice(0, 12) }} ({{ session.originHex }}) - {{ session.createdAt|date('Y-m-d') }}
+                        </option>
+                    {% endfor %}
+                </select>
             </div>
             {% else %}
             <div class="flex items-center gap-2 text-amber-500 animate-pulse bg-amber-950/20 px-3 py-1 rounded border border-amber-500/20">
@@ -181,9 +195,6 @@
                         <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                         <span class="text-xs font-bold text-slate-300 font-orbitron uppercase tracking-widest">Input Stream</span>
                     </div>
-                    <button class="btn btn-outline btn-xs border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-400 font-mono" data-action="cube#generate">
-                        <i class="lucide-refresh-cw w-3 h-3 mr-1"></i> SCAN_NETWORK
-                    </button>
                 </div>
                 
                 <!-- Content -->
@@ -193,6 +204,18 @@
                         <div class="animate-spin-slow">{% include 'icons/radar.html.twig' with { dim: 32 } %}</div>
                         <span class="text-xs font-mono uppercase tracking-widest">Waiting for scan sequence...</span>
                     </div>
+                </div>
+
+                <!-- Footer Actions -->
+                <div class="p-4 border-t border-slate-800 bg-slate-950/50 backdrop-blur-sm flex gap-2">
+                    <button class="flex-1 bg-slate-800 hover:bg-emerald-900/30 border border-slate-700 hover:border-emerald-500/50 text-slate-300 hover:text-emerald-400 font-bold py-2 px-4 rounded transition-all font-orbitron uppercase tracking-widest text-[10px] flex items-center justify-center gap-2" data-action="cube#generate">
+                        {% include 'icons/radar.html.twig' with { dim: 12 } %}
+                        Scan Network
+                    </button>
+                    <a href="{{ path('app_cube_index') }}" class="flex-1 bg-slate-800 hover:bg-amber-900/30 border border-slate-700 hover:border-amber-500/50 text-slate-300 hover:text-amber-400 font-bold py-2 px-4 rounded transition-all font-orbitron uppercase tracking-widest text-[10px] flex items-center justify-center gap-2">
+                        {% include 'icons/plus.html.twig' with { dim: 12 } %}
+                        New Session
+                    </a>
                 </div>
             </div>
 
@@ -210,21 +233,26 @@
                 <!-- Content -->
                 <div class="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900" id="storage-container">
                     {% for opp in active_session.opportunities %}
-                        <a href="{{ path('app_cube_contract_show', {id: opp.id}) }}" class="block relative bg-slate-950 border border-slate-800 rounded-lg p-4 hover:border-amber-500/30 transition-all group cursor-pointer hover:scale-[1.01]">
+                        <div class="relative bg-slate-950 border border-slate-800 rounded-lg p-4 hover:border-amber-500/30 transition-all group overflow-hidden">
                             <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50 rounded-l-lg"></div>
-                            <div class="pl-2 flex justify-between items-start">
-                                <div>
-                                    <h4 class="text-sm font-bold text-amber-100 font-rajdhani uppercase tracking-wide">{{ opp.summary }}</h4>
+                            <div class="pl-2 flex justify-between items-center gap-4">
+                                <a href="{{ path('app_cube_contract_show', {id: opp.id}) }}" class="flex-1 group/title">
+                                    <h4 class="text-sm font-bold text-amber-100 font-rajdhani uppercase tracking-wide group-hover/title:text-cyan-400 transition-colors">{{ opp.summary }}</h4>
                                     <div class="flex items-center gap-2 mt-1">
                                         <span class="text-[10px] font-mono text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">{{ opp.data.type }}</span>
                                         <span class="text-xs font-mono text-emerald-400 font-bold">{{ opp.amount|number_format }} Cr</span>
                                     </div>
-                                </div>
-                                <div class="opacity-50 group-hover:opacity-100 transition-opacity">
-                                    <span class="text-[10px] font-mono text-amber-500/60 uppercase border border-amber-500/20 px-2 py-1 rounded">SAVED</span>
+                                </a>
+                                <div class="shrink-0">
+                                    <button class="flex items-center gap-1.5 text-[9px] text-slate-400 hover:text-rose-400 font-bold font-orbitron uppercase tracking-widest transition-all border border-slate-800 px-3 py-2 rounded bg-slate-900/80 hover:bg-rose-950/30 hover:border-rose-500/40" 
+                                            data-action="cube#unsave"
+                                            data-cube-id-param="{{ opp.id }}">
+                                        {% include 'icons/radar.html.twig' with { dim: 10, class: 'opacity-70' } %}
+                                        <span>UNSAVE</span>
+                                    </button>
                                 </div>
                             </div>
-                        </a>
+                        </div>
                     {% else %}
                         <div class="h-full flex flex-col items-center justify-center text-slate-600 opacity-50">
                             <span class="text-xs font-mono uppercase tracking-widest">Storage Empty</span>
@@ -280,18 +308,23 @@
 
 <!-- Template for Storage Item -->
 <template id="storage-item-template">
-    <div class="relative bg-slate-950 border border-slate-800 rounded-lg p-4 hover:border-amber-500/30 transition-all group animate-[fadeIn_0.5s_ease-out]">
+    <div class="relative bg-slate-950 border border-slate-800 rounded-lg p-4 hover:border-amber-500/30 transition-all group animate-[fadeIn_0.5s_ease-out] overflow-hidden">
         <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50 rounded-l-lg"></div>
-        <div class="pl-2 flex justify-between items-start">
-            <div>
-                <h4 class="text-sm font-bold text-amber-100 font-rajdhani uppercase tracking-wide" data-slot="summary">Summary</h4>
+        <div class="pl-2 flex justify-between items-center gap-4">
+            <a href="#" class="flex-1 group/title" data-slot="view-link">
+                <h4 class="text-sm font-bold text-amber-100 font-rajdhani uppercase tracking-wide group-hover/title:text-cyan-400 transition-colors" data-slot="summary">Summary</h4>
                 <div class="flex items-center gap-2 mt-1">
                     <span class="text-[10px] font-mono text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800" data-slot="type">TYPE</span>
                     <span class="text-xs font-mono text-emerald-400 font-bold" data-slot="amount">0 Cr</span>
                 </div>
-            </div>
-            <div class="opacity-50 group-hover:opacity-100 transition-opacity">
-                <span class="text-[10px] font-mono text-amber-500/60 uppercase border border-amber-500/20 px-2 py-1 rounded">SAVED</span>
+            </a>
+            <div class="shrink-0">
+                <button class="flex items-center gap-1.5 text-[9px] text-slate-400 hover:text-rose-400 font-bold font-orbitron uppercase tracking-widest transition-all border border-slate-800 px-3 py-2 rounded bg-slate-900/80 hover:bg-rose-950/30 hover:border-rose-500/40" 
+                        data-action="cube#unsave"
+                        data-slot="unsave-btn">
+                    {% include 'icons/radar.html.twig' with { dim: 10, class: 'opacity-70' } %}
+                    <span>UNSAVE</span>
+                </button>
             </div>
         </div>
     </div>

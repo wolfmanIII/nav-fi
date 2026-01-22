@@ -7,6 +7,9 @@ export default class extends Controller {
 
     connect() {
         console.log('Cube Controller Active');
+        if (this.sessionIdValue) {
+            this.generate();
+        }
     }
 
     async generate() {
@@ -55,7 +58,7 @@ export default class extends Controller {
         const discardBtn = clone.querySelector('[data-action="cube#discard"]');
         discardBtn.addEventListener('click', () => card.remove());
 
-        document.getElementById('stream-container').appendChild(clone);
+        document.getElementById('stream-container').prepend(clone);
     }
 
     async save(event, item, cardElement) {
@@ -101,6 +104,45 @@ export default class extends Controller {
         }
     }
 
+    async unsave(event) {
+        const btn = event.currentTarget;
+        const id = event.params?.id || btn.dataset.cubeIdParam || btn.dataset.id;
+
+        if (!id || btn.disabled) return;
+
+        btn.disabled = true;
+        const cardElement = btn.closest('.relative');
+
+        try {
+            const response = await fetch(`/cube/unsave/${id}`, {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+
+                // Remove from Storage with animation
+                cardElement.style.transition = 'all 0.4s ease-in';
+                cardElement.style.opacity = '0';
+                cardElement.style.transform = 'translateX(-50px)';
+
+                setTimeout(() => {
+                    cardElement.remove();
+                    // If storage is empty, could show message (omitted for brevity or handled by observer)
+                }, 400);
+
+                // Re-render in Stream
+                this.renderStreamItem(result.data);
+            } else {
+                alert('Failed to return contract to stream.');
+                btn.disabled = false;
+            }
+        } catch (error) {
+            console.error('Unsave failed', error);
+            btn.disabled = false;
+        }
+    }
+
     renderStorageItem(item, id) {
         const container = document.getElementById('storage-container');
 
@@ -118,13 +160,12 @@ export default class extends Controller {
         clone.querySelector('[data-slot="type"]').textContent = item.type;
         clone.querySelector('[data-slot="amount"]').textContent = new Intl.NumberFormat().format(item.amount) + ' Cr';
 
-        // Make clickable if ID provided
-        if (id) {
-            cardElement.classList.add('cursor-pointer', 'hover:scale-[1.01]', 'transition-transform');
-            cardElement.addEventListener('click', () => {
-                window.location.href = `/cube/contract/${id}`;
-            });
-        }
+        // Setup Buttons
+        const unsaveBtn = clone.querySelector('[data-slot="unsave-btn"]');
+        unsaveBtn.dataset.id = id;
+
+        const viewLink = clone.querySelector('[data-slot="view-link"]');
+        viewLink.href = `/cube/contract/${id}`;
 
         container.prepend(clone);
     }
