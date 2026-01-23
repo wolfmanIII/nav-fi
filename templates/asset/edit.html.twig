@@ -192,10 +192,17 @@
         </fieldset>
 
         <div id="technical-details-wrapper" class="{% if asset.category == 'team' %}hidden{% endif %}" data-asset-category="{{ asset.category }}">
-            {% include 'asset/_details_form.html.twig' with { detailsForm: form.assetDetails } %}
+            {% if form.shipDetails is defined %}
+                {% include 'asset/_ship_details_form.html.twig' with { form: form.shipDetails } %}
+            {% elseif form.baseDetails is defined %}
+                {% include 'asset/_base_details_form.html.twig' with { form: form.baseDetails } %}
+            {% elseif form.assetDetails is defined %}
+                {% include 'asset/_details_form.html.twig' with { detailsForm: form.assetDetails } %}
+            {% endif %}
         </div>
 
         <div class="flex items-center justify-end gap-3 mb-10">
+            {{ form_row(form._token) }}
             <a href="{{ path('app_asset_index', {category: asset.category}) }}" class="btn btn-ghost font-orbitron uppercase text-[10px] tracking-widest text-slate-500 hover:text-slate-300 font-bold">Abort Changes</a>
             <button type="submit"
                     class="btn btn-primary px-8 font-orbitron uppercase text-[10px] tracking-widest font-bold shadow-lg shadow-cyan-500/10"
@@ -205,7 +212,7 @@
             </button>
         </div>
 
-        {{ form_end(form) }}
+        {{ form_end(form, {'render_rest': false}) }}
     </div>
 
     <script>
