@@ -18,7 +18,7 @@
         <div class="col-span-2 md:col-span-3">
              <div class="flex items-center gap-1">
                 <span class="text-[9px] text-slate-600 font-mono">Cr:</span>
-                {{ form_widget(child.costMcr, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800 text-right', placeholder: '0' } }) }}
+                {{ form_widget(child.costMcr, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800 text-right', placeholder: '0', 'data-cost-mcr': '' } }) }}
              </div>
         </div>
     </div>
@@ -73,7 +73,7 @@
         <div>
              {{ form_label(form.totalCost, null, { label_attr: { class: 'mb-1 text-slate-400 text-[10px] uppercase tracking-widest font-bold font-orbitron' } }) }}
              <div class="join w-full">
-                 {{ form_widget(form.totalCost, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-amber-500/50 font-mono text-amber-400 join-item' } }) }}
+                 {{ form_widget(form.totalCost, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-amber-500/50 font-mono text-amber-400 join-item', 'data-asset-details-target': 'totalInput' } }) }}
                  <button type="button" class="btn btn-sm btn-outline btn-amber join-item" data-action="asset-details#calculateTotal">Auto-Sum</button>
              </div>
         </div>
@@ -106,7 +106,7 @@
                 </div>
                 <div>
                      {{ form_label(form.hull.costMcr, 'Cost (MCr)', { label_attr: { class: 'mb-1 text-slate-400 text-[10px] uppercase tracking-widest font-bold font-orbitron' } }) }}
-                    {{ form_widget(form.hull.costMcr, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800' } }) }}
+                    {{ form_widget(form.hull.costMcr, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800', 'data-cost-mcr': '' } }) }}
                 </div>
             </div>
         </div>
@@ -130,7 +130,7 @@
                  </div>
                  <div class="col-span-3">
                      {{ form_label(form.powerPlant.costMcr, 'MCr', { label_attr: { class: 'block mb-1 text-[9px] uppercase text-slate-500' } }) }}
-                     {{ form_widget(form.powerPlant.costMcr, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800' } }) }}
+                     {{ form_widget(form.powerPlant.costMcr, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800', 'data-cost-mcr': '' } }) }}
                  </div>
                  <div class="col-span-12 mt-1">
                      {{ form_widget(form.powerPlant.description, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800', placeholder: 'Description/Model' } }) }}
@@ -156,7 +156,7 @@
                          {{ form_widget(form.bridge.tons, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800', placeholder: 'Tons' } }) }}
                      </div>
                      <div class="col-span-2">
-                         {{ form_widget(form.bridge.costMcr, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800', placeholder: 'MCr' } }) }}
+                         {{ form_widget(form.bridge.costMcr, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800', placeholder: 'MCr', 'data-cost-mcr': '' } }) }}
                      </div>
                  </div>
             </div>
@@ -171,7 +171,7 @@
                          {{ form_widget(form.computer.tons, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800', placeholder: 'Tons' } }) }}
                      </div>
                      <div class="col-span-2">
-                         {{ form_widget(form.computer.costMcr, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800', placeholder: 'MCr' } }) }}
+                         {{ form_widget(form.computer.costMcr, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800', placeholder: 'MCr', 'data-cost-mcr': '' } }) }}
                      </div>
                  </div>
             </div>
@@ -186,7 +186,7 @@
                          {{ form_widget(form.sensors.tons, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800', placeholder: 'Tons' } }) }}
                      </div>
                      <div class="col-span-2">
-                         {{ form_widget(form.sensors.costMcr, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800', placeholder: 'MCr' } }) }}
+                         {{ form_widget(form.sensors.costMcr, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800', placeholder: 'MCr', 'data-cost-mcr': '' } }) }}
                      </div>
                  </div>
             </div>
