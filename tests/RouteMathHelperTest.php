@@ -54,7 +54,8 @@ class RouteMathHelperTest extends TestCase
     public function testEstimateJumpFuelReturnsNullIfNoShipDetails(): void
     {
         $asset = $this->createMock(Asset::class);
-        $asset->method('getAssetDetails')->willReturn([]); // Nessuna info scafo
+        // Ritorniamo uno spec vuoto
+        $asset->method('getSpec')->willReturn(new \App\Model\Asset\AssetSpec([]));
 
         $route = $this->createMock(Route::class);
         $route->method('getAsset')->willReturn($asset);
@@ -68,9 +69,9 @@ class RouteMathHelperTest extends TestCase
     public function testEstimateJumpFuelReturnsNullIfNoDistances(): void
     {
         $asset = $this->createMock(Asset::class);
-        $asset->method('getAssetDetails')->willReturn([
+        $asset->method('getSpec')->willReturn(new \App\Model\Asset\AssetSpec([
             'hull' => ['tons' => 200],
-        ]);
+        ]));
 
         $route = $this->createMock(Route::class);
         $route->method('getAsset')->willReturn($asset);
@@ -100,13 +101,13 @@ class RouteMathHelperTest extends TestCase
 
     public function testTotalRequiredFuelCalculatesSumOfAllSegments(): void
     {
-        $asset = $this->createMock(Asset::class);
-        $asset->method('getAssetDetails')->willReturn([
+        $assetMock = $this->createMock(Asset::class);
+        $assetMock->method('getSpec')->willReturn(new \App\Model\Asset\AssetSpec([
             'hull' => ['tons' => 200],
-        ]);
+        ]));
 
         $route = $this->createMock(Route::class);
-        $route->method('getAsset')->willReturn($asset);
+        $route->method('getAsset')->willReturn($assetMock);
 
         // Punti di passaggio: A -> (1pc) -> B -> (2pc) -> C
         // Scafo 200 -> 10% = 20 tonnellate/parsec

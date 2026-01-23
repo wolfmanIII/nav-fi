@@ -156,35 +156,29 @@ class RouteMathHelper
 
     public function getAssetJumpRating(?Asset $asset): ?int
     {
-        $details = $asset?->getAssetDetails() ?? [];
-        $jump = $details['jDrive']['jump'] ?? null;
-        if (is_numeric($jump)) {
-            return (int) $jump;
+        if ($asset === null) {
+            return null;
         }
-
-        return null;
+        $rating = $asset->getSpec()->getJDrive()->getRating();
+        return $rating > 0 ? $rating : null;
     }
 
     public function getAssetFuelCapacity(?Asset $asset): ?float
     {
-        $details = $asset?->getAssetDetails() ?? [];
-        $tons = $details['fuel']['tons'] ?? null;
-        if (is_numeric($tons)) {
-            return (float) $tons;
+        if ($asset === null) {
+            return null;
         }
-
-        return null;
+        $capacity = $asset->getSpec()->getFuel()->getCapacity();
+        return $capacity > 0 ? $capacity : null;
     }
 
     public function getAssetHullTonnage(?Asset $asset): ?float
     {
-        $details = $asset?->getAssetDetails() ?? [];
-        $tons = $details['hull']['tons'] ?? null;
-        if (is_numeric($tons)) {
-            return (float) $tons;
+        if ($asset === null) {
+            return null;
         }
-
-        return null;
+        $tons = $asset->getSpec()->getHull()->getTons();
+        return $tons > 0 ? (float) $tons : null;
     }
 
     /**

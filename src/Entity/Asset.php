@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
+use App\Model\Asset\AssetSpec;
 
 #[ORM\Entity(repositoryClass: AssetRepository::class)]
 #[ORM\Index(name: 'idx_asset_user', columns: ['user_id'])]
@@ -79,23 +80,22 @@ class Asset
         return $this;
     }
 
+    public function getSpec(): AssetSpec
+    {
+        return new AssetSpec($this->assetDetails ?? []);
+    }
+
     // Conservazione dei getter legacy ma con aggiornamento della logica
     public function getJumpDriveRating(): ?int
     {
-        $details = $this->getAssetDetails();
-        if (isset($details['jDrive']['jump'])) {
-            return (int) $details['jDrive']['jump'];
-        }
-        return null;
+        $rating = $this->getSpec()->getJDrive()->getRating();
+        return $rating > 0 ? $rating : null;
     }
 
     public function getHullTons(): ?float
     {
-        $details = $this->getAssetDetails();
-        if (isset($details['hull']['tons']) && is_numeric($details['hull']['tons'])) {
-            return (float) $details['hull']['tons'];
-        }
-        return null;
+        $tons = $this->getSpec()->getHull()->getTons();
+        return $tons > 0 ? (float) $tons : null;
     }
 
     /**
