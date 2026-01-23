@@ -60,8 +60,15 @@ class CubeController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        return $this->render('cube/index.html.twig', [
-            'active_session' => $activeSession,
+        if ($activeSession) {
+            return $this->render('cube/console.html.twig', [
+                'active_session' => $activeSession,
+                'campaign' => $campaign,
+            ]);
+        }
+
+        return $this->render('cube/dashboard.html.twig', [
+            'active_session' => null,
             'campaign' => $campaign,
             'campaigns' => $allCampaigns,
             'draft_sessions' => $draftSessions,
@@ -110,6 +117,7 @@ class CubeController extends AbstractController
         }
 
         // Pass ALL systems to the engine so it can pick destinations
+        /** @var \App\Dto\Cube\CubeOpportunityData[] $opportunities */
         $opportunities = $this->brokerService->generateOpportunities($session, $originData, $systems);
 
         // Filter out already saved opportunities
@@ -125,10 +133,13 @@ class CubeController extends AbstractController
 
         $filtered = array_values(array_filter($opportunities, function ($opp) use ($savedSignatures) {
             // Keep if signature is NOT in saved list
-            return !isset($savedSignatures[$opp['signature'] ?? '']);
+            return !isset($savedSignatures[$opp->signature]);
         }));
 
-        return $this->json($filtered);
+        // Serialize DTOs to array for JSON response
+        $serialized = array_map(fn($opp) => $opp->toArray(), $filtered);
+
+        return $this->json($serialized);
     }
 
     #[Route('/save/{id}', name: 'app_cube_save', methods: ['POST'])]
@@ -182,5 +193,29 @@ class CubeController extends AbstractController
         return $this->render('cube/show.html.twig', [
             'opportunity' => $opportunity,
         ]);
+    }
+    #[Route('/session/delete/{id}', name: 'app_cube_session_delete', methods: ['POST'])]
+    public function deleteSession(int $id, Request $request, EntityManagerInterface $em): Response
+    {
+        $session = $this->sessionRepo->find($id);
+
+        if (!$session) {
+            throw $this->createNotFoundException('Session not found');
+        }
+
+        // Verify ownership (or security voter)
+        if ($session->getCampaign()->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if ($this->isCsrfTokenValid('delete' . $session->getId(), $request->request->get('_token'))) {
+            $em->remove($session);
+            $em->flush();
+            $this->addFlash('success', 'Session deleted successfully.');
+        } else {
+            $this->addFlash('error', 'Invalid token.');
+        }
+
+        return $this->redirectToRoute('app_cube_index');
     }
 }

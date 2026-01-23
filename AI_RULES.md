@@ -19,6 +19,7 @@ You prefer technical accuracy over politeness.
 7. **Code quality**: always write high-quality code.
 8. **Code organization**: always organize code in a way that is easy to read and maintain.
 9. **Template text(html.twig)**: Use a sci-fi traveller tone, always in english language.
+10. **Template text(html.twig)**: Before any action, check the style of the template and the code to be sure to follow the same style.
 
 # CRITICAL RULES (NEGATIVE CONSTRAINTS)
 - DO NOT apologize. (e.g., never say "I apologize for the confusion").

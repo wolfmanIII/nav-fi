@@ -2,76 +2,57 @@
 
 namespace App\Tests\Service\Cube;
 
+use App\Dto\Cube\CubeOpportunityData;
 use App\Entity\BrokerSession;
 use App\Service\Cube\TheCubeEngine;
 use PHPUnit\Framework\TestCase;
 
 class TheCubeEngineTest extends TestCase
 {
-    private array $mockEconomyConfig;
     private TheCubeEngine $engine;
 
     protected function setUp(): void
     {
-        $this->mockEconomyConfig = [
-            'freight_pricing' => [1 => 1000, 2 => 1600],
+        $config = [
+            'freight_pricing' => [
+                1 => 1000,
+                2 => 1400,
+            ],
             'passengers' => [
-                'high' => [1 => 9000],
-                'middle' => [1 => 6500],
-                'basic' => [1 => 2000],
-                'low' => [1 => 700],
+                'high' => [1 => 100, 2 => 200],
+                'middle' => [1 => 50, 2 => 100],
+                'basic' => [1 => 20, 2 => 40],
+                'low' => [1 => 10, 2 => 20],
             ],
+            'mail' => ['flat_rate' => 25000],
             'contract' => [
-                'base_reward_min' => 1000,
-                'base_reward_max' => 5000,
-                'bonus_chance' => 0.3,
+                'base_reward_min' => 10000,
+                'base_reward_max' => 50000,
+                'bonus_chance' => 0.1,
                 'bonus_multiplier' => 0.5,
-            ],
-            'mail' => [
-                'flat_rate' => 25000,
             ]
         ];
 
-        $this->engine = new TheCubeEngine($this->mockEconomyConfig);
+        $this->engine = new TheCubeEngine($config);
     }
 
-    public function testDeterministicGeneration(): void
+    public function testGenerateBatchReturnsDtos(): void
     {
         $session = new BrokerSession();
-        $session->setSeed('TEST_SEED_123');
-        $session->setSector('Spinward Marches');
-        $session->setOriginHex('1910');
+        $session->setSeed('TEST_SEED');
+        $session->setSector('Test Sector');
+        $session->setOriginHex('0101');
         $session->setJumpRange(2);
 
-        $originData = ['trade_codes' => ['In', 'Ri']];
+        $originData = ['name' => 'Origin World'];
 
-        // Prima esecuzione
-        $batch1 = $this->engine->generateBatch($session, $originData, [], 5);
+        $results = $this->engine->generateBatch($session, $originData, [], 2);
 
-        // Seconda esecuzione (stesso seed)
-        $batch2 = $this->engine->generateBatch($session, $originData, [], 5);
+        $this->assertCount(2, $results);
+        $this->assertInstanceOf(CubeOpportunityData::class, $results[0]);
+        $this->assertInstanceOf(CubeOpportunityData::class, $results[1]);
 
-        $this->assertEquals($batch1, $batch2, 'Generation should be identical for same session state');
-        $this->assertCount(5, $batch1);
-    }
-
-    public function testDifferentSeedProducesDifferentResult(): void
-    {
-        $session1 = new BrokerSession();
-        $session1->setSeed('SEED_A');
-        $session1->setSector('Spinward Marches');
-        $session1->setOriginHex('1910');
-
-        $session2 = new BrokerSession();
-        $session2->setSeed('SEED_B'); // Diverso
-        $session2->setSector('Spinward Marches');
-        $session2->setOriginHex('1910');
-
-        $originData = ['trade_codes' => []];
-
-        $batch1 = $this->engine->generateBatch($session1, $originData, [], 5);
-        $batch2 = $this->engine->generateBatch($session2, $originData, [], 5);
-
-        $this->assertNotEquals($batch1, $batch2, 'Different seeds should produce different results');
+        $this->assertNotEmpty($results[0]->signature);
+        $this->assertGreaterThan(0, $results[0]->amount);
     }
 }

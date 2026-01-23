@@ -34,6 +34,9 @@ class BrokerService
         return $session;
     }
 
+    /**
+     * @return \App\Dto\Cube\CubeOpportunityData[]
+     */
     public function generateOpportunities(BrokerSession $session, array $originData, array $allSystems = []): array
     {
         // Genera in memoria ma non salva finché non vengono selezionate
@@ -42,11 +45,15 @@ class BrokerService
 
     public function saveOpportunity(BrokerSession $session, array $oppData): BrokerOpportunity
     {
+        // Validate via DTO
+        // This ensures the array has the correct structure before saving
+        $dto = \App\Dto\Cube\CubeOpportunityData::fromArray($oppData);
+
         $opp = new BrokerOpportunity();
         $opp->setSession($session);
-        $opp->setSummary($oppData['summary']);
-        $opp->setAmount((string)$oppData['amount']);
-        $opp->setData($oppData);
+        $opp->setSummary($dto->summary);
+        $opp->setAmount((string)$dto->amount);
+        $opp->setData($dto->toArray()); // Store strict data structure
         $opp->setStatus(BrokerOpportunity::STATUS_SAVED);
 
         $this->em->persist($opp);

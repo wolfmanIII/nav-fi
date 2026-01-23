@@ -1,0 +1,244 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}The Cube // Dashboard{% endblock %}
+
+{% block pageContent %}
+<div class="space-y-6" data-controller="confirm-modal">
+    
+    {# HEADER #}
+    <div class="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800 p-6 shadow-lg">
+        <div class="absolute top-0 right-0 p-4 opacity-10">
+            {% include 'icons/cube.html.twig' with { dim: 128, class: 'text-cyan-500' } %}
+        </div>
+        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+            <div>
+                 <div class="flex items-center gap-2 text-cyan-400/80 mb-1">
+                    {% include 'icons/cube.html.twig' with { dim: 16 } %}
+                    <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">TAS // Datalink</p>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight flex items-center gap-3">
+                    The Cube
+                    <span class="text-xs align-top opacity-50 font-mono pt-2">v1.0</span>
+                </h1>
+                <a href="https://travellermap.com" target="_blank" class="flex items-center gap-2 text-xs text-slate-500 hover:text-cyan-400 transition-colors font-mono uppercase tracking-wider mt-1">
+                    {% include 'icons/travellermap.html.twig' with { dim: 16 } %}
+                    <span>powered by travellermap.com</span>
+                </a>
+            </div>
+            
+            <!-- Header Actions removed (moved to main panel) -->
+            <div class="flex items-center gap-2 text-cyan-500/50 bg-cyan-950/10 px-3 py-1 rounded border border-cyan-500/10">
+                <div class="w-2 h-2 rounded-full bg-cyan-500/50 animate-pulse"></div>
+                <span class="text-xs font-mono font-bold tracking-widest uppercase">system ready</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Setup Interface (Dual Panel) -->
+    <div class="flex items-center justify-center min-h-[500px]">
+        <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
+            
+            <!-- LEFT PANEL: Search Terminal (Form) -->
+            <div class="card bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 border border-cyan-500/20 shadow-2xl overflow-hidden h-[500px] relative group">
+                 <div class="relative flex flex-col gap-6 p-8 h-full">
+                    <div class="absolute inset-0 opacity-10 pointer-events-none" style="background: radial-gradient(circle at 20% 20%, rgba(34,211,238,0.1), transparent 40%), radial-gradient(circle at 80% 30%, rgba(94,234,212,0.1), transparent 35%);"></div>
+                    
+                    <div class="relative flex items-center gap-4 h-12">
+                        <div class="p-2 rounded-lg bg-cyan-500/10 border border-cyan-400/40 text-cyan-400 flex items-center justify-center w-12 h-12 flex-shrink-0">
+                            {% include 'icons/cube.html.twig' with { dim: 24 } %}
+                        </div>
+                        <div>
+                            <p class="text-lg font-bold text-cyan-100 tracking-tight font-orbitron">THE CUBE // SEARCH</p>
+                            <p class="text-[10px] text-cyan-400/60 uppercase tracking-[0.3em] font-mono">Contract Query Protocol</p>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 overflow-y-auto">
+                        <form action="{{ path('app_cube_session_new') }}" method="POST" class="space-y-5">
+                            <div>
+                                 <div class="flex items-baseline h-5 mb-1">
+                                    <label class="text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Active Mission</label>
+                                </div>
+                                <select name="campaign_id" class="select select-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 font-mono text-white text-xs" required>
+                                    <option value="" disabled {{ not campaign ? 'selected' : '' }}>// SELECT MISSION CONTEXT</option>
+                                    {% for c in campaigns %}
+                                        <option value="{{ c.id }}" {{ campaign and campaign.id == c.id ? 'selected' : '' }}>{{ c.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div>
+                                 <div class="flex items-baseline h-5 mb-1">
+                                    <label class="text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Target Sector</label>
+                                </div>
+                                <input type="text" name="sector" class="input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 font-mono text-white placeholder:text-slate-700" placeholder="e.g. Spinward Marches" required>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                     <div class="flex items-baseline h-5 mb-1">
+                                        <label class="text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Origin Hex</label>
+                                    </div>
+                                    <input type="text" name="hex" class="input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 font-mono text-white placeholder:text-slate-700" placeholder="1910" required maxlength="4">
+                                </div>
+                                <div>
+                                     <div class="flex items-baseline h-5 mb-1">
+                                        <label class="text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Jump Range</label>
+                                    </div>
+                                    <input type="number" name="range" class="input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 font-mono text-white placeholder:text-slate-700" value="2" min="1" max="6" required>
+                                </div>
+                            </div>
+        
+                            <div class="pt-4">
+                                <button type="submit" class="btn btn-primary w-full px-8 font-orbitron uppercase text-[10px] tracking-widest font-bold shadow-lg shadow-cyan-500/10 hover:shadow-cyan-500/20">
+                                    Initialize Cube Link
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            {% if draft_sessions|length > 0 %}
+            <!-- RIGHT PANEL: Recent Sessions (Resume) -->
+            <div class="card bg-slate-950 border border-slate-800 shadow-2xl overflow-hidden h-[500px] relative flex flex-col">
+                <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
+                     <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded bg-emerald-900/20 border border-emerald-500/20 flex items-center justify-center text-emerald-500">
+                             {% include 'icons/radar.html.twig' with { dim: 16 } %}
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white font-rajdhani uppercase tracking-wide">Suspended Links</h3>
+                            <p class="text-[10px] text-slate-500 font-mono">Select a session to resume</p>
+                        </div>
+                     </div>
+                     <span class="text-xs font-mono font-bold text-slate-600 bg-slate-900 px-2 py-1 rounded">{{ draft_sessions|length }} FOUND</span>
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-4 space-y-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
+                    {% for session in draft_sessions %}
+                    <div class="block p-4 rounded-lg bg-slate-900/30 border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-900/80 transition-all group relative">
+                        <a href="{{ path('app_cube_index', {session_id: session.id}) }}" class="block">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-xs font-bold font-orbitron text-emerald-500 group-hover:text-emerald-400 transition-colors uppercase tracking-widest">{{ session.sector|slice(0, 15) }}</span>
+                                <span class="text-[10px] font-mono text-slate-500">{{ session.createdAt|date('d M Y, H:i') }}</span>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs font-mono text-slate-400">
+                                <div class="flex items-center gap-1">
+                                    <span class="text-slate-600">HEX:</span>
+                                    <span class="text-white">{{ session.originHex }}</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-slate-600">SEED:</span>
+                                    <span class="text-white group-hover:text-emerald-500/70 transition-colors">{{ session.seed|slice(0, 8) }}...</span>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="mt-2 pt-2 border-t border-slate-800/50 flex justify-between items-center relative z-10">
+                            <a href="{{ path('app_cube_index', {session_id: session.id}) }}" class="text-[9px] uppercase tracking-widest text-slate-600 group-hover:text-slate-500 hover:text-cyan-400 transition-colors">
+                                Mission: {{ session.campaign.title|default('N/A') }}
+                            </a>
+                            
+                            <div class="flex items-center gap-2">
+                                <button class="text-[9px] uppercase tracking-widest font-bold text-rose-500/50 hover:text-rose-400 transition-colors flex items-center gap-1 bg-transparent border-0 p-0 cursor-pointer"
+                                        data-action="click->confirm-modal#open"
+                                        data-confirm-modal-url-param="{{ path('app_cube_session_delete', {'id': session.id}) }}"
+                                        data-confirm-modal-token-param="{{ csrf_token('delete' ~ session.id) }}"
+                                        data-confirm-modal-message-param="Terminate Uplink ({{ session.sector|slice(0, 10) }}...)? All data will be purged.">
+                                    &times; Terminate
+                                </button>
+                                <a href="{{ path('app_cube_index', {session_id: session.id}) }}" class="text-[9px] uppercase tracking-widest font-bold text-emerald-500/50 group-hover:text-emerald-400 transition-colors flex items-center gap-1 border-l border-slate-800 pl-2">
+                                    Resume Link &rarr;
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+            <!-- RIGHT PANEL: Visual/Animation (Empty State) -->
+            <div class="card bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 border border-cyan-500/20 shadow-2xl overflow-hidden h-[500px] relative group hidden md:block">
+                <div class="relative flex flex-col gap-6 p-8 h-full">
+                     <div class="absolute inset-0 opacity-10 pointer-events-none" style="background: radial-gradient(circle at 20% 20%, rgba(34,211,238,0.1), transparent 40%), radial-gradient(circle at 80% 30%, rgba(94,234,212,0.1), transparent 35%);"></div>
+                    
+                     <div class="flex-1 border border-cyan-500/10 rounded-lg p-8 font-mono text-xs leading-relaxed relative overflow-hidden flex items-center justify-center bg-black/20">
+                        <!-- Visual Centerpiece: Overlay Style -->
+                        <div class="flex flex-col items-center gap-4">
+                            <!-- Animated radar/scanner -->
+                            <div class="relative w-24 h-24">
+                                <div class="absolute inset-0 rounded-full border-2 border-cyan-500/30 animate-ping"></div>
+                                <div class="absolute inset-2 rounded-full border-2 border-cyan-400/50 animate-pulse"></div>
+                                <div class="absolute inset-4 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 animate-spin" style="animation-duration: 3s;"></div>
+                                <div class="absolute inset-0 flex items-center justify-center text-cyan-400">
+                                    {% include 'icons/radar.html.twig' with { dim: 48, class: 'animate-spin-slow' } %}
+                                </div>
+                            </div>
+                            
+                            <!-- Loading text -->
+                            <div class="text-center space-y-2 mt-4">
+                                <div class="font-orbitron uppercase tracking-[0.3em] text-cyan-400 text-lg font-bold animate-pulse">
+                                    TAS SYNC
+                                </div>
+                                <div class="font-rajdhani uppercase tracking-[0.2em] text-cyan-300/70 text-sm">
+                                    // Awaiting Sector Coordinates
+                                </div>
+                                <div class="flex gap-1 justify-center mt-3">
+                                    <div class="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" style="animation-delay: 0s;"></div>
+                                    <div class="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" style="animation-delay: 0.2s;"></div>
+                                    <div class="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" style="animation-delay: 0.4s;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Scanline overlay -->
+                        <div class="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] pointer-events-none opacity-20"></div>
+                    </div>
+
+                     <div class="relative space-y-2 mt-auto text-center">
+                        <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">
+                            TAS Network Uplink
+                        </p>
+                        <p class="text-[10px] text-slate-600 leading-relaxed">
+                            Provide sector coordinates to triangulate available contracts.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+{# GENERIC CONFIRMATION MODAL #}
+<dialog class="modal modal-bottom sm:modal-middle" data-confirm-modal-target="dialog">
+    <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl relative overflow-hidden p-0">
+         <div class="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 blur-[40px] pointer-events-none"></div>
+        
+        <div class="p-8 relative z-10 text-center">
+            <div class="flex flex-col items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-full bg-rose-500/10 flex items-center justify-center border border-rose-500/20 text-rose-500 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                </div>
+                <h3 class="font-bold font-orbitron uppercase tracking-wider text-white text-lg">Confirmation Required</h3>
+            </div>
+            
+            <p class="text-slate-300 font-mono text-sm leading-relaxed mb-8" data-confirm-modal-target="message">
+                Are you sure?
+            </p>
+            
+            <form method="dialog" class="grid grid-cols-2 gap-3" data-confirm-modal-target="form" method="POST">
+                <button class="btn btn-ghost border border-slate-700 hover:border-slate-600 text-slate-400 hover:text-white uppercase font-mono tracking-widest text-[10px]" data-action="confirm-modal#close">
+                    Cancel
+                </button>
+                <button type="submit" formmethod="POST" class="btn btn-primary bg-rose-600 hover:bg-rose-500 border-rose-500/50 text-[10px] font-bold uppercase tracking-widest shadow-lg shadow-rose-900/20 text-white">
+                    Confirm
+                </button>
+            </form>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button data-action="confirm-modal#close">close</button>
+    </form>
+</dialog>
+</div>
+{% endblock %}

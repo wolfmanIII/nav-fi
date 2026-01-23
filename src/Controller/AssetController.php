@@ -86,9 +86,16 @@ final class AssetController extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var AssetDetailsData|null $details */
-            $details = $form->get('assetDetails')->getData();
-            if ($details instanceof AssetDetailsData) {
+            $details = null;
+            if ($asset->getCategory() === Asset::CATEGORY_SHIP) {
+                $details = $form->get('shipDetails')->getData();
+            } elseif ($asset->getCategory() === Asset::CATEGORY_BASE) {
+                $details = $form->get('baseDetails')->getData();
+            } else {
+                $details = $form->get('assetDetails')->getData();
+            }
+
+            if (is_object($details) && method_exists($details, 'toArray')) {
                 $asset->setAssetDetails($details->toArray());
             }
 
@@ -126,9 +133,16 @@ final class AssetController extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var AssetDetailsData|null $details */
-            $details = $form->get('assetDetails')->getData();
-            if ($details instanceof AssetDetailsData) {
+            $details = null;
+            if ($asset->getCategory() === Asset::CATEGORY_SHIP) {
+                $details = $form->get('shipDetails')->getData();
+            } elseif ($asset->getCategory() === Asset::CATEGORY_BASE) {
+                $details = $form->get('baseDetails')->getData();
+            } else {
+                $details = $form->get('assetDetails')->getData();
+            }
+
+            if (is_object($details) && method_exists($details, 'toArray')) {
                 $asset->setAssetDetails($details->toArray());
             }
 
