@@ -53,21 +53,21 @@ class UwpDecoderService
     {
         $code = strtoupper($code);
         $map = [
-            'A' => 'Eccellente (Cantieri Navali, Rifornimento Raffinato)',
-            'B' => 'Buono (Costruzione Navi, Rifornimento Raffinato)',
-            'C' => 'Routine (Manutenzione, Rifornimento Grezzo)',
-            'D' => 'Povero (Riparazioni Limitate, Rifornimento Grezzo)',
-            'E' => 'Frontiera (Nessuna struttura, Nessun Rifornimento)',
-            'X' => 'Nessuno (Nessuna struttura)',
-            'F' => 'Buono (Spazioporto Minore)', // T5 extension
-            'G' => 'Povero (Spazioporto Minore)', // T5 extension
-            'H' => 'Primitivo (Semplice atterraggio)', // T5 extension
-            'Y' => 'Nessuno (Orbita pericolosa)' // T5 extension
+            'A' => 'Excellent (Starport, Refined Fuel)',
+            'B' => 'Good (Starport, Refined Fuel)',
+            'C' => 'Routine (Starport, Unrefined Fuel)',
+            'D' => 'Poor (Starport, Unrefined Fuel)',
+            'E' => 'Frontier (No Starport, No Fuel)',
+            'X' => 'None (No Starport)',
+            'F' => 'Good (Minor Spaceport)', // T5 extension
+            'G' => 'Poor (Minor Spaceport)', // T5 extension
+            'H' => 'Primitive (Simple landing site)', // T5 extension
+            'Y' => 'None (Hazardous orbit)' // T5 extension
         ];
 
         return [
             'code' => $code,
-            'label' => $map[$code] ?? 'Sconosciuto'
+            'label' => $map[$code] ?? 'Unknown'
         ];
     }
 
@@ -77,12 +77,12 @@ class UwpDecoderService
         $km = $val * 1600;
         
         $desc = match(true) {
-            $val === 0 => 'Asteroide / < 800 km',
-            $val <= 2 => 'Piccolo (Bassa gravità)',
-            $val <= 4 => 'Marte (Gravità leggera)',
-            $val <= 7 => 'Standard (Tipo Terra)',
-            $val <= 9 => 'Grande (Alta gravità)',
-            default => 'Gigante'
+            $val === 0 => 'Asteroid / < 800 km',
+            $val <= 2 => 'Small (Low Gravity)',
+            $val <= 4 => 'Mars-sized (Light Gravity)',
+            $val <= 7 => 'Standard (Earth-sized)',
+            $val <= 9 => 'Large (High Gravity)',
+            default => 'Giant'
         };
 
         if ($val === 0) $kmText = '< 800';
@@ -100,27 +100,27 @@ class UwpDecoderService
     {
         $val = hexdec($char);
         $map = [
-            0 => 'Nessuna (Richiede tuta a vuoto)',
-            1 => 'Tracce (Richiede tuta a vuoto)',
-            2 => 'Molto Sottile, Contaminata (Richiede Respiratore/Filtro)',
-            3 => 'Molto Sottile (Richiede Respiratore)',
-            4 => 'Sottile, Contaminata (Richiede Filtro)',
-            5 => 'Sottile (Respirabile)',
-            6 => 'Standard (Respirabile)',
-            7 => 'Standard, Contaminata (Richiede Filtro)',
-            8 => 'Densa (Respirabile)',
-            9 => 'Densa, Contaminata (Richiede Filtro)',
-            10 => 'Esotica (Richiede scorte d\'aria)', // A
-            11 => 'Corrosiva (Tuta protettiva necessaria)', // B
-            12 => 'Insidiosa (Tuta protettiva necessaria)', // C
-            13 => 'Densa, Alta (Richiede compressori)', // D
-            14 => 'Ellissoidale (Esotica)', // E
-            15 => 'Sottile (Panthalassic)' // F
+            0 => 'None (Vacuum suit required)',
+            1 => 'Trace (Vacuum suit required)',
+            2 => 'Very Thin, Tainted (Respirator/Filter required)',
+            3 => 'Very Thin (Respirator required)',
+            4 => 'Thin, Tainted (Filter required)',
+            5 => 'Thin (Breathable)',
+            6 => 'Standard (Breathable)',
+            7 => 'Standard, Tainted (Filter required)',
+            8 => 'Dense (Breathable)',
+            9 => 'Dense, Tainted (Filter required)',
+            10 => 'Exotic (Air supply required)', // A
+            11 => 'Corrosive (Protective suit required)', // B
+            12 => 'Insidious (Protective suit required)', // C
+            13 => 'Dense, High (Compressors required)', // D
+            14 => 'Ellipsoid (Exotic)', // E
+            15 => 'Thin (Panthalassic)' // F
         ];
 
         return [
             'code' => strtoupper($char),
-            'label' => $map[$val] ?? 'Sconosciuta/Anomala'
+            'label' => $map[$val] ?? 'Unknown/Anomalous'
         ];
     }
 
@@ -132,11 +132,11 @@ class UwpDecoderService
         if ($pct > 100) $pct = 100;
 
         $desc = match(true) {
-            $val === 0 => 'Mondo Desertico',
-            $val < 3 => 'Mondo Arido',
-            $val < 6 => 'Mondo Umido',
-            $val < 9 => 'Mondo Bagnato (Simile alla Terra)',
-            default => 'Mondo Oceanico'
+            $val === 0 => 'Desert World',
+            $val < 3 => 'Dry World',
+            $val < 6 => 'Non-water World', // Or "Wet World" but standard traveller usually distinguishes around 60%
+            $val < 9 => 'Wet World (Earth-like)',
+            default => 'Water World'
         };
 
         return [
@@ -152,11 +152,11 @@ class UwpDecoderService
         
         // Popolazione è 10^val
         $desc = match(true) {
-            $val === 0 => 'Nessuna (0)',
-            $val < 4 => 'Bassa (< 10.000)',
-            $val < 7 => 'Media (Milioni)',
-            $val < 10 => 'Alta (Miliardi)',
-            default => 'Altissima (Trilioni)'
+            $val === 0 => 'None (0)',
+            $val < 4 => 'Low (< 10,000)',
+            $val < 7 => 'Mid (Millions)',
+            $val < 10 => 'High (Billions)',
+            default => 'Very High (Trillions)'
         };
 
         return [
@@ -170,27 +170,27 @@ class UwpDecoderService
     {
         $val = hexdec($char);
         $map = [
-            0 => 'Nessuno (Anarchia/Struttura familiare)',
-            1 => 'Azienda/Corporazione',
-            2 => 'Democrazia Partecipativa',
-            3 => 'Oligarchia Autoperpetuante',
-            4 => 'Democrazia Rappresentativa',
-            5 => 'Tecnocrazia Feudale',
-            6 => 'Dittatura Captive (Colonia/Militare)',
-            7 => 'Balcanizzazione (Governi multipli)',
-            8 => 'Burocrazia Civile',
-            9 => 'Burocrazia Impersonale',
-            10 => 'Dittatura Carismatica', // A
-            11 => 'Dittatura Non Carismatica', // B
-            12 => 'Oligarchia Carismatica', // C
-            13 => 'Oligarchia Religiosa', // D
-            14 => 'Tecnocrazia Religiosa', // E
-            15 => 'Totalitarismo' // F
+            0 => 'None (Anarchy/Family Structure)',
+            1 => 'Company/Corporation',
+            2 => 'Participating Democracy',
+            3 => 'Self-Perpetuating Oligarchy',
+            4 => 'Representative Democracy',
+            5 => 'Feudal Technocracy',
+            6 => 'Captive Government (Colony/Military)',
+            7 => 'Balkanization (Multiple Governments)',
+            8 => 'Civil Service Bureaucracy',
+            9 => 'Impersonal Bureaucracy',
+            10 => 'Charismatic Dictatorship', // A
+            11 => 'Non-Charismatic Dictatorship', // B
+            12 => 'Charismatic Oligarchy', // C
+            13 => 'Religious Dictatorship', // D
+            14 => 'Religious Technocracy', // E
+            15 => 'Totalitarian Oligarchy' // F
         ];
 
         return [
             'code' => strtoupper($char),
-            'label' => $map[$val] ?? 'Sconosciuto'
+            'label' => $map[$val] ?? 'Unknown'
         ];
     }
 
@@ -198,11 +198,11 @@ class UwpDecoderService
     {
         $val = hexdec($char);
         $desc = match(true) {
-            $val === 0 => 'Nessuna legge (Anarchia)',
-            $val <= 3 => 'Basso (Armi pesanti vietate)',
-            $val <= 7 => 'Moderato (Porto d\'armi regolamentato)',
-            $val <= 9 => 'Alto (Armi vietate, controlli rigidi)',
-            default => 'Estremo (Stato di polizia / Totalitario)'
+            $val === 0 => 'No Law (Anarchy)',
+            $val <= 3 => 'Low (Heavy weapons banned)',
+            $val <= 7 => 'Moderate (Gun carrying regulated)',
+            $val <= 9 => 'High (Weapons banned, rigid control)',
+            default => 'Extreme (Police State / Totalitarian)'
         };
 
         return [
@@ -217,14 +217,14 @@ class UwpDecoderService
         $val = hexdec($char);
         
         $desc = match(true) {
-            $val === 0 => 'Età della Pietra (Primitivo)',
-            $val <= 3 => 'Pre-Industriale',
-            $val <= 5 => 'Industriale (Era Atomica)',
-            $val <= 8 => 'Pre-Stellare (Era Spaziale)',
-            $val <= 10 => 'Stellare Iniziale (Jump-1)',
-            $val <= 12 => 'Stellare Medio (Impero Standard)',
-            $val <= 14 => 'Stellare Alto',
-            default => 'Ultra-Tech / Singolarità'
+            $val === 0 => 'Stone Age (Primitive)',
+            $val <= 3 => 'Pre-Industrial',
+            $val <= 5 => 'Industrial (Atomic Age)',
+            $val <= 8 => 'Pre-Stellar (Space Age)',
+            $val <= 10 => 'Early Stellar (Jump-1)',
+            $val <= 12 => 'Average Stellar (Standard Empire)',
+            $val <= 14 => 'High Stellar',
+            default => 'Ultra-Tech / Singularity'
         };
 
         return [

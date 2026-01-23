@@ -36,6 +36,9 @@ class TravellerMapSectorLookup
                         'world' => $system['name'],
                         'uwp' => $system['uwp'],
                         'trade_codes' => $system['trade_codes'],
+                        'pop_multiplier' => $system['pop_multiplier'] ?? 0,
+                        'belts' => $system['belts'] ?? 0,
+                        'gas_giants' => $system['gas_giants'] ?? 0,
                         'ix' => $system['ix'],
                         'ex' => $system['ex'],
                         'cx' => $system['cx'],
@@ -94,6 +97,7 @@ class TravellerMapSectorLookup
                 $nameIndex = array_search('NAME', $headerParts);
                 $uwpIndex = array_search('UWP', $headerParts);
                 $remarksIndex = array_search('REMARKS', $headerParts);
+                $pbgIndex = array_search('PBG', $headerParts);
 
                 if ($hexIndex !== false && $nameIndex !== false && $uwpIndex !== false) {
                     $colMap['hex'] = $hexIndex;
@@ -102,6 +106,9 @@ class TravellerMapSectorLookup
                     // Remarks è opzionale o potrebbe chiamarsi diversamente (Comments?) ma di solito Remarks
                     if ($remarksIndex !== false) {
                         $colMap['remarks'] = $remarksIndex;
+                    }
+                    if ($pbgIndex !== false) {
+                        $colMap['pbg'] = $pbgIndex;
                     }
                     $headerFound = true;
                 }
@@ -124,6 +131,7 @@ class TravellerMapSectorLookup
             $name = trim($parts[$colMap['name']] ?? '');
             $uwp = trim($parts[$colMap['uwp']] ?? '');
             $remarks = isset($colMap['remarks']) ? trim($parts[$colMap['remarks']] ?? '') : '';
+            $pbg = isset($colMap['pbg']) ? trim($parts[$colMap['pbg']] ?? '') : '';
 
             // Valida Hex (stretto 4 cifre)
             if (!preg_match('/^\d{4}$/', $hex)) {
@@ -134,12 +142,28 @@ class TravellerMapSectorLookup
             if (strlen($uwp) < 7) { // X000000-0 è 9 car solitamente, ma forse alcuni ne permettono meno? standard è 9. Diciamo 7 per sicurezza.
                 continue;
             }
+            
+            // Parse PBG (Pop Multiplier, Belts, Gas Giants)
+            // Es: 123 -> 1 PopMult, 2 Belts, 3 Gas Giants
+            $popMultiplier = 0;
+            $belts = 0;
+            $gasGiants = 0;
+            
+            if (strlen($pbg) >= 3 && is_numeric($pbg)) {
+                $popMultiplier = (int) substr($pbg, 0, 1);
+                $belts = (int) substr($pbg, 1, 1);
+                $gasGiants = (int) substr($pbg, 2, 1);
+            }
 
             $systems[] = [
                 'hex' => $hex,
                 'name' => $name,
                 'uwp' => $uwp,
                 'trade_codes' => $this->parseTradeCodes($remarks),
+                'pbg' => $pbg,
+                'pop_multiplier' => $popMultiplier,
+                'belts' => $belts,
+                'gas_giants' => $gasGiants,
                 'ix' => '', // Dati estesi non critici per ora
                 'ex' => '',
                 'cx' => '',

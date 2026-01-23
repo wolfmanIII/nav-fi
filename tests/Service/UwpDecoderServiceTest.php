@@ -22,13 +22,13 @@ class UwpDecoderServiceTest extends TestCase
         $this->assertArrayNotHasKey('error', $result);
         
         $this->assertEquals('A', $result['starport']['code']);
-        $this->assertStringContainsString('Eccellente', $result['starport']['label']);
+        $this->assertStringContainsString('Excellent', $result['starport']['label']);
 
         $this->assertEquals(7, $result['size']['value']);
         $this->assertStringContainsString('Standard', $result['size']['label']);
 
         $this->assertEquals('8', $result['atmosphere']['code']);
-        $this->assertStringContainsString('Densa', $result['atmosphere']['label']);
+        $this->assertStringContainsString('Dense', $result['atmosphere']['label']);
 
         $this->assertEquals(80, $result['hydrographics']['value']);
 
