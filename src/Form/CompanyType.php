@@ -29,7 +29,7 @@ class CompanyType extends AbstractType
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
             ->add('companyRole', EntityType::class, [
-                'placeholder' => "-- Select a Company Role --",
+                'placeholder' => "// COMPANY ROLE",
                 'class' => CompanyRole::class,
                 'choice_label' => fn (CompanyRole $role) => $role->getShortDescription() ?? $role->getCode(),
                 'attr' => [

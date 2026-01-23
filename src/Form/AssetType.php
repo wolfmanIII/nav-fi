@@ -51,7 +51,7 @@ class AssetType extends AbstractType
         $builder
             ->add('campaign', EntityType::class, [
                 'class' => Campaign::class,
-                'placeholder' => '-- Select a Mission --',
+                'placeholder' => '// MISSION',
                 'required' => false,
                 'choice_label' => fn(Campaign $c) => sprintf('%s (%03d/%04d)', $c->getTitle(), $c->getSessionDay(), $c->getSessionYear()),
                 'query_builder' => function (CampaignRepository $repo) {

@@ -60,7 +60,7 @@ class RouteType extends AbstractType
             ->add('campaign', EntityType::class, [
                 'class' => Campaign::class,
                 'required' => true,
-                'placeholder' => '-- Select a Campaign --',
+                'placeholder' => '// MISSION',
                 'choice_label' => fn(Campaign $campaign) => $campaign->getTitle(),
                 'data' => $route->getCampaign() ?? $route->getAsset()?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
@@ -78,7 +78,7 @@ class RouteType extends AbstractType
             ])
             ->add('asset', EntityType::class, [
                 'class' => Asset::class,
-                'placeholder' => '-- Select an Asset --',
+                'placeholder' => '// ASSET',
                 'choice_label' => fn(Asset $asset) => sprintf('%s - %s(%s)', $asset->getName(), $asset->getType(), $asset->getClass()),
                 'choice_attr' => function (Asset $asset): array {
                     $start = $asset->getCampaign()?->getStartingYear();

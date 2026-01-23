@@ -66,7 +66,7 @@ class CrewType extends AbstractType
             ])
             ->add('status', ChoiceType::class, [
                 'required' => false,
-                'placeholder' => '-- Select a Status --',
+                'placeholder' => '// STATUS',
                 'choices' => Crew::getStatusChoices(),
                 'attr' => ['class' => 'select m-1 w-full'],
             ])
@@ -114,7 +114,8 @@ class CrewType extends AbstractType
                 'class' => Campaign::class,
                 'mapped' => false,
                 'required' => false,
-                'placeholder' => '-- Select a Campaign --',
+                'label' => 'Mission',
+                'placeholder' => '// MISSION',
                 'choice_label' => fn(Campaign $campaign) => $campaign->getTitle(),
                 'data' => $crew->getAsset()?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
@@ -133,7 +134,7 @@ class CrewType extends AbstractType
             ->add('asset', EntityType::class, [
                 'class' => Asset::class,
                 'required' => false,
-                'placeholder' => '-- Select an Asset --',
+                'placeholder' => '// ASSET',
                 'choice_label' => fn(Asset $asset) => sprintf('%s - %s(%s)', $asset->getName(), $asset->getType(), $asset->getClass()),
                 'choice_attr' => function (Asset $asset): array {
                     $start = $asset->getCampaign()?->getStartingYear();
