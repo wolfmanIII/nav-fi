@@ -79,7 +79,7 @@ class AssetType extends AbstractType
             ]);
         } elseif ($asset->getCategory() === Asset::CATEGORY_BASE) {
             // Usa BaseDetailsType per stazioni
-            $baseData = \App\Form\Data\ShipDetailsData::fromArray($asset->getAssetDetails() ?? []);
+            $baseData = \App\Form\Data\BaseDetailsData::fromArray($asset->getAssetDetails() ?? []);
             
             $builder->add('baseDetails', \App\Form\Type\BaseDetailsType::class, [
                 'mapped' => false,
