@@ -38,32 +38,46 @@ class ContractGenerator implements OpportunityGeneratorInterface
         $max = $tierConfig['max'] ?? 5000;
 
         $amount = mt_rand($min, $max);
-
-        // Arrotonda a cifre "pulite" (es. multipli di 500)
         $amount = round($amount / 500) * 500;
 
-        // 2. Generazione Narrativa
-        $patron = $this->narrative->generatePatron();
-        $twist = $this->narrative->generateTwist();
-        $risk = $tierConfig['risk'] ?? 'Standard';
+        // 2. Generazione Narrativa Avanzata
+        // Recupera il settore dal contesto (se disponibile) o usa un valore default
+        $sector = $context['sector'] ?? 'Unknown';
 
-        // Seleziona un tipo di missione esemplificativo
+        // Seleziona Patron (Entity o String)
+        $patronOrCompany = $this->narrative->selectPatron($sector);
+
+        $patronName = is_string($patronOrCompany)
+            ? $patronOrCompany
+            : $patronOrCompany->getName();
+
+        // Se è una company, salva l'ID nei dettagli per uso futuro (es. link)
+        $companyId = ($patronOrCompany instanceof \App\Entity\Company) ? $patronOrCompany->getId() : null;
+
+        $risk = $tierConfig['risk'] ?? 'Standard';
         $examples = $tierConfig['examples'] ?? ['Mission'];
         $missionType = $examples[mt_rand(0, count($examples) - 1)];
+
+        // Genera Briefing "Mad-Libs"
+        $target = "the target"; // TBD: Generare anche il target dinamicamente? Per ora statico o semplice.
+        $briefing = $this->narrative->generateBriefing('CONTRACT', $patronName, $target, []);
+        $twist = $this->narrative->generateTwist();
 
         return new CubeOpportunityData(
             signature: '',
             type: 'CONTRACT',
-            summary: "[$risk] $missionType for $patron",
+            summary: "[$risk] $missionType for $patronName",
             distance: 0,
             amount: (float)$amount,
             details: [
                 'origin' => $context['origin'],
                 'destination' => 'Local/System',
                 'dest_hex' => $context['origin_hex'] ?? 'LOCL',
-                'patron' => $patron,
+                'patron' => $patronName,
+                'company_id' => $companyId, // Nuova info
                 'difficulty' => $risk,
                 'mission_type' => $missionType,
+                'briefing' => $briefing, // Nuovo campo ricco
                 'twist' => $twist,
                 'tier' => $tierKey
             ]

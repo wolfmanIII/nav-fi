@@ -164,7 +164,7 @@ class IncomeType extends AbstractType
             ->add('company', EntityType::class, [
                 'class' => Company::class,
                 'placeholder' => '-- Select a Company --',
-                'required' => true,
+                'required' => false,
                 'choice_label' => fn(Company $c) => sprintf('%s - %s', $c->getName(), $c->getCompanyRole()->getShortDescription()),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.name', 'ASC');
@@ -174,6 +174,11 @@ class IncomeType extends AbstractType
                     return $qb;
                 },
                 'attr' => ['class' => 'select m-1 w-full'],
+            ])
+            ->add('patronAlias', TextType::class, [
+                'required' => false,
+                'label' => 'Patron Alias (if no Company)',
+                'attr' => ['class' => 'input m-1 w-full', 'placeholder' => 'e.g. "Colonial Governor"'],
             ])
             ->add('localLaw', EntityType::class, [
                 'class' => LocalLaw::class,

@@ -32,6 +32,12 @@ class Company
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $sector = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $subsector = null;
+
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
@@ -130,6 +136,30 @@ class Company
     public function setCompanyRole(?CompanyRole $companyRole): static
     {
         $this->companyRole = $companyRole;
+
+        return $this;
+    }
+
+    public function getSector(): ?string
+    {
+        return $this->sector;
+    }
+
+    public function setSector(?string $sector): static
+    {
+        $this->sector = $sector;
+
+        return $this;
+    }
+
+    public function getSubsector(): ?string
+    {
+        return $this->subsector;
+    }
+
+    public function setSubsector(?string $subsector): static
+    {
+        $this->subsector = $subsector;
 
         return $this;
     }

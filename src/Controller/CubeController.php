@@ -190,9 +190,47 @@ class CubeController extends AbstractController
             throw $this->createNotFoundException('Contract Manifest not found.');
         }
 
+        // Fetch assets for the selection modal
+        // TODO: Filter assets by campaign or location if needed?
+        // For now, show all assets belonging to the user/campaign
+        $campaign = $opportunity->getSession()->getCampaign();
+        $assets = $em->getRepository(\App\Entity\Asset::class)->findBy([
+            'campaign' => $campaign
+        ]);
+
         return $this->render('cube/show.html.twig', [
             'opportunity' => $opportunity,
+            'assets' => $assets
         ]);
+    }
+
+    #[Route('/contract/{id}/accept', name: 'app_cube_contract_accept', methods: ['POST'])]
+    public function accept(int $id, Request $request, EntityManagerInterface $em): Response
+    {
+        $opportunity = $em->getRepository(\App\Entity\BrokerOpportunity::class)->find($id);
+        if (!$opportunity) {
+            throw $this->createNotFoundException('Contract not found.');
+        }
+
+        $assetId = $request->request->get('asset_id');
+        $asset = $em->getRepository(\App\Entity\Asset::class)->find($assetId);
+
+        if (!$asset) {
+            $this->addFlash('error', 'Invalid Asset selected.');
+            return $this->redirectToRoute('app_cube_contract_show', ['id' => $id]);
+        }
+
+        try {
+            $this->brokerService->acceptOpportunity($opportunity, $asset);
+            $this->addFlash('success', 'Contract Accepted! Financial records updated.');
+
+            // Redirect to the Asset's ledger or back to console?
+            // For now, back to console seems appropriate.
+            return $this->redirectToRoute('app_cube_index', ['session_id' => $opportunity->getSession()->getId()]);
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Error accepting contract: ' . $e->getMessage());
+            return $this->redirectToRoute('app_cube_contract_show', ['id' => $id]);
+        }
     }
     #[Route('/session/delete/{id}', name: 'app_cube_session_delete', methods: ['POST'])]
     public function deleteSession(int $id, Request $request, EntityManagerInterface $em): Response

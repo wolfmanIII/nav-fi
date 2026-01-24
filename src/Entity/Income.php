@@ -41,6 +41,9 @@ class Income
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $patronAlias = null;
+
     #[ORM\Column(length: 20)]
     private ?string $status = null;
 
@@ -344,6 +347,18 @@ class Income
     public function setTitle(string $title): static
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getPatronAlias(): ?string
+    {
+        return $this->patronAlias;
+    }
+
+    public function setPatronAlias(?string $patronAlias): static
+    {
+        $this->patronAlias = $patronAlias;
 
         return $this;
     }

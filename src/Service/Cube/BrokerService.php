@@ -13,7 +13,8 @@ class BrokerService
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly BrokerSessionRepository $sessionRepo,
-        private readonly TheCubeEngine $engine
+        private readonly TheCubeEngine $engine,
+        private readonly OpportunityConverter $converter
     ) {}
 
     public function createSession(Campaign $campaign, string $sector, string $hex, int $range, ?string $seed = null): BrokerSession
@@ -60,5 +61,22 @@ class BrokerService
         $this->em->flush();
 
         return $opp;
+    }
+
+    public function acceptOpportunity(BrokerOpportunity $opportunity, \App\Entity\Asset $asset): \App\Entity\Income|\App\Entity\Cost
+    {
+        // 1. Converti in DTO per passare i dati puliti
+        $dto = \App\Dto\Cube\CubeOpportunityData::fromArray($opportunity->getData());
+
+        // 2. Chiama il converter
+        $financialEntity = $this->converter->convert($dto, $asset);
+
+        // 3. Aggiorna stato opportunità
+        $opportunity->setStatus('CONVERTED'); // TODO: Add constant to entity
+
+        // 4. Salva tutto in una transazione (gestita dall'EM flush)
+        $this->em->flush();
+
+        return $financialEntity;
     }
 }

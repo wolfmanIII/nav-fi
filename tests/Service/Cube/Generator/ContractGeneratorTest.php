@@ -19,8 +19,9 @@ class ContractGeneratorTest extends TestCase
             'examples' => ['Test Mission']
         ]);
 
-        $narrative->method('generatePatron')->willReturn('Test Patron');
+        $narrative->method('selectPatron')->willReturn('Test Patron');
         $narrative->method('generateTwist')->willReturn('Test Twist');
+        $narrative->method('generateBriefing')->willReturn('Test Briefing');
 
         $generator = new ContractGenerator($narrative);
         $this->assertTrue($generator->supports('CONTRACT'));
@@ -28,7 +29,8 @@ class ContractGeneratorTest extends TestCase
         $context = [
             'origin' => 'A',
             'destination' => 'B',
-            'distance' => 0
+            'distance' => 0,
+            'sector' => 'Test Sector'
         ];
 
         $opp = $generator->generate($context, 2);
@@ -37,5 +39,6 @@ class ContractGeneratorTest extends TestCase
         $this->assertGreaterThanOrEqual(1000, $opp->amount);
         $this->assertEquals('Test Patron', $opp->details['patron']);
         $this->assertEquals('Test Twist', $opp->details['twist']);
+        $this->assertEquals('Test Briefing', $opp->details['briefing']);
     }
 }
