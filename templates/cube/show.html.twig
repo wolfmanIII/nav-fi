@@ -7,8 +7,8 @@
 
     {# HEADER / NAV #}
     <div class="flex justify-between items-center">
-        <a href="{{ path('app_cube_index', {session_id: opportunity.session.id}) }}" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors uppercase text-xs font-bold tracking-widest font-mono group">
-            <span class="group-hover:-translate-x-1 transition-transform">&larr;</span> Back to Console
+        <a href="{{ path('app_cube_index', {session_id: opportunity.session.id}) }}" class="btn btn-sm btn-outline border-slate-700 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/50 uppercase font-orbitron text-[10px] tracking-widest group">
+            <span class="group-hover:-translate-x-1 transition-transform mr-2">&larr;</span> Return
         </a>
         <div class="flex items-center gap-2 px-3 py-1 bg-slate-900 rounded border border-slate-800">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -161,18 +161,13 @@
 
         {# FOOTER ACTIONS #}
         <div class="bg-slate-950/80 border-t border-slate-800 p-6 flex justify-between items-center relative z-10 backdrop-blur-sm">
-            <button class="btn btn-ghost btn-sm text-slate-500 hover:text-rose-400 uppercase font-mono text-[10px] tracking-widest" data-action="cube#unsave" data-cube-id-param="{{ opportunity.id }}">
-                <i class="lucide-trash-2 w-3 h-3 mr-2"></i> Delete & Return
+            <button class="btn btn-outline border-slate-700 text-slate-500 hover:text-rose-500 hover:border-rose-500/50 hover:bg-rose-950/20 uppercase font-orbitron text-[10px] tracking-widest transition-all" data-action="cube#unsave" data-cube-id-param="{{ opportunity.id }}">
+                <i class="lucide-trash-2 w-3 h-3 mr-2"></i> Purge Data
             </button>
 
             <div class="flex gap-3">
-                 <button class="btn btn-outline border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 uppercase font-orbitron text-[10px] tracking-widest">
-                    <i class="lucide-printer w-3 h-3 mr-2"></i> Print Pdf
-                </button>
-                <button class="btn btn-primary px-6 font-orbitron font-bold uppercase tracking-widest shadow-lg shadow-cyan-500/20 group">
-                    <span class="group-hover:hidden">Attach to Mission</span>
-                    <span class="hidden group-hover:inline">Select Campaign</span>
-                    <i class="lucide-chevron-right w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"></i>
+                <button class="btn bg-emerald-900/20 border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500 hover:text-black uppercase font-orbitron font-bold tracking-[0.2em] text-[10px] shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:shadow-[0_0_25px_rgba(16,185,129,0.6)] transition-all px-8">
+                    Accept Contract
                 </button>
             </div>
         </div>

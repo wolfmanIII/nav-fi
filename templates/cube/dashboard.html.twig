@@ -145,7 +145,7 @@
                                         data-confirm-modal-url-param="{{ path('app_cube_session_delete', {'id': session.id}) }}"
                                         data-confirm-modal-token-param="{{ csrf_token('delete' ~ session.id) }}"
                                         data-confirm-modal-message-param="Terminate Uplink ({{ session.sector|slice(0, 10) }}...)? All data will be purged.">
-                                    &times; Terminate
+                                    &times; Purge Link
                                 </button>
                                 <a href="{{ path('app_cube_index', {session_id: session.id}) }}" class="text-[9px] uppercase tracking-widest font-bold text-emerald-500/50 group-hover:text-emerald-400 transition-colors flex items-center gap-1 border-l border-slate-800 pl-2">
                                     Resume Link &rarr;
