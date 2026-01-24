@@ -21,6 +21,10 @@ services:
     App\:
         resource: "../src/"
 
+    _instanceof:
+        App\Service\Cube\Generator\OpportunityGeneratorInterface:
+            tags: ['app.cube.generator']
+
     App\Form\Config\DayYearLimits:
         arguments:
             $dayMin: "%app.day_min%"
