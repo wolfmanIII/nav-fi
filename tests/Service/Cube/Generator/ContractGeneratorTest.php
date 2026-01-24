@@ -9,18 +9,21 @@ class ContractGeneratorTest extends TestCase
 {
     public function testGenerateContractCalculatesCorrectly(): void
     {
-        $config = [
-            'contract' => [
-                'base_reward_min' => 1000,
-                'base_reward_max' => 2000,
-                'bonus_chance' => 0.0, // Force no bonus for deterministic base check
-                'bonus_multiplier' => 0.5,
-            ]
-        ];
+        // Mock NarrativeService
+        $narrative = $this->createMock(\App\Service\Cube\NarrativeService::class);
 
-        $generator = new ContractGenerator($config);
+        $narrative->method('resolveTiers')->willReturn([
+            'min' => 1000,
+            'max' => 2000,
+            'risk' => 'Test Risk',
+            'examples' => ['Test Mission']
+        ]);
+
+        $narrative->method('generatePatron')->willReturn('Test Patron');
+        $narrative->method('generateTwist')->willReturn('Test Twist');
+
+        $generator = new ContractGenerator($narrative);
         $this->assertTrue($generator->supports('CONTRACT'));
-        $this->assertEquals('CONTRACT', $generator->getType());
 
         $context = [
             'origin' => 'A',
@@ -32,6 +35,7 @@ class ContractGeneratorTest extends TestCase
 
         $this->assertEquals('CONTRACT', $opp->type);
         $this->assertGreaterThanOrEqual(1000, $opp->amount);
-        $this->assertArrayHasKey('patron', $opp->details);
+        $this->assertEquals('Test Patron', $opp->details['patron']);
+        $this->assertEquals('Test Twist', $opp->details['twist']);
     }
 }

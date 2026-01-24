@@ -108,12 +108,33 @@
                              {% include 'icons/cube.html.twig' with { dim: 128 } %}
                         </div>
 
-                        <p class="mb-6 text-white text-lg font-bold border-b border-slate-800 pb-4">{{ opportunity.summary }}</p>
+                        {# Narrative Header #}
+                        <div class="mb-6 border-b border-slate-800 pb-4">
+                            {% if opportunity.data.details.difficulty is defined %}
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-widest
+                                    {% if opportunity.data.details.difficulty == 'Black Ops' %}bg-rose-950 text-rose-500 border border-rose-900
+                                    {% elseif opportunity.data.details.difficulty == 'Hazardous' %}bg-amber-950 text-amber-500 border border-amber-900
+                                    {% else %}bg-emerald-950 text-emerald-500 border border-emerald-900{% endif %}">
+                                    {{ opportunity.data.details.difficulty|default('Standard') }}
+                                </span>
+                                <span class="text-[10px] font-mono text-slate-500 uppercase">Risk Assessment</span>
+                            </div>
+                            {% endif %}
+                            <p class="text-white text-lg font-bold font-orbitron tracking-wide">{{ opportunity.summary }}</p>
+                            
+                            {% if opportunity.data.details.twist is defined and opportunity.data.details.twist != 'None' %}
+                                <div class="mt-3 p-3 bg-rose-500/10 border border-rose-500/20 rounded text-xs text-rose-400 font-mono">
+                                    <strong class="text-rose-500 uppercase tracking-widest mr-2">Inte-lligence Update:</strong>
+                                    {{ opportunity.data.details.twist }}
+                                </div>
+                            {% endif %}
+                        </div>
                         
                         {# Dynamic Details Grid #}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-xs relative z-10">
                             {% for key, value in opportunity.data.details %}
-                                {% if key not in ['origin', 'destination', 'dest_hex', 'dest_dist'] %}
+                                {% if key not in ['origin', 'destination', 'dest_hex', 'dest_dist', 'difficulty', 'mission_type', 'twist', 'tier'] %}
                                     <div class="flex items-baseline justify-between border-b border-dashed border-slate-800 pb-1">
                                         <span class="text-slate-500 uppercase tracking-wider text-[10px]">{{ key|replace({'_': ' '}) }}</span>
                                         <span class="text-cyan-100 font-bold text-right">

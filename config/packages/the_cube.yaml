@@ -84,11 +84,46 @@ parameters:
 
         # --- CONTRACT (Missioni) ---
         # Missioni generiche "Patron" (es. Scorta, Trasporto VIP, Sorveglianza).
+        # --- CONTRACT (Missioni) ---
         contract:
-            base_reward_min: 1000 # Paga base minima
-            base_reward_max: 5000 # Paga base massima
-            bonus_chance: 0.3 # Probabilità di avere un bonus (30%)
-            bonus_multiplier: 0.5 # Bonus vale il 50% della reward base
+            tiers:
+                routine:
+                    min: 50000
+                    max: 200000
+                    risk: "Routine"
+                    examples: ["Courier", "Escort", "Survey", "Transport"]
+                hazardous:
+                    min: 300000
+                    max: 800000
+                    risk: "Hazardous"
+                    examples:
+                        ["Extraction", "Theft", "Security Breach", "Rescue"]
+                black_ops:
+                    min: 1000000
+                    max: 2500000
+                    risk: "Black Ops"
+                    examples:
+                        [
+                            "Assassination",
+                            "Sabotage",
+                            "Data Heist",
+                            "Covert Ops",
+                        ]
+            narrative:
+                patrons:
+                    - "Desperate Noble"
+                    - "Faceless Corp"
+                    - "Shady Fixer"
+                    - "Local Government"
+                    - "Crime Syndicate"
+                    - "Scientific Institute"
+                twists:
+                    - "Intel was wrong: Target is heavily guarded"
+                    - "Third Party interference"
+                    - "Moral Dilemma: Target is innocent"
+                    - "Time Critical: Deadline shortened"
+                    - "Double Cross: Patron leaks info"
+                    - "None"
 
         # --- SERVICE (Servizi) ---
         # Prestazioni professionali (es. Riparazioni, Training, Medical, Intrattenimento)

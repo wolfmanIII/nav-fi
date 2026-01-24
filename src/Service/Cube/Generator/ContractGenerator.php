@@ -3,13 +3,11 @@
 namespace App\Service\Cube\Generator;
 
 use App\Dto\Cube\CubeOpportunityData;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class ContractGenerator implements OpportunityGeneratorInterface
 {
     public function __construct(
-        #[Autowire('%app.cube.economy%')]
-        private readonly array $economyConfig
+        private readonly \App\Service\Cube\NarrativeService $narrative
     ) {}
 
     public function supports(string $type): bool
@@ -24,27 +22,49 @@ class ContractGenerator implements OpportunityGeneratorInterface
 
     public function generate(array $context, int $maxDist): CubeOpportunityData
     {
-        $base = mt_rand(
-            $this->economyConfig['contract']['base_reward_min'],
-            $this->economyConfig['contract']['base_reward_max']
-        );
-
-        $hasBonus = (mt_rand(1, 100) <= ($this->economyConfig['contract']['bonus_chance'] * 100));
-        if ($hasBonus) {
-            $base += ($base * $this->economyConfig['contract']['bonus_multiplier']);
+        // 1. Determina il livello (Tier) basato su un tiro casuale
+        // Probabilità: 60% Routine, 30% Hazardous, 10% Black Ops
+        $tierRoll = mt_rand(1, 100);
+        if ($tierRoll <= 60) {
+            $tierKey = 'routine';
+        } elseif ($tierRoll <= 90) {
+            $tierKey = 'hazardous';
+        } else {
+            $tierKey = 'black_ops';
         }
+
+        $tierConfig = $this->narrative->resolveTiers($tierKey);
+        $min = $tierConfig['min'] ?? 1000;
+        $max = $tierConfig['max'] ?? 5000;
+
+        $amount = mt_rand($min, $max);
+
+        // Arrotonda a cifre "pulite" (es. multipli di 500)
+        $amount = round($amount / 500) * 500;
+
+        // 2. Generazione Narrativa
+        $patron = $this->narrative->generatePatron();
+        $twist = $this->narrative->generateTwist();
+        $risk = $tierConfig['risk'] ?? 'Standard';
+
+        // Seleziona un tipo di missione esemplificativo
+        $examples = $tierConfig['examples'] ?? ['Mission'];
+        $missionType = $examples[mt_rand(0, count($examples) - 1)];
 
         return new CubeOpportunityData(
             signature: '',
             type: 'CONTRACT',
-            summary: "Patron Mission (Local)",
+            summary: "[$risk] $missionType for $patron",
             distance: 0,
-            amount: (float)$base,
+            amount: (float)$amount,
             details: [
                 'origin' => $context['origin'],
                 'destination' => 'Local/System',
-                'patron' => 'Local Corp',
-                'difficulty' => 'Standard'
+                'patron' => $patron,
+                'difficulty' => $risk,
+                'mission_type' => $missionType,
+                'twist' => $twist,
+                'tier' => $tierKey
             ]
         );
     }
