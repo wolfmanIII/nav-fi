@@ -21,12 +21,17 @@ class TheCubeEngine
      * Questo metodo è DETERMINISTICO: stessa sessione + stesso seed = stessi risultati.
      * @return \App\Dto\Cube\CubeOpportunityData[]
      */
-    public function generateBatch(BrokerSession $session, array $originSystemData, array $allSystems = [], int $count = 5): array
+    public function generateBatch(BrokerSession $session, array $originSystemData, array $allSystems = [], ?int $count = null): array
     {
         // 1. Inizializza PRNG
         $seedString = sprintf('%s_%s_%s', $session->getSeed(), $session->getSector(), $session->getOriginHex());
         $numericSeed = crc32($seedString);
         mt_srand($numericSeed);
+
+        // Determine count deterministically based on seed if not provided
+        if ($count === null) {
+            $count = mt_rand(10, 20);
+        }
 
         $results = [];
 
