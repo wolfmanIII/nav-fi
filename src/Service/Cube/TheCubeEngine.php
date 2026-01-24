@@ -9,7 +9,8 @@ class TheCubeEngine
 {
     public function __construct(
         #[Autowire('%app.cube.economy%')]
-        private readonly array $economyConfig
+        private readonly array $economyConfig,
+        private readonly \App\Service\RouteMathHelper $routeMath
     ) {}
 
     /**
@@ -38,8 +39,8 @@ class TheCubeEngine
                 // Salta se stesso
                 if ($sys['hex'] === $originHex) continue;
 
-                $dist = $this->calculateDistance($originHex, $sys['hex']);
-                if ($dist <= $maxDist && $dist > 0) {
+                $dist = $this->routeMath->distance($originHex, $sys['hex']);
+                if ($dist !== null && $dist <= $maxDist && $dist > 0) {
                     $sys['distance'] = $dist;
                     $destinations[] = $sys;
                 }
@@ -242,30 +243,5 @@ class TheCubeEngine
                 'risk_level' => 'Medium'
             ]
         );
-    }
-
-    private function calculateDistance(string $hex1, string $hex2): int
-    {
-        // Parsea "1910" -> C=19, R=10
-        $c1 = (int)substr($hex1, 0, 2);
-        $r1 = (int)substr($hex1, 2, 2);
-
-        $c2 = (int)substr($hex2, 0, 2);
-        $r2 = (int)substr($hex2, 2, 2);
-
-        // Converte in assi (q, r)
-        // Usa l'assunzione di layout verticale "odd-q" per Traveller
-        // q = col
-        // r = row - (col - (col&1)) / 2
-        $q1 = $c1;
-        $r1_axial = $r1 - floor($c1 / 2); // floor per lo sfalsamento pari/dispari? Le mappe standard spesso usano floor
-
-        $q2 = $c2;
-        $r2_axial = $r2 - floor($c2 / 2);
-
-        // Euclidea sugli assi (distanza esagonale)
-        // dist = (abs(q1 - q2) + abs(r1 - r2) + abs(q1 + r1 - q2 - r2)) / 2
-
-        return (int) ((abs($q1 - $q2) + abs($r1_axial - $r2_axial) + abs($q1 + $r1_axial - $q2 - $r2_axial)) / 2);
     }
 }
