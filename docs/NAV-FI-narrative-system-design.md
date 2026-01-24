@@ -32,7 +32,20 @@ Le Compagnie operano in zone specifiche.
 1.  Il `NarrativeService` riceve le coordinate della Sessione (Settore/Esagono).
 2.  Cerca nel DB le `Company` che operano in quel Settore.
 3.  Se trovate, le usa con priorità (50%).
-4.  Se non trovate (o per varietà), usa i Patron generici dallo YAML.
+3.  Se non trovate (o per varietà), usa i Patron generici dallo YAML.
+
+### 3.3 Coerenza Governo-Patron (Context-Aware)
+**Problema**: Alcuni Patron (es. "Colonial Governor", "Noble") non hanno senso in certi governi (es. Anarchia, Tecnocrazia).
+**Soluzione**:
+1.  Il `NarrativeService` deve analizzare il **Government Code** del sistema corrente (ottenuto dai dati del Settore).
+2.  I Patron nello YAML devono essere taggati con `required_gov` o `excluded_gov`.
+3.  **Filtro**:
+    -   *Esempio*: Se Gov = '0' (No Government), escludere Patrons con tag `authority`.
+    -   *Esempio*: Se Gov = 'D' (Religious Dictatorship), favorire Patrons con tag `religious`.
+
+**Implementazione Futura**:
+-   Aggiungere metadati `tags` alla lista Patrons in `the_cube.yaml`.
+-   Implementare logica di filtro in `NarrativeService::selectPatron`.
 
 ## 4. Implementazione Tecnica
 
