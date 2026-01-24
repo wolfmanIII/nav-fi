@@ -63,7 +63,7 @@
                         <div class="absolute -left-[29px] top-1 w-3 h-3 rounded-full bg-slate-800 border-2 border-slate-600"></div>
                         <label class="block text-[9px] uppercase tracking-widest text-slate-500 font-bold mb-1">Origin</label>
                         <div class="text-white font-mono text-sm">{{ opportunity.data.details.origin|default('Unknown') }}</div>
-                        <div class="text-[10px] text-slate-600 font-mono">{{ opportunity.session.originHex }}</div>
+                        <div class="text-[10px] text-slate-600 font-mono">HEX {{ opportunity.session.originHex }}</div>
                     </div>
                     
                     {# Destination #}

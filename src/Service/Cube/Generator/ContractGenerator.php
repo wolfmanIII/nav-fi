@@ -60,6 +60,7 @@ class ContractGenerator implements OpportunityGeneratorInterface
             details: [
                 'origin' => $context['origin'],
                 'destination' => 'Local/System',
+                'dest_hex' => $context['origin_hex'] ?? 'LOCL',
                 'patron' => $patron,
                 'difficulty' => $risk,
                 'mission_type' => $missionType,

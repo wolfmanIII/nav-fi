@@ -46,6 +46,7 @@ class PassengerGenerator implements OpportunityGeneratorInterface
             details: [
                 'origin' => $context['origin'],
                 'destination' => $context['destination'],
+                'dest_hex' => $context['dest_hex'] ?? '????',
                 'pax' => $paxCount,
                 'class' => $class,
                 'dest_dist' => $dist

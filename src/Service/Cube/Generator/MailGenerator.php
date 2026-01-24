@@ -38,6 +38,7 @@ class MailGenerator implements OpportunityGeneratorInterface
             details: [
                 'origin' => $context['origin'],
                 'destination' => $context['destination'],
+                'dest_hex' => $context['dest_hex'] ?? '????',
                 'containers' => $containers,
                 'tons' => $containers * 5,
                 'priority' => 'High'

@@ -51,13 +51,13 @@ class TheCubeEngine
         }
 
         for ($i = 0; $i < $count; $i++) {
-            $results[] = $this->generateSingle($originName, $destinations, $maxDist, $i);
+            $results[] = $this->generateSingle($originName, $originHex, $destinations, $maxDist, $i);
         }
 
         return $results;
     }
 
-    private function generateSingle(string $originName, array $destinations, int $maxDist, int $index): \App\Dto\Cube\CubeOpportunityData
+    private function generateSingle(string $originName, string $originHex, array $destinations, int $maxDist, int $index): \App\Dto\Cube\CubeOpportunityData
     {
         // Seleziona destinazione
         $destination = null;
@@ -78,6 +78,7 @@ class TheCubeEngine
         // Contesto per il payload
         $context = [
             'origin' => $originName,
+            'origin_hex' => $originHex,
             'destination' => $destName,
             'dest_hex' => $destHex,
             'distance' => $dist

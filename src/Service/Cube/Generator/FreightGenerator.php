@@ -39,6 +39,7 @@ class FreightGenerator implements OpportunityGeneratorInterface
             details: [
                 'origin' => $context['origin'],
                 'destination' => $context['destination'],
+                'dest_hex' => $context['dest_hex'] ?? '????',
                 'tons' => $tons,
                 'cargo_type' => 'General Goods',
                 'dest_dist' => $dist

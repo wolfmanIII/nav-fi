@@ -36,6 +36,7 @@ class TradeGenerator implements OpportunityGeneratorInterface
             details: [
                 'origin' => $context['origin'],
                 'destination' => 'Market',
+                'dest_hex' => $context['destination'] === 'Market' ? 'LOCL' : ($context['dest_hex'] ?? '????'),
                 'resource' => $resource,
                 'buy_price' => $buyPrice,
                 'markup_estimate' => $markup,
