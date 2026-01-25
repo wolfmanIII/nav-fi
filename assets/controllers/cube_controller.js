@@ -48,8 +48,43 @@ export default class extends Controller {
         clone.querySelector('[data-slot="summary"]').textContent = item.summary;
         clone.querySelector('[data-slot="amount"]').textContent = new Intl.NumberFormat().format(item.amount);
 
-        const details = Object.entries(item.details).map(([k, v]) => `${k}: ${v}`).join(' // ');
-        clone.querySelector('[data-slot="details"]').textContent = details;
+        // Narrative & Difficulty (New in 2.0)
+        if (item.details?.difficulty) {
+            const diffSlot = clone.querySelector('[data-slot="difficulty"]');
+            diffSlot.textContent = item.details.difficulty.toUpperCase();
+            diffSlot.classList.remove('hidden');
+
+            if (item.details.difficulty === 'Black Ops') {
+                diffSlot.classList.add('bg-rose-950', 'text-rose-500', 'border-rose-900');
+            } else if (item.details.difficulty === 'Hazardous') {
+                diffSlot.classList.add('bg-amber-950', 'text-amber-500', 'border-amber-900');
+            } else {
+                diffSlot.classList.add('bg-emerald-950', 'text-emerald-500', 'border-emerald-900');
+            }
+        }
+
+        if (item.details?.briefing) {
+            clone.querySelector('[data-slot="narrative-block"]').classList.remove('hidden');
+            const briefingSlot = clone.querySelector('[data-slot="briefing"]');
+            briefingSlot.textContent = item.details.briefing;
+            // Removed glitch-text from briefing based on user feedback "il resto lascialo normale"
+
+            if (item.details.twist && item.details.twist !== 'None') {
+                const twistSlot = clone.querySelector('[data-slot="twist"]');
+                // Use HTML to separate label from glitched content
+                twistSlot.innerHTML = `TWIST: <span class="glitch-text">${item.details.twist}</span>`;
+                twistSlot.classList.remove('hidden');
+            }
+        }
+
+        // Filter internals from the quick details view
+        const internals = ['origin', 'destination', 'dest_hex', 'dest_dist', 'difficulty', 'mission_type', 'twist', 'tier', 'briefing', 'patron', 'variables', 'start_day', 'start_year'];
+        const details = Object.entries(item.details)
+            .filter(([k]) => !internals.includes(k))
+            .map(([k, v]) => `${k.replace('_', ' ')}: ${v}`)
+            .join(' // ');
+
+        clone.querySelector('[data-slot="details"]').textContent = details || 'Standard Terms Apply';
 
         const saveBtn = clone.querySelector('[data-action="cube#save"]');
         saveBtn.dataset.payload = JSON.stringify(item);

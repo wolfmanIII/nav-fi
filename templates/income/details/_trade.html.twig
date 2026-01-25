@@ -419,4 +419,20 @@
             </div>
         </div>
     </div>
+    
+    {% if purchase_cost_form is defined and purchase_cost_form is not null %}
+    <div class="col-span-2 p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 mt-4">
+        <div class="flex items-center gap-3 mb-3">
+            <div class="p-2 rounded bg-amber-500/20 text-amber-300">
+                {% include 'icons/radar.html.twig' with { dim: 16 } %}
+            </div>
+            <div class="flex-1">
+                <h4 class="text-xs font-bold font-orbitron text-amber-100 uppercase tracking-widest">Liquidation Linkage // Purchase Reference</h4>
+                <p class="text-[10px] text-amber-300/70 font-rajdhani uppercase">Link this sale to its original purchase cost for profit margin analysis.</p>
+            </div>
+        </div>
+        {{ form_widget(purchase_cost_form) }}
+        {{ form_errors(purchase_cost_form) }}
+    </div>
+    {% endif %}
 </fieldset>

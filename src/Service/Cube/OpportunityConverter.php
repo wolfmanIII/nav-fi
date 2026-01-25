@@ -8,10 +8,6 @@ use App\Entity\Cost;
 use App\Entity\CostCategory;
 use App\Entity\Income;
 use App\Entity\IncomeCategory;
-use App\Entity\IncomeContractDetails;
-use App\Entity\IncomeFreightDetails;
-use App\Entity\IncomeMailDetails;
-use App\Entity\IncomePassengersDetails;
 use App\Repository\CompanyRepository;
 use App\Repository\CostCategoryRepository;
 use App\Repository\IncomeCategoryRepository;
@@ -113,24 +109,20 @@ class OpportunityConverter
         $category = $this->getIncomeCategory('CONTRACT');
         $income = $this->createBaseIncome($opp, $asset, $category, $overrides);
 
-        $details = new IncomeContractDetails();
-        $details->setIncome($income);
-        $income->setContractDetails($details); // Ensure bidirectional link
-
-        $details->setJobType($opp->details['mission_type'] ?? 'Mission');
-        $details->setObjective($opp->summary);
-        $details->setLocation($opp->details['origin'] ?? 'Unknown');
-
-        // Date manuali o sessione
-        $details->setStartDay($income->getSigningDay());
-        $details->setStartYear($income->getSigningYear());
+        $details = [
+            'jobType' => $opp->details['mission_type'] ?? 'Mission',
+            'objective' => $opp->summary,
+            'location' => $opp->details['origin'] ?? 'Unknown',
+            'startDay' => $income->getSigningDay(),
+            'startYear' => $income->getSigningYear(),
+        ];
 
         if (!empty($overrides['deadline_day'])) {
-            $details->setDeadlineDay((int)$overrides['deadline_day']);
-            $details->setDeadlineYear((int)($overrides['deadline_year'] ?? $income->getSigningYear()));
+            $details['deadlineDay'] = (int)$overrides['deadline_day'];
+            $details['deadlineYear'] = (int)($overrides['deadline_year'] ?? $income->getSigningYear());
         }
 
-        $this->entityManager->persist($details);
+        $income->setDetails($details);
         return $income;
     }
 
@@ -142,7 +134,7 @@ class OpportunityConverter
         $income->setIncomeCategory($category);
         $income->setTitle($opp->summary);
         $income->setAmount((string)$opp->amount);
-        $income->setStatus(Income::STATUS_SIGNED); // Firmato ma non pagato
+        $income->setStatus(Income::STATUS_SIGNED);
 
         // Location & Date from Context or Overrides
         $income->setSigningLocation($opp->details['origin'] ?? 'Unknown');
@@ -167,7 +159,6 @@ class OpportunityConverter
     {
         $category = $this->incomeCategoryRepository->findOneBy(['code' => $code]);
         if (!$category) {
-            // Fallback o creazione al volo (per ora assumiamo esistano)
             throw new \RuntimeException("Income Category '$code' not found.");
         }
         return $category;
@@ -178,19 +169,15 @@ class OpportunityConverter
         $category = $this->getIncomeCategory('FREIGHT');
         $income = $this->createBaseIncome($opp, $asset, $category, $overrides);
 
-        $details = new IncomeFreightDetails();
-        $details->setIncome($income);
-        $income->setFreightDetails($details);
-        $details->setCargoQty("{$opp->details['tons']} tons");
-        $details->setDestination($opp->details['destination'] ?? 'Unknown');
-        $details->setOrigin($opp->details['origin'] ?? 'Unknown');
-        $details->setCargoDescription($opp->details['cargo_type'] ?? 'General Goods');
+        $income->setDetails([
+            'cargoQty' => ($opp->details['tons'] ?? 0) . " tons",
+            'destination' => $opp->details['destination'] ?? 'Unknown',
+            'origin' => $opp->details['origin'] ?? 'Unknown',
+            'cargoDescription' => $opp->details['cargo_type'] ?? 'General Goods',
+            'pickupDay' => $income->getSigningDay(),
+            'pickupYear' => $income->getSigningYear(),
+        ]);
 
-        // Date manuali o sessione
-        $details->setPickupDay($income->getSigningDay());
-        $details->setPickupYear($income->getSigningYear());
-
-        $this->entityManager->persist($details);
         return $income;
     }
 
@@ -199,19 +186,15 @@ class OpportunityConverter
         $category = $this->getIncomeCategory('PASSENGERS');
         $income = $this->createBaseIncome($opp, $asset, $category, $overrides);
 
-        $details = new IncomePassengersDetails();
-        $details->setIncome($income);
-        $income->setPassengersDetails($details);
-        $details->setQty($opp->details['pax'] ?? 0);
-        $details->setClassOrBerth($opp->details['class'] ?? 'Standard');
-        $details->setDestination($opp->details['destination'] ?? 'Unknown');
-        $details->setOrigin($opp->details['origin'] ?? 'Unknown');
+        $income->setDetails([
+            'qty' => $opp->details['pax'] ?? 0,
+            'classOrBerth' => $opp->details['class'] ?? 'Standard',
+            'destination' => $opp->details['destination'] ?? 'Unknown',
+            'origin' => $opp->details['origin'] ?? 'Unknown',
+            'departureDay' => $income->getSigningDay(),
+            'departureYear' => $income->getSigningYear(),
+        ]);
 
-        // Date manuali o sessione
-        $details->setDepartureDay($income->getSigningDay());
-        $details->setDepartureYear($income->getSigningYear());
-
-        $this->entityManager->persist($details);
         return $income;
     }
 
@@ -220,20 +203,16 @@ class OpportunityConverter
         $category = $this->getIncomeCategory('MAIL');
         $income = $this->createBaseIncome($opp, $asset, $category, $overrides);
 
-        $details = new IncomeMailDetails();
-        $details->setIncome($income);
-        $income->setMailDetails($details);
-        $details->setPackageCount($opp->details['containers'] ?? 0);
-        $details->setTotalMass((string)($opp->details['tons'] ?? 0));
-        $details->setDestination($opp->details['destination'] ?? 'Unknown');
-        $details->setOrigin($opp->details['origin'] ?? 'Unknown');
-        $details->setMailType('Official Priority');
+        $income->setDetails([
+            'packageCount' => $opp->details['containers'] ?? 0,
+            'totalMass' => (string)($opp->details['tons'] ?? 0),
+            'destination' => $opp->details['destination'] ?? 'Unknown',
+            'origin' => $opp->details['origin'] ?? 'Unknown',
+            'mailType' => 'Official Priority',
+            'dispatchDay' => $income->getSigningDay(),
+            'dispatchYear' => $income->getSigningYear(),
+        ]);
 
-        // Date manuali o sessione
-        $details->setDispatchDay($income->getSigningDay());
-        $details->setDispatchYear($income->getSigningYear());
-
-        $this->entityManager->persist($details);
         return $income;
     }
 }

@@ -145,9 +145,10 @@
                             {% endif %}
                             
                             {% if opportunity.data.details.twist is defined and opportunity.data.details.twist != 'None' %}
-                                <div class="mt-3 p-3 bg-rose-500/10 border border-rose-500/20 rounded text-xs text-rose-400 font-mono">
-                                    <strong class="text-rose-500 uppercase tracking-widest mr-2">Inte-lligence Update:</strong>
-                                    {{ opportunity.data.details.twist }}
+                                <div class="mt-3 p-3 bg-rose-500/10 border border-rose-500/20 rounded text-xs text-rose-400 font-mono relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-rose-500/5 animate-pulse pointer-events-none"></div>
+                                    <strong class="text-rose-500 uppercase tracking-widest mr-2 glitch-text relative z-10">Intelligence Update:</strong>
+                                    <span class="relative z-10 glitch-text">{{ opportunity.data.details.twist }}</span>
                                 </div>
                             {% endif %}
                         </div>
@@ -155,7 +156,7 @@
                         {# Dynamic Details Grid #}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-xs relative z-10">
                             {% for key, value in opportunity.data.details %}
-                                {% if key not in ['origin', 'destination', 'dest_hex', 'dest_dist', 'difficulty', 'mission_type', 'twist', 'tier', 'briefing', 'patron', 'company_id'] %}
+                                {% if key not in ['origin', 'destination', 'dest_hex', 'dest_dist', 'difficulty', 'mission_type', 'twist', 'tier', 'briefing', 'patron', 'company_id', 'variables'] %}
                                     <div class="flex items-baseline justify-between border-b border-dashed border-slate-800 pb-1">
                                         <span class="text-slate-500 uppercase tracking-wider text-[10px]">{{ key|replace({'_': ' '}) }}</span>
                                         <span class="text-cyan-100 font-bold text-right">
@@ -182,9 +183,9 @@
 
         {# FOOTER ACTIONS #}
         <div class="bg-slate-950/80 border-t border-slate-800 p-6 flex justify-between items-center relative z-10 backdrop-blur-sm">
-            <button class="btn btn-outline border-slate-700 text-slate-500 hover:text-rose-500 hover:border-rose-500/50 hover:bg-rose-950/20 uppercase font-orbitron text-[10px] tracking-widest transition-all" data-action="cube#unsave" data-cube-id-param="{{ opportunity.id }}">
-                <i class="lucide-trash-2 w-3 h-3 mr-2"></i> Purge Data
-            </button>
+            <a href="{{ path('app_cube_index', {session_id: opportunity.session.id}) }}" class="btn btn-outline border-slate-700 text-slate-500 hover:text-cyan-400 hover:border-cyan-500/50 uppercase font-orbitron text-[10px] tracking-widest group">
+                <span class="group-hover:-translate-x-1 transition-transform mr-2">&larr;</span> Return
+            </a>
 
             <div class="flex gap-3">
                 {% if opportunity.status != 'CONVERTED' %}

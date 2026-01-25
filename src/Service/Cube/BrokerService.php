@@ -13,6 +13,7 @@ class BrokerService
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly BrokerSessionRepository $sessionRepo,
+        private readonly \App\Repository\CostCategoryRepository $costCategoryRepo,
         private readonly TheCubeEngine $engine,
         private readonly OpportunityConverter $converter
     ) {}
@@ -68,13 +69,17 @@ class BrokerService
         // 1. Converti in DTO per passare i dati puliti
         $dto = \App\Dto\Cube\CubeOpportunityData::fromArray($opportunity->getData());
 
-        // 2. Chiama il converter
+        // 2. Chiama il converter per generare l'Income (speculativo o reale) OPPURE il Costo (Trade)
         $financialEntity = $this->converter->convert($dto, $asset, $overrides);
 
-        // 3. Aggiorna stato opportunità
-        $opportunity->setStatus('CONVERTED'); // TODO: Add constant to entity
+        // 3. I Trade vengono gestiti direttamente dal converter come Cost
+        //    I Contratti vengono gestiti come Income
+        //    La duplicazione della logica è stata rimossa.
 
-        // 4. Salva tutto in una transazione (gestita dall'EM flush)
+        // 4. Aggiorna stato opportunità
+        $opportunity->setStatus('CONVERTED');
+
+        // 5. Salva tutto
         $this->em->flush();
 
         return $financialEntity;

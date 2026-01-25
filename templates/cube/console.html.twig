@@ -120,6 +120,7 @@
             <div class="flex justify-between items-start mb-3">
                 <div class="flex items-center gap-2">
                     <span class="px-2 py-0.5 rounded text-[10px] font-bold font-mono uppercase tracking-wider bg-slate-900 border border-slate-700 text-slate-300" data-slot="type">TYPE</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold font-mono uppercase tracking-wider hidden" data-slot="difficulty"></span>
                     <span class="text-[10px] font-mono text-cyan-400" data-slot="dist">2 PC</span>
                 </div>
                 <div class="text-right leading-none">
@@ -129,7 +130,14 @@
             </div>
             
             <h3 class="font-bold text-sm text-white uppercase font-rajdhani tracking-wide mb-2" data-slot="summary">Summary</h3>
-            <div class="text-xs text-slate-500 font-mono border-t border-slate-800 pt-2" data-slot="details">Details...</div>
+            
+            <!-- Narrative Block (New) -->
+            <div class="space-y-2 mb-3 hidden" data-slot="narrative-block">
+                <div class="text-[11px] text-cyan-100/80 font-mono italic leading-relaxed border-l-2 border-cyan-500/30 pl-2 py-1 bg-cyan-500/5 rounded-r" data-slot="briefing"></div>
+                <div class="text-[10px] text-rose-400 font-mono font-bold bg-rose-500/10 px-2 py-1 rounded border border-rose-500/20 hidden" data-slot="twist"></div>
+            </div>
+
+            <div class="text-[10px] text-slate-500 font-mono border-t border-slate-800 pt-2 line-clamp-1" data-slot="details">Details...</div>
             
             <div class="flex justify-end gap-2 mt-4 pt-2">
                 <button class="px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-rose-400 hover:bg-rose-950/30 transition-colors" data-action="cube#discard">

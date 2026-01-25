@@ -9,11 +9,6 @@ use App\Entity\Cost;
 use App\Entity\Income;
 use App\Entity\IncomeCategory;
 use App\Entity\CostCategory;
-use App\Entity\IncomeFreightDetails;
-use App\Entity\IncomePassengersDetails;
-use App\Entity\IncomeMailDetails;
-use App\Entity\IncomeContractDetails;
-use App\Entity\IncomeTradeDetails;
 use App\Service\Cube\BrokerService;
 use App\Dto\Cube\CubeOpportunityData;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -118,12 +113,12 @@ class ComprehensiveWorkflowTest extends KernelTestCase
         $this->assertEquals(15, $income->getSigningDay());
         $this->assertEquals(12000, $income->getAmount());
 
-        $details = $income->getFreightDetails();
-        $this->assertNotNull($details);
-        $this->assertEquals(15, $details->getPickupDay());
-        $this->assertEquals('Industrial Parts', $details->getCargoDescription());
-        $this->assertEquals('Regina', $details->getDestination());
-        $this->assertEquals('Mora', $details->getOrigin());
+        $details = $income->getDetails();
+        $this->assertIsArray($details);
+        $this->assertEquals(15, $details['pickupDay']);
+        $this->assertEquals('Industrial Parts', $details['cargoDescription']);
+        $this->assertEquals('Regina', $details['destination']);
+        $this->assertEquals('Mora', $details['origin']);
     }
 
     public function testPassengerConversionWithDateOverride(): void
@@ -154,10 +149,10 @@ class ComprehensiveWorkflowTest extends KernelTestCase
         $this->assertInstanceOf(Income::class, $income);
         $this->assertEquals(12, $income->getSigningDay());
 
-        $details = $income->getPassengersDetails();
-        $this->assertNotNull($details);
-        $this->assertEquals(6, $details->getQty());
-        $this->assertEquals(12, $details->getDepartureDay());
+        $details = $income->getDetails();
+        $this->assertIsArray($details);
+        $this->assertEquals(6, $details['qty']);
+        $this->assertEquals(12, $details['departureDay']);
     }
 
     public function testMailConversionWithDateOverride(): void
@@ -186,10 +181,10 @@ class ComprehensiveWorkflowTest extends KernelTestCase
         ]);
 
         $this->assertInstanceOf(Income::class, $income);
-        $details = $income->getMailDetails();
-        $this->assertNotNull($details);
-        $this->assertEquals(11, $details->getDispatchDay());
-        $this->assertEquals('Official Priority', $details->getMailType());
+        $details = $income->getDetails();
+        $this->assertIsArray($details);
+        $this->assertEquals(11, $details['dispatchDay']);
+        $this->assertEquals('Official Priority', $details['mailType']);
     }
 
     public function testContractConversionWithDeadline(): void
@@ -218,10 +213,10 @@ class ComprehensiveWorkflowTest extends KernelTestCase
         ]);
 
         $this->assertInstanceOf(Income::class, $income);
-        $details = $income->getContractDetails();
-        $this->assertNotNull($details);
-        $this->assertEquals(20, $details->getStartDay());
-        $this->assertEquals(30, $details->getDeadlineDay());
+        $details = $income->getDetails();
+        $this->assertIsArray($details);
+        $this->assertEquals(20, $details['startDay']);
+        $this->assertEquals(30, $details['deadlineDay']);
     }
 
     public function testFullTradeLifecycle(): void
@@ -262,17 +257,15 @@ class ComprehensiveWorkflowTest extends KernelTestCase
         $income->setAmount('45000');
         $income->setSigningDay(18);
         $income->setSigningYear(1105);
+        $income->setPurchaseCost($cost);
 
-        $details = new IncomeTradeDetails();
-        $details->setIncome($income);
-        $details->setPurchaseCost($cost);
-        $details->setQty(20);
-        $details->setGoodsDescription('Textiles');
-        $details->setUnitPrice('2250');
+        $income->setDetails([
+            'qty' => 20,
+            'goodsDescription' => 'Textiles',
+            'unitPrice' => '2250'
+        ]);
 
-        $income->setTradeDetails($details);
         $this->em->persist($income);
-        $this->em->persist($details);
 
         // Mark as Sold (using regular persist to avoid full manager complexity here)
         $cost->setDetailItems([['description' => 'Textiles', 'quantity' => 20, 'sold' => true]]);
@@ -284,6 +277,6 @@ class ComprehensiveWorkflowTest extends KernelTestCase
         $this->assertCount(0, $unsoldAfter, "Cargo should be removed from unsold list");
 
         $this->assertEquals(45000, $income->getAmount());
-        $this->assertEquals($cost->getId(), $income->getTradeDetails()->getPurchaseCost()->getId());
+        $this->assertEquals($cost->getId(), $income->getPurchaseCost()->getId());
     }
 }

@@ -97,12 +97,13 @@ class CostRepository extends ServiceEntityRepository
     }
     public function findUnsoldTradeGoods(User $user): array
     {
+        // Cerchiamo i costi TRADE che non sono ancora stati collegati a un Income (liquidazione)
         return $this->createQueryBuilder('c')
             ->join('c.costCategory', 'cat')
-            ->leftJoin('App\Entity\IncomeTradeDetails', 'itd', 'WITH', 'itd.purchaseCost = c')
+            ->leftJoin('App\Entity\Income', 'inc', 'WITH', 'inc.purchaseCost = c')
             ->andWhere('c.user = :user')
             ->andWhere('cat.code = :tradeCode')
-            ->andWhere('itd.id IS NULL')
+            ->andWhere('inc.id IS NULL')
             ->setParameter('user', $user)
             ->setParameter('tradeCode', 'TRADE')
             ->orderBy('c.paymentYear', 'DESC')

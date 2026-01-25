@@ -26,23 +26,7 @@ final class IncomeController extends BaseController
         private readonly \App\Service\IncomePlaceholderService $incomePlaceholderService
     ) {}
 
-    /**
-     * @var array<string, string>
-     */
-    private const DETAIL_FIELDS = [
-        'CHARTER' => 'charterDetails',
-        'SUBSIDY' => 'subsidyDetails',
-        'FREIGHT' => 'freightDetails',
-        'PASSENGERS' => 'passengersDetails',
-        'SERVICES' => 'servicesDetails',
-        'INSURANCE' => 'insuranceDetails',
-        'MAIL' => 'mailDetails',
-        'INTEREST' => 'interestDetails',
-        'TRADE' => 'tradeDetails',
-        'SALVAGE' => 'salvageDetails',
-        'PRIZE' => 'prizeDetails',
-        'CONTRACT' => 'contractDetails',
-    ];
+    // Rimosso DETAIL_FIELDS: i dettagli sono ora unificati nella colonna JSON 'details'.
 
     #[Route('/income/index', name: 'app_income_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $em, ListViewHelper $listViewHelper): Response
@@ -238,30 +222,19 @@ final class IncomeController extends BaseController
         ]);
     }
 
+    /**
+     * Pulisce i dettagli se la categoria è cambiata, per evitare residui JSON incoerenti.
+     */
     private function clearUnusedDetails(Income $income, EntityManagerInterface $em): void
     {
-        $currentCode = $income->getIncomeCategory()?->getCode();
-        if (!$currentCode) {
-            return;
-        }
+        // Se stiamo usando JSONb, il controllo è più semplice: 
+        // Se la categoria cambia radicalmente, azzeriamo l'array details.
+        // In questo scenario, la form ripopolerà l'array details con i nuovi dati.
 
-        foreach (self::DETAIL_FIELDS as $code => $property) {
-            if ($code === $currentCode) {
-                continue;
-            }
-
-            $getter = 'get' . ucfirst($property);
-            $setter = 'set' . ucfirst($property);
-
-            if (!method_exists($income, $getter) || !method_exists($income, $setter)) {
-                continue;
-            }
-
-            $detail = $income->$getter();
-            if ($detail) {
-                $em->remove($detail);
-                $income->$setter(null);
-            }
+        // Nota: Il subscriber e la form gestiscono gran parte della logica.
+        // Qui ci assicuriamo solo che relazioni come purchaseCost vengano resettate se non più pertinenti.
+        if ($income->getIncomeCategory()?->getCode() !== 'TRADE') {
+            $income->setPurchaseCost(null);
         }
     }
 }

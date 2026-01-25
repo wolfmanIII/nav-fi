@@ -32,10 +32,82 @@ class ContractFieldConfig
     ];
 
     /**
-     * Mappa categoria → elenco campi opzionali aggiuntivi (nomi form).
-     *
-     * @var array<string, string[]>
+     * Tipi di dato per il casting automatico nel modello ed eventualmente nel form.
      */
+    private array $fieldTypes = [
+        // Interi
+        'qty' => 'int',
+        'pax' => 'int',
+        'packageCount' => 'int',
+        'startDay' => 'int',
+        'startYear' => 'int',
+        'endDay' => 'int',
+        'endYear' => 'int',
+        'pickupDay' => 'int',
+        'pickupYear' => 'int',
+        'deliveryDay' => 'int',
+        'deliveryYear' => 'int',
+        'deliveryProofDay' => 'int',
+        'deliveryProofYear' => 'int',
+        'departureDay' => 'int',
+        'departureYear' => 'int',
+        'arrivalDay' => 'int',
+        'arrivalYear' => 'int',
+        'dispatchDay' => 'int',
+        'dispatchYear' => 'int',
+        'incidentDay' => 'int',
+        'incidentYear' => 'int',
+        'deadlineDay' => 'int',
+        'deadlineYear' => 'int',
+
+        // Valuta / Decimali (mantentuti come stringhe per BC Math)
+        'amount' => 'money',
+        'unitPrice' => 'money',
+        'deposit' => 'money',
+        'bonus' => 'money',
+        'subsidyAmount' => 'money',
+        'estimatedValue' => 'money',
+        'declaredValue' => 'money',
+        'liabilityLimit' => 'money',
+        'principal' => 'money',
+        'interestRate' => 'money',
+        'interestEarned' => 'money',
+        'netPaid' => 'money',
+        'verifiedLoss' => 'money',
+        'deductible' => 'money',
+        'qtyValue' => 'money',
+
+        // Testo lungo
+        'note' => 'longtext',
+        'summary' => 'longtext',
+        'policy' => 'longtext',
+        'terms' => 'longtext',
+        'requirements' => 'longtext',
+        'description' => 'longtext',
+        'objective' => 'longtext',
+        'workSummary' => 'longtext',
+        'partsMaterials' => 'longtext',
+        'risks' => 'longtext',
+        'hazards' => 'longtext',
+        'recoveredItemsSummary' => 'longtext',
+        'legalBasis' => 'longtext',
+        'warrantyText' => 'longtext',
+        'claimWindow' => 'longtext',
+        'returnPolicy' => 'longtext',
+        'manifestSummary' => 'longtext',
+        'milestones' => 'longtext',
+        'reportingRequirements' => 'longtext',
+        'nonComplianceTerms' => 'longtext',
+        'proofRequirements' => 'longtext',
+        'cancellationTerms' => 'longtext',
+        'failureTerms' => 'longtext',
+        'paymentTerms' => 'longtext',
+        'expensesPolicy' => 'longtext',
+        'restrictions' => 'longtext',
+        'confidentialityLevel' => 'longtext',
+        'batchIds' => 'longtext',
+    ];
+
     private array $optionalFields = [
         'CHARTER' => [
             'areaOrRoute',
@@ -220,6 +292,7 @@ class ContractFieldConfig
             'warrantyText',
             'claimWindow',
             'returnPolicy',
+            'purchaseCost',
         ],
     ];
 
@@ -309,6 +382,24 @@ class ContractFieldConfig
         }
 
         return $this->placeholders[$categoryCode] ?? [];
+    }
+
+    /**
+     * Restituisce la mappa completa dei tipi di campo.
+     *
+     * @return array<string, string>
+     */
+    public function getFieldTypes(): array
+    {
+        return $this->fieldTypes;
+    }
+
+    /**
+     * Restituisce il tipo di un singolo campo (string di default).
+     */
+    public function getFieldType(string $fieldName): string
+    {
+        return $this->fieldTypes[$fieldName] ?? 'string';
     }
 
     /**

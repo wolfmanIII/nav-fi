@@ -25,8 +25,18 @@ class TradeGenerator implements OpportunityGeneratorInterface
         $resources = ['Radioactives', 'Metals', 'Crystals', 'Luxuries', 'Electronics', 'Pharmaceuticals', 'Industrial Machinery'];
         $resource = $resources[mt_rand(0, count($resources) - 1)];
 
-        // Quantity (Tons)
-        $tons = mt_rand(5, 50) * 10; // 50 to 500 tons
+        // Quantity (Tons) with Weighted Distribution
+        $sizeRoll = mt_rand(1, 100);
+        if ($sizeRoll <= 50) {
+            // Small: 5-20 tons
+            $tons = mt_rand(5, 20);
+        } elseif ($sizeRoll <= 85) {
+            // Medium: 25-80 tons
+            $tons = mt_rand(25, 80);
+        } else {
+            // Large: 100-500 tons
+            $tons = mt_rand(10, 50) * 10;
+        }
 
         // Pricing
         $basePrice = mt_rand(1000, 5000); // Per Ton

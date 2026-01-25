@@ -219,18 +219,13 @@
 
 
         <turbo-frame id="income-details-frame">
-        {% if form.charterDetails is defined %}{% include 'income/details/_charter.html.twig' with { detail_form: form.charterDetails } %}{% endif %}
-        {% if form.subsidyDetails is defined %}{% include 'income/details/_subsidy.html.twig' with { detail_form: form.subsidyDetails } %}{% endif %}
-        {% if form.freightDetails is defined %}{% include 'income/details/_freight.html.twig' with { detail_form: form.freightDetails } %}{% endif %}
-        {% if form.passengersDetails is defined %}{% include 'income/details/_passengers.html.twig' with { detail_form: form.passengersDetails } %}{% endif %}
-        {% if form.servicesDetails is defined %}{% include 'income/details/_services.html.twig' with { detail_form: form.servicesDetails } %}{% endif %}
-        {% if form.insuranceDetails is defined %}{% include 'income/details/_insurance.html.twig' with { detail_form: form.insuranceDetails } %}{% endif %}
-        {% if form.mailDetails is defined %}{% include 'income/details/_mail.html.twig' with { detail_form: form.mailDetails } %}{% endif %}
-        {% if form.interestDetails is defined %}{% include 'income/details/_interest.html.twig' with { detail_form: form.interestDetails } %}{% endif %}
-        {% if form.tradeDetails is defined %}{% include 'income/details/_trade.html.twig' with { detail_form: form.tradeDetails } %}{% endif %}
-        {% if form.salvageDetails is defined %}{% include 'income/details/_salvage.html.twig' with { detail_form: form.salvageDetails } %}{% endif %}
-        {% if form.prizeDetails is defined %}{% include 'income/details/_prize.html.twig' with { detail_form: form.prizeDetails } %}{% endif %}
-        {% if form.contractDetails is defined %}{% include 'income/details/_contract.html.twig' with { detail_form: form.contractDetails } %}{% endif %}
+            {% set category = income.incomeCategory.code ?? null %}
+            {% if category %}
+                {% include 'income/details/_' ~ category|lower ~ '.html.twig' with { 
+                    detail_form: form.details, 
+                    purchase_cost_form: form.purchaseCost ?? null 
+                } %}
+            {% endif %}
         </turbo-frame>
 
         <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-8 relative">

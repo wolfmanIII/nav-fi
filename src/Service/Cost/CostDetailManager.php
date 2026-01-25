@@ -2,7 +2,7 @@
 
 namespace App\Service\Cost;
 
-use App\DTO\CostDetailItem;
+use App\Dto\CostDetailItem;
 use App\Entity\Cost;
 use Doctrine\ORM\EntityManagerInterface;
 

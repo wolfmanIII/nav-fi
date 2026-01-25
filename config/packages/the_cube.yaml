@@ -91,92 +91,107 @@ parameters:
                     min: 50000
                     max: 200000
                     risk: "Routine"
-                    examples: ["Courier", "Escort", "Survey", "Transport"]
                 hazardous:
                     min: 300000
                     max: 800000
                     risk: "Hazardous"
-                    examples:
-                        ["Extraction", "Theft", "Security Breach", "Rescue"]
                 black_ops:
                     min: 1000000
-                    max: 2500000
+                    max: 3500000
                     risk: "Black Ops"
-                    examples:
-                        [
-                            "Assassination",
-                            "Sabotage",
-                            "Data Heist",
-                            "Covert Ops",
-                        ]
             narrative:
                 patrons:
-                    - "Desperate Noble"
-                    - "Faceless Corp"
-                    - "Shady Fixer"
-                    - "Local Government"
-                    - "Crime Syndicate"
-                    - "Scientific Institute"
-                    - "Retired Admiral"
-                    - "Free Trader Captain"
-                    - "Mercenary Broker"
-                    - "Colonial Governor"
-                    - "Intelligence Agent"
-                    - "Rebel Leader"
-                    - "Mining Guild Rep"
-                    - "Archaeologist"
-                    - "Smuggler Contact"
+                    - {
+                          name: "Desperate Noble",
+                          type: "Noble",
+                          archetypes: ["HEIST", "ESCORT"],
+                      }
+                    - {
+                          name: "Faceless Corp",
+                          type: "Corporate",
+                          archetypes: ["DATA_HEIST", "SABOTAGE"],
+                      }
+                    - {
+                          name: "Shady Fixer",
+                          type: "Underworld",
+                          archetypes: ["SMUGGLING", "EXTRACTION"],
+                      }
+                    - {
+                          name: "Local Government",
+                          type: "Official",
+                          archetypes: ["SURVEY", "RESCUE"],
+                      }
+                archetypes:
+                    HEIST:
+                        summary: "Infiltrate and recover %%target%% from %%site%%"
+                        variables:
+                            target:
+                                [
+                                    "encrypted data cores",
+                                    "prototype weapon",
+                                    "ancient artifact",
+                                ]
+                            site:
+                                [
+                                    "Security Vault",
+                                    "Corporate Lab",
+                                    "Private Estate",
+                                ]
+                    EXTRACTION:
+                        summary: "Locate and extract %%target%% from %%site%%"
+                        variables:
+                            target:
+                                [
+                                    "a political defector",
+                                    "a captured spy",
+                                    "a cryo-frozen VIP",
+                                ]
+                            site:
+                                [
+                                    "Underground Bunker",
+                                    "Research Station",
+                                    "Military Outpost",
+                                ]
+                    DATA_HEIST:
+                        summary: "Steal sensitive data from %%site%% servers"
+                        variables:
+                            site:
+                                [
+                                    "Central Archive",
+                                    "Communication Hub",
+                                    "Mainframe Core",
+                                ]
+                    SMUGGLING:
+                        summary: "Bypass security to deliver %%target%% to %%site%%"
+                        variables:
+                            target:
+                                [
+                                    "contraband luxury goods",
+                                    "medical supplies",
+                                    "illegal isotopes",
+                                ]
+                            site: ["Hidden Port", "Black Market", "Secret Base"]
                 locations:
                     - "Smoky Starport Bar"
                     - "High-Orbit Yacht"
                     - "Abandoned Mining Outpost"
-                    - "Security Checkpoint"
-                    - "Virtual Reality Lounge"
-                    - "Cargo Bay 94"
-                    - "Planetary Governor's Estate"
-                    - "Underground Bunker"
                     - "Orbital Casino"
-                    - "Research Station Lab"
                 time_constraints:
                     - "Before the inspector arrives"
                     - "Before the solar flare hits"
-                    - "Before the gate closes"
                     - "Before rivals intercept"
                     - "Within 24 standard hours"
-                    - "Before the credits expire"
-                    - "While the guards are distracted"
-                    - "Before the ship departs"
                 opposition:
                     - "Local Pirates"
-                    - "Corrupt Customs Officials"
                     - "Corporate Security"
-                    - "Rival Mercenaries"
                     - "Automated Drones"
                     - "Bounty Hunters"
-                    - "Local Militia"
-                    - "Syndicate Enforcers"
-                targets:
-                    - "a prototype weapon"
-                    - "encrypted data cores"
-                    - "a political defector"
-                    - "contraband luxury goods"
-                    - "an ancient artifact"
-                    - "a cryo-frozen VIP"
-                    - "evidence of corruption"
-                    - "medical supplies"
-                    - "a captured spy"
-                    - "hazardous waste"
                 twists:
                     - "Intel was wrong: Target is heavily guarded"
                     - "Third Party interference"
                     - "Moral Dilemma: Target is innocent"
-                    - "Time Critical: Deadline shortened"
                     - "Double Cross: Patron leaks info"
                     - "None"
-                    - "Cargo is contraband"
-                    - "Target is a double agent"
-                    - "Patron is being watched"
-                    - "Local war breaks out"
 
         # --- SERVICE (Servizi) ---
         # Prestazioni professionali (es. Riparazioni, Training, Medical, Intrattenimento)

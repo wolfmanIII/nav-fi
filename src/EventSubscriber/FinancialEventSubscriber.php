@@ -104,19 +104,18 @@ class FinancialEventSubscriber
         $asset = $income->getAsset();
         if (!$asset) return;
 
-        // 1. Calcola deposito (anticipo) da contratto e charter
+        // 1. Calcola deposito (se presente nelle categorie CONTRACT o CHARTER)
         $deposit = '0.00';
-        if ($income->getContractDetails()) {
-            $deposit = bcadd($deposit, $income->getContractDetails()->getDeposit() ?? '0.00', 2);
-        }
-        if ($income->getCharterDetails()) {
-            $deposit = bcadd($deposit, $income->getCharterDetails()->getDeposit() ?? '0.00', 2);
+        $details = $income->getDetails();
+
+        if (isset($details['deposit'])) {
+            $deposit = bcadd($deposit, (string)$details['deposit'], 2);
         }
 
         // 2. Calcola bonus (aggiunto al pagamento finale) dal contratto
         $bonus = '0.00';
-        if ($income->getContractDetails()) {
-            $bonus = bcadd($bonus, $income->getContractDetails()->getBonus() ?? '0.00', 2);
+        if (isset($details['bonus'])) {
+            $bonus = bcadd($bonus, (string)$details['bonus'], 2);
         }
 
         // Helper per persistere in sicurezza

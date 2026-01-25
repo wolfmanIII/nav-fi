@@ -3,32 +3,12 @@
 namespace App\Form\EventSubscriber;
 
 use App\Entity\Income;
-use App\Entity\IncomeCharterDetails;
-use App\Entity\IncomeContractDetails;
-use App\Entity\IncomeFreightDetails;
-use App\Entity\IncomeInsuranceDetails;
-use App\Entity\IncomeInterestDetails;
-use App\Entity\IncomeMailDetails;
-use App\Entity\IncomePassengersDetails;
-use App\Entity\IncomePrizeDetails;
-use App\Entity\IncomeSalvageDetails;
-use App\Entity\IncomeServicesDetails;
-use App\Entity\IncomeSubsidyDetails;
-use App\Entity\IncomeTradeDetails;
-use App\Form\Type\IncomeCharterDetailsType;
-use App\Form\Type\IncomeContractDetailsType;
-use App\Form\Type\IncomeFreightDetailsType;
-use App\Form\Type\IncomeInsuranceDetailsType;
-use App\Form\Type\IncomeInterestDetailsType;
-use App\Form\Type\IncomeMailDetailsType;
-use App\Form\Type\IncomePassengersDetailsType;
-use App\Form\Type\IncomePrizeDetailsType;
-use App\Form\Type\IncomeSalvageDetailsType;
-use App\Form\Type\IncomeServicesDetailsType;
-use App\Form\Type\IncomeSubsidyDetailsType;
-use App\Form\Type\IncomeTradeDetailsType;
+use App\Entity\Cost;
+use App\Form\Type\IncomeDetailsType;
 use App\Repository\IncomeCategoryRepository;
+use App\Repository\CostRepository;
 use App\Service\ContractFieldConfig;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -36,32 +16,11 @@ use Symfony\Component\Form\FormInterface;
 
 class IncomeDetailsSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var array<string, array{property: string, type: string, class: string}>
-     */
-    private const DETAIL_FORMS = [
-        'CHARTER' => ['property' => 'charterDetails', 'type' => IncomeCharterDetailsType::class, 'class' => IncomeCharterDetails::class],
-        'SUBSIDY' => ['property' => 'subsidyDetails', 'type' => IncomeSubsidyDetailsType::class, 'class' => IncomeSubsidyDetails::class],
-        'FREIGHT' => ['property' => 'freightDetails', 'type' => IncomeFreightDetailsType::class, 'class' => IncomeFreightDetails::class],
-        'PASSENGERS' => ['property' => 'passengersDetails', 'type' => IncomePassengersDetailsType::class, 'class' => IncomePassengersDetails::class],
-        'SERVICES' => ['property' => 'servicesDetails', 'type' => IncomeServicesDetailsType::class, 'class' => IncomeServicesDetails::class],
-        'INSURANCE' => ['property' => 'insuranceDetails', 'type' => IncomeInsuranceDetailsType::class, 'class' => IncomeInsuranceDetails::class],
-        'MAIL' => ['property' => 'mailDetails', 'type' => IncomeMailDetailsType::class, 'class' => IncomeMailDetails::class],
-        'INTEREST' => ['property' => 'interestDetails', 'type' => IncomeInterestDetailsType::class, 'class' => IncomeInterestDetails::class],
-        'TRADE' => ['property' => 'tradeDetails', 'type' => IncomeTradeDetailsType::class, 'class' => IncomeTradeDetails::class],
-        'SALVAGE' => ['property' => 'salvageDetails', 'type' => IncomeSalvageDetailsType::class, 'class' => IncomeSalvageDetails::class],
-        'PRIZE' => ['property' => 'prizeDetails', 'type' => IncomePrizeDetailsType::class, 'class' => IncomePrizeDetails::class],
-        'CONTRACT' => ['property' => 'contractDetails', 'type' => IncomeContractDetailsType::class, 'class' => IncomeContractDetails::class],
-    ];
-
     public function __construct(
         private readonly IncomeCategoryRepository $incomeCategoryRepository,
         private readonly ContractFieldConfig $contractFieldConfig,
     ) {}
 
-    /**
-     * @return array<string, string>
-     */
     public static function getSubscribedEvents(): array
     {
         return [
@@ -82,7 +41,6 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->ensureDetailInstance($income, $code);
         $campaignStartYear = $income->getAsset()?->getCampaign()?->getStartingYear();
         $this->addDetailField($event->getForm(), $code, $campaignStartYear);
     }
@@ -102,7 +60,6 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
         $income = $event->getForm()->getData();
         $campaignStartYear = null;
         if ($income instanceof Income) {
-            $this->ensureDetailInstance($income, $code);
             $campaignStartYear = $income->getAsset()?->getCampaign()?->getStartingYear();
         }
 
@@ -120,54 +77,57 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
         return $category?->getCode();
     }
 
-    private function ensureDetailInstance(Income $income, string $code): void
-    {
-        if (!isset(self::DETAIL_FORMS[$code])) {
-            return;
-        }
-
-        $config = self::DETAIL_FORMS[$code];
-        $property = $config['property'];
-        $getter = 'get' . ucfirst($property);
-        $setter = 'set' . ucfirst($property);
-
-        if (!method_exists($income, $getter) || !method_exists($income, $setter)) {
-            return;
-        }
-
-        $detail = $income->$getter();
-        if (!$detail) {
-            $class = $config['class'];
-            $detail = new $class();
-            if (method_exists($detail, 'setIncome')) {
-                $detail->setIncome($income);
-            }
-            $income->$setter($detail);
-            return;
-        }
-
-        if (method_exists($detail, 'setIncome') && $detail->getIncome() !== $income) {
-            $detail->setIncome($income);
-        }
-    }
-
+    /**
+     * Aggiunge il campo 'details' alla form utilizzando il tipo dinamico IncomeDetailsType.
+     * Gestisce anche il campo speciale 'purchaseCost' per la categoria TRADE.
+     */
     private function addDetailField(FormInterface $form, string $code, ?int $campaignStartYear): void
     {
-        if (!isset(self::DETAIL_FORMS[$code])) {
-            return;
+        // Pulizia campi precedenti per evitare conflitti durante il cambio categoria AJAX
+        if ($form->has('details')) {
+            $form->remove('details');
+        }
+        if ($form->has('purchaseCost')) {
+            $form->remove('purchaseCost');
         }
 
-        $config = self::DETAIL_FORMS[$code];
-        if ($form->has($config['property'])) {
-            return;
-        }
-
-        $form->add($config['property'], $config['type'], [
+        // Aggiunta del blocco JSON dinamico
+        $form->add('details', IncomeDetailsType::class, [
             'required' => false,
             'label' => false,
             'campaign_start_year' => $campaignStartYear,
             'enabled_fields' => $this->contractFieldConfig->getOptionalFields($code),
             'field_placeholders' => $this->contractFieldConfig->getPlaceholders($code),
         ]);
+
+        // Gestione speciale per la relazione purchaseCost (solo TRADE)
+        if ($code === 'TRADE') {
+            $income = $form->getData();
+            $user = $income instanceof Income ? $income->getUser() : null;
+            $asset = $income instanceof Income ? $income->getAsset() : null;
+
+            $form->add('purchaseCost', EntityType::class, [
+                'class' => Cost::class,
+                'required' => false,
+                'placeholder' => '-- Select Purchase Cost (for Liquidation) --',
+                'choice_label' => fn(Cost $c) => sprintf('%s - %s (Cr %s)', $c->getTitle(), $c->getAsset()?->getName(), $c->getAmount()),
+                'query_builder' => function (CostRepository $repo) use ($user, $asset) {
+                    $qb = $repo->createQueryBuilder('c')
+                        ->join('c.costCategory', 'cat')
+                        ->where('cat.code = :code')
+                        ->setParameter('code', 'TRADE');
+
+                    if ($user) {
+                        $qb->andWhere('c.user = :user')->setParameter('user', $user);
+                    }
+                    if ($asset) {
+                        $qb->andWhere('c.asset = :asset')->setParameter('asset', $asset);
+                    }
+                    return $qb->orderBy('c.id', 'DESC');
+                },
+                'attr' => ['class' => 'select m-1 w-full'],
+                'label' => 'Purchase Cost Reference',
+            ]);
+        }
     }
 }

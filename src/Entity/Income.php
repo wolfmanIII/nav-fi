@@ -4,18 +4,7 @@ namespace App\Entity;
 
 use App\Repository\IncomeRepository;
 use App\Entity\LocalLaw;
-use App\Entity\IncomeCharterDetails;
-use App\Entity\IncomeSubsidyDetails;
-use App\Entity\IncomeFreightDetails;
-use App\Entity\IncomePassengersDetails;
-use App\Entity\IncomeServicesDetails;
-use App\Entity\IncomeInsuranceDetails;
-use App\Entity\IncomeMailDetails;
-use App\Entity\IncomeInterestDetails;
-use App\Entity\IncomeTradeDetails;
-use App\Entity\IncomeSalvageDetails;
-use App\Entity\IncomePrizeDetails;
-use App\Entity\IncomeContractDetails;
+use App\Entity\Cost;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
@@ -85,41 +74,15 @@ class Income
     #[ORM\JoinColumn(nullable: true)]
     private ?LocalLaw $localLaw = null;
 
-    #[ORM\OneToOne(mappedBy: 'income', cascade: ['persist', 'remove'])]
-    private ?IncomeCharterDetails $charterDetails = null;
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $details = [];
 
-    #[ORM\OneToOne(mappedBy: 'income', cascade: ['persist', 'remove'])]
-    private ?IncomeSubsidyDetails $subsidyDetails = null;
-
-    #[ORM\OneToOne(mappedBy: 'income', cascade: ['persist', 'remove'])]
-    private ?IncomeFreightDetails $freightDetails = null;
-
-    #[ORM\OneToOne(mappedBy: 'income', cascade: ['persist', 'remove'])]
-    private ?IncomePassengersDetails $passengersDetails = null;
-
-    #[ORM\OneToOne(mappedBy: 'income', cascade: ['persist', 'remove'])]
-    private ?IncomeServicesDetails $servicesDetails = null;
-
-    #[ORM\OneToOne(mappedBy: 'income', cascade: ['persist', 'remove'])]
-    private ?IncomeInsuranceDetails $insuranceDetails = null;
-
-    #[ORM\OneToOne(mappedBy: 'income', cascade: ['persist', 'remove'])]
-    private ?IncomeMailDetails $mailDetails = null;
-
-    #[ORM\OneToOne(mappedBy: 'income', cascade: ['persist', 'remove'])]
-    private ?IncomeInterestDetails $interestDetails = null;
-
-    #[ORM\OneToOne(mappedBy: 'income', cascade: ['persist', 'remove'])]
-    private ?IncomeTradeDetails $tradeDetails = null;
-
-    #[ORM\OneToOne(mappedBy: 'income', cascade: ['persist', 'remove'])]
-    private ?IncomeSalvageDetails $salvageDetails = null;
-
-    #[ORM\OneToOne(mappedBy: 'income', cascade: ['persist', 'remove'])]
-    private ?IncomePrizeDetails $prizeDetails = null;
-
-    #[ORM\OneToOne(mappedBy: 'income', cascade: ['persist', 'remove'])]
-    private ?IncomeContractDetails $contractDetails = null;
+    /**
+     * Specialized relationship for Trade Liquidation (previously in IncomeTradeDetails)
+     */
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Cost $purchaseCost = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $signingLocation = null;
@@ -142,183 +105,33 @@ class Income
         $this->status = self::STATUS_DRAFT;
     }
 
-    public function getCharterDetails(): ?IncomeCharterDetails
+    public function getDetails(): array
     {
-        return $this->charterDetails;
+        return $this->details ?? [];
     }
 
-    public function setCharterDetails(?IncomeCharterDetails $charterDetails): static
+    /**
+     * Restituisce un wrapper "smart" (IncomeDetails) per accedere ai dati JSON in modo tipizzato.
+     */
+    public function getDetailsData(): \App\Model\IncomeDetails
     {
-        $this->charterDetails = $charterDetails;
-        if ($charterDetails && $charterDetails->getIncome() !== $this) {
-            $charterDetails->setIncome($this);
-        }
+        return new \App\Model\IncomeDetails($this->getDetails());
+    }
 
+    public function setDetails(?array $details): static
+    {
+        $this->details = $details;
         return $this;
     }
 
-    public function getSubsidyDetails(): ?IncomeSubsidyDetails
+    public function getPurchaseCost(): ?Cost
     {
-        return $this->subsidyDetails;
+        return $this->purchaseCost;
     }
 
-    public function setSubsidyDetails(?IncomeSubsidyDetails $subsidyDetails): static
+    public function setPurchaseCost(?Cost $purchaseCost): static
     {
-        $this->subsidyDetails = $subsidyDetails;
-        if ($subsidyDetails && $subsidyDetails->getIncome() !== $this) {
-            $subsidyDetails->setIncome($this);
-        }
-
-        return $this;
-    }
-
-    public function getFreightDetails(): ?IncomeFreightDetails
-    {
-        return $this->freightDetails;
-    }
-
-    public function setFreightDetails(?IncomeFreightDetails $freightDetails): static
-    {
-        $this->freightDetails = $freightDetails;
-        if ($freightDetails && $freightDetails->getIncome() !== $this) {
-            $freightDetails->setIncome($this);
-        }
-
-        return $this;
-    }
-
-    public function getPassengersDetails(): ?IncomePassengersDetails
-    {
-        return $this->passengersDetails;
-    }
-
-    public function setPassengersDetails(?IncomePassengersDetails $passengersDetails): static
-    {
-        $this->passengersDetails = $passengersDetails;
-        if ($passengersDetails && $passengersDetails->getIncome() !== $this) {
-            $passengersDetails->setIncome($this);
-        }
-
-        return $this;
-    }
-
-    public function getServicesDetails(): ?IncomeServicesDetails
-    {
-        return $this->servicesDetails;
-    }
-
-    public function setServicesDetails(?IncomeServicesDetails $servicesDetails): static
-    {
-        $this->servicesDetails = $servicesDetails;
-        if ($servicesDetails && $servicesDetails->getIncome() !== $this) {
-            $servicesDetails->setIncome($this);
-        }
-
-        return $this;
-    }
-
-    public function getInsuranceDetails(): ?IncomeInsuranceDetails
-    {
-        return $this->insuranceDetails;
-    }
-
-    public function setInsuranceDetails(?IncomeInsuranceDetails $insuranceDetails): static
-    {
-        $this->insuranceDetails = $insuranceDetails;
-        if ($insuranceDetails && $insuranceDetails->getIncome() !== $this) {
-            $insuranceDetails->setIncome($this);
-        }
-
-        return $this;
-    }
-
-    public function getMailDetails(): ?IncomeMailDetails
-    {
-        return $this->mailDetails;
-    }
-
-    public function setMailDetails(?IncomeMailDetails $mailDetails): static
-    {
-        $this->mailDetails = $mailDetails;
-        if ($mailDetails && $mailDetails->getIncome() !== $this) {
-            $mailDetails->setIncome($this);
-        }
-
-        return $this;
-    }
-
-    public function getInterestDetails(): ?IncomeInterestDetails
-    {
-        return $this->interestDetails;
-    }
-
-    public function setInterestDetails(?IncomeInterestDetails $interestDetails): static
-    {
-        $this->interestDetails = $interestDetails;
-        if ($interestDetails && $interestDetails->getIncome() !== $this) {
-            $interestDetails->setIncome($this);
-        }
-
-        return $this;
-    }
-
-    public function getTradeDetails(): ?IncomeTradeDetails
-    {
-        return $this->tradeDetails;
-    }
-
-    public function setTradeDetails(?IncomeTradeDetails $tradeDetails): static
-    {
-        $this->tradeDetails = $tradeDetails;
-        if ($tradeDetails && $tradeDetails->getIncome() !== $this) {
-            $tradeDetails->setIncome($this);
-        }
-
-        return $this;
-    }
-
-    public function getSalvageDetails(): ?IncomeSalvageDetails
-    {
-        return $this->salvageDetails;
-    }
-
-    public function setSalvageDetails(?IncomeSalvageDetails $salvageDetails): static
-    {
-        $this->salvageDetails = $salvageDetails;
-        if ($salvageDetails && $salvageDetails->getIncome() !== $this) {
-            $salvageDetails->setIncome($this);
-        }
-
-        return $this;
-    }
-
-    public function getPrizeDetails(): ?IncomePrizeDetails
-    {
-        return $this->prizeDetails;
-    }
-
-    public function setPrizeDetails(?IncomePrizeDetails $prizeDetails): static
-    {
-        $this->prizeDetails = $prizeDetails;
-        if ($prizeDetails && $prizeDetails->getIncome() !== $this) {
-            $prizeDetails->setIncome($this);
-        }
-
-        return $this;
-    }
-
-    public function getContractDetails(): ?IncomeContractDetails
-    {
-        return $this->contractDetails;
-    }
-
-    public function setContractDetails(?IncomeContractDetails $contractDetails): static
-    {
-        $this->contractDetails = $contractDetails;
-        if ($contractDetails && $contractDetails->getIncome() !== $this) {
-            $contractDetails->setIncome($this);
-        }
-
+        $this->purchaseCost = $purchaseCost;
         return $this;
     }
 

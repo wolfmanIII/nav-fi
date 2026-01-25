@@ -269,6 +269,7 @@
         from {
             transform: rotate(0deg);
         }
+
         to {
             transform: rotate(360deg);
         }
@@ -383,5 +384,44 @@
 
     .border-tactical {
         @apply border border-cyan-500/20 bg-slate-950/40 backdrop-blur-sm;
+    }
+
+    /* Glitch Aesthetic (Cyberpunk/Unstable Uplink) */
+    .glitch-text {
+        display: inline-block;
+        position: relative;
+        animation: glitch-skew 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+        text-shadow: 2px 0 rgba(255, 0, 0, 0.5), -2px 0 rgba(0, 255, 255, 0.5);
+    }
+
+    .glitch-text:hover {
+        animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+        text-shadow: 3px 0 rgba(255, 0, 0, 0.8), -3px 0 rgba(0, 255, 255, 0.8);
+    }
+
+    @keyframes glitch-skew {
+        0% {
+            transform: translate(0) skew(0deg);
+        }
+
+        20% {
+            transform: translate(-2px) skew(-2deg);
+        }
+
+        40% {
+            transform: translate(2px) skew(2deg);
+        }
+
+        60% {
+            transform: translate(-1px) skew(-1deg);
+        }
+
+        80% {
+            transform: translate(1px) skew(1deg);
+        }
+
+        100% {
+            transform: translate(0) skew(0deg);
+        }
     }
 }
