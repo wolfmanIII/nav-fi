@@ -19,6 +19,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Repository\CostRepository;
+use App\Service\Cube\TradeService;
+use App\Service\Trade\TradePricer;
 
 final class AssetController extends BaseController
 {
@@ -494,8 +497,8 @@ final class AssetController extends BaseController
     public function cargo(
         int $id,
         EntityManagerInterface $em,
-        \App\Repository\CostRepository $costRepo,
-        \App\Service\Trade\TradePricer $tradePricer
+        CostRepository $costRepo,
+        TradePricer $tradePricer
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
@@ -528,8 +531,8 @@ final class AssetController extends BaseController
         int $costId,
         Request $request,
         EntityManagerInterface $em,
-        \App\Service\Cube\TradeService $tradeService,
-        \App\Service\Trade\TradePricer $tradePricer
+        TradeService $tradeService,
+        TradePricer $tradePricer
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
