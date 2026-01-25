@@ -10,15 +10,20 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Entity\LocalLaw;
+use Doctrine\ORM\EntityManagerInterface;
+
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/cube/contract', name: 'app_cube_contract_')]
 #[IsGranted('ROLE_USER')]
 class ContractController extends AbstractController
 {
+
     public function __construct(
         private readonly BrokerService $brokerService,
-        private readonly AssetRepository $assetRepo
+        private readonly AssetRepository $assetRepo,
+        private readonly EntityManagerInterface $em
     ) {}
 
     #[Route('/{id}', name: 'show', methods: ['GET'])]
@@ -29,6 +34,7 @@ class ContractController extends AbstractController
         return $this->render('cube/show.html.twig', [
             'opportunity' => $opportunity,
             'assets' => $this->assetRepo->findAll(), // TODO: Filter by Campaign
+            'localLaws' => $this->em->getRepository(LocalLaw::class)->findAll(),
         ]);
     }
 
@@ -54,6 +60,7 @@ class ContractController extends AbstractController
             'startYear' => $request->request->get('year'),
             'deadlineDay' => $request->request->get('deadline_day'),
             'deadlineYear' => $request->request->get('deadline_year'),
+            'local_law_id' => $request->request->get('localLaw'),
         ];
 
         try {

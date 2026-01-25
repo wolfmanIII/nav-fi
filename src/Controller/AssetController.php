@@ -22,6 +22,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Repository\CostRepository;
 use App\Service\Cube\TradeService;
 use App\Service\Trade\TradePricer;
+use App\Entity\LocalLaw;
 
 final class AssetController extends BaseController
 {
@@ -511,6 +512,7 @@ final class AssetController extends BaseController
         }
 
         $cargoItems = $costRepo->findUnsoldTradeCargoForAsset($asset);
+        $localLaws = $em->getRepository(LocalLaw::class)->findAll();
 
         $marketValues = [];
         foreach ($cargoItems as $item) {
@@ -521,6 +523,7 @@ final class AssetController extends BaseController
             'asset' => $asset,
             'cargoItems' => $cargoItems,
             'marketValues' => $marketValues,
+            'localLaws' => $localLaws,
             'controller_name' => self::CONTROLLER_NAME,
         ]);
     }
@@ -554,8 +557,14 @@ final class AssetController extends BaseController
         $day = (int) $request->request->get('day', 1);
         $year = (int) $request->request->get('year', 1105);
 
+        $localLawId = $request->request->get('localLaw');
+        $localLaw = null;
+        if ($localLawId) {
+            $localLaw = $em->getRepository(LocalLaw::class)->find($localLawId);
+        }
+
         try {
-            $tradeService->liquidateCargo($cost, $salePrice, $location, $day, $year);
+            $tradeService->liquidateCargo($cost, $salePrice, $location, $day, $year, $localLaw);
             $this->addFlash('success', 'Cargo sold for ' . number_format($salePrice) . ' Cr.');
         } catch (\Exception $e) {
             $this->addFlash('error', 'Liquidation failed: ' . $e->getMessage());

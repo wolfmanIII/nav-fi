@@ -14,8 +14,14 @@ class TradeService
         private readonly IncomeCategoryRepository $incomeCategoryRepo
     ) {}
 
-    public function liquidateCargo(Cost $cost, float $salePrice, string $location, int $day, int $year): Income
-    {
+    public function liquidateCargo(
+        Cost $cost,
+        float $salePrice,
+        string $location,
+        int $day,
+        int $year,
+        ?\App\Entity\LocalLaw $localLaw = null
+    ): Income {
         // Validation: Ensure cost is TRADE type and not already sold?
         // Rely on caller or check here? Check here for safety.
 
@@ -41,6 +47,9 @@ class TradeService
         $income->setSigningLocation($location);
         $income->setSigningDay($day);
         $income->setSigningYear($year);
+        $income->setPaymentDay($day);
+        $income->setPaymentYear($year);
+        $income->setLocalLaw($localLaw);
 
         // Details
         $details = $cost->getDetailItems();

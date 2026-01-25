@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Entity\LocalLaw;
 
 #[Route('/cube')]
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
@@ -200,7 +201,8 @@ class CubeController extends AbstractController
 
         return $this->render('cube/show.html.twig', [
             'opportunity' => $opportunity,
-            'assets' => $assets
+            'assets' => $assets,
+            'localLaws' => $em->getRepository(LocalLaw::class)->findAll(),
         ]);
     }
 
@@ -226,6 +228,7 @@ class CubeController extends AbstractController
                 'year' => $request->request->get('year'),
                 'deadline_day' => $request->request->get('deadline_day'),
                 'deadline_year' => $request->request->get('deadline_year'),
+                'local_law_id' => $request->request->get('localLaw'),
             ];
 
             $this->brokerService->acceptOpportunity($opportunity, $asset, array_filter($overrides));

@@ -13,6 +13,8 @@ use App\Repository\CostCategoryRepository;
 use App\Repository\IncomeCategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
+use App\Entity\LocalLaw;
+
 class OpportunityConverter
 {
     public function __construct(
@@ -28,7 +30,7 @@ class OpportunityConverter
     public function convert(CubeOpportunityData $opportunity, Asset $asset, array $overrides = []): Income|Cost
     {
         return match ($opportunity->type) {
-            'TRADE' => $this->createTradePurchase($opportunity, $asset),
+            'TRADE' => $this->createTradePurchase($opportunity, $asset, $overrides),
             'FREIGHT' => $this->createFreightIncome($opportunity, $asset, $overrides),
             'PASSENGERS' => $this->createPassengersIncome($opportunity, $asset, $overrides),
             'MAIL' => $this->createMailIncome($opportunity, $asset, $overrides),
@@ -37,7 +39,7 @@ class OpportunityConverter
         };
     }
 
-    private function createTradePurchase(CubeOpportunityData $opp, Asset $asset): Cost
+    private function createTradePurchase(CubeOpportunityData $opp, Asset $asset, array $overrides = []): Cost
     {
         $category = $this->getCostCategory('TRADE');
         $cost = new Cost();
@@ -45,13 +47,20 @@ class OpportunityConverter
         $cost->setUser($asset->getUser());
         $cost->setCostCategory($category);
         $cost->setTitle("Trade Purchase: {$opp->details['goods']}");
-        $cost->setAmount((string)$opp->amount); // This is the BUY price
-        // Imposta pagamento immediato per il workflow "Acquisto"
+        $cost->setAmount((string)$opp->amount);
         $cost->setPaymentDay($opp->details['start_day'] ?? 1);
         $cost->setPaymentYear($opp->details['start_year'] ?? 1105);
         $cost->setTargetDestination($opp->details['destination'] ?? null);
 
+        if (!empty($overrides['local_law_id'])) {
+            $law = $this->entityManager->getRepository(LocalLaw::class)->find($overrides['local_law_id']);
+            if ($law) {
+                $cost->setLocalLaw($law);
+            }
+        }
+
         if (!empty($opp->details['company_id'])) {
+            // ...
             $company = $this->companyRepository->find($opp->details['company_id']);
             if ($company) {
                 $cost->setCompany($company);

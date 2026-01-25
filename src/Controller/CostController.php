@@ -149,9 +149,9 @@ final class CostController extends BaseController
         $this->denyAccessUnlessGranted(CostVoter::DELETE, $cost);
 
         // integrity check: is this cost sold?
-        $sale = $em->getRepository(\App\Entity\IncomeTradeDetails::class)->findOneBy(['purchaseCost' => $cost]);
+        $sale = $em->getRepository(\App\Entity\Income::class)->findOneBy(['purchaseCost' => $cost]);
         if ($sale) {
-            $this->addFlash('error', 'Cannot delete this Item: it is linked to a Sale Transaction (' . $sale->getIncome()->getTitle() . '). Refund/Delete the Sale first.');
+            $this->addFlash('error', 'Cannot delete this Item: it is linked to a Sale Transaction (' . $sale->getTitle() . '). Refund/Delete the Sale first.');
             return $this->redirectToRoute('app_cost_index');
         }
 

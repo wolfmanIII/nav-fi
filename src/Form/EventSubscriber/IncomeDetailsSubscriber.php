@@ -42,7 +42,7 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
         }
 
         $campaignStartYear = $income->getAsset()?->getCampaign()?->getStartingYear();
-        $this->addDetailField($event->getForm(), $code, $campaignStartYear);
+        $this->addDetailField($event->getForm(), $code, $campaignStartYear, $income);
     }
 
     public function onPreSubmit(FormEvent $event): void
@@ -63,7 +63,7 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
             $campaignStartYear = $income->getAsset()?->getCampaign()?->getStartingYear();
         }
 
-        $this->addDetailField($event->getForm(), $code, $campaignStartYear);
+        $this->addDetailField($event->getForm(), $code, $campaignStartYear, $income instanceof Income ? $income : null);
     }
 
     private function resolveCategoryCode(null|string|int $categoryId): ?string
@@ -81,7 +81,7 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
      * Aggiunge il campo 'details' alla form utilizzando il tipo dinamico IncomeDetailsType.
      * Gestisce anche il campo speciale 'purchaseCost' per la categoria TRADE.
      */
-    private function addDetailField(FormInterface $form, string $code, ?int $campaignStartYear): void
+    private function addDetailField(FormInterface $form, string $code, ?int $campaignStartYear, ?Income $income): void
     {
         // Pulizia campi precedenti per evitare conflitti durante il cambio categoria AJAX
         if ($form->has('details')) {
@@ -102,9 +102,8 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
 
         // Gestione speciale per la relazione purchaseCost (solo TRADE)
         if ($code === 'TRADE') {
-            $income = $form->getData();
-            $user = $income instanceof Income ? $income->getUser() : null;
-            $asset = $income instanceof Income ? $income->getAsset() : null;
+            $user = $income?->getUser();
+            $asset = $income?->getAsset();
 
             $form->add('purchaseCost', EntityType::class, [
                 'class' => Cost::class,
