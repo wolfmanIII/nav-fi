@@ -29,14 +29,14 @@ class OpportunityConverter
     /**
      * Converte un'opportunità in un'entità finanziaria (Income o Cost) collegata a un Asset.
      */
-    public function convert(CubeOpportunityData $opportunity, Asset $asset): Income|Cost
+    public function convert(CubeOpportunityData $opportunity, Asset $asset, array $overrides = []): Income|Cost
     {
         return match ($opportunity->type) {
             'TRADE' => $this->createTradePurchase($opportunity, $asset),
-            'FREIGHT' => $this->createFreightIncome($opportunity, $asset),
-            'PASSENGERS' => $this->createPassengersIncome($opportunity, $asset),
-            'MAIL' => $this->createMailIncome($opportunity, $asset),
-            'CONTRACT' => $this->createContractIncome($opportunity, $asset),
+            'FREIGHT' => $this->createFreightIncome($opportunity, $asset, $overrides),
+            'PASSENGERS' => $this->createPassengersIncome($opportunity, $asset, $overrides),
+            'MAIL' => $this->createMailIncome($opportunity, $asset, $overrides),
+            'CONTRACT' => $this->createContractIncome($opportunity, $asset, $overrides),
             default => throw new \InvalidArgumentException("Tipo opportunità non supportato: {$opportunity->type}")
         };
     }
@@ -108,10 +108,10 @@ class OpportunityConverter
         return $category;
     }
 
-    private function createContractIncome(CubeOpportunityData $opp, Asset $asset): Income
+    private function createContractIncome(CubeOpportunityData $opp, Asset $asset, array $overrides = []): Income
     {
         $category = $this->getIncomeCategory('CONTRACT');
-        $income = $this->createBaseIncome($opp, $asset, $category);
+        $income = $this->createBaseIncome($opp, $asset, $category, $overrides);
 
         $details = new IncomeContractDetails();
         $details->setIncome($income);
@@ -120,13 +120,21 @@ class OpportunityConverter
         $details->setJobType($opp->details['mission_type'] ?? 'Mission');
         $details->setObjective($opp->summary);
         $details->setLocation($opp->details['origin'] ?? 'Unknown');
-        // Mappa altri campi specifici...
+
+        // Date manuali o sessione
+        $details->setStartDay($income->getSigningDay());
+        $details->setStartYear($income->getSigningYear());
+
+        if (!empty($overrides['deadline_day'])) {
+            $details->setDeadlineDay((int)$overrides['deadline_day']);
+            $details->setDeadlineYear((int)($overrides['deadline_year'] ?? $income->getSigningYear()));
+        }
 
         $this->entityManager->persist($details);
         return $income;
     }
 
-    private function createBaseIncome(CubeOpportunityData $opp, Asset $asset, IncomeCategory $category): Income
+    private function createBaseIncome(CubeOpportunityData $opp, Asset $asset, IncomeCategory $category, array $overrides = []): Income
     {
         $income = new Income();
         $income->setAsset($asset);
@@ -136,10 +144,10 @@ class OpportunityConverter
         $income->setAmount((string)$opp->amount);
         $income->setStatus(Income::STATUS_SIGNED); // Firmato ma non pagato
 
-        // Location & Date from Context
+        // Location & Date from Context or Overrides
         $income->setSigningLocation($opp->details['origin'] ?? 'Unknown');
-        $income->setSigningDay($opp->details['start_day'] ?? 1);
-        $income->setSigningYear($opp->details['start_year'] ?? 1105);
+        $income->setSigningDay((int)($overrides['day'] ?? ($opp->details['start_day'] ?? 1)));
+        $income->setSigningYear((int)($overrides['year'] ?? ($opp->details['start_year'] ?? 1105)));
 
         // Mappatura Patron/Company
         if (!empty($opp->details['company_id'])) {
@@ -165,46 +173,65 @@ class OpportunityConverter
         return $category;
     }
 
-    private function createFreightIncome(CubeOpportunityData $opp, Asset $asset): Income
+    private function createFreightIncome(CubeOpportunityData $opp, Asset $asset, array $overrides = []): Income
     {
         $category = $this->getIncomeCategory('FREIGHT');
-        $income = $this->createBaseIncome($opp, $asset, $category);
+        $income = $this->createBaseIncome($opp, $asset, $category, $overrides);
 
         $details = new IncomeFreightDetails();
         $details->setIncome($income);
+        $income->setFreightDetails($details);
         $details->setCargoQty("{$opp->details['tons']} tons");
         $details->setDestination($opp->details['destination'] ?? 'Unknown');
-        // $details->setCargoDescription(...)
+        $details->setOrigin($opp->details['origin'] ?? 'Unknown');
+        $details->setCargoDescription($opp->details['cargo_type'] ?? 'General Goods');
+
+        // Date manuali o sessione
+        $details->setPickupDay($income->getSigningDay());
+        $details->setPickupYear($income->getSigningYear());
 
         $this->entityManager->persist($details);
         return $income;
     }
 
-    private function createPassengersIncome(CubeOpportunityData $opp, Asset $asset): Income
+    private function createPassengersIncome(CubeOpportunityData $opp, Asset $asset, array $overrides = []): Income
     {
         $category = $this->getIncomeCategory('PASSENGERS');
-        $income = $this->createBaseIncome($opp, $asset, $category);
+        $income = $this->createBaseIncome($opp, $asset, $category, $overrides);
 
         $details = new IncomePassengersDetails();
         $details->setIncome($income);
+        $income->setPassengersDetails($details);
         $details->setQty($opp->details['pax'] ?? 0);
         $details->setClassOrBerth($opp->details['class'] ?? 'Standard');
         $details->setDestination($opp->details['destination'] ?? 'Unknown');
+        $details->setOrigin($opp->details['origin'] ?? 'Unknown');
+
+        // Date manuali o sessione
+        $details->setDepartureDay($income->getSigningDay());
+        $details->setDepartureYear($income->getSigningYear());
 
         $this->entityManager->persist($details);
         return $income;
     }
 
-    private function createMailIncome(CubeOpportunityData $opp, Asset $asset): Income
+    private function createMailIncome(CubeOpportunityData $opp, Asset $asset, array $overrides = []): Income
     {
         $category = $this->getIncomeCategory('MAIL');
-        $income = $this->createBaseIncome($opp, $asset, $category);
+        $income = $this->createBaseIncome($opp, $asset, $category, $overrides);
 
         $details = new IncomeMailDetails();
         $details->setIncome($income);
+        $income->setMailDetails($details);
         $details->setPackageCount($opp->details['containers'] ?? 0);
-        $details->setTotalMass($opp->details['tons'] ?? 0);
+        $details->setTotalMass((string)($opp->details['tons'] ?? 0));
         $details->setDestination($opp->details['destination'] ?? 'Unknown');
+        $details->setOrigin($opp->details['origin'] ?? 'Unknown');
+        $details->setMailType('Official Priority');
+
+        // Date manuali o sessione
+        $details->setDispatchDay($income->getSigningDay());
+        $details->setDispatchYear($income->getSigningYear());
 
         $this->entityManager->persist($details);
         return $income;

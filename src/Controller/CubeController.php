@@ -221,7 +221,14 @@ class CubeController extends AbstractController
         }
 
         try {
-            $this->brokerService->acceptOpportunity($opportunity, $asset);
+            $overrides = [
+                'day' => $request->request->get('day'),
+                'year' => $request->request->get('year'),
+                'deadline_day' => $request->request->get('deadline_day'),
+                'deadline_year' => $request->request->get('deadline_year'),
+            ];
+
+            $this->brokerService->acceptOpportunity($opportunity, $asset, array_filter($overrides));
             $this->addFlash('success', 'Contract Accepted! Financial records updated.');
 
             // Redirect to the Asset's ledger or back to console?

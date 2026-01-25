@@ -210,17 +210,51 @@
                 <span class="text-xs text-slate-500">Financial records will be attached to this asset.</span>
                 </p>
 
-                <div class="form-control w-full max-w-xs mb-6">
-                    <label class="label">
-                        <span class="label-text text-slate-400 text-xs uppercase font-bold">Target Asset</span>
-                    </label>
-                    <select name="asset_id" class="select select-bordered bg-slate-950 border-slate-700 text-white w-full" required>
-                        <option value="" disabled selected>Select starship or asset...</option>
-                        {% for asset in assets %}
-                            <option value="{{ asset.id }}">{{ asset.name }} ({{ asset.type }})</option>
-                        {% endfor %}
-                    </select>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="form-control w-full">
+                        <label class="label">
+                            <span class="label-text text-slate-400 text-xs uppercase font-bold">Target Asset</span>
+                        </label>
+                        <select name="asset_id" class="select select-bordered bg-slate-950 border-slate-700 text-white w-full" required>
+                            <option value="" disabled selected>Select starship...</option>
+                            {% for asset in assets %}
+                                <option value="{{ asset.id }}">{{ asset.name }} ({{ asset.type }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    {% if opportunity.data.type != 'TRADE' %}
+                        {% set dateLabel = 'Date' %}
+                        {% if opportunity.data.type == 'FREIGHT' %}{% set dateLabel = 'Pickup Date' %}
+                        {% elseif opportunity.data.type == 'PASSENGERS' %}{% set dateLabel = 'Departure Date' %}
+                        {% elseif opportunity.data.type == 'MAIL' %}{% set dateLabel = 'Dispatch Date' %}
+                        {% elseif opportunity.data.type == 'CONTRACT' %}{% set dateLabel = 'Start Date' %}{% endif %}
+
+                        <div class="form-control w-full">
+                             <label class="label">
+                                <span class="label-text text-slate-400 text-xs uppercase font-bold">{{ dateLabel }}</span>
+                            </label>
+                            <div class="flex gap-2">
+                                <input type="number" name="day" placeholder="Day" class="input input-bordered bg-slate-950 border-slate-700 text-white w-20" value="{{ opportunity.data.details.start_day|default(1) }}" required>
+                                <input type="number" name="year" placeholder="Year" class="input input-bordered bg-slate-950 border-slate-700 text-white flex-1" value="{{ opportunity.data.details.start_year|default(1105) }}" required>
+                            </div>
+                            <div class="text-[9px] text-slate-500 mt-1 uppercase font-mono">Mission Timeline Adjustment</div>
+                        </div>
+                    {% endif %}
                 </div>
+
+                {% if opportunity.data.type == 'CONTRACT' %}
+                    <div class="form-control w-full mb-6 p-4 bg-slate-950/50 border border-slate-800 rounded-lg">
+                        <label class="label pt-0">
+                            <span class="label-text text-slate-400 text-[10px] uppercase font-bold tracking-widest">Optional: Contract Deadline</span>
+                        </label>
+                        <div class="flex gap-2">
+                            <input type="number" name="deadline_day" placeholder="Day" class="input input-bordered input-sm bg-slate-900 border-slate-800 text-white w-20">
+                            <input type="number" name="deadline_year" placeholder="Year" class="input input-bordered input-sm bg-slate-900 border-slate-800 text-white flex-1" value="{{ opportunity.data.details.start_year|default(1105) }}">
+                        </div>
+                        <div class="text-[9px] text-slate-600 mt-2 italic">Leave empty if no strict deadline is enforced by the patron.</div>
+                    </div>
+                {% endif %}
 
                 {% if opportunity.data.type == 'TRADE' %}
                 <div class="alert bg-amber-950/30 border border-amber-500/20 text-amber-200 text-xs mb-4">

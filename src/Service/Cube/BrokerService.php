@@ -63,13 +63,13 @@ class BrokerService
         return $opp;
     }
 
-    public function acceptOpportunity(BrokerOpportunity $opportunity, \App\Entity\Asset $asset): \App\Entity\Income|\App\Entity\Cost
+    public function acceptOpportunity(BrokerOpportunity $opportunity, \App\Entity\Asset $asset, array $overrides = []): \App\Entity\Income|\App\Entity\Cost
     {
         // 1. Converti in DTO per passare i dati puliti
         $dto = \App\Dto\Cube\CubeOpportunityData::fromArray($opportunity->getData());
 
         // 2. Chiama il converter
-        $financialEntity = $this->converter->convert($dto, $asset);
+        $financialEntity = $this->converter->convert($dto, $asset, $overrides);
 
         // 3. Aggiorna stato opportunità
         $opportunity->setStatus('CONVERTED'); // TODO: Add constant to entity
