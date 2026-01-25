@@ -111,4 +111,21 @@ class CostRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findUnsoldTradeCargoForAsset(\App\Entity\Asset $asset): array
+    {
+        // Similar to findUnsoldTradeGoods but filtered by Asset
+        return $this->createQueryBuilder('c')
+            ->join('c.costCategory', 'cat')
+            ->leftJoin('App\Entity\Income', 'inc', 'WITH', 'inc.purchaseCost = c')
+            ->andWhere('c.asset = :asset')
+            ->andWhere('cat.code = :tradeCode')
+            ->andWhere('inc.id IS NULL')
+            ->setParameter('asset', $asset)
+            ->setParameter('tradeCode', 'TRADE')
+            ->orderBy('c.paymentYear', 'DESC')
+            ->addOrderBy('c.paymentDay', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

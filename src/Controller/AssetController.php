@@ -489,4 +489,69 @@ final class AssetController extends BaseController
             'controller_name' => self::CONTROLLER_NAME,
         ]);
     }
+
+    #[Route('/asset/{id}/cargo', name: 'app_asset_cargo')]
+    public function cargo(
+        int $id,
+        EntityManagerInterface $em,
+        \App\Repository\CostRepository $costRepo
+    ): Response {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $asset = $em->getRepository(Asset::class)->findOneForUser($id, $user);
+        if (!$asset) {
+            throw new NotFoundHttpException();
+        }
+
+        $cargoItems = $costRepo->findUnsoldTradeCargoForAsset($asset);
+
+        return $this->renderTurbo('asset/cargo.html.twig', [
+            'asset' => $asset,
+            'cargoItems' => $cargoItems,
+            'controller_name' => self::CONTROLLER_NAME,
+        ]);
+    }
+
+    #[Route('/asset/{id}/cargo/{costId}/sell', name: 'app_asset_cargo_sell', methods: ['POST'])]
+    public function sellCargo(
+        int $id,
+        int $costId,
+        Request $request,
+        EntityManagerInterface $em,
+        \App\Service\Cube\TradeService $tradeService
+    ): Response {
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $asset = $em->getRepository(Asset::class)->findOneForUser($id, $user);
+        $cost = $em->getRepository(\App\Entity\Cost::class)->findOneForUser($costId, $user);
+
+        if (!$asset || !$cost || $cost->getAsset() !== $asset) {
+            throw new NotFoundHttpException();
+        }
+
+        $salePrice = (float) $request->request->get('amount');
+        $location = (string) $request->request->get('location', 'Unknown');
+        $day = (int) $request->request->get('day', 1);
+        $year = (int) $request->request->get('year', 1105);
+
+        if ($salePrice <= 0) {
+            $this->addFlash('error', 'Invalid sale price.');
+            return $this->redirectToRoute('app_asset_cargo', ['id' => $id]);
+        }
+
+        try {
+            $tradeService->liquidateCargo($cost, $salePrice, $location, $day, $year);
+            $this->addFlash('success', 'Cargo sold successfully. Income recorded.');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Liquidation failed: ' . $e->getMessage());
+        }
+
+        return $this->redirectToRoute('app_asset_cargo', ['id' => $id]);
+    }
 }

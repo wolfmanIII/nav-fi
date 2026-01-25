@@ -76,6 +76,12 @@
                 </div>
                 {% if asset.id %}
                     <div class="flex items-start gap-2">
+                        {{ tooltip.link('Manage Inventory',
+                                        'Cargo Hold',
+                                        'icons/cube.html.twig',
+                                        path('app_asset_cargo', { id: asset.id }),
+                                        { dim: 16, linkClass: 'btn btn-outline btn-' ~ hero_color ~ ' btn-sm' }) }}
+
                         {{ tooltip.link('Open financial ledger',
                                         'View Ledger',
                                         'icons/handbook.html.twig',

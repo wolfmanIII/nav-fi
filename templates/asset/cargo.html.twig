@@ -1,0 +1,134 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nav-Fi&sup3; - Cargo Hold{% endblock %}
+
+{% block pageContent %}
+    <div class="p-10">
+
+        {# ASSET HEADER #}
+        <div class="relative overflow-hidden rounded-xl border border-amber-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-amber-950 shadow-lg mb-6">
+            <div class="absolute inset-0 opacity-20 mix-blend-screen pointer-events-none"
+                 style="background: radial-gradient(circle at 20% 20%, rgba(245,158,11,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(217,119,6,0.25), transparent 35%);">
+            </div>
+            <div class="relative p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 rounded-lg bg-amber-500/10 border border-amber-400/40 text-amber-500">
+                        {% include 'icons/cube.html.twig' with { dim: 24 } %}
+                    </div>
+                    <div>
+                        <p class="uppercase text-xs tracking-[0.25em] text-amber-300/70">Inventory Management</p>
+                        <h1 class="text-3xl font-semibold text-amber-100 leading-tight">Cargo Hold</h1>
+                        <p class="text-sm text-cyan-100/80 font-mono break-all">{{ asset.name }} [{{ asset.code }}]</p>
+                    </div>
+                </div>
+                <div>
+                     <a href="{{ path('app_asset_edit', { id: asset.id }) }}" class="btn btn-outline btn-sm">
+                        Back to Asset
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {# CARGO GRID #}
+        {% if cargoItems|length > 0 %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for item in cargoItems %}
+                    <div class="card bg-slate-950 border border-slate-800 shadow-xl overflow-hidden group hover:border-amber-500/30 transition-all">
+                        <div class="p-6 relative z-10">
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="badge badge-outline border-slate-700 text-slate-400 font-mono text-[10px] uppercase tracking-widest">
+                                    {{ item.paymentDay|imperial_date(item.paymentYear) }}
+                                </span>
+                                <span class="text-xs font-bold text-amber-500 font-mono">
+                                    {{ item.amount|number_format(0, '.', ',') }} Cr
+                                </span>
+                            </div>
+
+                            <h3 class="text-lg font-bold text-white mb-2 font-rajdhani uppercase tracking-wide">
+                                {{ item.title|replace({'Purchase Cargo: ': ''}) }}
+                            </h3>
+
+                            <div class="text-xs text-slate-500 font-mono mb-6 line-clamp-2">
+                                {{ item.note|default('No additional manifest notes.') }}
+                            </div>
+
+                            <div class="border-t border-slate-800 pt-4 flex justify-between items-center">
+                                <div class="text-[10px] uppercase text-slate-600 font-bold tracking-widest">
+                                    Origin: <span class="text-slate-400">{{ item.targetDestination|default('Unknown') }}</span>
+                                </div>
+                                <button onclick="liquidation_modal_{{ item.id }}.showModal()" class="btn btn-xs btn-outline border-amber-500/50 text-amber-400 hover:bg-amber-500 hover:text-black hover:border-amber-500 font-orbitron tracking-wider">
+                                    Liquidate
+                                </button>
+                            </div>
+                        </div>
+                        
+                        {# Decoration #}
+                        <div class="absolute bottom-0 right-0 p-4 opacity-5 pointer-events-none group-hover:scale-110 transition-transform">
+                             {% include 'icons/cube.html.twig' with { dim: 64 } %}
+                        </div>
+
+                        {# LIQUIDATION MODAL #}
+                        <dialog id="liquidation_modal_{{ item.id }}" class="modal bg-black/80 backdrop-blur-sm">
+                            <div class="modal-box bg-slate-900 border border-amber-500/30 shadow-[0_0_50px_rgba(245,158,11,0.1)]">
+                                <h3 class="font-bold text-lg text-amber-400 font-orbitron uppercase tracking-wider mb-4">Liquidate Cargo</h3>
+                                <p class="text-sm text-slate-300 mb-4">
+                                    Selling <strong>{{ item.title }}</strong>.<br>
+                                    Initial Cost: <span class="text-amber-500 font-mono">{{ item.amount|number_format(0) }} Cr</span>
+                                </p>
+                                
+                                <form method="POST" action="{{ path('app_asset_cargo_sell', {id: asset.id, costId: item.id}) }}">
+                                    <div class="form-control w-full mb-4">
+                                        <label class="label">
+                                            <span class="label-text text-slate-400 text-xs uppercase font-bold">Sale Price (Credits)</span>
+                                        </label>
+                                        <div class="relative">
+                                            <input type="number" name="amount" class="input input-bordered bg-slate-950 border-slate-700 text-white w-full pr-12 font-mono text-lg" placeholder="0" required value="{{ item.amount }}">
+                                            <span class="absolute right-4 top-3 text-slate-500 font-bold">Cr</span>
+                                        </div>
+                                        <label class="label">
+                                            <span class="label-text-alt text-slate-600">Enter final sale value (Revenue). Profit will be calculated automatically.</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-4 mb-6">
+                                        <div class="form-control">
+                                            <label class="label"><span class="label-text text-slate-400 text-xs uppercase font-bold">Location</span></label>
+                                            <input type="text" name="location" class="input input-bordered input-sm bg-slate-950 border-slate-700 text-white" value="Current System">
+                                        </div>
+                                        <div class="form-control">
+                                            <label class="label"><span class="label-text text-slate-400 text-xs uppercase font-bold">Date</span></label>
+                                             <div class="flex gap-1">
+                                                <input type="number" name="day" class="input input-bordered input-sm bg-slate-950 border-slate-700 text-white w-16" value="{{ item.paymentDay|default(1) }}">
+                                                <input type="number" name="year" class="input input-bordered input-sm bg-slate-950 border-slate-700 text-white flex-1" value="{{ item.paymentYear|default(1105) }}">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-action flex justify-between">
+                                        <button type="button" class="btn btn-ghost hover:bg-slate-800 text-slate-400" onclick="liquidation_modal_{{ item.id }}.close()">Cancel</button>
+                                        <button type="submit" class="btn bg-amber-600 hover:bg-amber-500 text-black border-0 font-orbitron tracking-widest text-xs">Confirm Sale</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <form method="dialog" class="modal-backdrop">
+                                <button>close</button>
+                            </form>
+                        </dialog>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="flex flex-col items-center justify-center py-20 border border-dashed border-slate-800 rounded-xl bg-slate-900/20">
+                <div class="p-4 rounded-full bg-slate-800 text-slate-600 mb-4">
+                    {% include 'icons/cube.html.twig' with { dim: 48 } %}
+                </div>
+                <h3 class="text-xl font-bold text-slate-400 font-rajdhani uppercase tracking-widest">Cargo Hold Empty</h3>
+                <p class="text-slate-600 font-mono text-sm mt-2">No speculative trade goods found on this asset.</p>
+                <a href="{{ path('app_cube_index') }}" class="btn btn-outline border-slate-700 text-emerald-500 hover:bg-emerald-900/20 hover:border-emerald-500 mt-6 uppercase font-orbitron tracking-widest text-xs">
+                    Find Opportunities
+                </a>
+            </div>
+        {% endif %}
+
+    </div>
+{% endblock %}
