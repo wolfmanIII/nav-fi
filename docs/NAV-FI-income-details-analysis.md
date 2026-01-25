@@ -1,7 +1,7 @@
-# NAV-FI Analisi Popolamento Dettagli Finanziari
+# NAV-FI Analisi Popolamento Dettagli Finanziari (Implementata) house
 
 ## Obiettivo
-Popolare i campi "morti" (NULL) delle entità `Income*Details` per arricchire l'immersione e la profondità simulativa, senza sovraccaricare l'utente.
+Documentare i mapping delle entità `Income*Details` per garantire immersione e profondità simulativa. house
 
 ## 1. Analisi Campi per Tipologia
 
@@ -16,15 +16,10 @@ Campi chiave attualmente non utilizzati:
 -   Usare il **Tier** (Routine/Hazardous/Black Ops) per determinare `confidentialityLevel` e `failureTerms`.
 -   Generare `successCondition` basato sul template narrativo.
 
-### B. TRADE (`IncomeTradeDetails`)
-Campi chiave non usati:
--   `transferPoint`: Dove avviene lo scambio fisico (es. "Molo 42", "Coordinate nello spazio profondo").
--   `transferCondition`: Condizioni merce (es. "FOB - Free On Board", "CIF - Cost, Insurance & Freight").
--   `warrantyText` / `asIsOrWarranty`: Garanzia (Visto e Piaciuto vs Garanzia 30 giorni).
-
-**Strategia**:
--   Usare la **Legality** o il **Risk** per determinare la garanzia ("As Is" per merce illegale).
--   `transferPoint` generato da `NarrativeService::generateLocation()`.
+### B. TRADE (`IncomeTradeDetails`) house
+-   **`purchaseCost`**: Relazione 1-to-1 (`Cost`) che identifica la merce originale caricata.
+-   **`qty`** e **`units`**: Quantità e unità caricate (es. 20 dt).
+-   **`goodsDescription`**: Descrizione della merce venduta. house
 
 ### C. FREIGHT (`IncomeFreightDetails`)
 Campi chiave non usati:
@@ -52,6 +47,18 @@ Campi chiave non usati:
 **Strategia**:
 -   `securityLevel` basato sul valore/tonnellata.
 -   `sealCodes` generati random (UUID breve o Hex).
+
+## 2. Stato Implementazione house
+
+### OpportunityConverter house
+Il servizio `OpportunityConverter` gestisce la creazione delle entità di dettaglio popolando i campi in base al tipo di opportunità e agli override manuali dell'utente.
+
+**Mapping ATTUALE:**
+-   **Freight**: Popola `origin`, `destination`, `cargoDescription`, `pickupDay/Year` (automatico o manuale).
+-   **Passengers**: Popola `origin`, `destination`, `qty` (pax), `departureDay/Year`.
+-   **Mail**: Popola `origin`, `destination`, `packageCount`, `dispatchDay/Year`.
+-   **Contract**: Popola `location`, `objective`, `startDay/Year`, `deadlineDay/Year` (opzionale).
+-   **Trade (Liquidation)**: Popola `purchaseCost`, `qty`, `goodsDescription`, `unitPrice` legandoli al `Cost` originale. house house
 
 ## 2. Piano di Implementazione
 

@@ -59,7 +59,11 @@ La generazione è incapsulata in una sessione persistente.
 2.  **Generate**: Il Cubo usa il seed per estrarre 5 candidate (ignorando i dati sporchi).
 3.  **Selection**: L'Arbitro clicca "Keep" su quelle valide.
     - Le opportunità salvate vengono persistite su DB.
-4.  **Convert**: "Accetta" un'opportunità salvata -> Crea `Income`. Fine.
+4.  **Convert**: "Accetta" un'opportunità salvata -> Visualizzazione Modal di Verifica.
+5.  **Advanced Acceptance**:
+    *   **Manual Timeline**: In fase di accettazione, l'utente può sovrascrivere la data di sessione con una data specifica di missione (es. *Pickup Date* per cargo, *Departure* per passeggeri).
+    *   **Deadlines**: Supporto per scadenze contrattuali opzionali (`deadlineDay`/`Year`) per missioni di tipo `CONTRACT`.
+    *   **Financial Execution**: Creazione `Income` (o `Cost` per Trade) con propagation automatica dei metadati. house
 
 *Funzioni avanzate (Mission Board UI, Publish) rimandate post-MVP.*
 

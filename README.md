@@ -14,11 +14,15 @@ Applicazione **Symfony 7.4** per la gestione di navi, equipaggi, contratti e mut
 ### Security & Access Control
 - **Perimeter Defense (MFA)**: Supporto nativo per Two-Factor Authentication (TOTP).
 - **External Uplink (Google OAuth)**: Login rapido tramite account Google.
-- **Ownership Lockdown**: Sistema granulare che isola i dati (Ship, Crew, Financials) sull'utente proprietario.
+- **Ownership Lockdown**: Sistema granulare che isola i dati (Ship, Crew, Financials) sull’utente proprietario.
 
 ### Financial Core & Asset Management
 - **Vessel Liability (Mortgage)**: Gestione mutui con piani di ammortamento a 13 periodi, tassi variabili e assicurazioni.
 - **Full-Spectrum Ledger**: Tracciamento di entrate (`Income`) e uscite (`Cost`) con status dinamico **Draft/Signed**.
+- **Trade & Speculation**:
+    - **Liquidation Protocol**: Gestione della vendita del carico con calcolo automatico di profitto/perdita.
+    - **Active Hold Monitoring**: Tracciamento della merce stoccata e non ancora venduta (Unsold Trade Goods).
+    - **Market Pricing**: Integrazione di markup dinamici basati sui Trade Code dei sistemi.
 - **Annual Projections**: Aggregazione automatica di cashflow per nave e grafici finanziari.
 
 ### Operations & Navigation
@@ -134,6 +138,12 @@ Applicazione **Symfony 7.4** per la gestione di navi, equipaggi, contratti e mut
   php bin/console app:db:import --clean --file=var/backup/nav_fi.dump
   ```
   Nota: il dump/import gestisce solo i dati. Esegui le migration **prima** dell’import per ricreare PK/FK/unique/index, oppure usa un dump schema+data.
+
+- **Esecuzione Test (Automated Verification Suite)**:
+  ```bash
+  bin/phpunit tests/Functional/ComprehensiveWorkflowTest.php
+  ```
+  La suite verifica l'intero ciclo di vita di missioni e trading.
 
 ## Avvio
 - Server di sviluppo Symfony:

@@ -1,7 +1,7 @@
 # Nav-Fi³ Web – Analisi Tecnica (Aggiornata)
 
-> **Versione**: 2.1
-> **Ultimo Aggiornamento**: 2026-01-21
+> **Versione**: 2.2
+> **Ultimo Aggiornamento**: 2026-01-25
 
 Applicazione Symfony dedicata alla gestione di navi, equipaggi, contratti e mutui nel contesto del gioco di ruolo **Traveller**.
 
@@ -43,6 +43,12 @@ Gestisce la logica di business:
     *   *Backward*: Posted -> Pending (Storna fondi - Undo temporale).
 *   **`reverseTransactions()`**: Strategia di "Soft Edit". Invece di modificare una transazione passata, il sistema crea una transazione di rettifica (uguale e contraria) e ne emette una nuova.
 
+### 2.3. Trade Liquidation Protocol house
+Implementa il workflow di acquisto e vendita merce:
+*   **Inventory (Unsold Goods)**: Gli acquisti via Cube (Trade) vengono isolati finché non viene registrata una vendita corrispondente.
+*   **Liquidation Mapping**: Conversione di un `Cost` (Acquisto) in un `Income` (Vendita) con link diretto tra le entità tramite `IncomeTradeDetails`.
+*   **Financial Balance**: Sincronizzazione automatica tra quantità venduta e stato del carico (Sold/Hold).
+
 ## 3. Dominio Applicativo & Logiche Chiave
 
 ### 3.1. Campaign & Time Cursor
@@ -83,3 +89,10 @@ L'UI non segue i canoni standard di un pannello admin, ma simula un'interfaccia 
 *   **Comandi Console**:
     *   `app:context:import`: Carica i dati di base (leggi, ruoli, equipaggiamento standard).
     *   `app:fiscal-close`: (Opzionale) Archiviazione transazioni anno fiscale precedente.
+
+## 6. QA & Verification house
+Il sistema include una **Automated Verification Suite** (`ComprehensiveWorkflowTest.php`) che simula:
+*   Generazione e accettazione opportunità (Freight, Pax, Mail, Contract).
+*   Selezione manuale delle date di missione (Pickup, Departure).
+*   Ciclo di trading completo (Purchase -> Hold -> Sale).
+*   Integrità del ledger e bilanciamenti cassa. house
