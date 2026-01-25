@@ -1,91 +1,45 @@
-# Nav-Fi³ Web – Analisi Operativa
+# Nav-Fi³ Web – Guida Operativa (Referee & Player Manual)
 
-> **Obiettivo**: Definire i flussi di lavoro standard per l'ufficiale di rotta e il Referee.
+> **Obiettivo**: Definire i flussi di lavoro standard per la gestione di campagne, navi ed economia.
 
-## 1. Mappa Concettuale delle Relazioni
+## 1. Mappa delle Relazioni
+Il sistema è gerarchico: l'**Utente** possiede una **Campagna**, la Campagna gestisce il tempo e ospita gli **Asset** (Navi). Ogni Asset ha il proprio libro mastro (**Ledger**) dove vengono registrati **Income** (Entrate) e **Cost** (Uscite).
 
-```mermaid
-graph TD
-    User((Utente)) --> Campaign
-    User --> Company["Company (Cross-Campaign)"]
-    
-    Campaign["Campaign (Time Cursor)"] --> Ship
-    
-    Ship --> Crew
-    Ship --> Mortgage
-    Ship --> Route
-    Ship --> Ledger["Ledger (Financial Core)"]
-    
-    Ledger --> Income
-    Ledger --> Cost
-    Ledger --> SalaryPayment
-    Ledger --> MortgageInstallment
-```
+## 2. Setup: Commissioning & Onboarding
+1.  **Context Setup**: Assicurarsi che le tabelle di contesto (Leggi, Ruoli, Categorie) siano popolate tramite `app:context:import`.
+2.  **Asset Registration**: Creare la nave definendo classe e specifiche tecniche (JSON).
+3.  **Financial Setup**: Se la nave non è pagata interamente, attivare un **Mutuo** (`Mortgage`). La firma del mutuo genera ufficialmente il piano di ammortamento.
 
-## 2. Flusso: Setup Iniziale "Commissioning"
+## 3. Ciclo Operativo di Missione
 
-1.  **Context Load**: Assicurarsi che le tabelle di contesto (`ShipRole`, `LocalLaw`, ecc.) siano popolate.
-2.  **Campaign Init**: Creare la Campagna. Impostare la data iniziale (es. 001-1105).
-3.  **Ship Registration**:
-    *   Compilare i dati base (Nome, Classe).
-    *   Definire i dettagli tecnici (Hull, Drives) nella scheda JSON.
-    *   *Nota*: Il "Prezzo" della nave è un campo manuale, ma può essere derivato dalla somma dei componenti.
-4.  **Mortgage Signing**:
-    *   Se la nave non è pagata cash, creare un Mutuo.
-    *   Firmare il mutuo alla data corrente della campagna.
-    *   Questo genera il PDF "Atto di Mutuo".
+### Fase 1: Pianificazione (The Cube)
+1.  Inizializzare una **Broker Session** nel sistema di destinazione.
+2.  Generare e salvare le opportunità interessanti.
+3.  **Accettazione Avanzata**: In fase di firma, selezionare l'Asset responsabile e impostare la data reale di missione (es. *Pickup Date* per cargo).
 
-## 3. Flusso: Ciclo Operativo di Missione
+### Fase 2: Trading e Speculazione
+1.  **Acquisto**: Accettare un'opportunità di tipo `TRADE` deduce immediatamente i fondi dall'Asset.
+2.  **Inventory**: Le merci acquistate rimangono visibili nella lista "Unsold Cargo" dell'Asset.
+3.  **Vendita/Liquidazione**: Al mercato di destinazione, registrare la vendita legandola all'acquisto originale. Il sistema calcola profitto/perdita e libera lo spazio in magazzino.
 
-### Fase 1: Briefing & Rotta
-1.  **Definizione Rotta**: Usare il modulo `Routes`.
-    *   Inserire Hex partenza e destinazione.
-    *   Verificare distanza (Jump-1, Jump-2...) e consumo fuel.
-    *   Consultare TravellerMap via link integrato per rischi di sistema (Amber/Red Zones).
-2.  **Reclutamento**: Assegnare Crew dalla lista "Unassigned".
-    *   Lo status passa ad `Active`.
-    *   La data di attivazione diventa la data corrente.
+### Fase 3: Esecuzione e Spese
+Registrare spese operative (Fuel, Berthing, Repairs) come `Cost`. Ogni operazione genera una transazione nel ledger che impatta il saldo basandosi sulla data corrente della campagna.
 
-### Fase 2: Contratti (Income)
-1.  Creare un `Income` (es. "Freight - 200 tonnellate").
-2.  Collegare una `Company` come controparte.
-3.  Impostare:
-    *   `Signing Date` (Oggi).
-    *   `Payment Date` (Prevista all'arrivo).
-4.  Il sistema calcola eventuali depositi (anticipi) e li posta subito sul Ledger (`Transaction` POSTED).
-5.  Il saldo finale viene creato come `Transaction` PENDING (futura).
+## 4. Gestione HR e Salari
+1.  **Reclutamento**: Assegnare Crew all'Asset con stato `Active`.
+2.  **Configurazione Paga**: Creare un record `Salary` per il membro dell'equipaggio.
+3.  **First Payment**: Impostare la data del primo pagamento. Il sistema suggerisce un importo pro-rata basato sui giorni effettivamente lavorati fino a quella data.
+4.  **Automazione**: Ogni 28 giorni dal primo pagamento, il sistema genererà automaticamente un prelievo per lo stipendio mensile.
 
-### Fase 3: Esecuzione & Spese (Cost)
-1.  Registrare spese correnti: Fuel, Life Support, Berthing Fees.
-2.  Ogni spesa riduce il saldo immediatamente (se pagata cash) o alla data indicata.
+## 5. Chiusura Sessione (Temporal Advance)
+1.  Il Referee avanza la data della Campagna.
+2.  **Sincronizzazione**: Al salvataggio, il sistema:
+    *   Posta i pagamenti in sospeso (Income/Stipendi).
+    *   Ricalcola i saldi degli Asset.
+    *   Verifica eventuali stati di insolvenza ("Hard Deck Breach").
 
-### Fase 4: Chiusura & Salto Temporale
-1.  **Arrivo a destinazione**: Il Referee avanza la data della Campagna (es. +7 giorni per il salto + 1 giorno manovra).
-2.  **Sync**: Il sistema rileva il cambio data.
-    *   Le transazioni PENDING (il saldo del contratto Freight) diventano POSTED.
-    *   I fondi vengono accreditati.
-    *   Vengono generati i ratei stipendio (se scaduti i 28 giorni).
-
-## 4. Gestione Anomalie
-
-### Annullamento Contratti (Void)
-Se una missione fallisce:
-1.  Andare sul dettaglio `Income`.
-2.  Impostare `Cancel Date`.
-3.  La transazione PENDING del saldo finale viene marcata `VOID` (Annullata).
-4.  Il PDF del contratto riceve un watermark "VOID".
-
-### Ristrutturazione Debito
-Se il mutuo non può essere pagato:
-1.  Non modificare le rate passate.
-2.  Usare il comando di "Refinance" (se implementato) o annotare l'evento nel Log di Campagna.
-3.  Il sistema segnalerà "Hard Deck Breach" (Insolvenza) se il saldo va sotto zero.
-
-## 5. Interfaccia Tattica (UX Guide)
-*   **Dashboard**: Monitorare i widget "Solvency" e "Fuel".
-*   **Color Codes**:
-    *   Cyan/Azure: Operativo / Normale.
-    *   Emerald: Finanziario Positivo (Entrate).
-    *   Amber: Attenzione / Pending.
-    *   Red: Critico / Debito / Spesa.
-*   **Badge**: Usare i badge rapidi per vedere a colpo d'occhio stato contratti e crew (es. "MIA", "SIGNED").
+## 6. Glossario UI
+*   **Cyan (Abyss)**: Operatività, Liste, Dati tecnici.
+*   **Emerald**: Flussi di cassa positivi, Saldi attivi.
+*   **Amber**: Dati in attesa (Pending), Scadenze imminenti.
+*   **Red**: Debito, Spese, Annullamenti (Void).
