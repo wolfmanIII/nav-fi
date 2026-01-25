@@ -277,6 +277,13 @@
         {% endif %}
 
         <div class="flex items-center justify-end gap-3 mb-10">
+            {% if income.id and can_edit %}
+                <a href="{{ path('app_income_delete', {id: income.id}) }}" 
+                   class="btn btn-ghost text-rose-500 hover:text-rose-400 hover:bg-rose-900/20 font-orbitron uppercase text-[10px] tracking-widest font-bold mr-auto"
+                   onclick="return confirm('WARNING: This will permanently erase this financial record. Are you sure?');">
+                    Delete Record
+                </a>
+            {% endif %}
             <a href="{{ path('app_income_index') }}" class="btn btn-ghost font-orbitron uppercase text-[10px] tracking-widest text-slate-500 hover:text-slate-300 font-bold">Abort Changes</a>
             <button type="submit"
                     class="btn btn-primary px-8 font-orbitron uppercase text-[10px] tracking-widest font-bold shadow-lg shadow-cyan-500/10"

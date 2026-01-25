@@ -9,7 +9,8 @@ class MailGenerator implements OpportunityGeneratorInterface
 {
     public function __construct(
         #[Autowire('%app.cube.economy%')]
-        private readonly array $economyConfig
+        private readonly array $economyConfig,
+        private readonly \App\Repository\CompanyRepository $companyRepo
     ) {}
 
     public function supports(string $type): bool
@@ -29,6 +30,19 @@ class MailGenerator implements OpportunityGeneratorInterface
         $rate = $this->economyConfig['mail']['flat_rate'];
         $total = $containers * $rate;
 
+        // Mail is usually official
+        $patron = 'Imperial Interstellar Scout Service (IISS)';
+        // 20% chance of Private Courier Contract
+        if (mt_rand(1, 100) <= 20) {
+            $companies = $this->companyRepo->findAll();
+            if (!empty($companies)) {
+                $c = $companies[mt_rand(0, count($companies) - 1)];
+                $patron = $c->getName();
+            } else {
+                $patron = 'Private Courier Network';
+            }
+        }
+
         return new CubeOpportunityData(
             signature: '',
             type: 'MAIL',
@@ -41,7 +55,10 @@ class MailGenerator implements OpportunityGeneratorInterface
                 'dest_hex' => $context['dest_hex'] ?? '????',
                 'containers' => $containers,
                 'tons' => $containers * 5,
-                'priority' => 'High'
+                'priority' => 'High',
+                'patron' => $patron,
+                'start_day' => $context['session_day'],
+                'start_year' => $context['session_year']
             ]
         );
     }

@@ -9,17 +9,18 @@ class PassengerGenerator implements OpportunityGeneratorInterface
 {
     public function __construct(
         #[Autowire('%app.cube.economy%')]
-        private readonly array $economyConfig
+        private readonly array $economyConfig,
+        private readonly \App\Repository\CompanyRepository $companyRepo
     ) {}
 
     public function supports(string $type): bool
     {
-        return $type === 'PASSENGER';
+        return $type === 'PASSENGERS';
     }
 
     public function getType(): string
     {
-        return 'PASSENGER';
+        return 'PASSENGERS';
     }
 
     public function generate(array $context, int $maxDist): CubeOpportunityData
@@ -37,9 +38,16 @@ class PassengerGenerator implements OpportunityGeneratorInterface
         $ticketPrice = $this->economyConfig['passengers'][$class][$dist] ?? 500;
         $total = $paxCount * $ticketPrice;
 
+        // Select Booking Agent
+        $companies = $this->companyRepo->findAll();
+        $agent = null;
+        if (!empty($companies)) {
+            $agent = $companies[mt_rand(0, count($companies) - 1)];
+        }
+
         return new CubeOpportunityData(
             signature: '',
-            type: 'PASSENGER',
+            type: 'PASSENGERS',
             summary: "$paxCount x $class Passage to {$context['destination']}",
             distance: $dist,
             amount: (float)$total,
@@ -49,7 +57,11 @@ class PassengerGenerator implements OpportunityGeneratorInterface
                 'dest_hex' => $context['dest_hex'] ?? '????',
                 'pax' => $paxCount,
                 'class' => $class,
-                'dest_dist' => $dist
+                'dest_dist' => $dist,
+                'company_id' => $agent?->getId(),
+                'patron' => $agent?->getName() ?? 'Starport Authority',
+                'start_day' => $context['session_day'],
+                'start_year' => $context['session_year']
             ]
         );
     }

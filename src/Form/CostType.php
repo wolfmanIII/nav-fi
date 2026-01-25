@@ -161,6 +161,14 @@ class CostType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 3],
             ])
+            ->add('targetDestination', TextType::class, [
+                'required' => false,
+                'label' => 'Target Trade Destination (Optional)',
+                'attr' => [
+                    'class' => 'input m-1 w-full',
+                    'placeholder' => 'e.g. Sol System, Station X... (Used for Trade Goods)'
+                ],
+            ])
         ;
 
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
@@ -197,6 +205,7 @@ class CostType extends AbstractType
                     'description' => $description,
                     'quantity' => $qty,
                     'cost' => $lineCost,
+                    'isSold' => $item['isSold'] ?? false, // Preserva lo stato di vendita
                 ];
                 $total += $qty * $lineCost;
             }

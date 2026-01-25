@@ -1,0 +1,195 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nav-Fi&sup3; - Liquidate Trade Good{% endblock %}
+
+{% block pageContent %}
+    <div class="w-full">
+        {# Header #}
+        <div class="relative rounded-xl border border-emerald-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-900 shadow-lg mb-6 overflow-hidden">
+            <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
+                 style="background: radial-gradient(circle at 20% 20%, rgba(16,185,129,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(52,211,153,0.25), transparent 35%);">
+            </div>
+            <div class="relative p-6 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-400/40">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                    </div>
+                    <div>
+                        <p class="uppercase text-[10px] tracking-[0.3em] text-emerald-300/70 font-bold font-orbitron mb-0.5">Liquidation // Trade Protocol</p>
+                        <h1 class="text-2xl font-bold font-orbitron text-white uppercase tracking-wider">Record Sale</h1>
+                        <p class="text-xs text-emerald-200/60 font-rajdhani uppercase tracking-widest">Logging revenue from sold cargo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{ form_start(form) }}
+        {{ form_widget(form._token) }}
+
+        {% if not form.vars.valid %}
+            <div class="alert alert-error mb-6 shadow-lg border border-red-500/50 bg-red-950/20 text-red-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <div class="flex-1">
+                    <h3 class="font-bold font-orbitron text-xs uppercase tracking-widest">Protocol Violation // Validation Error</h3>
+                    <div class="text-[10px] uppercase font-mono mt-1">
+                        {{ form_errors(form) }}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {# Trade Intel (ReadOnly Manifest) #}
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Original Manifest Data</legend>
+
+            {# Item Name (Static) #}
+            <div class="col-span-2 md:col-span-1">
+                <div class="flex items-baseline h-5 mb-1">
+                    <span class="mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Cargo Manifest</span>
+                </div>
+                <div class="w-full px-4 py-3 bg-slate-950/50 border border-slate-700 rounded-lg text-amber-100 font-mono text-sm">
+                    {{ cost.title }}
+                    <div class="mt-2 pt-2 border-t border-slate-800 space-y-1">
+                        {% if cost.company %}
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] text-slate-500 uppercase">Supplier</span>
+                                <span class="text-slate-300">{{ cost.company.name }}</span>
+                            </div>
+                        {% elseif cost.note %}
+                            {# Tentativo di estrarre Patron se nel formato "Supplier/Patron: Name" #}
+                            {% set supplier = cost.note|split('\n')[0]|replace({'Supplier/Patron: ': ''}) %}
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] text-slate-500 uppercase">Broker/Patron</span>
+                                <span class="text-slate-300">{{ supplier }}</span>
+                            </div>
+                        {% endif %}
+
+                        {% if cost.targetDestination %}
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] text-amber-500/70 uppercase">Target System</span>
+                                <span class="text-amber-400 font-bold font-orbitron text-[10px]">{{ cost.targetDestination }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {# Purchase Data #}
+            <div class="col-span-2 md:col-span-1">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <div class="flex items-baseline h-5 mb-1">
+                            <span class="mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Quantity</span>
+                        </div>
+                        <div class="w-full px-4 py-3 bg-slate-950/50 border border-slate-700 rounded-lg text-emerald-400 font-mono text-sm font-bold">
+                            {{ (cost.detailItems[0].quantity ?? 0)|format_number({}, 'decimal', 'default', app.request.locale) }} tons
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-baseline h-5 mb-1">
+                            <span class="mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Purchase Date</span>
+                        </div>
+                        <div class="w-full px-4 py-3 bg-slate-950/50 border border-slate-700 rounded-lg text-slate-300 font-mono text-sm">
+                            {{ cost.paymentDay|imperial_date(cost.paymentYear) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Financial Reference #}
+            <div class="col-span-2">
+                <div class="grid grid-cols-3 gap-4 p-4 rounded-lg bg-slate-950/30 border border-slate-800/50">
+                    <div>
+                        <span class="block text-[9px] uppercase font-bold text-slate-500 tracking-widest mb-1">Initial Cost</span>
+                        <span class="font-mono text-red-400">-{{ cost.amount|abs|format_number({ min_fraction_digit: 0 }, 'decimal', 'default', app.request.locale) }} Cr</span>
+                    </div>
+                    <div>
+                        <span class="block text-[9px] uppercase font-bold text-slate-500 tracking-widest mb-1">Break Even</span>
+                        <span class="font-mono text-amber-200">{{ cost.amount|abs|format_number({ min_fraction_digit: 0 }, 'decimal', 'default', app.request.locale) }} Cr</span>
+                    </div>
+                    <div>
+                        {% set details = cost.detailItems[0] ?? null %}
+                        {% set markup = details.markup_estimate ?? 1.50 %}
+                        <span class="block text-[9px] uppercase font-bold text-slate-500 tracking-widest mb-1">Contract Target</span>
+                        <span class="font-mono text-emerald-400">{{ (cost.amount|abs * markup)|format_number({ min_fraction_digit: 0 }, 'decimal', 'default', app.request.locale) }} Cr</span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        {# Financial & Date Entry #}
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-emerald-500/80 uppercase">Financial Execution</legend>
+
+            <div class="col-span-2">
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.amount, 'Market Offer (Calculated)', { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(form.amount, { attr: { 
+                    'class': 'input input-bordered w-full bg-slate-950/20 border-emerald-500/30 text-emerald-400 font-mono font-bold text-lg cursor-not-allowed', 
+                    'readonly': 'readonly'
+                } }) }}
+                <div class="text-[9px] text-slate-500 mt-2 font-mono uppercase">Fixed rate offered by local brokers based on contract.</div>
+            </div>
+        </fieldset>
+
+        {# Counterparty Selection (The "Income Edit" Pattern) #}
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Counterparty / Buyer</legend>
+
+            <div class="col-span-2 md:col-span-1">
+                <div class="flex items-baseline h-5 mb-1">
+                   {{ form_label(form.company, 'Option A: Buyer Company', { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(form.company, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
+                <div class="text-[9px] text-slate-500 mt-1 font-mono uppercase">Select a registered corporate entity.</div>
+            </div>
+
+            <div class="col-span-2 md:col-span-1">
+                <div class="flex items-baseline h-5 mb-1">
+                   {{ form_label(form.patronAlias, 'Option B: Buyer / Broker Alias', { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(form.patronAlias, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50', placeholder: 'e.g. Local Black Market' } }) }}
+                <div class="text-[9px] text-slate-500 mt-1 font-mono uppercase">Use if the buyer is not in your company list.</div>
+            </div>
+        </fieldset>
+
+        {# Logistics #}
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-slate-500 uppercase">Logistics & Compliance</legend>
+
+            <div class="col-span-2 md:col-span-1">
+                <div class="flex items-baseline h-5 mb-1">
+                   {{ form_label(form.signingLocation, 'Market Location', { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(form.signingLocation, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            </div>
+
+            <div class="col-span-2 md:col-span-1">
+                <div class="flex items-baseline h-5 mb-1">
+                   {{ form_label(form.localLaw, 'Local Law Level', { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(form.localLaw, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            </div>
+        </fieldset>
+
+        {# Hidden internals #}
+        <div class="hidden">
+            {{ form_widget(form.title) }}
+            {{ form_widget(form.incomeCategory) }}
+            {{ form_widget(form.asset) }}
+            {{ form_widget(form.campaign) }}
+            {{ form_widget(form.status) }}
+            {{ form_widget(form.note) }}
+        </div>
+
+        <div class="flex items-center justify-end gap-3 mb-10">
+            <a href="{{ path('app_trade_unsold') }}" class="btn btn-ghost font-orbitron uppercase text-[10px] tracking-widest text-slate-500 hover:text-slate-300 font-bold">Abort Changes</a>
+            <button type="submit" class="btn btn-primary px-8 font-orbitron uppercase text-[10px] tracking-widest font-bold shadow-lg shadow-cyan-500/10">
+                Confirm Entry // Commit to Log
+            </button>
+        </div>
+
+        {{ form_end(form, {render_rest: false}) }}
+    </div>
+{% endblock %}

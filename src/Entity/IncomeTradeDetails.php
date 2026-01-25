@@ -78,6 +78,10 @@ class IncomeTradeDetails
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $returnPolicy = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Cost $purchaseCost = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -311,6 +315,18 @@ class IncomeTradeDetails
     public function setReturnPolicy(?string $returnPolicy): static
     {
         $this->returnPolicy = $returnPolicy;
+        return $this;
+    }
+
+    public function getPurchaseCost(): ?Cost
+    {
+        return $this->purchaseCost;
+    }
+
+    public function setPurchaseCost(?Cost $purchaseCost): static
+    {
+        $this->purchaseCost = $purchaseCost;
+
         return $this;
     }
 }

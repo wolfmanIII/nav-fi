@@ -119,13 +119,13 @@ class FinancialIntegrationTest extends KernelTestCase
 
         $details = $result->getDetailItems();
         $this->assertIsArray($details);
-        $this->assertEquals(10, $details['quantity']);
+        $this->assertEquals(10, $details[0]['quantity']);
     }
 
     private function ensureCategories(): void
     {
         // Check and create Income Categories
-        foreach (['CONTRACT', 'FREIGHT', 'PASSENGER', 'MAIL', 'TRADE'] as $code) {
+        foreach (['CONTRACT', 'FREIGHT', 'PASSENGERS', 'MAIL', 'TRADE'] as $code) {
             $repo = $this->em->getRepository(IncomeCategory::class);
             if (!$repo->findOneBy(['code' => $code])) {
                 $cat = new IncomeCategory();

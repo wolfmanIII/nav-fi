@@ -18,19 +18,24 @@ class PassengerGeneratorTest extends TestCase
             ]
         ];
 
-        $generator = new PassengerGenerator($config);
-        $this->assertTrue($generator->supports('PASSENGER'));
-        $this->assertEquals('PASSENGER', $generator->getType());
+        $repo = $this->createMock(\App\Repository\CompanyRepository::class);
+        $repo->method('findAll')->willReturn([]);
+
+        $generator = new PassengerGenerator($config, $repo);
+        $this->assertTrue($generator->supports('PASSENGERS'));
+        $this->assertEquals('PASSENGERS', $generator->getType());
 
         $context = [
             'origin' => 'A',
             'destination' => 'B',
-            'distance' => 2
+            'distance' => 2,
+            'session_day' => 100,
+            'session_year' => 1105
         ];
 
         $opp = $generator->generate($context, 2);
 
-        $this->assertEquals('PASSENGER', $opp->type);
+        $this->assertEquals('PASSENGERS', $opp->type);
         $this->assertEquals(2, $opp->distance);
 
         // Pax count is 2-12. Price is at least 20 per pax.

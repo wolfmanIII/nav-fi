@@ -203,12 +203,30 @@ class Cost
         return $this;
     }
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $targetDestination = null;
+
+    public function getTargetDestination(): ?string
+    {
+        return $this->targetDestination;
+    }
+
+    public function setTargetDestination(?string $targetDestination): static
+    {
+        $this->targetDestination = $targetDestination;
+
+        return $this;
+    }
+
     /**
      * Collection of purchased/provided items with keys like description, quantity and cost.
      */
     public function getDetailItems(): array
     {
-        return $this->detailItems ?? [];
+        $items = $this->detailItems ?? [];
+
+        // Defensive coding: Filter out invalid items (e.g. strings) that crash the Form Mapper
+        return array_filter($items, fn($item) => is_array($item));
     }
 
     public function setDetailItems(?array $detailItems): static

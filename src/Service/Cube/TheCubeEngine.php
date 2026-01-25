@@ -55,14 +55,18 @@ class TheCubeEngine
             }
         }
 
+        $campaign = $session->getCampaign();
+        $sessionDay = $campaign?->getSessionDay() ?? 1;
+        $sessionYear = $campaign?->getSessionYear() ?? 1105;
+
         for ($i = 0; $i < $count; $i++) {
-            $results[] = $this->generateSingle($originName, $originHex, $destinations, $maxDist, $i);
+            $results[] = $this->generateSingle($originName, $originHex, $destinations, $maxDist, $i, $sessionDay, $sessionYear);
         }
 
         return $results;
     }
 
-    private function generateSingle(string $originName, string $originHex, array $destinations, int $maxDist, int $index): \App\Dto\Cube\CubeOpportunityData
+    private function generateSingle(string $originName, string $originHex, array $destinations, int $maxDist, int $index, int $sessionDay, int $sessionYear): \App\Dto\Cube\CubeOpportunityData
     {
         // Seleziona destinazione
         $destination = null;
@@ -86,7 +90,9 @@ class TheCubeEngine
             'origin_hex' => $originHex,
             'destination' => $destName,
             'dest_hex' => $destHex,
-            'distance' => $dist
+            'distance' => $dist,
+            'session_day' => $sessionDay,
+            'session_year' => $sessionYear
         ];
 
         // Genera firma deterministica

@@ -37,7 +37,12 @@ class TheCubeEngineTest extends TestCase
 
     public function testGenerateBatchReturnsDtos(): void
     {
+        $campaign = $this->createMock(\App\Entity\Campaign::class);
+        $campaign->method('getSessionDay')->willReturn(100);
+        $campaign->method('getSessionYear')->willReturn(1105);
+
         $session = new BrokerSession();
+        $session->setCampaign($campaign);
         $session->setSeed('TEST_SEED');
         $session->setSector('Test Sector');
         $session->setOriginHex('0101');

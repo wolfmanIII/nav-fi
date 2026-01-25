@@ -34,26 +34,54 @@ class FinancialEventSubscriber
         $uow = $em->getUnitOfWork();
 
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if ($entity instanceof Income || $entity instanceof Cost || $entity instanceof MortgageInstallment || $entity instanceof SalaryPayment) {
-                // Inverte vecchie transazioni
-                $type = match (true) {
-                    $entity instanceof Income => 'Income',
-                    $entity instanceof Cost => 'Cost',
-                    $entity instanceof MortgageInstallment => 'MortgageInstallment',
-                    $entity instanceof SalaryPayment => 'SalaryPayment',
-                };
+            $this->processUpdates($entity, $em, $uow);
+        }
 
-                // STRATEGIA DI INVERSIONE:
-                // La vecchia architettura si basava sull'invertire tutto e aggiungere nuove.
-                // NON DOBBIAMO FARE FLUSH.
-                $reversals = $this->ledgerService->reverseTransactions($type, $entity->getId(), false);
-                $metadata = $em->getClassMetadata(Transaction::class);
-                foreach ($reversals as $rtx) {
-                    $uow->computeChangeSet($metadata, $rtx);
-                }
+        foreach ($uow->getScheduledEntityDeletions() as $entity) {
+            $this->processDeletions($entity, $em, $uow);
+        }
+    }
 
-                // 2. Aggiungi nuove
-                $this->handleEvent($entity, true, false, $em);
+    private function processUpdates(object $entity, \Doctrine\ORM\EntityManagerInterface $em, \Doctrine\ORM\UnitOfWork $uow): void
+    {
+        if ($entity instanceof Income || $entity instanceof Cost || $entity instanceof MortgageInstallment || $entity instanceof SalaryPayment) {
+            // Inverte vecchie transazioni
+            $type = match (true) {
+                $entity instanceof Income => 'Income',
+                $entity instanceof Cost => 'Cost',
+                $entity instanceof MortgageInstallment => 'MortgageInstallment',
+                $entity instanceof SalaryPayment => 'SalaryPayment',
+            };
+
+            // STRATEGIA DI INVERSIONE:
+            // La vecchia architettura si basava sull'invertire tutto e aggiungere nuove.
+            // NON DOBBIAMO FARE FLUSH.
+            $reversals = $this->ledgerService->reverseTransactions($type, $entity->getId(), false);
+            $metadata = $em->getClassMetadata(Transaction::class);
+            foreach ($reversals as $rtx) {
+                $uow->computeChangeSet($metadata, $rtx);
+            }
+
+            // 2. Aggiungi nuove
+            $this->handleEvent($entity, true, false, $em);
+        }
+    }
+
+    private function processDeletions(object $entity, \Doctrine\ORM\EntityManagerInterface $em, \Doctrine\ORM\UnitOfWork $uow): void
+    {
+        if ($entity instanceof Income || $entity instanceof Cost || $entity instanceof MortgageInstallment || $entity instanceof SalaryPayment) {
+            $type = match (true) {
+                $entity instanceof Income => 'Income',
+                $entity instanceof Cost => 'Cost',
+                $entity instanceof MortgageInstallment => 'MortgageInstallment',
+                $entity instanceof SalaryPayment => 'SalaryPayment',
+            };
+
+            // REVERSE ONLY (Refund/Void effect)
+            $reversals = $this->ledgerService->reverseTransactions($type, $entity->getId(), false);
+            $metadata = $em->getClassMetadata(Transaction::class);
+            foreach ($reversals as $rtx) {
+                $uow->computeChangeSet($metadata, $rtx);
             }
         }
     }

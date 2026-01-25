@@ -30,7 +30,9 @@ class ContractGeneratorTest extends TestCase
             'origin' => 'A',
             'destination' => 'B',
             'distance' => 0,
-            'sector' => 'Test Sector'
+            'sector' => 'Test Sector',
+            'session_day' => 100,
+            'session_year' => 1105
         ];
 
         $opp = $generator->generate($context, 2);

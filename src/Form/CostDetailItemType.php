@@ -27,6 +27,10 @@ class CostDetailItemType extends AbstractType
                 'required' => false,
                 'label' => 'Cost (Cr)',
                 'attr' => ['class' => 'input m-1 w-full', 'step' => 'any', 'data-cost-mcr' => '1'],
+            ])
+            ->add('isSold', \Symfony\Component\Form\Extension\Core\Type\HiddenType::class, [
+                'required' => false,
+                'empty_data' => '0',
             ]);
     }
 

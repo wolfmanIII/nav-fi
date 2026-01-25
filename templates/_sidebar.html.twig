@@ -47,7 +47,8 @@
                     or current_route starts with 'app_company' 
                     or current_route starts with 'app_asset' 
                     or current_route starts with 'app_crew' 
-                    or current_route starts with 'app_route' %}
+                    or current_route starts with 'app_route'
+                    or current_route starts with 'app_trade' %}
                 <details {% if tactical_active %}open{% endif %} data-controller="sidebar-module" data-action="toggle->sidebar-module#toggle">
                     <summary data-sidebar-module-target="summary" class="text-xs uppercase tracking-widest text-slate-400 hover:text-cyan-300 relative overflow-hidden">Tactical & Logistics</summary>
                     <ul data-sidebar-module-target="content">
@@ -108,6 +109,12 @@
                             <a href="{{ path('app_route_index') }}" class="{% if current_route == 'app_route_index' %}text-cyan-400 font-bold{% endif %}">
                                 {% include 'icons/routes.html.twig' with {'dim': '18'} %}
                                 <span>Navigation Routes</span>
+                            </a>
+                        </li>
+                        <li data-sidebar-module-target="item">
+                            <a href="{{ path('app_trade_unsold') }}" class="{% if current_route == 'app_trade_unsold' or current_route == 'app_trade_sell' %}text-amber-400 font-bold{% endif %}">
+                                {% include 'icons/box.html.twig' with {'dim': '18'} %}
+                                <span>Active Cargo</span>
                             </a>
                         </li>
                     </ul>

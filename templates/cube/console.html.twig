@@ -86,7 +86,7 @@
                                 <h4 class="text-sm font-bold text-amber-100 font-rajdhani uppercase tracking-wide group-hover/title:text-cyan-400 transition-colors">{{ opp.summary }}</h4>
                                 <div class="flex items-center gap-2 mt-1">
                                     <span class="text-[10px] font-mono text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">{{ opp.data.type }}</span>
-                                    <span class="text-xs font-mono text-emerald-400 font-bold">{{ opp.amount|number_format }} Cr</span>
+                                    <span class="text-xs font-mono text-emerald-400 font-bold">{{ opp.amount|format_number({ min_fraction_digit: 0, max_fraction_digit: 0 }, 'decimal', 'default', app.request.locale) }} Cr</span>
                                 </div>
                             </a>
                             <div class="shrink-0">

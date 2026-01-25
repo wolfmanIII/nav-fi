@@ -13,14 +13,19 @@ class MailGeneratorTest extends TestCase
             'mail' => ['flat_rate' => 25000]
         ];
 
-        $generator = new MailGenerator($config);
+        $repo = $this->createMock(\App\Repository\CompanyRepository::class);
+        $repo->method('findAll')->willReturn([]);
+
+        $generator = new MailGenerator($config, $repo);
         $this->assertTrue($generator->supports('MAIL'));
         $this->assertEquals('MAIL', $generator->getType());
 
         $context = [
             'origin' => 'A',
             'destination' => 'B',
-            'distance' => 2
+            'distance' => 2,
+            'session_day' => 100,
+            'session_year' => 1105
         ];
 
         $opp = $generator->generate($context, 2);

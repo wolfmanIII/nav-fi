@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nav-Fi&sup3; - Active Cargo{% endblock %}
+
+{% block pageContent %}
+    <div class="relative rounded-xl border border-amber-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-amber-900 shadow-lg mb-6 overflow-hidden">
+        <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
+             style="background: radial-gradient(circle at 20% 20%, rgba(245,158,11,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(251,191,36,0.25), transparent 35%);">
+        </div>
+        <div class="relative p-4 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="p-2.5 rounded-lg bg-amber-500/10 border border-amber-400/40">
+                    {% include 'icons/box.html.twig' %}
+                </div>
+                <div class="flex-1">
+                    <p class="uppercase text-[10px] tracking-[0.3em] text-amber-300/70 font-bold font-orbitron mb-0.5">Cargo Manifest // Inventory</p>
+                    <h3 class="font-bold text-amber-100 text-2xl leading-tight font-orbitron uppercase">Active Trade Goods</h3>
+                    <p class="text-xs text-amber-100/60 font-rajdhani tracking-widest uppercase">Select goods to liquidate at current market prices.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if costs is empty %}
+        <div class="alert alert-info bg-slate-900/50 border-slate-700 text-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span>No active trade goods found. Visit <a href="{{ path('app_cube_index') }}" class="link link-primary">The Cube</a> to find new trade opportunities.</span>
+        </div>
+    {% else %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for cost in costs %}
+                <div class="card bg-slate-900/60 border border-slate-700 hover:border-amber-500/50 transition-colors shadow-lg group">
+                    <div class="card-body p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="card-title font-orbitron text-amber-100 text-lg uppercase tracking-wider group-hover:text-amber-400 transition-colors">
+                                {{ cost.title }}
+                            </h3>
+                            <div class="badge badge-outline border-amber-500/30 text-amber-400 text-xs font-mono">
+                                {{ cost.amount|format_number({ min_fraction_digit: 0, max_fraction_digit: 0 }, 'decimal', 'default', app.request.locale) }} Cr
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 mb-6">
+                            <div class="flex justify-between text-xs border-b border-slate-800 pb-1">
+                                <span class="text-slate-500 uppercase tracking-wider font-bold">Asset</span>
+                                <span class="text-slate-300 font-mono">{{ cost.asset.name }}</span>
+                            </div>
+                            <div class="flex justify-between text-xs border-b border-slate-800 pb-1">
+                                <span class="text-slate-500 uppercase tracking-wider font-bold">Purchased</span>
+                                <span class="text-slate-300 font-mono">{{ cost.paymentDay|imperial_date(cost.paymentYear) }}</span>
+                            </div>
+                            {% if cost.company %}
+                                <div class="flex justify-between text-xs border-b border-slate-800 pb-1">
+                                    <span class="text-slate-500 uppercase tracking-wider font-bold">Supplier</span>
+                                    <span class="text-slate-300 font-mono">{{ cost.company.name }}</span>
+                                </div>
+                            {% elseif cost.note %}
+                                <div class="flex justify-between text-xs border-b border-slate-800 pb-1">
+                                    <span class="text-slate-500 uppercase tracking-wider font-bold">Broker</span>
+                                    <span class="text-slate-300 font-mono">{{ cost.note|split('\n')[0]|replace({'Supplier/Patron: ': ''}) }}</span>
+                                </div>
+                            {% endif %}
+                            
+                            {% set marketValue = marketValues[cost.id] ?? null %}
+                            {% set initialCost = cost.amount|abs %}
+                            {% set currentOffer = marketValue ? (marketValue|format_number({ min_fraction_digit: 0, max_fraction_digit: 0 }, 'decimal', 'default', app.request.locale) ~ ' Cr') : 'N/A' %}
+                            
+                            {% if cost.targetDestination %}
+                                <div class="flex justify-between text-xs border-b border-slate-800 pb-1">
+                                    <span class="text-amber-500 uppercase tracking-wider font-bold">Market Intel</span>
+                                    <div class="text-right">
+                                        <div class="text-amber-300 font-mono font-bold">{{ cost.targetDestination }}</div>
+                                        <div class="text-[9px] text-emerald-500/80 font-mono">
+                                            Current Offer: {{ currentOffer }}
+                                            {% if marketValue > 0 %}
+                                                <span class="ml-1 text-emerald-400">(+{{ (((marketValue / initialCost) - 1) * 100)|round }}%)</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% set details = cost.detailItems[0] ?? null %}
+                            {% if details and details.quantity is defined %}
+                                <div class="flex justify-between text-xs border-b border-slate-800 pb-1">
+                                    <span class="text-slate-500 uppercase tracking-wider font-bold">Volume</span>
+                                    <span class="text-emerald-400 font-mono">{{ details.quantity|format_number({}, 'decimal', 'default', app.request.locale) }} tons</span>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="card-actions justify-end mt-auto">
+                            <a href="{{ path('app_trade_sell', { id: cost.id }) }}" class="btn btn-sm btn-primary btn-outline gap-2 font-orbitron uppercase text-[10px]">
+                                Liquidate
+                                {% include 'icons/credits.html.twig' with { dim: 16 } %}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

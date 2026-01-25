@@ -79,7 +79,9 @@ class ContractGenerator implements OpportunityGeneratorInterface
                 'mission_type' => $missionType,
                 'briefing' => $briefing, // Nuovo campo ricco
                 'twist' => $twist,
-                'tier' => $tierKey
+                'tier' => $tierKey,
+                'start_day' => $context['session_day'],
+                'start_year' => $context['session_year']
             ]
         );
     }

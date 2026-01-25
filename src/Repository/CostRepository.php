@@ -95,4 +95,19 @@ class CostRepository extends ServiceEntityRepository
             'total' => $paginator->count(),
         ];
     }
+    public function findUnsoldTradeGoods(User $user): array
+    {
+        return $this->createQueryBuilder('c')
+            ->join('c.costCategory', 'cat')
+            ->leftJoin('App\Entity\IncomeTradeDetails', 'itd', 'WITH', 'itd.purchaseCost = c')
+            ->andWhere('c.user = :user')
+            ->andWhere('cat.code = :tradeCode')
+            ->andWhere('itd.id IS NULL')
+            ->setParameter('user', $user)
+            ->setParameter('tradeCode', 'TRADE')
+            ->orderBy('c.paymentYear', 'DESC')
+            ->addOrderBy('c.paymentDay', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
