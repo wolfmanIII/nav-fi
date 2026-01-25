@@ -494,7 +494,8 @@ final class AssetController extends BaseController
     public function cargo(
         int $id,
         EntityManagerInterface $em,
-        \App\Repository\CostRepository $costRepo
+        \App\Repository\CostRepository $costRepo,
+        \App\Service\Trade\TradePricer $tradePricer
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
@@ -508,9 +509,15 @@ final class AssetController extends BaseController
 
         $cargoItems = $costRepo->findUnsoldTradeCargoForAsset($asset);
 
+        $marketValues = [];
+        foreach ($cargoItems as $item) {
+            $marketValues[$item->getId()] = $tradePricer->calculateMarketPrice($item);
+        }
+
         return $this->renderTurbo('asset/cargo.html.twig', [
             'asset' => $asset,
             'cargoItems' => $cargoItems,
+            'marketValues' => $marketValues,
             'controller_name' => self::CONTROLLER_NAME,
         ]);
     }
@@ -521,7 +528,8 @@ final class AssetController extends BaseController
         int $costId,
         Request $request,
         EntityManagerInterface $em,
-        \App\Service\Cube\TradeService $tradeService
+        \App\Service\Cube\TradeService $tradeService,
+        \App\Service\Trade\TradePricer $tradePricer
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
@@ -535,19 +543,17 @@ final class AssetController extends BaseController
             throw new NotFoundHttpException();
         }
 
-        $salePrice = (float) $request->request->get('amount');
+        // RECALCULATE PRICE SERVER-SIDE (Deterministic)
+        // No manual input allowed. The market decides.
+        $salePrice = (float) $tradePricer->calculateMarketPrice($cost);
+
         $location = (string) $request->request->get('location', 'Unknown');
         $day = (int) $request->request->get('day', 1);
         $year = (int) $request->request->get('year', 1105);
 
-        if ($salePrice <= 0) {
-            $this->addFlash('error', 'Invalid sale price.');
-            return $this->redirectToRoute('app_asset_cargo', ['id' => $id]);
-        }
-
         try {
             $tradeService->liquidateCargo($cost, $salePrice, $location, $day, $year);
-            $this->addFlash('success', 'Cargo sold successfully. Income recorded.');
+            $this->addFlash('success', 'Cargo sold for ' . number_format($salePrice) . ' Cr.');
         } catch (\Exception $e) {
             $this->addFlash('error', 'Liquidation failed: ' . $e->getMessage());
         }

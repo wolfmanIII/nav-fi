@@ -71,29 +71,64 @@
                         <dialog id="liquidation_modal_{{ item.id }}" class="modal bg-black/80 backdrop-blur-sm">
                             <div class="modal-box bg-slate-900 border border-amber-500/30 shadow-[0_0_50px_rgba(245,158,11,0.1)]">
                                 <h3 class="font-bold text-lg text-amber-400 font-orbitron uppercase tracking-wider mb-4">Liquidate Cargo</h3>
-                                <p class="text-sm text-slate-300 mb-4">
-                                    Selling <strong>{{ item.title }}</strong>.<br>
-                                    Initial Cost: <span class="text-amber-500 font-mono">{{ item.amount|number_format(0) }} Cr</span>
-                                </p>
+                                
+                                {% set marketPrice = marketValues[item.id]|default(0) %}
+                                {% set profit = marketPrice - item.amount %}
+                                {% set isProfitable = profit >= 0 %}
+                                {# Extract Initial Estimate from Details #}
+                                {% set initialMarkup = 1.5 %}
+                                {% for detail in item.detailItems %}
+                                    {% if detail.markup_estimate is defined %}
+                                        {% set initialMarkup = detail.markup_estimate %}
+                                    {% endif %}
+                                {% endfor %}
+                                {% set estimatedRevenue = item.amount * initialMarkup %}
+
+                                {% set roi = 0 %}
+                                {% if item.amount > 0 %}
+                                    {% set roi = ((marketPrice - item.amount) / item.amount) * 100 %}
+                                {% endif %}
+
+                                <div class="grid grid-cols-2 gap-4 mb-6 bg-slate-950 p-4 rounded border border-slate-800">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <div class="text-[10px] uppercase text-slate-500 font-bold tracking-widest mb-1">Initial Cost</div>
+                                            <div class="text-slate-300 font-mono text-lg">{{ item.amount|format_number({min_fraction_digit: 2, max_fraction_digit: 2}, 'decimal', 'default', app.request.locale) }} <span class="text-xs text-slate-500">Cr</span></div>
+                                        </div>
+                                        <div>
+                                            <div class="text-[10px] uppercase text-slate-500 font-bold tracking-widest mb-1">Initial Estimate</div>
+                                            <div class="text-slate-400 font-mono text-sm border-b border-dashed border-slate-700 inline-block" title="Expected {{ initialMarkup }}x Multiplier">
+                                                ~{{ estimatedRevenue|format_number({min_fraction_digit: 2, max_fraction_digit: 2}, 'decimal', 'default', app.request.locale) }} Cr
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right space-y-4">
+                                        <div>
+                                            <div class="text-[10px] uppercase text-slate-500 font-bold tracking-widest mb-1">Market Value</div>
+                                            <div class="font-mono text-xl font-bold {{ isProfitable ? 'text-emerald-400' : 'text-rose-400' }}">
+                                                {{ marketPrice|format_number({min_fraction_digit: 2, max_fraction_digit: 2}, 'decimal', 'default', app.request.locale) }} <span class="text-xs text-emerald-500/50">Cr</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span class="badge {{ isProfitable ? 'badge-success' : 'badge-error' }} badge-outline font-mono text-xs">
+                                                {{ roi > 0 ? '+' : '' }}{{ roi|format_number({min_fraction_digit: 1, max_fraction_digit: 1}, 'decimal', 'default', app.request.locale) }}% Return
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-2 border-t border-slate-800 pt-2 flex justify-between items-center mt-2">
+                                        <span class="text-[10px] uppercase text-slate-500 font-bold tracking-widest">Net Profit</span>
+                                        <span class="font-mono text-sm {{ isProfitable ? 'text-emerald-500' : 'text-rose-500' }} drop-shadow-[0_0_5px_rgba(0,0,0,0.5)]">
+                                            {{ isProfitable ? '+' : '' }}{{ profit|format_number({min_fraction_digit: 2, max_fraction_digit: 2}, 'decimal', 'default', app.request.locale) }} Cr
+                                        </span>
+                                    </div>
+                                </div>
                                 
                                 <form method="POST" action="{{ path('app_asset_cargo_sell', {id: asset.id, costId: item.id}) }}">
-                                    <div class="form-control w-full mb-4">
-                                        <label class="label">
-                                            <span class="label-text text-slate-400 text-xs uppercase font-bold">Sale Price (Credits)</span>
-                                        </label>
-                                        <div class="relative">
-                                            <input type="number" name="amount" class="input input-bordered bg-slate-950 border-slate-700 text-white w-full pr-12 font-mono text-lg" placeholder="0" required value="{{ item.amount }}">
-                                            <span class="absolute right-4 top-3 text-slate-500 font-bold">Cr</span>
-                                        </div>
-                                        <label class="label">
-                                            <span class="label-text-alt text-slate-600">Enter final sale value (Revenue). Profit will be calculated automatically.</span>
-                                        </label>
-                                    </div>
-
                                     <div class="grid grid-cols-2 gap-4 mb-6">
                                         <div class="form-control">
                                             <label class="label"><span class="label-text text-slate-400 text-xs uppercase font-bold">Location</span></label>
-                                            <input type="text" name="location" class="input input-bordered input-sm bg-slate-950 border-slate-700 text-white" value="Current System">
+                                            {# Pre-fill with Target Destination (the intended market) #}
+                                            <input type="text" name="location" class="input input-bordered input-sm bg-slate-950 border-slate-700 text-white" value="{{ item.targetDestination|default('Current System') }}">
                                         </div>
                                         <div class="form-control">
                                             <label class="label"><span class="label-text text-slate-400 text-xs uppercase font-bold">Date</span></label>
