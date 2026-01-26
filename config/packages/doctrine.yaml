@@ -9,10 +9,6 @@ doctrine:
         profiling_collect_backtrace: "%kernel.debug%"
         use_savepoints: true
 
-        ## Postgres pg-vector
-        types:
-            vector: Partitech\DoctrinePgVector\Type\VectorType
-
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
@@ -31,12 +27,6 @@ doctrine:
                 alias: App
         controller_resolver:
             auto_mapping: false
-
-        # Postgres pg-vector
-        dql:
-            string_functions:
-                distance: Partitech\DoctrinePgVector\Query\Distance
-                cosine_similarity: Partitech\DoctrinePgVector\Query\CosineSimilarity
 
 when@test:
     doctrine:

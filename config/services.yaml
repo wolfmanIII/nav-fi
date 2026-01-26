@@ -8,7 +8,6 @@ parameters:
     app.day_max: "%env(int:APP_DAY_MAX)%"
     app.year_min: "%env(int:APP_YEAR_MIN)%"
     app.year_max: "%env(int:APP_YEAR_MAX)%"
-    ai.backend: "%env(AI_BACKEND)%" # ollama | openai
 
 services:
     # configurazione di default per i servizi in *questo* file
@@ -23,7 +22,7 @@ services:
 
     _instanceof:
         App\Service\Cube\Generator\OpportunityGeneratorInterface:
-            tags: ['app.cube.generator']
+            tags: ["app.cube.generator"]
 
     App\Form\Config\DayYearLimits:
         arguments:
