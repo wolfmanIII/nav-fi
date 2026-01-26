@@ -47,8 +47,14 @@ class FinancialIntegrationTest extends KernelTestCase
         $this->asset->setCategory('ship');
         $this->asset->setCampaign($campaign);
         $this->asset->setUser($user);
-        $this->asset->setCredits('1000000.00');
+
         $this->em->persist($this->asset);
+
+        $fa = new \App\Entity\FinancialAccount();
+        $fa->setAsset($this->asset);
+        $fa->setUser($user);
+        $fa->setCredits('1000000.00');
+        $this->em->persist($fa);
 
         // Ensure Categories Exist
         $this->ensureCategories();
@@ -87,9 +93,10 @@ class FinancialIntegrationTest extends KernelTestCase
         $this->assertEquals('5000', $result->getAmount());
         $this->assertEquals('[Routine] Escort Mission', $result->getTitle());
         $this->assertEquals(Income::STATUS_SIGNED, $result->getStatus());
-        $this->assertEquals('Test Patron', $result->getPatronAlias());
-        $this->assertInstanceOf(\App\Entity\IncomeContractDetails::class, $result->getContractDetails());
-        $this->assertEquals('Escort', $result->getContractDetails()->getJobType());
+
+        $details = $result->getDetails();
+        $this->assertEquals('Test Patron', $details['patron']);
+        $this->assertEquals('Escort', $details['jobType']);
     }
 
     public function testConvertTradeToCost(): void

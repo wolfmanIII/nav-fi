@@ -38,7 +38,8 @@ class IncomeType extends AbstractType
         $user = $options['user'];
         /** @var Income $income */
         $income = $builder->getData();
-        $campaignStartYear = $income?->getAsset()?->getCampaign()?->getStartingYear();
+        $asset = $income?->getFinancialAccount()?->getAsset();
+        $campaignStartYear = $asset?->getCampaign()?->getStartingYear();
         $minYear = $campaignStartYear ?? $this->dayYearLimits->getYearMin();
 
         $signingDate = new ImperialDate($income?->getSigningYear(), $income?->getSigningDay());
@@ -118,7 +119,7 @@ class IncomeType extends AbstractType
                 'required' => false,
                 'placeholder' => '-- Select a Campaign --',
                 'choice_label' => fn(Campaign $campaign) => sprintf('%s (%03d/%04d)', $campaign->getTitle(), $campaign->getSessionDay(), $campaign->getSessionYear()),
-                'data' => $income->getAsset()?->getCampaign(),
+                'data' => $asset?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
                     if ($user) {
@@ -132,12 +133,17 @@ class IncomeType extends AbstractType
                     'data-action' => 'change->campaign-asset#onCampaignChange',
                 ],
             ])
-            ->add('asset', EntityType::class, [
-                'class' => Asset::class,
-                'placeholder' => '-- Select an Asset --',
+            ->add('financialAccount', EntityType::class, [
+                'class' => \App\Entity\FinancialAccount::class,
+                'placeholder' => '-- Select a Financial Account --',
                 'required' => false,
-                'choice_label' => fn(Asset $asset) => sprintf('%s - %s(%s)', $asset->getName(), $asset->getType(), $asset->getClass()),
-                'choice_attr' => function (Asset $asset): array {
+                'choice_label' => fn(\App\Entity\FinancialAccount $fa) =>
+                $fa->getAsset()
+                    ? sprintf('%s - %s(%s)', $fa->getAsset()->getName(), $fa->getAsset()->getType(), $fa->getAsset()->getClass())
+                    : 'Unlinked Account (' . $fa->getCode() . ')',
+                'choice_attr' => function (\App\Entity\FinancialAccount $fa): array {
+                    $asset = $fa->getAsset();
+                    if (!$asset) return [];
                     $start = $asset->getCampaign()?->getStartingYear();
                     $campaignId = $asset->getCampaign()?->getId();
                     return [
@@ -145,20 +151,23 @@ class IncomeType extends AbstractType
                         'data-campaign' => $campaignId ? (string) $campaignId : '',
                     ];
                 },
-                'query_builder' => function (AssetRepository $repo) use ($user) {
-                    $qb = $repo->createQueryBuilder('s')->orderBy('s.name', 'ASC');
+                'query_builder' => function (\App\Repository\FinancialAccountRepository $repo) use ($user) {
+                    $qb = $repo->createQueryBuilder('fa')
+                        ->leftJoin('fa.asset', 'a')
+                        ->orderBy('a.name', 'ASC');
                     if ($user) {
-                        $qb->andWhere('s.user = :user')->setParameter('user', $user);
+                        $qb->andWhere('fa.user = :user')->setParameter('user', $user);
                     }
-                    $qb->andWhere('s.campaign IS NOT NULL');
+                    // Optional: Filter only FAs that have assets for now? User said "Asset stays on Mortgage", but FA replaces connection.
+                    // FAs with Assets are what users likely want to select for "Income from Ship X".
                     return $qb;
                 },
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-controller' => 'income-details year-limit',
                     'data-year-limit-default-value' => $this->dayYearLimits->getYearMin(),
-                    'data-action' => 'change->year-limit#onAssetChange',
-                    'data-campaign-asset-target' => 'asset',
+                    'data-action' => 'change->year-limit#onAssetChange', // We might need to adjust JS if it expects 'asset'
+                    'data-campaign-asset-target' => 'asset', // Keep target name compatible or update JS
                 ],
             ])
             ->add('company', EntityType::class, [
@@ -200,6 +209,8 @@ class IncomeType extends AbstractType
             /** @var Income $income */
             $income = $event->getData();
             $form = $event->getForm();
+
+
 
             /** @var ImperialDate|null $signing */
             $signing = $form->get('signingDate')->getData();

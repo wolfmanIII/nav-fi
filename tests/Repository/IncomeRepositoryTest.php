@@ -22,13 +22,10 @@ class IncomeRepositoryTest extends KernelTestCase
     {
         self::bootKernel();
 
-        $dbPath = dirname(__DIR__, 2) . '/var/test_repo.db';
-        if (is_file($dbPath)) {
-            unlink($dbPath);
-        }
-
-        $_SERVER['DATABASE_URL'] = 'sqlite:///' . $dbPath;
-        $_ENV['DATABASE_URL'] = $_SERVER['DATABASE_URL'];
+        self::bootKernel();
+        // Remove custom DB override to rely on standard test configuration
+        // $dbPath = dirname(__DIR__, 2) . '/var/test_repo.db';
+        // ...
 
         $this->em = static::getContainer()->get('doctrine')->getManager();
         $this->repository = $this->em->getRepository(Income::class);
@@ -69,22 +66,28 @@ class IncomeRepositoryTest extends KernelTestCase
         $category->setDescription('Test Category');
         $this->em->persist($category);
 
+        $fa = new \App\Entity\FinancialAccount();
+        $fa->setAsset($asset);
+        $fa->setUser($user);
+        $this->em->persist($fa);
+
         // 2. Crea Income attivo
         $activeIncome = new Income();
         $activeIncome->setTitle('Active Job');
         $activeIncome->setUser($user);
-        $activeIncome->setAsset($asset);
+        $activeIncome->setFinancialAccount($fa);
         $activeIncome->setSigningDay(100);
         $activeIncome->setSigningYear(1105);
         $activeIncome->setIncomeCategory($category);
         $activeIncome->setAmount('5000.00');
+        $activeIncome->setStatus(Income::STATUS_SIGNED);
         $this->em->persist($activeIncome);
 
         // 3. Crea Income cancellato
         $cancelledIncome = new Income();
         $cancelledIncome->setTitle('Cancelled Job');
         $cancelledIncome->setUser($user);
-        $cancelledIncome->setAsset($asset);
+        $cancelledIncome->setFinancialAccount($fa);
         $cancelledIncome->setSigningDay(90);
         $cancelledIncome->setSigningYear(1105);
         $cancelledIncome->setCancelDay(95);
@@ -99,9 +102,12 @@ class IncomeRepositoryTest extends KernelTestCase
         $this->em->flush();
 
         // 4. Test del metodo del repository
+        $all = $this->repository->findAllForUser($user);
+        self::assertCount(2, $all, 'Should have 2 incomes total');
+
         $results = $this->repository->findAllNotCanceledForUser($user);
 
-        self::assertCount(1, $results);
+        self::assertCount(1, $results, 'Should be 1 active income');
         self::assertSame('Active Job', $results[0]->getTitle());
     }
 

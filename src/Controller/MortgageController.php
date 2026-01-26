@@ -91,6 +91,18 @@ final class MortgageController extends BaseController
             $mortgage->setName("MOR - " . $mortgage->getAsset()->getName());
             $mortgage->setUser($user);
 
+            $asset = $mortgage->getAsset();
+            if ($asset) {
+                $financialAccount = $asset->getFinancialAccount();
+                if (!$financialAccount) {
+                    $financialAccount = new \App\Entity\FinancialAccount();
+                    $financialAccount->setUser($user);
+                    $financialAccount->setAsset($asset);
+                    $em->persist($financialAccount);
+                }
+                $mortgage->setFinancialAccount($financialAccount);
+            }
+
             $em->persist($mortgage);
             $em->flush();
             return $this->redirectToRoute('app_mortgage_index');

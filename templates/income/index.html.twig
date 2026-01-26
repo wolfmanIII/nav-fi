@@ -190,22 +190,22 @@
                         </div>
 
                         {# Vessel & Context #}
-                        <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
-                            <div class="flex flex-col gap-1">
-                                <span class="uppercase tracking-tighter text-slate-500 font-semibold">Vessel Assignment</span>
-                                <div class="flex items-center gap-2 text-cyan-100">
-                                    {% include 'icons/far-trader.html.twig' with {'dim': 16} %}
-                                    <span>{{ income.asset ? income.asset.name : 'UNASSIGNED' }}</span>
+                            <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
+                                <div class="flex flex-col gap-1">
+                                    <span class="uppercase tracking-tighter text-slate-500 font-semibold">Vessel Assignment</span>
+                                    <div class="flex items-center gap-2 text-cyan-100">
+                                        {% include 'icons/far-trader.html.twig' with {'dim': 16} %}
+                                        <span>{{ income.financialAccount.asset ? income.financialAccount.asset.name : 'UNASSIGNED' }}</span>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <span class="uppercase tracking-tighter text-slate-500 font-semibold">Operation Area</span>
+                                    <div class="flex items-center gap-2 text-slate-300">
+                                        {% include 'icons/alien-structure-1.html.twig' with {'dim': 16} %}
+                                        <span class="truncate">{{ (income.financialAccount.asset and income.financialAccount.asset.campaign) ? income.financialAccount.asset.campaign.title : 'GLOBAL_SPACE' }}</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="flex flex-col gap-1">
-                                <span class="uppercase tracking-tighter text-slate-500 font-semibold">Operation Area</span>
-                                <div class="flex items-center gap-2 text-slate-300">
-                                    {% include 'icons/alien-structure-1.html.twig' with {'dim': 16} %}
-                                    <span class="truncate">{{ (income.asset and income.asset.campaign) ? income.asset.campaign.title : 'GLOBAL_SPACE' }}</span>
-                                </div>
-                            </div>
-                        </div>
 
                         {# Timeline #}
                         <div class="pt-4 border-t border-slate-800">

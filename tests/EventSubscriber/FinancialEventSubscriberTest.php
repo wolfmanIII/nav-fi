@@ -40,7 +40,9 @@ class FinancialEventSubscriberTest extends TestCase
         $income->setPaymentYear(1105);
 
         $asset = new Asset();
-        $income->setAsset($asset);
+        $account = new \App\Entity\FinancialAccount();
+        $account->setAsset($asset);
+        $income->setFinancialAccount($account);
 
         // Non cancellato
 
@@ -76,7 +78,9 @@ class FinancialEventSubscriberTest extends TestCase
         $income->setCancelYear(1105);
 
         $asset = new Asset();
-        $income->setAsset($asset);
+        $account = new \App\Entity\FinancialAccount();
+        $account->setAsset($asset);
+        $income->setFinancialAccount($account);
 
         $em = $this->createMock(\Doctrine\ORM\EntityManagerInterface::class);
         $args = new PostPersistEventArgs($income, $em);
@@ -118,7 +122,9 @@ class FinancialEventSubscriberTest extends TestCase
         $income->setCancelYear(1105);
 
         $asset = new Asset();
-        $income->setAsset($asset);
+        $account = new \App\Entity\FinancialAccount();
+        $account->setAsset($asset);
+        $income->setFinancialAccount($account);
 
         $em = $this->createMock(\Doctrine\ORM\EntityManagerInterface::class);
         $args = new PostPersistEventArgs($income, $em);
@@ -157,7 +163,9 @@ class FinancialEventSubscriberTest extends TestCase
         $cost->setPaymentYear(1105);
 
         $asset = new Asset();
-        $cost->setAsset($asset);
+        $account = new \App\Entity\FinancialAccount();
+        $account->setAsset($asset);
+        $cost->setFinancialAccount($account);
 
         $em = $this->createMock(\Doctrine\ORM\EntityManagerInterface::class);
         $args = new PostPersistEventArgs($cost, $em);

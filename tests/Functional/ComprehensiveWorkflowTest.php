@@ -25,6 +25,7 @@ class ComprehensiveWorkflowTest extends KernelTestCase
     private $user;
     private $campaign;
     private $asset;
+    private $financialAccount;
 
     protected function setUp(): void
     {
@@ -61,8 +62,14 @@ class ComprehensiveWorkflowTest extends KernelTestCase
         $this->asset->setCategory('ship');
         $this->asset->setUser($this->user);
         $this->asset->setCampaign($this->campaign);
-        $this->asset->setCredits(500000);
         $this->em->persist($this->asset);
+
+        $this->financialAccount = new \App\Entity\FinancialAccount();
+        $this->financialAccount->setAsset($this->asset);
+        $this->financialAccount->setUser($this->user);
+        $this->financialAccount->setCampaign($this->campaign);
+        $this->financialAccount->setCredits(500000);
+        $this->em->persist($this->financialAccount);
 
         $this->em->flush();
     }
@@ -251,7 +258,8 @@ class ComprehensiveWorkflowTest extends KernelTestCase
         // 2. SELL (Simulate TradeController.php logic)
         $income = new Income();
         $income->setUser($this->user);
-        $income->setAsset($this->asset);
+        $income->setFinancialAccount($this->financialAccount);
+        $income->setStatus(\App\Entity\Income::STATUS_SIGNED);
         $income->setIncomeCategory($this->em->getRepository(IncomeCategory::class)->findOneBy(['code' => 'TRADE']));
         $income->setTitle('Sale: ' . $cost->getTitle());
         $income->setAmount('45000');

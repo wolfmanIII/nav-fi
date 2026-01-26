@@ -80,11 +80,22 @@ class CostRepositoryTest extends KernelTestCase
         $catRepair->setDescription('Repairs');
         $this->em->persist($catRepair);
 
-        // 2. Crea costi
+        // 2. Crea conti finanziari
+        $faA = new \App\Entity\FinancialAccount();
+        $faA->setAsset($assetA);
+        $faA->setUser($user);
+        $this->em->persist($faA);
+
+        $faB = new \App\Entity\FinancialAccount();
+        $faB->setAsset($assetB);
+        $faB->setUser($user);
+        $this->em->persist($faB);
+
+        // 2b. Crea costi
         $cost1 = new Cost();
         $cost1->setTitle('Fuel Purchase');
         $cost1->setUser($user);
-        $cost1->setAsset($assetA);
+        $cost1->setFinancialAccount($faA);
         $cost1->setCostCategory($catFuel);
         $cost1->setAmount('100.00');
         $this->em->persist($cost1);
@@ -92,7 +103,7 @@ class CostRepositoryTest extends KernelTestCase
         $cost2 = new Cost();
         $cost2->setTitle('Engine Repair');
         $cost2->setUser($user);
-        $cost2->setAsset($assetB);
+        $cost2->setFinancialAccount($faB);
         $cost2->setCostCategory($catRepair);
         $cost2->setAmount('500.00');
         $this->em->persist($cost2);

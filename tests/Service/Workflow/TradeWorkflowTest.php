@@ -47,10 +47,15 @@ class TradeWorkflowTest extends KernelTestCase
         $asset->setUser($user);
         $this->em->persist($asset);
 
+        $financialAccount = new \App\Entity\FinancialAccount();
+        $financialAccount->setUser($user);
+        $financialAccount->setAsset($asset);
+        $this->em->persist($financialAccount);
+
         // 2. Create Unsold Cost
         $cost = new Cost();
         $cost->setUser($user);
-        $cost->setAsset($asset);
+        $cost->setFinancialAccount($financialAccount);
         $cost->setCostCategory($costCat);
         $cost->setTitle('Test Cargo');
         $cost->setAmount('1000');

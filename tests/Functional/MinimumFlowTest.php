@@ -92,12 +92,18 @@ final class MinimumFlowTest extends WebTestCase
         $category = $this->createCostCategory('SHIP_GEAR', 'Ship Gear');
 
         $this->em->persist($asset);
+
+        $fa = new \App\Entity\FinancialAccount();
+        $fa->setAsset($asset);
+        $fa->setUser($user);
+        $this->em->persist($fa);
+
         $this->em->persist($category);
 
         for ($i = 1; $i <= 12; $i++) {
             $cost = (new Cost())
                 ->setUser($user)
-                ->setAsset($asset)
+                ->setFinancialAccount($fa)
                 ->setCostCategory($category)
                 ->setTitle(sprintf('Cost Entry %02d', $i))
                 ->setAmount('1000.00');
@@ -124,14 +130,21 @@ final class MinimumFlowTest extends WebTestCase
         $category = $this->createIncomeCategory('CONTRACT', 'Contract');
 
         $this->em->persist($asset);
+
+        $fa = new \App\Entity\FinancialAccount();
+        $fa->setAsset($asset);
+        $fa->setUser($user);
+        $this->em->persist($fa);
+
         $this->em->persist($category);
 
         for ($i = 1; $i <= 12; $i++) {
             $income = (new Income())
                 ->setUser($user)
-                ->setAsset($asset)
+                ->setFinancialAccount($fa)
                 ->setIncomeCategory($category)
                 ->setTitle(sprintf('Income Entry %02d', $i))
+                ->setStatus(Income::STATUS_SIGNED)
                 ->setAmount('5000.00');
             $this->em->persist($income);
         }
@@ -197,13 +210,20 @@ final class MinimumFlowTest extends WebTestCase
         $category = $this->createIncomeCategory('CONTRACT', 'Contract');
 
         $this->em->persist($asset);
+
+        $fa = new \App\Entity\FinancialAccount();
+        $fa->setAsset($asset);
+        $fa->setUser($owner);
+        $this->em->persist($fa);
+
         $this->em->persist($category);
 
         $income = (new Income())
             ->setUser($owner)
-            ->setAsset($asset)
+            ->setFinancialAccount($fa)
             ->setIncomeCategory($category)
             ->setTitle('Private Contract')
+            ->setStatus(Income::STATUS_SIGNED)
             ->setAmount('9000.00');
         $this->em->persist($income);
         $this->em->flush();
@@ -221,12 +241,18 @@ final class MinimumFlowTest extends WebTestCase
         $incomeCategory = $this->createIncomeCategory('CONTRACT', 'Contract');
 
         $this->em->persist($asset);
+
+        $fa = new \App\Entity\FinancialAccount();
+        $fa->setAsset($asset);
+        $fa->setUser($user);
+        $this->em->persist($fa);
+
         $this->em->persist($costCategory);
         $this->em->persist($incomeCategory);
 
         $cost = (new Cost())
             ->setUser($user)
-            ->setAsset($asset)
+            ->setFinancialAccount($fa)
             ->setCostCategory($costCategory)
             ->setTitle('Hull Repairs')
             ->setAmount('1200.00');
@@ -234,9 +260,10 @@ final class MinimumFlowTest extends WebTestCase
 
         $income = (new Income())
             ->setUser($user)
-            ->setAsset($asset)
+            ->setFinancialAccount($fa)
             ->setIncomeCategory($incomeCategory)
             ->setTitle('Contract')
+            ->setStatus(Income::STATUS_SIGNED)
             ->setAmount('8000.00');
         $this->em->persist($income);
 

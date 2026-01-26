@@ -24,6 +24,11 @@ class Income
     #[ORM\Column]
     private ?int $id = null;
 
+    public function __construct()
+    {
+        $this->setCode(Uuid::v7()->toRfc4122());
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -157,6 +162,11 @@ class Income
     {
         $this->details = $details;
         return $this;
+    }
+
+    public function getDetailsData(): \App\Model\IncomeDetails
+    {
+        return \App\Model\IncomeDetails::fromArray($this->details ?? []);
     }
 
     public function getPurchaseCost(): ?Cost
@@ -322,7 +332,7 @@ class Income
 
     public function setUser(?User $user): static
     {
-        $this->setCode(Uuid::v7()->toRfc4122());
+        $this->user = $user;
 
         return $this;
     }

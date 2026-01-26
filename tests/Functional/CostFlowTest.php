@@ -68,6 +68,11 @@ final class CostFlowTest extends WebTestCase
         $asset->setCampaign($campaign);
         $this->em->persist($asset);
 
+        $fa = new \App\Entity\FinancialAccount();
+        $fa->setAsset($asset);
+        $fa->setUser($user);
+        $this->em->persist($fa);
+
         $category = new CostCategory();
         $category->setCode('FUEL');
         $category->setDescription('Fuel and Supplies');
@@ -86,7 +91,7 @@ final class CostFlowTest extends WebTestCase
             'cost' => [
                 'title' => 'Hydrogen Refuel',
                 'paymentDate' => ['day' => 105, 'year' => 1105],
-                'asset' => $asset->getId(),
+                'financialAccount' => $fa->getId(),
                 'costCategory' => $category->getId(),
                 'detailItems' => [
                     0 => [

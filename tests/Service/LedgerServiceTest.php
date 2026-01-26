@@ -31,7 +31,11 @@ class LedgerServiceTest extends TestCase
     public function testDepositCreatesPostedTransactionIfEffective(): void
     {
         $asset = new Asset();
-        $asset->setCredits('1000.00');
+        $financialAccount = new \App\Entity\FinancialAccount();
+        $financialAccount->setAsset($asset);
+        $financialAccount->setUser($asset->getUser());
+        $asset->setFinancialAccount($financialAccount);
+        $financialAccount->setCredits('1000.00');
 
         $campaign = new Campaign();
         $campaign->setSessionDay(100);
@@ -58,13 +62,16 @@ class LedgerServiceTest extends TestCase
         $tx = $this->ledgerService->deposit($asset, $amount, $desc, $day, $year);
 
         // Verifica saldo aggiornato
-        $this->assertEquals('1500.00', $asset->getCredits());
+        $this->assertEquals('1500.00', $financialAccount->getCredits());
     }
 
     public function testDepositCreatesPendingTransactionIfFuture(): void
     {
         $asset = new Asset();
-        $asset->setCredits('1000.00');
+        $financialAccount = new \App\Entity\FinancialAccount();
+        $financialAccount->setAsset($asset);
+        $asset->setFinancialAccount($financialAccount);
+        $financialAccount->setCredits('1000.00');
 
         $campaign = new Campaign();
         $campaign->setSessionDay(100);
@@ -85,13 +92,16 @@ class LedgerServiceTest extends TestCase
         $this->ledgerService->deposit($asset, $amount, 'Future Deposit', $day, $year);
 
         // Verifica saldo NON aggiornato
-        $this->assertEquals('1000.00', $asset->getCredits());
+        $this->assertEquals('1000.00', $financialAccount->getCredits());
     }
 
     public function testVoidDepositDoesNotAffectBalanceEvenIfEffective(): void
     {
         $asset = new Asset();
-        $asset->setCredits('1000.00');
+        $financialAccount = new \App\Entity\FinancialAccount();
+        $financialAccount->setAsset($asset);
+        $asset->setFinancialAccount($financialAccount);
+        $financialAccount->setCredits('1000.00');
 
         $campaign = new Campaign();
         $campaign->setSessionDay(100);
@@ -121,13 +131,16 @@ class LedgerServiceTest extends TestCase
         );
 
         // Verifica saldo NON aggiornato
-        $this->assertEquals('1000.00', $asset->getCredits());
+        $this->assertEquals('1000.00', $financialAccount->getCredits());
     }
 
     public function testWithdrawCreatesNegativeTransaction(): void
     {
         $asset = new Asset();
-        $asset->setCredits('1000.00');
+        $financialAccount = new \App\Entity\FinancialAccount();
+        $financialAccount->setAsset($asset);
+        $asset->setFinancialAccount($financialAccount);
+        $financialAccount->setCredits('1000.00');
 
         $campaign = new Campaign();
         $campaign->setSessionDay(100);
@@ -148,6 +161,6 @@ class LedgerServiceTest extends TestCase
         $this->ledgerService->withdraw($asset, $amount, 'Test Withdraw', $day, $year);
 
         // Verifica saldo aggiornato (1000 - 200 = 800)
-        $this->assertEquals('800.00', $asset->getCredits());
+        $this->assertEquals('800.00', $financialAccount->getCredits());
     }
 }

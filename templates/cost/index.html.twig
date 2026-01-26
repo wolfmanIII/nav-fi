@@ -186,14 +186,14 @@
                                 <span class="uppercase tracking-tighter text-slate-500 font-semibold">Asset Linked</span>
                                 <div class="flex items-center gap-2 text-amber-100">
                                     {% include 'icons/far-trader.html.twig' with {'dim': 16} %}
-                                    <span>{{ cost.asset.name }}</span>
+                                    <span>{{ cost.financialAccount.asset ? cost.financialAccount.asset.name : 'UNLINKED' }}</span>
                                 </div>
                             </div>
                             <div class="flex flex-col gap-1">
                                 <span class="uppercase tracking-tighter text-slate-500 font-semibold">Mission Record</span>
                                 <div class="flex items-center gap-2 text-slate-300">
                                     {% include 'icons/alien-structure-1.html.twig' with {'dim': 16} %}
-                                    <span class="truncate">{{ cost.asset.campaign ? cost.asset.campaign.title : 'GENERAL_OPERATIONS' }}</span>
+                                    <span class="truncate">{{ (cost.financialAccount.asset and cost.financialAccount.asset.campaign) ? cost.financialAccount.asset.campaign.title : 'GENERAL_OPERATIONS' }}</span>
                                 </div>
                             </div>
                         </div>

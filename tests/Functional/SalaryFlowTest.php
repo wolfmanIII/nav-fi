@@ -59,6 +59,11 @@ class SalaryFlowTest extends WebTestCase
         $asset->setUser($user);
         $this->em->persist($asset);
 
+        $fa = new \App\Entity\FinancialAccount();
+        $fa->setAsset($asset);
+        $fa->setUser($user);
+        $this->em->persist($fa);
+
         $crew = new Crew();
         $crew->setName('Jan');
         $crew->setSurname('Doe');
@@ -113,7 +118,7 @@ class SalaryFlowTest extends WebTestCase
 
         self::assertNotNull($transaction, 'Transaction should be automatically created for SalaryPayment');
         self::assertEquals(-2500.00, (float) $transaction->getAmount());
-        self::assertEquals($asset->getId(), $transaction->getAsset()->getId());
+        self::assertEquals($asset->getId(), $transaction->getFinancialAccount()->getAsset()->getId());
         self::assertEquals('Salary Payment: Jan Doe (Date: 056-1105)', $transaction->getDescription());
     }
 

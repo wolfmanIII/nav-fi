@@ -68,6 +68,11 @@ final class CancellationFlowTest extends WebTestCase
         $asset->setCampaign($campaign);
         $this->em->persist($asset);
 
+        $fa = new \App\Entity\FinancialAccount();
+        $fa->setAsset($asset);
+        $fa->setUser($user);
+        $this->em->persist($fa);
+
         $category = new IncomeCategory();
         $category->setCode('CONTRACT');
         $category->setDescription('Contract');
@@ -86,7 +91,7 @@ final class CancellationFlowTest extends WebTestCase
             'income[signingDate][year]' => 1105,
             'income[paymentDate][day]' => 120, // Pagamento futuro
             'income[paymentDate][year]' => 1105,
-            'income[asset]' => $asset->getId(),
+            'income[financialAccount]' => $fa->getId(),
             'income[incomeCategory]' => $category->getId(),
         ]);
         $this->client->submit($form);
@@ -138,6 +143,10 @@ final class CancellationFlowTest extends WebTestCase
             'status' => Transaction::STATUS_VOID
         ]);
         self::assertNotNull($voidTx, 'Void Transaction should exist');
+
+        // Reload User to ensure session consistency after clear
+        $user = $this->em->getRepository(User::class)->find($user->getId());
+        $this->client->loginUser($user);
 
         // 6. Verifica presenza della filigrana UI rientrando in modifica
         $crawler = $this->client->request('GET', '/income/edit/' . $income->getId());

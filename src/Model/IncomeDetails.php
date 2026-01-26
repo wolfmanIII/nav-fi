@@ -12,6 +12,11 @@ class IncomeDetails
 {
     public function __construct(private array $data = []) {}
 
+    public static function fromArray(array $data): self
+    {
+        return new self($data);
+    }
+
     /**
      * Restituisce l'array grezzo dei dati.
      */

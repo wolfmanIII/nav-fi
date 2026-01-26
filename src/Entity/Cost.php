@@ -64,6 +64,12 @@ class Cost
     public function setFinancialAccount(?FinancialAccount $financialAccount): static
     {
         $this->financialAccount = $financialAccount;
+
+        // set the inverse side of the relation if necessary
+        if ($financialAccount !== null && !$financialAccount->getCosts()->contains($this)) {
+            $financialAccount->addCost($this);
+        }
+
         return $this;
     }
 

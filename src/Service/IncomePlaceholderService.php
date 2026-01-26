@@ -38,7 +38,7 @@ class IncomePlaceholderService
     public function buildPlaceholderMap(Income $income): array
     {
         $currency = 'Cr';
-        $asset = $income->getAsset();
+        $asset = $income->getFinancialAccount()?->getAsset();
         $company = $income->getCompany();
         $detailCode = $income->getIncomeCategory()?->getCode();
 
@@ -345,20 +345,25 @@ class IncomePlaceholderService
                     '{{RECOVERED_ITEMS_SUMMARY}}' => $fallback($d->recoveredItemsSummary),
                     '{{QTY_VALUE}}' => $fmtMoney($d->qtyValue, $currency),
                     '{{HAZARDS}}' => $fallback($d->hazards),
-                    '{{SALVAGE_AWARD}}' => $fmtMoney($income->getAmount(), $currency),
-                    '{{PAYMENT_TERMS}}' => $fallback($d->paymentTerms),
-                    '{{SPLIT_TERMS}}' => $fallback($d->splitTerms),
-                    '{{RIGHTS_BASIS}}' => $fallback($d->rightsBasis),
-                    '{{AWARD_TRIGGER}}' => $fallback($d->awardTrigger),
-                    '{{DISPUTE_PROCESS}}' => $fallback($d->disputeProcess),
-                    '{{NOTES}}' => $fallback($income->getNote()),
                 ]);
-                if ($income->getAsset()) {
-                    $map['{{ asset_name }}'] = $fallback($income->getAsset()->getName());
-                    $map['{{ asset_code }}'] = $fallback((string) $income->getAsset()->getCode());
-                    $map['{{ asset_type }}'] = $fallback($income->getAsset()->getType());
-                    $map['{{ asset_class }}'] = $fallback($income->getAsset()->getClass());
-                    $map['{{ asset_hull_tons }}'] = $fmtMoney((string) $income->getAsset()->getHullTons(), '') . ' dt';
+
+                $map['{{SALVAGE_AWARD}}'] = $fmtMoney($income->getAmount(), $currency);
+
+                $salvagedAsset = $income->getDetailsData()->salvagedAsset ?? null;
+                // If we want to reference the Income's FA Asset (the Rescuer):
+                $rescuer = $income->getFinancialAccount()?->getAsset();
+
+                // If details contain info about the SALVAGED asset (the victim), we use that.
+                // Currently 'Income' doesn't have a direct link to the salvaged asset entity unless via details.
+                // The switch case logic in original code used $income->getAsset() which was the OWNER of the income (Rescuer).
+                // So let's map it correctly.
+
+                if ($rescuer) {
+                    $map['{{ asset_name }}'] = $fallback($rescuer->getName());
+                    $map['{{ asset_code }}'] = $fallback((string) $rescuer->getCode());
+                    $map['{{ asset_type }}'] = $fallback($rescuer->getType());
+                    $map['{{ asset_class }}'] = $fallback($rescuer->getClass());
+                    $map['{{ asset_hull_tons }}'] = $fmtMoney((string) ($rescuer->getHullTons() ?? 0), '') . ' dt';
                 } else {
                     $map['{{ asset_name }}'] = 'NA';
                     $map['{{ asset_code }}'] = 'NA';

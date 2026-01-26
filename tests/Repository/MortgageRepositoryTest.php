@@ -64,10 +64,20 @@ class MortgageRepositoryTest extends KernelTestCase
         $assetA->setCampaign($campaign);
         $this->em->persist($assetA);
 
+        $faA = new \App\Entity\FinancialAccount();
+        $faA->setAsset($assetA);
+        $faA->setUser($user);
+        $this->em->persist($faA);
+
         $assetB = new Asset();
         $assetB->setUser($user);
         $assetB->setName('Ship B');
         $this->em->persist($assetB);
+
+        $faB = new \App\Entity\FinancialAccount();
+        $faB->setAsset($assetB);
+        $faB->setUser($user);
+        $this->em->persist($faB);
 
         $rate = new \App\Entity\InterestRate();
         // $rate->setName('Standard'); // Campo inesistente
@@ -82,6 +92,7 @@ class MortgageRepositoryTest extends KernelTestCase
         $mortgage1->setName('MOR - Ship A');
         $mortgage1->setUser($user);
         $mortgage1->setAsset($assetA);
+        $mortgage1->setFinancialAccount($faA);
         $mortgage1->setInterestRate($rate);
         $this->em->persist($mortgage1);
 
@@ -89,6 +100,7 @@ class MortgageRepositoryTest extends KernelTestCase
         $mortgage2->setName('MOR - Ship B');
         $mortgage2->setUser($user);
         $mortgage2->setAsset($assetB);
+        $mortgage2->setFinancialAccount($faB);
         $mortgage2->setInterestRate($rate);
         $this->em->persist($mortgage2);
 

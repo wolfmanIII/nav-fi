@@ -37,10 +37,10 @@ class FinancialAccount
     #[ORM\JoinColumn(nullable: true)]
     private ?Campaign $campaign = null;
 
-    #[ORM\OneToMany(mappedBy: 'financialAccount', targetEntity: Income::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'financialAccount', targetEntity: Income::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $incomes;
 
-    #[ORM\OneToMany(mappedBy: 'financialAccount', targetEntity: Cost::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'financialAccount', targetEntity: Cost::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $costs;
 
     #[ORM\OneToMany(mappedBy: 'financialAccount', targetEntity: Transaction::class, cascade: ['persist', 'remove'])]
@@ -93,6 +93,12 @@ class FinancialAccount
     public function setAsset(?Asset $asset): static
     {
         $this->asset = $asset;
+
+        // set the inverse side of the relation if necessary
+        if ($asset !== null && $asset->getFinancialAccount() !== $this) {
+            $asset->setFinancialAccount($this);
+        }
+
         return $this;
     }
 

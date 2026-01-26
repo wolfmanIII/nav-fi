@@ -46,6 +46,12 @@ class TradeLiquidationTest extends KernelTestCase
     public function testFullLiquidationFlow()
     {
         // 1. Setup Data
+        // User first because Asset needs it (or we set it)
+        $user = new \App\Entity\User();
+        $user->setEmail('trade@liquidation.test');
+        $user->setPassword('hash');
+        $this->em->persist($user);
+
         $campaign = new Campaign();
         $campaign->setTitle('Trade Campaign');
         $this->em->persist($campaign);
@@ -53,12 +59,19 @@ class TradeLiquidationTest extends KernelTestCase
         $asset = new Asset();
         $asset->setName('Trader Ship');
         $asset->setCampaign($campaign);
+        $asset->setUser($user);
         $this->em->persist($asset);
+
+        $fa = new \App\Entity\FinancialAccount();
+        $fa->setAsset($asset);
+        $fa->setUser($user);
+        $this->em->persist($fa);
+
         $this->em->flush();
 
-        // 2. Create "Unsold" Trade Cost
         $cost = new Cost();
-        $cost->setAsset($asset);
+        $cost->setUser($user);
+        $cost->setFinancialAccount($fa);
         $cost->setTitle('Purchase Cargo: 10t Electronics');
         $cost->setAmount('10000');
         $cost->setPaymentDay(100);
@@ -68,7 +81,8 @@ class TradeLiquidationTest extends KernelTestCase
         $this->em->flush();
 
         // 3. Verify it appears in "Unsold" list
-        $unsold = $this->costRepository->findUnsoldTradeCargoForAsset($asset);
+        $unsold = $this->costRepository->findUnsoldTradeCargoForAccount($fa);
+        // $unsold = $this->costRepository->findUnsoldTradeCargoForAsset($asset); // Old method
         $this->assertCount(1, $unsold);
         $this->assertEquals($cost->getId(), $unsold[0]->getId());
 
@@ -85,7 +99,7 @@ class TradeLiquidationTest extends KernelTestCase
         // We need to clear EM to ensure query is fresh? findUnsold uses query builder, so it hits DB.
         // But the entities in memory might mask it if not refreshed?
         // Let's rely on the fact that we just persisted the Income which links the Cost.
-        $unsoldAfter = $this->costRepository->findUnsoldTradeCargoForAsset($asset);
+        $unsoldAfter = $this->costRepository->findUnsoldTradeCargoForAccount($fa);
         $this->assertEmpty($unsoldAfter, 'Cargo should no longer appear as unsold after liquidation.');
     }
 }

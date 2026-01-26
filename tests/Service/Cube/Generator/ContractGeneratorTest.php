@@ -19,9 +19,17 @@ class ContractGeneratorTest extends TestCase
             'examples' => ['Test Mission']
         ]);
 
-        $narrative->method('selectPatron')->willReturn('Test Patron');
-        $narrative->method('generateTwist')->willReturn('Test Twist');
-        $narrative->method('generateBriefing')->willReturn('Test Briefing');
+        // Mock result object (StoryData or similar structure)
+        $storyMock = new \App\Model\Cube\Narrative\Story(
+            summary: 'Test Summary',
+            patronName: 'Test Patron',
+            archetypeCode: 'Escort',
+            briefing: 'Test Briefing',
+            twist: 'Test Twist',
+            variables: []
+        );
+
+        $narrative->method('generateStory')->willReturn($storyMock);
 
         $generator = new ContractGenerator($narrative);
         $this->assertTrue($generator->supports('CONTRACT'));

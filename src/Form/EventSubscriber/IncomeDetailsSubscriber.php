@@ -41,7 +41,7 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $campaignStartYear = $income->getAsset()?->getCampaign()?->getStartingYear();
+        $campaignStartYear = $income->getFinancialAccount()?->getAsset()?->getCampaign()?->getStartingYear();
         $this->addDetailField($event->getForm(), $code, $campaignStartYear, $income);
     }
 
@@ -60,7 +60,7 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
         $income = $event->getForm()->getData();
         $campaignStartYear = null;
         if ($income instanceof Income) {
-            $campaignStartYear = $income->getAsset()?->getCampaign()?->getStartingYear();
+            $campaignStartYear = $income->getFinancialAccount()?->getAsset()?->getCampaign()?->getStartingYear();
         }
 
         $this->addDetailField($event->getForm(), $code, $campaignStartYear, $income instanceof Income ? $income : null);
@@ -103,13 +103,13 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
         // Gestione speciale per la relazione purchaseCost (solo TRADE)
         if ($code === 'TRADE') {
             $user = $income?->getUser();
-            $asset = $income?->getAsset();
+            $asset = $income?->getFinancialAccount()?->getAsset();
 
             $form->add('purchaseCost', EntityType::class, [
                 'class' => Cost::class,
                 'required' => false,
                 'placeholder' => '-- Select Purchase Cost (for Liquidation) --',
-                'choice_label' => fn(Cost $c) => sprintf('%s - %s (Cr %s)', $c->getTitle(), $c->getAsset()?->getName(), $c->getAmount()),
+                'choice_label' => fn(Cost $c) => sprintf('%s - %s (Cr %s)', $c->getTitle(), $c->getFinancialAccount()?->getAsset()?->getName() ?? 'Unlinked', $c->getAmount()),
                 'query_builder' => function (CostRepository $repo) use ($user, $asset) {
                     $qb = $repo->createQueryBuilder('c')
                         ->join('c.costCategory', 'cat')
@@ -120,7 +120,10 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
                         $qb->andWhere('c.user = :user')->setParameter('user', $user);
                     }
                     if ($asset) {
-                        $qb->andWhere('c.asset = :asset')->setParameter('asset', $asset);
+                        $qb->leftJoin('c.financialAccount', 'fa')
+                            ->leftJoin('fa.asset', 'a')
+                            ->andWhere('a = :asset')
+                            ->setParameter('asset', $asset);
                     }
                     return $qb->orderBy('c.id', 'DESC');
                 },

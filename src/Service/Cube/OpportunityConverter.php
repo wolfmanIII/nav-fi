@@ -122,6 +122,7 @@ class OpportunityConverter
         $details = [
             'jobType' => $opp->details['mission_type'] ?? 'Mission',
             'objective' => $opp->summary,
+            'patron' => $opp->details['patron'] ?? null,
             'location' => $opp->details['origin'] ?? 'Unknown',
             'startDay' => $income->getSigningDay(),
             'startYear' => $income->getSigningYear(),

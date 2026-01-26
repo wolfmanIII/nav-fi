@@ -55,7 +55,8 @@ class TransactionArchive
     public static function fromTransaction(Transaction $transaction): self
     {
         $archive = new self();
-        $archive->setAssetId($transaction->getAsset()->getId());
+        // Transaction -> FinancialAccount -> Asset
+        $archive->setAssetId($transaction->getFinancialAccount()->getAsset()->getId());
         $archive->setAmount($transaction->getAmount());
         $archive->setDescription($transaction->getDescription());
         $archive->setSessionDay($transaction->getSessionDay());

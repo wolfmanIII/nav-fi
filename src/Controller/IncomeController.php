@@ -153,7 +153,7 @@ final class IncomeController extends BaseController
 
             'income' => $income,
             'form' => $form,
-            'asset' => $income->getAsset(),
+            'asset' => $income->getFinancialAccount()?->getAsset(),
         ]);
     }
 

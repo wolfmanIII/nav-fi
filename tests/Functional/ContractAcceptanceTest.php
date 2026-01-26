@@ -44,6 +44,19 @@ class ContractAcceptanceTest extends KernelTestCase
         $asset->setType('Starship');
         $this->em->persist($asset);
 
+        $user = new \App\Entity\User();
+        $user->setEmail('test_freight_' . uniqid() . '@test.com');
+        $user->setPassword('pw');
+        $this->em->persist($user);
+
+        $asset->setUser($user);
+
+        $fa = new \App\Entity\FinancialAccount();
+        $fa->setAsset($asset);
+        $fa->setUser($user);
+        $fa->setCredits(0);
+        $this->em->persist($fa);
+
         $session = $this->brokerService->createSession($campaign, 'Spinward Marches', '1910', 2);
 
         // Mock Freight Opportunity
@@ -76,7 +89,7 @@ class ContractAcceptanceTest extends KernelTestCase
 
         // Verify no cost created for Freight
         $costRepo = $this->em->getRepository(\App\Entity\Cost::class);
-        $costs = $costRepo->findBy(['asset' => $asset]);
+        $costs = $costRepo->findBy(['financialAccount' => $fa]);
         $this->assertEmpty($costs, 'Freight should not assume costs');
     }
 
@@ -92,6 +105,29 @@ class ContractAcceptanceTest extends KernelTestCase
         $asset->setCampaign($campaign);
         $asset->setType('Starship');
         $this->em->persist($asset);
+
+        $fa = new \App\Entity\FinancialAccount();
+        $fa->setAsset($asset);
+        // BrokerService requires User on FA if creating Cost?
+        // Actually Cost takes User from Asset.
+        // But FA constraints require User.
+        // Asset has no User? Wait.
+        // In this test, Asset doesn't explicitly have User set?
+        // Campaign has no User set locally?
+        // Let's create a dummy user or set null if allowed?
+        // FA user IS derived from Asset Owner usually, but schema has separate field.
+        // Let's checks FA entity definition.
+        // Assuming nullable=false.
+        // Let's create a User.
+        $user = new \App\Entity\User();
+        $user->setEmail('test_fa_' . uniqid() . '@test.com');
+        $user->setPassword('pw');
+        $this->em->persist($user);
+
+        $asset->setUser($user); // Asset usually has user
+        $fa->setUser($user);
+        $fa->setCredits(0);
+        $this->em->persist($fa);
 
         $session = $this->brokerService->createSession($campaign, 'Spinward Marches', '1910', 2);
 
@@ -130,7 +166,7 @@ class ContractAcceptanceTest extends KernelTestCase
 
         // Check Cost persistence
         $costRepo = $this->em->getRepository(\App\Entity\Cost::class);
-        $costs = $costRepo->findBy(['asset' => $asset]);
+        $costs = $costRepo->findBy(['financialAccount' => $fa]);
         $this->assertCount(1, $costs, 'Trade acceptance must create a Cost entity');
     }
 }

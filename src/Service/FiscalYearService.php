@@ -29,12 +29,20 @@ class FiscalYearService
     public function closeFiscalYear(Asset $asset, int $year): void
     {
         // 1. Validazione
+        $financialAccount = $asset->getFinancialAccount();
+        if (!$financialAccount) {
+            // Se non c'è conto, non ci sono transazioni.
+            // O forse è un errore se stiamo chiudendo un anno?
+            // Se non c'è conto, non ci sono transazioni da archiviare.
+            throw new \RuntimeException("No financial account found for asset.");
+        }
+
         $pendingQuery = $this->transactionRepository->createQueryBuilder('t')
             ->select('count(t.id)')
-            ->where('t.asset = :asset')
+            ->where('t.financialAccount = :fa')
             ->andWhere('t.sessionYear = :year')
             ->andWhere('t.status != :status')
-            ->setParameter('asset', $asset)
+            ->setParameter('fa', $financialAccount)
             ->setParameter('year', $year)
             ->setParameter('status', Transaction::STATUS_POSTED)
             ->getQuery();
@@ -45,11 +53,15 @@ class FiscalYearService
 
         // 2. Recupera Transazioni da Archiviare
         $transactions = $this->transactionRepository->findBy([
-            'asset' => $asset,
+            'financialAccount' => $financialAccount,
             'sessionYear' => $year
         ]);
 
         if (empty($transactions)) {
+            // Nota: Se non ci sono transazioni, tecnicamente l'anno è "chiuso" o "vuoto".
+            // Non lanciare eccezione bloccante permette chiusure idempotenti?
+            // Ma il test si aspetta eccezione se vuoto?
+            // "No transactions found" in originale.
             throw new \RuntimeException("No transactions found for fiscal year $year.");
         }
 
@@ -78,7 +90,7 @@ class FiscalYearService
         $nextYear = $year + 1;
 
         $snapshot = new Transaction();
-        $snapshot->setAsset($asset);
+        $snapshot->setFinancialAccount($financialAccount);
         $snapshot->setAmount($yearTotal);
         $snapshot->setDescription("Rendiconto Iniziale Anno $nextYear (Snapshot $year)");
         $snapshot->setSessionDay(1);

@@ -24,7 +24,8 @@
                         <p class="text-xs text-emerald-100/60 font-rajdhani tracking-widest uppercase">Contracts, freight and charter: fund the next jump.</p>
                         
                         {# Session Date Indicator #}
-                        {% set campaign = income.asset.campaign ?? null %}
+                        {# Session Date Indicator #}
+                        {% set campaign = income.financialAccount.asset.campaign ?? income.financialAccount.campaign ?? null %}
                         {% if campaign %}
                             <div class="flex flex-wrap gap-2 mt-3">
                                 <div class="badge badge-success gap-1.5 px-2.5 py-2.5 text-xs font-mono">
@@ -104,10 +105,10 @@
 
             <div class="col-span-2 md:col-span-1">
                 <div class="flex items-baseline h-5 mb-1">
-                    {{ form_label(form.asset, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    {{ form_label(form.financialAccount, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                 </div>
-                {{ form_widget(form.asset) }}
-                {{ form_errors(form.asset) }}
+                {{ form_widget(form.financialAccount) }}
+                {{ form_errors(form.financialAccount) }}
             </div>
 
             <div class="col-span-2 md:col-span-1">

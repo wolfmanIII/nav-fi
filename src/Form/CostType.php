@@ -36,7 +36,8 @@ class CostType extends AbstractType
         $user = $options['user'];
         /** @var Cost $cost */
         $cost = $builder->getData();
-        $campaignStartYear = $cost?->getAsset()?->getCampaign()?->getStartingYear();
+        $asset = $cost?->getFinancialAccount()?->getAsset();
+        $campaignStartYear = $asset?->getCampaign()?->getStartingYear();
         $paymentDate = new ImperialDate($cost?->getPaymentYear(), $cost?->getPaymentDay());
         $minYear = $campaignStartYear ?? $this->limits->getYearMin();
 
@@ -91,7 +92,7 @@ class CostType extends AbstractType
                 'required' => true,
                 'placeholder' => '-- Select a Campaign --',
                 'choice_label' => fn(Campaign $campaign) => sprintf('%s (%03d/%04d)', $campaign->getTitle(), $campaign->getSessionDay(), $campaign->getSessionYear()),
-                'data' => $cost->getAsset()?->getCampaign(),
+                'data' => $asset?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
                     if ($user) {
@@ -105,11 +106,16 @@ class CostType extends AbstractType
                     'data-action' => 'change->campaign-asset#onCampaignChange',
                 ],
             ])
-            ->add('asset', EntityType::class, [
-                'class' => Asset::class,
-                'placeholder' => '-- Select an Asset --',
-                'choice_label' => fn(Asset $asset) => sprintf('%s - %s(%s)', $asset->getName(), $asset->getType(), $asset->getClass()),
-                'choice_attr' => function (Asset $asset): array {
+            ->add('financialAccount', EntityType::class, [
+                'class' => \App\Entity\FinancialAccount::class,
+                'placeholder' => '-- Select a Financial Account --',
+                'choice_label' => fn(\App\Entity\FinancialAccount $fa) =>
+                $fa->getAsset()
+                    ? sprintf('%s - %s(%s)', $fa->getAsset()->getName(), $fa->getAsset()->getType(), $fa->getAsset()->getClass())
+                    : 'Unlinked Account (' . $fa->getCode() . ')',
+                'choice_attr' => function (\App\Entity\FinancialAccount $fa): array {
+                    $asset = $fa->getAsset();
+                    if (!$asset) return [];
                     $start = $asset->getCampaign()?->getStartingYear();
                     $campaignId = $asset->getCampaign()?->getId();
                     return [
@@ -117,12 +123,13 @@ class CostType extends AbstractType
                         'data-campaign' => $campaignId ? (string) $campaignId : '',
                     ];
                 },
-                'query_builder' => function (AssetRepository $repo) use ($user) {
-                    $qb = $repo->createQueryBuilder('s')->orderBy('s.name', 'ASC');
+                'query_builder' => function (\App\Repository\FinancialAccountRepository $repo) use ($user) {
+                    $qb = $repo->createQueryBuilder('fa')
+                        ->leftJoin('fa.asset', 'a')
+                        ->orderBy('a.name', 'ASC');
                     if ($user) {
-                        $qb->andWhere('s.user = :user')->setParameter('user', $user);
+                        $qb->andWhere('fa.user = :user')->setParameter('user', $user);
                     }
-                    $qb->andWhere('s.campaign IS NOT NULL');
                     return $qb;
                 },
                 'attr' => [
@@ -176,12 +183,13 @@ class CostType extends AbstractType
             $cost = $event->getData();
             $form = $event->getForm();
 
-            /** @var ImperialDate|null $payment */
-            $payment = $form->get('paymentDate')->getData();
-            if ($payment instanceof ImperialDate) {
-                $cost->setPaymentDay($payment->getDay());
-                $cost->setPaymentYear($payment->getYear());
+            $date = $form->get('paymentDate')->getData();
+            if ($date instanceof \App\Model\ImperialDate) {
+                $cost->setPaymentDay($date->getDay());
+                $cost->setPaymentYear($date->getYear());
             }
+
+
 
             // Calcolo server-side dell'importo totale dai detailItems per evitare valori null.
             $details = $cost->getDetailItems() ?? [];

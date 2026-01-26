@@ -90,6 +90,11 @@ class MortgageFlowTest extends WebTestCase
         $asset->setUser($user);
         $this->em->persist($asset);
 
+        $financialAccount = new \App\Entity\FinancialAccount();
+        $financialAccount->setUser($user);
+        $financialAccount->setAsset($asset);
+        $this->em->persist($financialAccount);
+
         $this->em->flush();
 
         // 2. Crea mutuo via UI

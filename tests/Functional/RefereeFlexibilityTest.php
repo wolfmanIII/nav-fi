@@ -49,7 +49,7 @@ final class RefereeFlexibilityTest extends WebTestCase
 
         $cost = (new Cost())
             ->setUser($user)
-            ->setAsset($asset)
+            ->setFinancialAccount($asset->getFinancialAccount())
             ->setCostCategory($category)
             ->setTitle('Paid Fuel Bill')
             ->setAmount('500.00')
@@ -94,6 +94,7 @@ final class RefereeFlexibilityTest extends WebTestCase
         $mortgage = (new Mortgage())
             ->setUser($user)
             ->setAsset($asset)
+            ->setFinancialAccount($asset->getFinancialAccount())
             ->setInterestRate($rate)
             ->setName('Long Term Loan')
             ->setStartDay(1)
@@ -136,10 +137,11 @@ final class RefereeFlexibilityTest extends WebTestCase
 
         $income = (new Income())
             ->setUser($user)
-            ->setAsset($asset)
+            ->setFinancialAccount($asset->getFinancialAccount())
             ->setIncomeCategory($category)
             ->setTitle('Signed Contract')
             ->setAmount('5000.00')
+            ->setStatus(Income::STATUS_SIGNED)
             ->setPaymentDay(1)
             ->setPaymentYear(1105);
 
@@ -147,7 +149,10 @@ final class RefereeFlexibilityTest extends WebTestCase
         $this->em->persist($asset);
         $this->em->persist($category);
         $this->em->persist($income);
+        $this->em->persist($income);
         $this->em->flush();
+        $this->em->clear();
+        $user = $this->em->getRepository(User::class)->find($user->getId());
 
         $this->client->loginUser($user);
 
@@ -176,6 +181,7 @@ final class RefereeFlexibilityTest extends WebTestCase
         $mortgage = (new Mortgage())
             ->setUser($user)
             ->setAsset($asset)
+            ->setFinancialAccount($asset->getFinancialAccount())
             ->setInterestRate($rate)
             ->setName('To Be Deleted')
             ->setStartDay(1)
@@ -183,14 +189,14 @@ final class RefereeFlexibilityTest extends WebTestCase
 
         $cost = (new Cost())
             ->setUser($user)
-            ->setAsset($asset)
+            ->setFinancialAccount($asset->getFinancialAccount())
             ->setCostCategory($this->createCostCategory('MISC', 'Misc'))
             ->setTitle('Ghost Cost')
             ->setAmount('10.00')
             ->setDetailItems([['description' => 'Misc', 'quantity' => 1, 'cost' => 10.00]]);
 
         $asset->setMortgage($mortgage);
-        $asset->addCost($cost);
+        // $asset->addCost($cost); // Removed in refactor
 
         $this->em->persist($asset);
         $this->em->persist($rate);
@@ -205,6 +211,12 @@ final class RefereeFlexibilityTest extends WebTestCase
         $this->client->loginUser($user);
 
         // Usa remove diretto su EM per testare la configurazione di cascata del DB
+        // Ricarica asset dal DB per assicurare che le relazioni inverse siano caricate (?)
+        // $asset = $this->em->getRepository(Asset::class)->find($assetId);
+        // O semplicemente refresh
+        // $this->em->refresh($asset); 
+        // Ma FinancialAccount è Fetch Lazy o Eager? BasicEntityPersister...
+
         $this->em->remove($asset);
         $this->em->flush();
 
@@ -228,7 +240,7 @@ final class RefereeFlexibilityTest extends WebTestCase
         // La campagna è 10/1105. Impostiamo il costo a 5/1105.
         $cost = (new Cost())
             ->setUser($user)
-            ->setAsset($asset)
+            ->setFinancialAccount($asset->getFinancialAccount())
             ->setCostCategory($category)
             ->setTitle('Old Bill')
             ->setAmount('100.00')
@@ -269,12 +281,20 @@ final class RefereeFlexibilityTest extends WebTestCase
 
     private function createAsset(User $user, string $name): Asset
     {
-        return (new Asset())
+        $asset = (new Asset())
             ->setUser($user)
             ->setName($name)
             ->setType('Trader')
             ->setClass('A-1')
             ->setPrice('1000000.00');
+        $this->em->persist($asset);
+
+        $fa = new \App\Entity\FinancialAccount();
+        $fa->setAsset($asset);
+        $fa->setUser($user);
+        $this->em->persist($fa); // Ensure creation
+
+        return $asset;
     }
 
     private function createCostCategory(string $code, string $description): CostCategory

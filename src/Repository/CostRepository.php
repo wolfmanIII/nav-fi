@@ -57,7 +57,7 @@ class CostRepository extends ServiceEntityRepository
             ->leftJoin('c.financialAccount', 'fa')
             ->leftJoin('fa.asset', 'a')
             ->leftJoin('a.campaign', 'camp')
-            ->addSelect('cat', 'a', 'camp')
+            ->addSelect('cat', 'fa', 'a', 'camp')
             ->andWhere('c.user = :user')
             ->setParameter('user', $user);
 

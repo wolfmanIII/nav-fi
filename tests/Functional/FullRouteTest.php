@@ -56,8 +56,14 @@ class FullRouteTest extends KernelTestCase
         $asset->setCategory('ship');
         $asset->setUser($user);
         $asset->setCampaign($campaign);
-        $asset->setCredits(1000000);
+        $asset->setCampaign($campaign);
         $this->em->persist($asset);
+
+        $fa = new \App\Entity\FinancialAccount();
+        $fa->setAsset($asset);
+        $fa->setUser($user);
+        $fa->setCredits(1000000);
+        $this->em->persist($fa);
         $this->em->flush();
 
         // 2. GENERATION
@@ -103,22 +109,27 @@ class FullRouteTest extends KernelTestCase
 
         // 5. LIQUIDATION (SELL)
         $income = new Income();
-        $income->setAsset($asset);
         $income->setUser($user);
+        $income->setFinancialAccount($fa);
         $income->setIncomeCategory($this->em->getRepository(\App\Entity\IncomeCategory::class)->findOneBy(['code' => 'TRADE']));
         $income->setTitle('Sale: ' . $cost->getTitle());
         $income->setAmount('75000');
+        $income->setStatus(Income::STATUS_SIGNED);
 
-        $details = new \App\Entity\IncomeTradeDetails();
-        $details->setIncome($income);
-        $details->setPurchaseCost($cost);
-        $details->setQty(10);
-        $details->setGoodsDescription('Polymers');
-
-        $income->setTradeDetails($details);
+        // New JSON details approach
+        $income->setDetails([
+            'goods' => 'Polymers',
+            'qty' => 10,
+            'purchase_cost_id' => $cost->getId()
+        ]);
+        $income->setPurchaseCost($cost);
+        $income->setDetails([
+            'goods' => 'Polymers',
+            'qty' => 10,
+            'purchase_cost_id' => $cost->getId()
+        ]);
 
         $this->em->persist($income);
-        $this->em->persist($details);
         $this->em->flush();
 
         // 6. VERIFY REMOVAL

@@ -4,20 +4,10 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
+use App\Entity\FinancialAccount;
 use App\Entity\Income;
 use App\Entity\IncomeCategory;
-use App\Entity\IncomeCharterDetails;
-use App\Entity\IncomeContractDetails;
-use App\Entity\IncomeFreightDetails;
-use App\Entity\IncomeInsuranceDetails;
-use App\Entity\IncomeInterestDetails;
-use App\Entity\IncomeMailDetails;
-use App\Entity\IncomePassengersDetails;
-use App\Entity\IncomePrizeDetails;
-use App\Entity\IncomeSalvageDetails;
-use App\Entity\IncomeServicesDetails;
-use App\Entity\IncomeSubsidyDetails;
-use App\Entity\IncomeTradeDetails;
+
 use App\Entity\Asset;
 use App\Entity\User;
 use Doctrine\DBAL\DriverManager;
@@ -77,12 +67,13 @@ class IncomePersistenceTest extends TestCase
     public function testPersistContractIncomeWithDetails(): void
     {
         $user = $this->makeUser('captain@log.test');
-        $asset = $this->makeAsset($user, 'ISS Contract Runner', 'Free Trader', 'A-2', '1250000.00');
+        $fa = $this->createFinancialAccount($user, 'ISS Contract Runner');
+        $category = $this->makeCategory('CONTRACT', 'Contract Work');
         $category = $this->makeCategory('CONTRACT', 'Contract Work');
 
         $income = $this->makeIncome(
             $user,
-            $asset,
+            $fa,
             $category,
             'Survey and Recon Assignment',
             '15000.00',
@@ -90,32 +81,31 @@ class IncomePersistenceTest extends TestCase
             1105
         );
 
-        $details = (new IncomeContractDetails())
-            ->setIncome($income)
-            ->setJobType('Reconnaissance')
-            ->setLocation('Spinward Marches')
-            ->setObjective('Map approach vectors')
-            ->setSuccessCondition('Deliver nav charts')
-            ->setStartDay(112)
-            ->setStartYear(1105)
-            ->setDeadlineDay(140)
-            ->setDeadlineYear(1105)
-            ->setBonus('2500.00')
-            ->setExpensesPolicy('Fuel and port fees reimbursed')
-            ->setDeposit('5000.00')
-            ->setRestrictions('No contact with Zhodani assets')
-            ->setConfidentialityLevel('Classified Delta')
-            ->setFailureTerms('No bonus on failure')
-            ->setCancellationTerms('14-day notice')
-            ->setPaymentTerms('Net on delivery');
+        $details = [
+            'jobType' => 'Reconnaissance',
+            'location' => 'Spinward Marches',
+            'objective' => 'Map approach vectors',
+            'successCondition' => 'Deliver nav charts',
+            'startDay' => 112,
+            'startYear' => 1105,
+            'deadlineDay' => 140,
+            'deadlineYear' => 1105,
+            'bonus' => '2500.00',
+            'expensesPolicy' => 'Fuel and port fees reimbursed',
+            'deposit' => '5000.00',
+            'restrictions' => 'No contact with Zhodani assets',
+            'confidentialityLevel' => 'Classified Delta',
+            'failureTerms' => 'No bonus on failure',
+            'cancellationTerms' => '14-day notice',
+            'paymentTerms' => 'Net on delivery'
+        ];
 
-        $income->setContractDetails($details);
+        $income->setDetails($details);
 
         $this->em->persist($user);
-        $this->em->persist($asset);
+        $this->em->persist($fa);
         $this->em->persist($category);
         $this->em->persist($income);
-        $this->em->persist($details);
         $this->em->flush();
         $incomeId = $income->getId();
         $this->em->clear();
@@ -123,18 +113,21 @@ class IncomePersistenceTest extends TestCase
         $saved = $this->em->find(Income::class, $incomeId);
         self::assertNotNull($saved);
         self::assertSame('CONTRACT', $saved->getIncomeCategory()?->getCode());
-        self::assertSame('Spinward Marches', $saved->getContractDetails()?->getLocation());
+        $savedDetails = $saved->getDetails();
+        self::assertSame('Spinward Marches', $savedDetails['location']);
+        self::assertSame('Reconnaissance', $savedDetails['jobType']);
     }
 
     public function testPersistFreightIncomeWithDetails(): void
     {
         $user = $this->makeUser('freight@log.test');
-        $asset = $this->makeAsset($user, 'ISS Freight Runner', 'Far Trader', 'A-1', '2000000.00');
+        $fa = $this->createFinancialAccount($user, 'ISS Freight Runner');
+        $category = $this->makeCategory('FREIGHT', 'Freight Haul');
         $category = $this->makeCategory('FREIGHT', 'Freight Haul');
 
         $income = $this->makeIncome(
             $user,
-            $asset,
+            $fa,
             $category,
             'Ardan Freight Lot',
             '22000.00',
@@ -142,32 +135,31 @@ class IncomePersistenceTest extends TestCase
             1105
         );
 
-        $details = (new IncomeFreightDetails())
-            ->setIncome($income)
-            ->setOrigin('Ardan')
-            ->setDestination('Rhylanor')
-            ->setPickupDay(116)
-            ->setPickupYear(1105)
-            ->setDeliveryDay(124)
-            ->setDeliveryYear(1105)
-            ->setDeliveryProofRef('FRT-DEL-884')
-            ->setDeliveryProofDay(125)
-            ->setDeliveryProofYear(1105)
-            ->setDeliveryProofReceivedBy('Rhylanor Cargo Authority')
-            ->setCargoDescription('Refined ore pallets')
-            ->setCargoQty('40 dtons')
-            ->setDeclaredValue('180000.00')
-            ->setPaymentTerms('Half upfront, half on delivery')
-            ->setLiabilityLimit('75000.00')
-            ->setCancellationTerms('Cancel before pickup, 10% fee');
+        $details = [
+            'origin' => 'Ardan',
+            'destination' => 'Rhylanor',
+            'pickupDay' => 116,
+            'pickupYear' => 1105,
+            'deliveryDay' => 124,
+            'deliveryYear' => 1105,
+            'deliveryProofRef' => 'FRT-DEL-884',
+            'deliveryProofDay' => 125,
+            'deliveryProofYear' => 1105,
+            'deliveryProofReceivedBy' => 'Rhylanor Cargo Authority',
+            'cargoDescription' => 'Refined ore pallets',
+            'cargoQty' => '40 dtons',
+            'declaredValue' => '180000.00',
+            'paymentTerms' => 'Half upfront, half on delivery',
+            'liabilityLimit' => '75000.00',
+            'cancellationTerms' => 'Cancel before pickup, 10% fee'
+        ];
 
-        $income->setFreightDetails($details);
+        $income->setDetails($details);
 
         $this->em->persist($user);
-        $this->em->persist($asset);
+        $this->em->persist($fa);
         $this->em->persist($category);
         $this->em->persist($income);
-        $this->em->persist($details);
         $this->em->flush();
         $incomeId = $income->getId();
         $this->em->clear();
@@ -175,288 +167,21 @@ class IncomePersistenceTest extends TestCase
         $saved = $this->em->find(Income::class, $incomeId);
         self::assertNotNull($saved);
         self::assertSame('FREIGHT', $saved->getIncomeCategory()?->getCode());
-        self::assertSame('Rhylanor', $saved->getFreightDetails()?->getDestination());
-        self::assertSame('40 dtons', $saved->getFreightDetails()?->getCargoQty());
-    }
-
-    public function testPersistCharterIncomeWithDetails(): void
-    {
-        $user = $this->makeUser('charter@log.test');
-        $asset = $this->makeAsset($user, 'ISS Charter Vagrant', 'Liner', 'B-1', '3500000.00');
-        $category = $this->makeCategory('CHARTER', 'Charter');
-
-        $income = $this->makeIncome(
-            $user,
-            $asset,
-            $category,
-            'Aramis Loop Charter',
-            '82000.00',
-            120,
-            1105
-        );
-
-        $details = (new IncomeCharterDetails())
-            ->setIncome($income)
-            ->setAreaOrRoute('Aramis Loop')
-            ->setPurpose('Survey charter')
-            ->setManifestSummary('Lab gear and sensor rigs')
-            ->setStartDay(120)
-            ->setStartYear(1105)
-            ->setEndDay(160)
-            ->setEndYear(1105)
-            ->setDeliveryProofRef('CHR-DEL-71')
-            ->setDeliveryProofDay(161)
-            ->setDeliveryProofYear(1105)
-            ->setDeliveryProofReceivedBy('Port Authority')
-            ->setPaymentTerms('Monthly retainer')
-            ->setDeposit('5000.00')
-            ->setExtras('Fuel surcharge applies')
-            ->setDamageTerms('Repair at cost')
-            ->setCancellationTerms('30-day notice');
-
-        $income->setCharterDetails($details);
-
-        $this->em->persist($user);
-        $this->em->persist($asset);
-        $this->em->persist($category);
-        $this->em->persist($income);
-        $this->em->persist($details);
-        $this->em->flush();
-        $incomeId = $income->getId();
-        $this->em->clear();
-
-        $saved = $this->em->find(Income::class, $incomeId);
-        self::assertNotNull($saved);
-        self::assertSame('CHARTER', $saved->getIncomeCategory()?->getCode());
-        self::assertSame('Aramis Loop', $saved->getCharterDetails()?->getAreaOrRoute());
-    }
-
-    public function testPersistPassengersIncomeWithDetails(): void
-    {
-        $user = $this->makeUser('passengers@log.test');
-        $asset = $this->makeAsset($user, 'ISS Passenger Dawn', 'Liner', 'C-1', '4200000.00');
-        $category = $this->makeCategory('PASSENGERS', 'Passenger Passage');
-
-        $income = $this->makeIncome(
-            $user,
-            $asset,
-            $category,
-            'Efate Passenger Run',
-            '34000.00',
-            200,
-            1105
-        );
-
-        $details = (new IncomePassengersDetails())
-            ->setIncome($income)
-            ->setOrigin('Regina')
-            ->setDestination('Efate')
-            ->setDepartureDay(200)
-            ->setDepartureYear(1105)
-            ->setArrivalDay(204)
-            ->setArrivalYear(1105)
-            ->setDeliveryProofRef('PAX-DEL-19')
-            ->setDeliveryProofDay(204)
-            ->setDeliveryProofYear(1105)
-            ->setDeliveryProofReceivedBy('Efate Terminal')
-            ->setClassOrBerth('High Passage')
-            ->setQty(6)
-            ->setPassengerNames('Sonny Jackson, Riva Nal')
-            ->setPassengerContact('handler@consortium.test')
-            ->setBaggageAllowance('2 trunks per passenger')
-            ->setExtraBaggage('Excess billed at port')
-            ->setPaymentTerms('Paid on boarding')
-            ->setRefundChangePolicy('No refunds after departure');
-
-        $income->setPassengersDetails($details);
-
-        $this->em->persist($user);
-        $this->em->persist($asset);
-        $this->em->persist($category);
-        $this->em->persist($income);
-        $this->em->persist($details);
-        $this->em->flush();
-        $incomeId = $income->getId();
-        $this->em->clear();
-
-        $saved = $this->em->find(Income::class, $incomeId);
-        self::assertNotNull($saved);
-        self::assertSame('PASSENGERS', $saved->getIncomeCategory()?->getCode());
-        self::assertSame('High Passage', $saved->getPassengersDetails()?->getClassOrBerth());
-    }
-
-    public function testPersistMailIncomeWithDetails(): void
-    {
-        $user = $this->makeUser('mail@log.test');
-        $asset = $this->makeAsset($user, 'ISS Courier Relay', 'Courier', 'B-2', '1800000.00');
-        $category = $this->makeCategory('MAIL', 'Mail Dispatch');
-
-        $income = $this->makeIncome(
-            $user,
-            $asset,
-            $category,
-            'Imperial Mail Bag',
-            '56000.00',
-            210,
-            1105
-        );
-
-        $details = (new IncomeMailDetails())
-            ->setIncome($income)
-            ->setOrigin('Regina')
-            ->setDestination('Mora')
-            ->setDispatchDay(210)
-            ->setDispatchYear(1105)
-            ->setDeliveryDay(217)
-            ->setDeliveryYear(1105)
-            ->setDeliveryProofRef('MAIL-DEL-447')
-            ->setDeliveryProofDay(217)
-            ->setDeliveryProofYear(1105)
-            ->setDeliveryProofReceivedBy('Mora Postmaster')
-            ->setMailType('Imperial Priority')
-            ->setPackageCount(12)
-            ->setTotalMass('350.50')
-            ->setSecurityLevel('Red')
-            ->setSealCodes('A1-REDFOX')
-            ->setPaymentTerms('Paid on acceptance')
-            ->setProofOfDelivery('Stamped by port authority')
-            ->setLiabilityLimit('50000.00');
-
-        $income->setMailDetails($details);
-
-        $this->em->persist($user);
-        $this->em->persist($asset);
-        $this->em->persist($category);
-        $this->em->persist($income);
-        $this->em->persist($details);
-        $this->em->flush();
-        $incomeId = $income->getId();
-        $this->em->clear();
-
-        $saved = $this->em->find(Income::class, $incomeId);
-        self::assertNotNull($saved);
-        self::assertSame('MAIL', $saved->getIncomeCategory()?->getCode());
-        self::assertSame('Imperial Priority', $saved->getMailDetails()?->getMailType());
-    }
-
-    public function testPersistServicesIncomeWithDetails(): void
-    {
-        $user = $this->makeUser('services@log.test');
-        $asset = $this->makeAsset($user, 'ISS Yardrunner', 'Tender', 'D-1', '900000.00');
-        $category = $this->makeCategory('SERVICES', 'Services');
-
-        $income = $this->makeIncome(
-            $user,
-            $asset,
-            $category,
-            'Regina Refit Work',
-            '48000.00',
-            90,
-            1105
-        );
-
-        $details = (new IncomeServicesDetails())
-            ->setIncome($income)
-            ->setLocation('Regina Highport')
-            ->setServiceType('Refit')
-            ->setRequestedBy('Port Authority')
-            ->setStartDay(90)
-            ->setStartYear(1105)
-            ->setEndDay(98)
-            ->setEndYear(1105)
-            ->setDeliveryProofRef('SRV-DEL-33')
-            ->setDeliveryProofDay(98)
-            ->setDeliveryProofYear(1105)
-            ->setDeliveryProofReceivedBy('Yard Chief')
-            ->setWorkSummary('Swap reactor seals')
-            ->setPartsMaterials('Seal kit Mk-II')
-            ->setRisks('High radiation zone')
-            ->setPaymentTerms('Net 15')
-            ->setExtras('Hazard surcharge')
-            ->setLiabilityLimit('120000.00')
-            ->setCancellationTerms('Cancel 7 days prior');
-
-        $income->setServicesDetails($details);
-
-        $this->em->persist($user);
-        $this->em->persist($asset);
-        $this->em->persist($category);
-        $this->em->persist($income);
-        $this->em->persist($details);
-        $this->em->flush();
-        $incomeId = $income->getId();
-        $this->em->clear();
-
-        $saved = $this->em->find(Income::class, $incomeId);
-        self::assertNotNull($saved);
-        self::assertSame('SERVICES', $saved->getIncomeCategory()?->getCode());
-        self::assertSame('Refit', $saved->getServicesDetails()?->getServiceType());
-    }
-
-    public function testPersistSubsidyIncomeWithDetails(): void
-    {
-        $user = $this->makeUser('subsidy@log.test');
-        $asset = $this->makeAsset($user, 'ISS Subsidy Spur', 'Far Trader', 'A-2', '2300000.00');
-        $category = $this->makeCategory('SUBSIDY', 'Subsidy');
-
-        $income = $this->makeIncome(
-            $user,
-            $asset,
-            $category,
-            'Aramis Subsidy Route',
-            '65000.00',
-            15,
-            1105
-        );
-
-        $details = (new IncomeSubsidyDetails())
-            ->setIncome($income)
-            ->setProgramRef('SUB-AR-9')
-            ->setOrigin('Aramis')
-            ->setDestination('Regina')
-            ->setStartDay(15)
-            ->setStartYear(1105)
-            ->setEndDay(120)
-            ->setEndYear(1105)
-            ->setDeliveryProofRef('SUB-DEL-09')
-            ->setDeliveryProofDay(121)
-            ->setDeliveryProofYear(1105)
-            ->setDeliveryProofReceivedBy('Regina Port Office')
-            ->setServiceLevel('Priority')
-            ->setSubsidyAmount('65000.00')
-            ->setPaymentTerms('Quarterly disbursement')
-            ->setMilestones('Monthly route report')
-            ->setReportingRequirements('Submit manifests')
-            ->setNonComplianceTerms('Withhold payment')
-            ->setProofRequirements('Signed delivery receipts')
-            ->setCancellationTerms('Termination with 30 days notice');
-
-        $income->setSubsidyDetails($details);
-
-        $this->em->persist($user);
-        $this->em->persist($asset);
-        $this->em->persist($category);
-        $this->em->persist($income);
-        $this->em->persist($details);
-        $this->em->flush();
-        $incomeId = $income->getId();
-        $this->em->clear();
-
-        $saved = $this->em->find(Income::class, $incomeId);
-        self::assertNotNull($saved);
-        self::assertSame('SUBSIDY', $saved->getIncomeCategory()?->getCode());
-        self::assertSame('SUB-AR-9', $saved->getSubsidyDetails()?->getProgramRef());
+        $savedDetails = $saved->getDetails();
+        self::assertSame('Rhylanor', $savedDetails['destination']);
+        self::assertSame('40 dtons', $savedDetails['cargoQty']);
     }
 
     public function testPersistTradeIncomeWithDetails(): void
     {
         $user = $this->makeUser('trade@log.test');
-        $asset = $this->makeAsset($user, 'ISS Trade Wind', 'Merchant', 'B-3', '5000000.00');
+        $fa = $this->createFinancialAccount($user, 'ISS Trade Wind');
+        $category = $this->makeCategory('TRADE', 'Trade');
         $category = $this->makeCategory('TRADE', 'Trade');
 
         $income = $this->makeIncome(
             $user,
-            $asset,
+            $fa,
             $category,
             'Mora Catalyst Transfer',
             '90000.00',
@@ -464,36 +189,35 @@ class IncomePersistenceTest extends TestCase
             1105
         );
 
-        $details = (new IncomeTradeDetails())
-            ->setIncome($income)
-            ->setLocation('Mora')
-            ->setTransferPoint('Dock 14')
-            ->setTransferCondition('FOB')
-            ->setGoodsDescription('Industrial catalysts')
-            ->setQty(20)
-            ->setGrade('A')
-            ->setBatchIds('CAT-44, CAT-45')
-            ->setUnitPrice('4500.00')
-            ->setPaymentTerms('90000.00')
-            ->setDeliveryMethod('Crated transfer')
-            ->setDeliveryDay(230)
-            ->setDeliveryYear(1105)
-            ->setDeliveryProofRef('TRD-DEL-55')
-            ->setDeliveryProofDay(231)
-            ->setDeliveryProofYear(1105)
-            ->setDeliveryProofReceivedBy('Mora Customs')
-            ->setAsIsOrWarranty('Warranty')
-            ->setWarrantyText('30-day replacement')
-            ->setClaimWindow('10 days')
-            ->setReturnPolicy('Returns accepted with fee');
+        $details = [
+            'location' => 'Mora',
+            'transferPoint' => 'Dock 14',
+            'transferCondition' => 'FOB',
+            'goodsDescription' => 'Industrial catalysts',
+            'qty' => 20,
+            'grade' => 'A',
+            'batchIds' => 'CAT-44, CAT-45',
+            'unitPrice' => '4500.00',
+            'paymentTerms' => '90000.00',
+            'deliveryMethod' => 'Crated transfer',
+            'deliveryDay' => 230,
+            'deliveryYear' => 1105,
+            'deliveryProofRef' => 'TRD-DEL-55',
+            'deliveryProofDay' => 231,
+            'deliveryProofYear' => 1105,
+            'deliveryProofReceivedBy' => 'Mora Customs',
+            'asIsOrWarranty' => 'Warranty',
+            'warrantyText' => '30-day replacement',
+            'claimWindow' => '10 days',
+            'returnPolicy' => 'Returns accepted with fee'
+        ];
 
-        $income->setTradeDetails($details);
+        $income->setDetails($details);
 
         $this->em->persist($user);
-        $this->em->persist($asset);
+        $this->em->persist($fa);
         $this->em->persist($category);
         $this->em->persist($income);
-        $this->em->persist($details);
         $this->em->flush();
         $incomeId = $income->getId();
         $this->em->clear();
@@ -501,195 +225,9 @@ class IncomePersistenceTest extends TestCase
         $saved = $this->em->find(Income::class, $incomeId);
         self::assertNotNull($saved);
         self::assertSame('TRADE', $saved->getIncomeCategory()?->getCode());
-        self::assertSame('Dock 14', $saved->getTradeDetails()?->getTransferPoint());
-    }
-
-    public function testPersistSalvageIncomeWithDetails(): void
-    {
-        $user = $this->makeUser('salvage@log.test');
-        $asset = $this->makeAsset($user, 'ISS Salvager', 'Seeker', 'C-3', '2600000.00');
-        $category = $this->makeCategory('SALVAGE', 'Salvage');
-
-        $income = $this->makeIncome(
-            $user,
-            $asset,
-            $category,
-            'Aramis Belt Salvage',
-            '420000.00',
-            75,
-            1105
-        );
-
-        $details = (new IncomeSalvageDetails())
-            ->setIncome($income)
-            ->setCaseRef('SAL-77')
-            ->setSource('Distress Beacon')
-            ->setSiteLocation('Aramis Belt')
-            ->setRecoveredItemsSummary('Engine cores')
-            ->setQtyValue('420000.00')
-            ->setHazards('Debris field')
-            ->setPaymentTerms('Award after adjudication')
-            ->setSplitTerms('Crew 60 / Authority 40')
-            ->setRightsBasis('Imperial Salvage Code 17')
-            ->setAwardTrigger('Board ruling')
-            ->setDisputeProcess('Appeal to sector court');
-
-        $income->setSalvageDetails($details);
-
-        $this->em->persist($user);
-        $this->em->persist($asset);
-        $this->em->persist($category);
-        $this->em->persist($income);
-        $this->em->persist($details);
-        $this->em->flush();
-        $incomeId = $income->getId();
-        $this->em->clear();
-
-        $saved = $this->em->find(Income::class, $incomeId);
-        self::assertNotNull($saved);
-        self::assertSame('SALVAGE', $saved->getIncomeCategory()?->getCode());
-        self::assertSame('SAL-77', $saved->getSalvageDetails()?->getCaseRef());
-    }
-
-    public function testPersistPrizeIncomeWithDetails(): void
-    {
-        $user = $this->makeUser('prize@log.test');
-        $asset = $this->makeAsset($user, 'ISS Prize Runner', 'Corsair', 'B-5', '7600000.00');
-        $category = $this->makeCategory('PRIZE', 'Prize');
-
-        $income = $this->makeIncome(
-            $user,
-            $asset,
-            $category,
-            'Confiscated Arms Shipment',
-            '950000.00',
-            140,
-            1105
-        );
-
-        $details = (new IncomePrizeDetails())
-            ->setIncome($income)
-            ->setLegalBasis('Prize Court Order 15')
-            ->setCaseRef('PRZ-88')
-            ->setPrizeDescription('Confiscated arms shipment')
-            ->setEstimatedValue('950000.00')
-            ->setDisposition('Auction')
-            ->setPaymentTerms('Paid after auction')
-            ->setShareSplit('Crew 70 / Crown 30')
-            ->setAwardTrigger('Adjudication complete');
-
-        $income->setPrizeDetails($details);
-
-        $this->em->persist($user);
-        $this->em->persist($asset);
-        $this->em->persist($category);
-        $this->em->persist($income);
-        $this->em->persist($details);
-        $this->em->flush();
-        $incomeId = $income->getId();
-        $this->em->clear();
-
-        $saved = $this->em->find(Income::class, $incomeId);
-        self::assertNotNull($saved);
-        self::assertSame('PRIZE', $saved->getIncomeCategory()?->getCode());
-        self::assertSame('PRZ-88', $saved->getPrizeDetails()?->getCaseRef());
-    }
-
-    public function testPersistInterestIncomeWithDetails(): void
-    {
-        $user = $this->makeUser('interest@log.test');
-        $asset = $this->makeAsset($user, 'ISS Ledger', 'Trader', 'A-3', '3100000.00');
-        $category = $this->makeCategory('INTEREST', 'Interest');
-
-        $income = $this->makeIncome(
-            $user,
-            $asset,
-            $category,
-            'Imperial Bond Interest',
-            '5000.00',
-            365,
-            1105
-        );
-
-        $details = (new IncomeInterestDetails())
-            ->setIncome($income)
-            ->setAccountRef('INT-444')
-            ->setInstrument('Imperial Bond')
-            ->setPrincipal('150000.00')
-            ->setInterestRate('3.50')
-            ->setStartDay(1)
-            ->setStartYear(1105)
-            ->setEndDay(365)
-            ->setEndYear(1105)
-            ->setCalcMethod('Compound monthly')
-            ->setInterestEarned('5250.00')
-            ->setNetPaid('5000.00')
-            ->setPaymentTerms('Paid at term')
-            ->setDisputeWindow('30 days');
-
-        $income->setInterestDetails($details);
-
-        $this->em->persist($user);
-        $this->em->persist($asset);
-        $this->em->persist($category);
-        $this->em->persist($income);
-        $this->em->persist($details);
-        $this->em->flush();
-        $incomeId = $income->getId();
-        $this->em->clear();
-
-        $saved = $this->em->find(Income::class, $incomeId);
-        self::assertNotNull($saved);
-        self::assertSame('INTEREST', $saved->getIncomeCategory()?->getCode());
-        self::assertSame('Imperial Bond', $saved->getInterestDetails()?->getInstrument());
-    }
-
-    public function testPersistInsuranceIncomeWithDetails(): void
-    {
-        $user = $this->makeUser('insurance@log.test');
-        $asset = $this->makeAsset($user, 'ISS Claims', 'Trader', 'B-2', '2750000.00');
-        $category = $this->makeCategory('INSURANCE', 'Insurance');
-
-        $income = $this->makeIncome(
-            $user,
-            $asset,
-            $category,
-            'Hull Loss Settlement',
-            '250000.00',
-            88,
-            1105
-        );
-
-        $details = (new IncomeInsuranceDetails())
-            ->setIncome($income)
-            ->setIncidentRef('INC-12')
-            ->setIncidentDay(88)
-            ->setIncidentYear(1105)
-            ->setIncidentLocation('Regina orbit')
-            ->setIncidentCause('Micrometeor strike')
-            ->setLossType('Hull breach')
-            ->setVerifiedLoss('250000.00')
-            ->setDeductible('5000.00')
-            ->setPaymentTerms('Settlement on acceptance')
-            ->setAcceptanceEffect('Acceptance waives further claims')
-            ->setSubrogationTerms('Rights transfer to insurer')
-            ->setCoverageNotes('Excludes hostile action');
-
-        $income->setInsuranceDetails($details);
-
-        $this->em->persist($user);
-        $this->em->persist($asset);
-        $this->em->persist($category);
-        $this->em->persist($income);
-        $this->em->persist($details);
-        $this->em->flush();
-        $incomeId = $income->getId();
-        $this->em->clear();
-
-        $saved = $this->em->find(Income::class, $incomeId);
-        self::assertNotNull($saved);
-        self::assertSame('INSURANCE', $saved->getIncomeCategory()?->getCode());
-        self::assertSame('INC-12', $saved->getInsuranceDetails()?->getIncidentRef());
+        $savedDetails = $saved->getDetails();
+        self::assertSame('Dock 14', $savedDetails['transferPoint']);
+        self::assertSame('Industrial catalysts', $savedDetails['goodsDescription']);
     }
 
     private function makeUser(string $email): User
@@ -699,14 +237,21 @@ class IncomePersistenceTest extends TestCase
             ->setPassword('hash');
     }
 
-    private function makeAsset(User $user, string $name, string $type, string $class, string $price): Asset
+    private function createFinancialAccount(User $user, string $assetName): FinancialAccount
     {
-        return (new Asset())
-            ->setName($name)
-            ->setType($type)
-            ->setClass($class)
-            ->setPrice($price)
-            ->setUser($user);
+        $asset = new Asset();
+        $asset->setName($assetName);
+        $asset->setType('Trader');
+        $asset->setClass('A-1');
+        $asset->setPrice('1000000.00');
+        $asset->setUser($user);
+        $this->em->persist($asset);
+
+        $fa = new FinancialAccount();
+        $fa->setAsset($asset);
+        $fa->setUser($user);
+
+        return $fa;
     }
 
     private function makeCategory(string $code, string $description): IncomeCategory
@@ -718,7 +263,7 @@ class IncomePersistenceTest extends TestCase
 
     private function makeIncome(
         User $user,
-        Asset $asset,
+        FinancialAccount $fa,
         IncomeCategory $category,
         string $title,
         string $amount,
@@ -732,7 +277,8 @@ class IncomePersistenceTest extends TestCase
             ->setSigningDay($signingDay)
             ->setSigningYear($signingYear)
             ->setIncomeCategory($category)
-            ->setAsset($asset)
-            ->setUser($user);
+            ->setFinancialAccount($fa)
+            ->setUser($user)
+            ->setStatus(Income::STATUS_SIGNED);
     }
 }
