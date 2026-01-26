@@ -22,7 +22,7 @@ class AssetType extends AbstractType
     {
         /** @var Asset $asset */
         $asset = $options['data'];
-        
+
         // Usa form strutturato per Navi e Basi (Stazioni)
         $isStructured = in_array($asset->getCategory(), [Asset::CATEGORY_SHIP, Asset::CATEGORY_BASE]);
 
@@ -66,12 +66,14 @@ class AssetType extends AbstractType
             ->add('credits', TravellerMoneyType::class, [
                 'label' => 'Initial Credits',
                 'attr' => ['class' => 'input m-1 w-full'],
+                'mapped' => false,
+                'data' => $asset->getFinancialAccount()?->getCredits(),
             ]);
-            
+
         if ($asset->getCategory() === Asset::CATEGORY_SHIP) {
             // Usa il nuovo DTO ShipDetailsData
             $shipData = \App\Form\Data\ShipDetailsData::fromArray($asset->getAssetDetails() ?? []);
-            
+
             $builder->add('shipDetails', \App\Form\Type\ShipDetailsType::class, [
                 'mapped' => false,
                 'data' => $shipData,
@@ -80,7 +82,7 @@ class AssetType extends AbstractType
         } elseif ($asset->getCategory() === Asset::CATEGORY_BASE) {
             // Usa BaseDetailsType per stazioni
             $baseData = \App\Form\Data\BaseDetailsData::fromArray($asset->getAssetDetails() ?? []);
-            
+
             $builder->add('baseDetails', \App\Form\Type\BaseDetailsType::class, [
                 'mapped' => false,
                 'data' => $baseData,

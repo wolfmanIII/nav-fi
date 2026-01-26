@@ -10,7 +10,7 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: CostRepository::class)]
 #[ORM\Index(name: 'idx_cost_user', columns: ['user_id'])]
-#[ORM\Index(name: 'idx_cost_asset', columns: ['asset_id'])]
+#[ORM\Index(name: 'idx_cost_fin_acc', columns: ['financial_account_id'])]
 #[ORM\Index(name: 'idx_cost_category', columns: ['cost_category_id'])]
 #[ORM\Index(name: 'idx_cost_payment_date', columns: ['payment_day', 'payment_year'])]
 class Cost
@@ -20,7 +20,7 @@ class Cost
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 36)]
+    #[ORM\Column(type: Types::GUID)]
     private ?string $code = null;
 
     #[ORM\Column(length: 255)]
@@ -39,9 +39,7 @@ class Cost
     #[ORM\JoinColumn(nullable: false)]
     private ?CostCategory $costCategory = null;
 
-    #[ORM\ManyToOne(inversedBy: 'costs')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Asset $asset = null;
+    /* Asset moved to FinancialAccount linkage */
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
@@ -54,6 +52,21 @@ class Cost
     #[ORM\JoinColumn(nullable: true)]
     private ?Company $company = null;
 
+    #[ORM\ManyToOne(inversedBy: 'costs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?FinancialAccount $financialAccount = null;
+
+    public function getFinancialAccount(): ?FinancialAccount
+    {
+        return $this->financialAccount;
+    }
+
+    public function setFinancialAccount(?FinancialAccount $financialAccount): static
+    {
+        $this->financialAccount = $financialAccount;
+        return $this;
+    }
+
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
     private ?LocalLaw $localLaw = null;
@@ -63,7 +76,7 @@ class Cost
 
     public function __construct()
     {
-        $this->setCode(Uuid::v7());
+        $this->setCode(Uuid::v7()->toRfc4122());
     }
 
     public function getId(): ?int
@@ -139,18 +152,6 @@ class Cost
     public function setCostCategory(?CostCategory $costCategory): static
     {
         $this->costCategory = $costCategory;
-
-        return $this;
-    }
-
-    public function getAsset(): ?Asset
-    {
-        return $this->asset;
-    }
-
-    public function setAsset(?Asset $asset): static
-    {
-        $this->asset = $asset;
 
         return $this;
     }

@@ -101,7 +101,9 @@ class FinancialEventSubscriber
 
     private function processIncome(Income $income, bool $autoFlush, ?\Doctrine\ORM\EntityManagerInterface $emForCompute): void
     {
-        $asset = $income->getAsset();
+        $financialAccount = $income->getFinancialAccount();
+        $asset = $financialAccount?->getAsset();
+
         if (!$asset) return;
 
         // 1. Calcola deposito (se presente nelle categorie CONTRACT o CHARTER)
@@ -216,7 +218,9 @@ class FinancialEventSubscriber
 
     private function processCost(Cost $cost, bool $autoFlush, ?\Doctrine\ORM\EntityManagerInterface $emForCompute): void
     {
-        $asset = $cost->getAsset();
+        $financialAccount = $cost->getFinancialAccount();
+        $asset = $financialAccount?->getAsset();
+
         if (!$asset) return;
 
         $day = $cost->getPaymentDay();

@@ -17,7 +17,7 @@ class Company
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 36)]
+    #[ORM\Column(type: Types::GUID)]
     private ?string $code = null;
 
     #[ORM\Column(length: 255)]
@@ -48,7 +48,7 @@ class Company
 
     public function __construct()
     {
-        $this->setCode(Uuid::v7());
+        $this->setCode(Uuid::v7()->toRfc4122());
     }
 
     public function getId(): ?int

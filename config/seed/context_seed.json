@@ -274,6 +274,10 @@
         {
             "code": "RECRUITMENT",
             "description": "Recruitment cost"
+        },
+        {
+            "code": "TRADE",
+            "description": "Trade Commodities"
         }
     ],
     "income_categories": [

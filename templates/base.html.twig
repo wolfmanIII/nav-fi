@@ -82,7 +82,7 @@
                 </div>
 
                 <div class="flex-1 px-4 flex justify-center lg:justify-end lg:mr-4">
-                    {% if asset is defined and asset.credits is defined %}
+                    {% if asset is defined and asset.financialAccount is defined %}
                         <div class="hidden md:flex items-center gap-4 px-4 py-1.5 rounded-full bg-slate-900/60 border border-slate-700/50 shadow-inner">
                             <div class="flex items-center gap-2">
                                 {% if asset.category == 'ship' %}
@@ -97,13 +97,14 @@
                                 <span class="text-xs font-bold font-orbitron text-cyan-100 uppercase tracking-widest">{{ asset.name }}</span>
                             </div>
                             <div class="h-4 w-[1px] bg-slate-700"></div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Credits</span>
-                                <span class="text-sm font-mono font-bold {{ asset.credits < 0 ? 'text-rose-400' : 'text-emerald-400' }}">
-                                    {{ asset.credits|format_number({ min_fraction_digit: 0, max_fraction_digit: 0, grouping_used: true }, 'decimal', 'default', app.request.locale) }}
-                                    <span class="text-[10px] text-slate-600">Cr</span>
-                                </span>
-                            </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Credits</span>
+                                    {% set credits = asset.financialAccount ? asset.financialAccount.credits : 0 %}
+                                    <span class="text-sm font-mono font-bold {{ credits < 0 ? 'text-rose-400' : 'text-emerald-400' }}">
+                                        {{ credits|format_number({ min_fraction_digit: 0, max_fraction_digit: 0, grouping_used: true }, 'decimal', 'default', app.request.locale) }}
+                                        <span class="text-[10px] text-slate-600">Cr</span>
+                                    </span>
+                                </div>
                             
                             {% if asset.campaign and asset.campaign.sessionDay and asset.campaign.sessionYear %}
                                 <div class="h-4 w-[1px] bg-slate-700"></div>

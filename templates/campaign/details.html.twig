@@ -111,7 +111,8 @@
                         <td class="font-mono text-xs p-2">{% include 'components/code_with_copy.html.twig' with { code: asset.code } %}</td>
                         <td class="font-mono text-xs p-2 font-bold text-cyan-100">{{ asset.name }} — {{ asset.type }} — {{ asset.class }}</td>
                         <td class="font-mono text-xs p-2 text-emerald-400">
-                            {{ asset.credits|format_number({ min_fraction_digit: 0, max_fraction_digit: 0, grouping_used: true }, 'decimal', 'default', locale) }} <span class="text-[10px] text-slate-500">Cr</span>
+                            {% set credits = asset.financialAccount ? asset.financialAccount.credits : 0 %}
+                            {{ credits|format_number({ min_fraction_digit: 0, max_fraction_digit: 0, grouping_used: true }, 'decimal', 'default', locale) }} <span class="text-[10px] text-slate-500">Cr</span>
                         </td>
                         <td>
                             <div class="tooltip tooltip-left" data-tip="View crew">

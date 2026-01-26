@@ -20,13 +20,13 @@ class TransactionRepository extends ServiceEntityRepository
      * Trova transazioni Pending che sono diventate effettive (Data <= Data Corrente).
      * @return Transaction[]
      */
-    public function findPendingEffective(Asset $asset, int $currentDay, int $currentYear): array
+    public function findPendingEffective(\App\Entity\FinancialAccount $account, int $currentDay, int $currentYear): array
     {
         return $this->createQueryBuilder('t')
-            ->where('t.asset = :asset')
+            ->where('t.financialAccount = :account')
             ->andWhere('t.status = :status')
             ->andWhere('(t.sessionYear < :year) OR (t.sessionYear = :year AND t.sessionDay <= :day)')
-            ->setParameter('asset', $asset)
+            ->setParameter('account', $account)
             ->setParameter('status', Transaction::STATUS_PENDING)
             ->setParameter('year', $currentYear)
             ->setParameter('day', $currentDay)
@@ -34,18 +34,13 @@ class TransactionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * Trova transazioni Posted che sono ora nel futuro (Data > Data Corrente).
-     * Usato per annullare il viaggio nel tempo (backtracking).
-     * @return Transaction[]
-     */
-    public function findPostedFuture(Asset $asset, int $currentDay, int $currentYear): array
+    public function findPostedFuture(\App\Entity\FinancialAccount $account, int $currentDay, int $currentYear): array
     {
         return $this->createQueryBuilder('t')
-            ->where('t.asset = :asset')
+            ->where('t.financialAccount = :account')
             ->andWhere('t.status = :status')
             ->andWhere('(t.sessionYear > :year) OR (t.sessionYear = :year AND t.sessionDay > :day)')
-            ->setParameter('asset', $asset)
+            ->setParameter('account', $account)
             ->setParameter('status', Transaction::STATUS_POSTED)
             ->setParameter('year', $currentYear)
             ->setParameter('day', $currentDay)
@@ -53,18 +48,11 @@ class TransactionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * Trova tutte le transazioni per un asset con supporto paginazione.
-     * @param Asset $asset
-     * @param int $page
-     * @param int $limit
-     * @return array{'items': Transaction[], 'total': int}
-     */
-    public function findForAsset(Asset $asset, int $page = 1, int $limit = 20): array
+    public function findForAccount(\App\Entity\FinancialAccount $account, int $page = 1, int $limit = 20): array
     {
         $qb = $this->createQueryBuilder('t')
-            ->where('t.asset = :asset')
-            ->setParameter('asset', $asset)
+            ->where('t.financialAccount = :account')
+            ->setParameter('account', $account)
             ->orderBy('t.sessionYear', 'DESC')
             ->addOrderBy('t.sessionDay', 'DESC')
             ->addOrderBy('t.createdAt', 'DESC')

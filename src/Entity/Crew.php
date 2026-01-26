@@ -54,7 +54,7 @@ class Crew
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $birthWorld = null;
 
-    #[ORM\Column(length: 36)]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::GUID)]
     private ?string $code = null;
 
     #[ORM\ManyToOne(inversedBy: 'crews')]
@@ -114,7 +114,7 @@ class Crew
 
     public function __construct()
     {
-        $this->setCode(Uuid::v7());
+        $this->setCode(Uuid::v7()->toRfc4122());
         $this->assetRoles = new ArrayCollection();
         $this->salaries = new ArrayCollection();
         $this->status = null;

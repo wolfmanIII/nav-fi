@@ -58,7 +58,44 @@ class Campaign
     {
         $this->assets = new ArrayCollection();
         $this->routes = new ArrayCollection();
+        $this->brokerSessions = new ArrayCollection();
         $this->code = Uuid::v7();
+    }
+
+    /**
+     * @var Collection<int, BrokerSession>
+     */
+    #[ORM\OneToMany(targetEntity: BrokerSession::class, mappedBy: 'campaign', orphanRemoval: true)]
+    private Collection $brokerSessions;
+
+    /**
+     * @return Collection<int, BrokerSession>
+     */
+    public function getBrokerSessions(): Collection
+    {
+        return $this->brokerSessions;
+    }
+
+    public function addBrokerSession(BrokerSession $brokerSession): static
+    {
+        if (!$this->brokerSessions->contains($brokerSession)) {
+            $this->brokerSessions->add($brokerSession);
+            $brokerSession->setCampaign($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBrokerSession(BrokerSession $brokerSession): static
+    {
+        if ($this->brokerSessions->removeElement($brokerSession)) {
+            // set the owning side to null (unless already changed)
+            if ($brokerSession->getCampaign() === $this) {
+                $brokerSession->setCampaign(null);
+            }
+        }
+
+        return $this;
     }
 
     public function getId(): ?int

@@ -78,7 +78,7 @@ class Route
 
     public function __construct()
     {
-        $this->setCode(Uuid::v7());
+        $this->setCode(Uuid::v7()->toRfc4122());
         $this->plannedAt = new \DateTimeImmutable();
         $this->waypoints = new ArrayCollection();
     }

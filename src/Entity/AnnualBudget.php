@@ -11,7 +11,7 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: AnnualBudgetRepository::class)]
 #[ORM\Index(name: 'idx_budget_user', columns: ['user_id'])]
-#[ORM\Index(name: 'idx_budget_asset', columns: ['asset_id'])]
+#[ORM\Index(name: 'idx_budget_fin_acc', columns: ['financial_account_id'])]
 class AnnualBudget
 {
     #[ORM\Id]
@@ -19,7 +19,7 @@ class AnnualBudget
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 36)]
+    #[ORM\Column(type: Types::GUID)]
     private ?string $code = null;
 
     #[ORM\Column]
@@ -37,9 +37,9 @@ class AnnualBudget
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $note = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'annualBudgets')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Asset $asset = null;
+    private ?FinancialAccount $financialAccount = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
@@ -47,7 +47,7 @@ class AnnualBudget
 
     public function __construct()
     {
-        $this->setCode(Uuid::v7());
+        $this->setCode(Uuid::v7()->toRfc4122());
     }
 
     public function getId(): ?int
@@ -127,15 +127,14 @@ class AnnualBudget
         return $this;
     }
 
-    public function getAsset(): ?Asset
+    public function getFinancialAccount(): ?FinancialAccount
     {
-        return $this->asset;
+        return $this->financialAccount;
     }
 
-    public function setAsset(?Asset $asset): static
+    public function setFinancialAccount(?FinancialAccount $financialAccount): static
     {
-        $this->asset = $asset;
-
+        $this->financialAccount = $financialAccount;
         return $this;
     }
 
@@ -154,7 +153,7 @@ class AnnualBudget
     public function calculateBudget()
     {
         $budget = 0.00;
-        foreach ($this->getAsset()->getIncomes() as $income) {
+        foreach ($this->getFinancialAccount()->getIncomes() as $income) {
             if (
                 is_null($income->getCancelDay())
                 && !is_null($income->getSigningYear())
@@ -164,12 +163,21 @@ class AnnualBudget
             }
         }
 
-        foreach ($this->getAsset()->getCosts() as $cost) {
+        foreach ($this->getFinancialAccount()->getCosts() as $cost) {
             $budget = bcsub($budget, $cost->getAmount(), 6);
         }
 
-        foreach ($this->getAsset()->getMortgage()->getMortgageInstallments() as $payment) {
-            $budget = bcsub($budget, $payment->getPayment(), 6);
+        // Mortgage is linked to asset, or financial account?
+        // Proposal says Mortgage has both.
+        // If account has mortgage via asset: $this->getFinancialAccount()->getAsset()->getMortgage()
+        // Or if mortgage pays from account, maybe we check transactions?
+        // Logic seems to simulate future payments? "getMortgageInstallments"
+        // Let's go via asset for mortgage for now as it's the "reason" for the mortgage.
+        $asset = $this->getFinancialAccount()->getAsset();
+        if ($asset && $asset->getMortgage()) {
+            foreach ($asset->getMortgage()->getMortgageInstallments() as $payment) {
+                $budget = bcsub($budget, $payment->getPayment(), 6);
+            }
         }
 
         return round($budget, 2, PHP_ROUND_HALF_DOWN);
@@ -178,7 +186,7 @@ class AnnualBudget
     public function getTotalIncomeAmount()
     {
         $incomeAmount = 0.00;
-        foreach ($this->getAsset()->getIncomes() as $income) {
+        foreach ($this->getFinancialAccount()->getIncomes() as $income) {
             if (
                 is_null($income->getCancelDay())
                 && is_null($income->getCancelYear())
@@ -194,7 +202,7 @@ class AnnualBudget
     public function getTotalCostsAmount()
     {
         $costAmount = 0.00;
-        foreach ($this->getAsset()->getCosts() as $cost) {
+        foreach ($this->getFinancialAccount()->getCosts() as $cost) {
             $costAmount = bcadd($costAmount, $cost->getAmount(), 6);
         }
         return round($costAmount, 2, PHP_ROUND_HALF_DOWN);
@@ -203,7 +211,13 @@ class AnnualBudget
     public function getActualBudget()
     {
         $totalIncomeAmount = $this->getTotalIncomeAmount();
-        $mortgageAnnualPayment = $this->getAsset()->getMortgage()->calculate()['total_annual_payment'];
+        $mortgageAnnualPayment = 0.0;
+
+        $asset = $this->getFinancialAccount()->getAsset();
+        if ($asset && $asset->getMortgage()) {
+            $mortgageAnnualPayment = $asset->getMortgage()->calculate()['total_annual_payment'];
+        }
+
         $totaleCostsAmount = $this->getTotalCostsAmount();
 
         $totalCost = bcadd($mortgageAnnualPayment, $totaleCostsAmount, 6);

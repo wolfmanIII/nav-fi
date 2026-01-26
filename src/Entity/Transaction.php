@@ -8,9 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
 #[ORM\Table(name: 'ledger_transaction')]
-#[ORM\Index(name: 'idx_transaction_asset', columns: ['asset_id'])]
-#[ORM\Index(name: 'idx_transaction_sync', columns: ['asset_id', 'status', 'session_year', 'session_day'])]
-#[ORM\Index(name: 'idx_transaction_chronology', columns: ['asset_id', 'session_year', 'session_day', 'created_at'])]
+#[ORM\Index(name: 'idx_transaction_fin_acc', columns: ['financial_account_id'])]
+#[ORM\Index(name: 'idx_transaction_sync', columns: ['financial_account_id', 'status', 'session_year', 'session_day'])]
+#[ORM\Index(name: 'idx_transaction_chronology', columns: ['financial_account_id', 'session_year', 'session_day', 'created_at'])]
 class Transaction
 {
     #[ORM\Id]
@@ -20,7 +20,7 @@ class Transaction
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Asset $asset = null;
+    private ?FinancialAccount $financialAccount = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2)]
     private ?string $amount = null;
@@ -72,14 +72,14 @@ class Transaction
         return $this->id;
     }
 
-    public function getAsset(): ?Asset
+    public function getFinancialAccount(): ?FinancialAccount
     {
-        return $this->asset;
+        return $this->financialAccount;
     }
 
-    public function setAsset(?Asset $asset): static
+    public function setFinancialAccount(?FinancialAccount $financialAccount): static
     {
-        $this->asset = $asset;
+        $this->financialAccount = $financialAccount;
 
         return $this;
     }

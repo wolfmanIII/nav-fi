@@ -22,15 +22,19 @@ class Mortgage
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 36)]
+    #[ORM\Column(type: Types::GUID)]
     private ?string $code = null;
 
     #[ORM\Column(length: 100)]
     private ?string $name = null;
 
-    #[ORM\OneToOne(inversedBy: 'mortgage')]
-    #[ORM\JoinColumn(nullable: false, unique: true)]
+    #[ORM\OneToOne(inversedBy: 'mortgage', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Asset $asset = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?FinancialAccount $financialAccount = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $startDay = null;
@@ -86,7 +90,7 @@ class Mortgage
 
     public function __construct()
     {
-        $this->setCode(Uuid::v7());
+        $this->setCode(Uuid::v7()->toRfc4122());
 
         $this->mortgageInstallments = new ArrayCollection();
     }
@@ -461,5 +465,15 @@ class Mortgage
     private function roundAmount(string $value, int $precision = 2, int $mode = PHP_ROUND_HALF_DOWN): string
     {
         return number_format((float)$value, $precision, '.', '');
+    }
+    public function getFinancialAccount(): ?FinancialAccount
+    {
+        return $this->financialAccount;
+    }
+
+    public function setFinancialAccount(?FinancialAccount $financialAccount): static
+    {
+        $this->financialAccount = $financialAccount;
+        return $this;
     }
 }

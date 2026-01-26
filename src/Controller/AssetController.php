@@ -99,11 +99,25 @@ final class AssetController extends BaseController
                 $details = $form->get('assetDetails')->getData();
             }
 
+            // Handle FinancialAccount
+            $credits = $form->get('credits')->getData();
+            $financialAccount = new \App\Entity\FinancialAccount();
+            $financialAccount->setUser($user);
+            $financialAccount->setAsset($asset);
+            if ($credits) {
+                $financialAccount->setCredits((string)$credits);
+            }
+            // Link to campaign if asset has one?
+            if ($asset->getCampaign()) {
+                $financialAccount->setCampaign($asset->getCampaign());
+            }
+
             if (is_object($details) && method_exists($details, 'toArray')) {
                 $asset->setAssetDetails($details->toArray());
             }
 
             $em->persist($asset);
+            $em->persist($financialAccount);
             $em->flush();
             return $this->redirectToRoute('app_asset_index', ['category' => $asset->getCategory()]);
         }
@@ -144,6 +158,24 @@ final class AssetController extends BaseController
                 $details = $form->get('baseDetails')->getData();
             } else {
                 $details = $form->get('assetDetails')->getData();
+            }
+
+            // Handle FinancialAccount
+            $credits = $form->get('credits')->getData();
+            $financialAccount = $asset->getFinancialAccount();
+            if (!$financialAccount) {
+                $financialAccount = new \App\Entity\FinancialAccount();
+                $financialAccount->setUser($user);
+                $financialAccount->setAsset($asset);
+                $em->persist($financialAccount);
+            }
+            if ($credits !== null) {
+                $financialAccount->setCredits((string)$credits);
+            }
+
+            // Sync Campaign
+            if ($asset->getCampaign()) {
+                $financialAccount->setCampaign($asset->getCampaign());
             }
 
             if (is_object($details) && method_exists($details, 'toArray')) {
@@ -479,7 +511,15 @@ final class AssetController extends BaseController
         $perPage = 20;
 
         $transactionRepo = $em->getRepository(\App\Entity\Transaction::class);
-        $result = $transactionRepo->findForAsset($asset, $page, $perPage);
+        // Use FinancialAccount
+        $account = $asset->getFinancialAccount();
+        if (!$account) {
+            // Handle edge case: create on fly or show empty? 
+            // Assets should always have account. If not, show empty.
+            $result = ['items' => [], 'total' => 0];
+        } else {
+            $result = $transactionRepo->findForAccount($account, $page, $perPage);
+        }
 
         $transactions = $result['items'];
         $total = $result['total'];
@@ -511,7 +551,12 @@ final class AssetController extends BaseController
             throw new NotFoundHttpException();
         }
 
-        $cargoItems = $costRepo->findUnsoldTradeCargoForAsset($asset);
+        $account = $asset->getFinancialAccount();
+        if (!$account) {
+            $cargoItems = [];
+        } else {
+            $cargoItems = $costRepo->findUnsoldTradeCargoForAccount($account);
+        }
         $localLaws = $em->getRepository(LocalLaw::class)->findAll();
 
         $marketValues = [];

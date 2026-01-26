@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Entity\Income;
 
 final class CostController extends BaseController
 {
@@ -127,7 +128,7 @@ final class CostController extends BaseController
 
             'cost' => $cost,
             'form' => $form,
-            'asset' => $cost->getAsset(),
+            'asset' => $cost->getFinancialAccount()->getAsset(),
         ]);
     }
 

@@ -15,7 +15,7 @@ class MortgageInstallment
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 36)]
+    #[ORM\Column(type: Types::GUID)]
     private ?string $code = null;
 
     #[ORM\Column]
@@ -27,7 +27,7 @@ class MortgageInstallment
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $payment = null;
 
-    #[ORM\ManyToOne(inversedBy: 'mortgageRates')]
+    #[ORM\ManyToOne(inversedBy: 'mortgageInstallments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Mortgage $mortgage = null;
 
@@ -37,7 +37,7 @@ class MortgageInstallment
 
     public function __construct()
     {
-        $this->setCode(Uuid::v7());
+        $this->setCode(Uuid::v7()->toRfc4122());
     }
 
     public function getId(): ?int

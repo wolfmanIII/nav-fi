@@ -87,19 +87,22 @@ final class AssetVoter extends Voter
             return false;
         }
 
-        if ($asset->getIncomes()->count() > 0) {
-            return false;
-        }
+        $account = $asset->getFinancialAccount();
+        if ($account) {
+            if ($account->getIncomes()->count() > 0) {
+                return false;
+            }
 
-        if ($asset->getCosts()->count() > 0) {
-            return false;
+            if ($account->getCosts()->count() > 0) {
+                return false;
+            }
+
+            if ($this->annualBudgetRepository->count(['financialAccount' => $account]) > 0) {
+                return false;
+            }
         }
 
         if ($asset->getMortgage() !== null) {
-            return false;
-        }
-
-        if ($this->annualBudgetRepository->count(['asset' => $asset]) > 0) {
             return false;
         }
 
@@ -117,19 +120,26 @@ final class AssetVoter extends Voter
             return false;
         }
 
-        if ($asset->getIncomes()->count() > 0) {
-            return false;
-        }
+        $account = $asset->getFinancialAccount();
+        if ($account) {
+            if ($account->getIncomes()->count() > 0) {
+                return false;
+            }
 
-        if ($asset->getCosts()->count() > 0) {
-            return false;
+            if ($account->getCosts()->count() > 0) {
+                return false;
+            }
+
+            if ($this->annualBudgetRepository->count(['financialAccount' => $account]) > 0) {
+                return false;
+            }
         }
 
         if ($asset->getMortgage() !== null) {
             return false;
         }
 
-        return $this->annualBudgetRepository->count(['asset' => $asset]) === 0;
+        return true;
     }
 
     private function isOwner(Asset $asset, UserInterface $user): bool

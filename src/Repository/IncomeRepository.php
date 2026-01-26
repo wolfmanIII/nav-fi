@@ -67,7 +67,8 @@ class IncomeRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('i')
             ->leftJoin('i.incomeCategory', 'cat')
-            ->leftJoin('i.asset', 'a')
+            ->leftJoin('i.financialAccount', 'fa')
+            ->leftJoin('fa.asset', 'a')
             ->leftJoin('a.campaign', 'camp')
             ->addSelect('cat', 'a', 'camp')
             ->andWhere('i.user = :user')

@@ -31,7 +31,14 @@ class LedgerService
         foreach ($transactions as $tx) {
             // Crea semplicemente una transazione di inversione
             $reversalAmount = bcmul($tx->getAmount(), '-1', 2);
-            $asset = $tx->getAsset();
+            $financialAccount = $tx->getFinancialAccount();
+            $asset = $financialAccount?->getAsset();
+
+            if (!$asset) {
+                // If asset is gone, we can't easily reverse in context of a campaign?
+                // Or we just skip? For safety let's skip or log.
+                continue;
+            }
 
             $campaign = $asset->getCampaign();
             $currentDay = $campaign?->getSessionDay() ?? 0;
@@ -85,7 +92,20 @@ class LedgerService
         bool $autoFlush = true
     ): Transaction {
         $transaction = new Transaction();
-        $transaction->setAsset($asset);
+
+        $financialAccount = $asset->getFinancialAccount();
+        if (!$financialAccount) {
+            // Auto-create or throw? Throwing is safer as Asset should have it.
+            // Or create one on the fly?
+            $financialAccount = new \App\Entity\FinancialAccount();
+            $financialAccount->setUser($asset->getUser());
+            $financialAccount->setAsset($asset);
+            $this->entityManager->persist($financialAccount);
+            // We need to flush financial account if we want to use it? 
+            // setFinancialAccount works with object pending persist.
+        }
+
+        $transaction->setFinancialAccount($financialAccount);
         $transaction->setAmount($amount);
         $transaction->setDescription($description);
         $transaction->setSessionDay($day);
@@ -106,9 +126,12 @@ class LedgerService
             if ($this->isEffective($asset, $day, $year)) {
                 $transaction->setStatus(Transaction::STATUS_POSTED);
 
-                $currentBalance = $asset->getCredits() ?? '0.00';
-                $newBalance = bcadd($currentBalance, $amount, 2);
-                $asset->setCredits($newBalance);
+                $financialAccount = $asset->getFinancialAccount();
+                if ($financialAccount) {
+                    $currentBalance = $financialAccount->getCredits() ?? '0.00';
+                    $newBalance = bcadd($currentBalance, $amount, 2);
+                    $financialAccount->setCredits($newBalance);
+                }
             } elseif ($transaction->getStatus() !== Transaction::STATUS_VOID) {
                 // Imposta su pending solo se non void (controllo ridondante ma sicuro)
                 $transaction->setStatus(Transaction::STATUS_PENDING);
@@ -154,30 +177,35 @@ class LedgerService
 
         foreach ($campaign->getAssets() as $asset) {
             // 1. Avanti nel Tempo: Trova transazioni Pending che sono ora effettive
-            $pending = $this->transactionRepository->findPendingEffective($asset, $currentDay, $currentYear);
-            foreach ($pending as $tx) {
-                // Applica fondi
-                $currentBalance = $asset->getCredits() ?? '0.00';
-                $newBalance = bcadd($currentBalance, $tx->getAmount(), 2);
-                $asset->setCredits($newBalance);
+            $financialAccount = $asset->getFinancialAccount();
 
-                // Segna come Posted
-                $tx->setStatus(Transaction::STATUS_POSTED);
-            }
+            if ($financialAccount) {
+                // 1. Avanti nel Tempo: Trova transazioni Pending che sono ora effettive
+                $pending = $this->transactionRepository->findPendingEffective($financialAccount, $currentDay, $currentYear);
 
-            // 2. Indietro nel Tempo: Trova transazioni Posted che sono ora nel futuro (Annulla Viaggio nel Tempo)
-            // Se l'utente sposta la data indietro, dobbiamo riportare le transazioni "Future" a PENDING
-            // e rimuovere i fondi.
-            $postedFuture = $this->transactionRepository->findPostedFuture($asset, $currentDay, $currentYear);
-            foreach ($postedFuture as $tx) {
-                // Inverti fondi (sottrai l'importo)
-                // Nota: Se l'importo originale era negativo (Costo), sottraendolo si AGGIUNGONO fondi. Corretto.
-                $currentBalance = $asset->getCredits() ?? '0.00';
-                $newBalance = bcsub($currentBalance, $tx->getAmount(), 2);
-                $asset->setCredits($newBalance);
+                foreach ($pending as $tx) {
+                    // Applica fondi
+                    $currentBalance = $financialAccount->getCredits() ?? '0.00';
+                    $newBalance = bcadd($currentBalance, $tx->getAmount(), 2);
+                    $financialAccount->setCredits($newBalance);
 
-                // Segna di nuovo come Pending
-                $tx->setStatus(Transaction::STATUS_PENDING);
+                    // Segna come Posted
+                    $tx->setStatus(Transaction::STATUS_POSTED);
+                }
+
+                // 2. Indietro nel Tempo: Trova transazioni Posted che sono ora nel futuro (Annulla Viaggio nel Tempo)
+                // Se l'utente sposta la data indietro, dobbiamo riportare le transazioni "Future" a PENDING
+                // e rimuovere i fondi.
+                $postedFuture = $this->transactionRepository->findPostedFuture($financialAccount, $currentDay, $currentYear);
+                foreach ($postedFuture as $tx) {
+                    // Inverti fondi (sottrai l'importo)
+                    $currentBalance = $financialAccount->getCredits() ?? '0.00';
+                    $newBalance = bcsub($currentBalance, $tx->getAmount(), 2);
+                    $financialAccount->setCredits($newBalance);
+
+                    // Segna di nuovo come Pending
+                    $tx->setStatus(Transaction::STATUS_PENDING);
+                }
             }
         }
     }

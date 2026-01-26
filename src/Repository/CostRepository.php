@@ -54,7 +54,8 @@ class CostRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('c')
             ->leftJoin('c.costCategory', 'cat')
-            ->leftJoin('c.asset', 'a')
+            ->leftJoin('c.financialAccount', 'fa')
+            ->leftJoin('fa.asset', 'a')
             ->leftJoin('a.campaign', 'camp')
             ->addSelect('cat', 'a', 'camp')
             ->andWhere('c.user = :user')
@@ -112,16 +113,16 @@ class CostRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findUnsoldTradeCargoForAsset(\App\Entity\Asset $asset): array
+    public function findUnsoldTradeCargoForAccount(\App\Entity\FinancialAccount $account): array
     {
-        // Similar to findUnsoldTradeGoods but filtered by Asset
+        // Similar to findUnsoldTradeGoods but filtered by FinancialAccount
         return $this->createQueryBuilder('c')
             ->join('c.costCategory', 'cat')
             ->leftJoin('App\Entity\Income', 'inc', 'WITH', 'inc.purchaseCost = c')
-            ->andWhere('c.asset = :asset')
+            ->andWhere('c.financialAccount = :account')
             ->andWhere('cat.code = :tradeCode')
             ->andWhere('inc.id IS NULL')
-            ->setParameter('asset', $asset)
+            ->setParameter('account', $account)
             ->setParameter('tradeCode', 'TRADE')
             ->orderBy('c.paymentYear', 'DESC')
             ->addOrderBy('c.paymentDay', 'DESC')

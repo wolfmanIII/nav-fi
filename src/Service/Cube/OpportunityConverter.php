@@ -43,7 +43,8 @@ class OpportunityConverter
     {
         $category = $this->getCostCategory('TRADE');
         $cost = new Cost();
-        $cost->setAsset($asset);
+        // Link to FinancialAccount
+        $cost->setFinancialAccount($asset->getFinancialAccount());
         $cost->setUser($asset->getUser());
         $cost->setCostCategory($category);
         $cost->setTitle("Trade Purchase: {$opp->details['goods']}");
@@ -138,7 +139,8 @@ class OpportunityConverter
     private function createBaseIncome(CubeOpportunityData $opp, Asset $asset, IncomeCategory $category, array $overrides = []): Income
     {
         $income = new Income();
-        $income->setAsset($asset);
+        // Link to FinancialAccount instead of Asset
+        $income->setFinancialAccount($asset->getFinancialAccount());
         $income->setUser($asset->getUser());
         $income->setIncomeCategory($category);
         $income->setTitle($opp->summary);

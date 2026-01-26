@@ -12,7 +12,6 @@ use App\Model\Asset\AssetSpec;
 
 #[ORM\Entity(repositoryClass: AssetRepository::class)]
 #[ORM\Index(name: 'idx_asset_user', columns: ['user_id'])]
-#[ORM\Index(name: 'idx_asset_user', columns: ['user_id'])]
 #[ORM\Index(name: 'idx_asset_campaign', columns: ['campaign_id'])]
 class Asset
 {
@@ -43,8 +42,8 @@ class Asset
     #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2, nullable: true)]
     private ?string $price = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, options: ['default' => '0.00'])]
-    private ?string $credits = '0.00';
+    #[ORM\OneToOne(mappedBy: 'asset', cascade: ['persist', 'remove'])]
+    private ?FinancialAccount $financialAccount = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
@@ -63,40 +62,8 @@ class Asset
     /**
      * @var Collection<int, Crew>
      */
-    #[ORM\OneToMany(targetEntity: Crew::class, mappedBy: 'asset')]
+    #[ORM\OneToMany(targetEntity: Crew::class, mappedBy: 'asset', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $crews;
-
-    // ... (rest of getters/setters) ...
-
-    public function getAssetDetails(): ?array
-    {
-        return $this->assetDetails;
-    }
-
-    public function setAssetDetails(?array $assetDetails): static
-    {
-        $this->assetDetails = $assetDetails;
-
-        return $this;
-    }
-
-    public function getSpec(): AssetSpec
-    {
-        return new AssetSpec($this->assetDetails ?? []);
-    }
-
-    // Conservazione dei getter legacy ma con aggiornamento della logica
-    public function getJumpDriveRating(): ?int
-    {
-        $rating = $this->getSpec()->getJDrive()->getRating();
-        return $rating > 0 ? $rating : null;
-    }
-
-    public function getHullTons(): ?float
-    {
-        $tons = $this->getSpec()->getHull()->getTons();
-        return $tons > 0 ? (float) $tons : null;
-    }
 
     /**
      * @var Collection<int, AssetAmendment>
@@ -105,46 +72,18 @@ class Asset
     private Collection $amendments;
 
     /**
-     * @var Collection<int, Cost>
-     */
-    #[ORM\OneToMany(targetEntity: Cost::class, mappedBy: 'asset', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    private Collection $costs;
-
-    /**
-     * @var Collection<int, Income>
-     */
-    #[ORM\OneToMany(targetEntity: Income::class, mappedBy: 'asset', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    private Collection $incomes;
-
-    /**
      * @var Collection<int, Route>
      */
     #[ORM\OneToMany(targetEntity: Route::class, mappedBy: 'asset', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $routes;
 
-    /**
-     * @var Collection<int, AnnualBudget>
-     */
-    #[ORM\OneToMany(targetEntity: AnnualBudget::class, mappedBy: 'asset', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    private Collection $annualBudgets;
-
-
-    /**
-     * @var Collection<int, Transaction>
-     */
-    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'asset', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    private Collection $transactions;
-
     public function __construct()
     {
         $this->setCode(Uuid::v7());
         $this->crews = new ArrayCollection();
-        $this->costs = new ArrayCollection();
-        $this->incomes = new ArrayCollection();
         $this->amendments = new ArrayCollection();
         $this->routes = new ArrayCollection();
-        $this->annualBudgets = new ArrayCollection();
-        $this->transactions = new ArrayCollection();
+        // Financial collections removed (moved to FinancialAccount)
     }
 
     public function getId(): ?int
@@ -160,7 +99,6 @@ class Asset
     public function setCode(?string $code): static
     {
         $this->code = $code;
-
         return $this;
     }
 
@@ -172,7 +110,6 @@ class Asset
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -184,7 +121,6 @@ class Asset
     public function setType(?string $type): static
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -196,7 +132,6 @@ class Asset
     public function setCategory(string $category): static
     {
         $this->category = $category;
-
         return $this;
     }
 
@@ -208,7 +143,6 @@ class Asset
     public function setClass(?string $class): static
     {
         $this->class = $class;
-
         return $this;
     }
 
@@ -220,18 +154,27 @@ class Asset
     public function setPrice(?string $price): static
     {
         $this->price = $price;
-
         return $this;
     }
 
-    public function getCredits(): ?string
+    public function getFinancialAccount(): ?FinancialAccount
     {
-        return $this->credits;
+        return $this->financialAccount;
     }
 
-    public function setCredits(string $credits): static
+    public function setFinancialAccount(?FinancialAccount $financialAccount): static
     {
-        $this->credits = $credits;
+        // unset the owning side of the relation if necessary
+        if ($financialAccount === null && $this->financialAccount !== null) {
+            $this->financialAccount->setAsset(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($financialAccount !== null && $financialAccount->getAsset() !== $this) {
+            $financialAccount->setAsset($this);
+        }
+
+        $this->financialAccount = $financialAccount;
 
         return $this;
     }
@@ -244,7 +187,6 @@ class Asset
     public function setUser(?User $user): static
     {
         $this->user = $user;
-
         return $this;
     }
 
@@ -256,7 +198,6 @@ class Asset
     public function setCampaign(?Campaign $campaign): static
     {
         $this->campaign = $campaign;
-
         return $this;
     }
 
@@ -278,8 +219,35 @@ class Asset
         }
 
         $this->mortgage = $mortgage;
-
         return $this;
+    }
+
+    public function getAssetDetails(): ?array
+    {
+        return $this->assetDetails;
+    }
+
+    public function setAssetDetails(?array $assetDetails): static
+    {
+        $this->assetDetails = $assetDetails;
+        return $this;
+    }
+
+    public function getSpec(): AssetSpec
+    {
+        return new AssetSpec($this->assetDetails ?? []);
+    }
+
+    public function getJumpDriveRating(): ?int
+    {
+        $rating = $this->getSpec()->getJDrive()->getRating();
+        return $rating > 0 ? $rating : null;
+    }
+
+    public function getHullTons(): ?float
+    {
+        $tons = $this->getSpec()->getHull()->getTons();
+        return $tons > 0 ? (float) $tons : null;
     }
 
     /**
@@ -288,6 +256,25 @@ class Asset
     public function getCrews(): Collection
     {
         return $this->crews;
+    }
+
+    public function addCrew(Crew $crew): static
+    {
+        if (!$this->crews->contains($crew)) {
+            $this->crews->add($crew);
+            $crew->setAsset($this);
+        }
+        return $this;
+    }
+
+    public function removeCrew(Crew $crew): static
+    {
+        if ($this->crews->removeElement($crew)) {
+            if ($crew->getAsset() === $this) {
+                $crew->setAsset(null);
+            }
+        }
+        return $this;
     }
 
     /**
@@ -304,7 +291,6 @@ class Asset
             $this->amendments->add($amendment);
             $amendment->setAsset($this);
         }
-
         return $this;
     }
 
@@ -315,67 +301,7 @@ class Asset
                 $amendment->setAsset(null);
             }
         }
-
         return $this;
-    }
-
-    public function addCrew(Crew $crew): static
-    {
-        if (!$this->crews->contains($crew)) {
-            $this->crews->add($crew);
-            $crew->setAsset($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCrew(Crew $crew): static
-    {
-        if ($this->crews->removeElement($crew)) {
-            // imposta il lato proprietario a null (a meno che non sia già cambiato)
-            if ($crew->getAsset() === $this) {
-                $crew->setAsset(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Cost>
-     */
-    public function getCosts(): Collection
-    {
-        return $this->costs;
-    }
-
-    public function addCost(Cost $cost): static
-    {
-        if (!$this->costs->contains($cost)) {
-            $this->costs->add($cost);
-            $cost->setAsset($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCost(Cost $cost): static
-    {
-        if ($this->costs->removeElement($cost)) {
-            if ($cost->getAsset() === $this) {
-                $cost->setAsset(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Income>
-     */
-    public function getIncomes(): Collection
-    {
-        return $this->incomes;
     }
 
     /**
@@ -392,7 +318,6 @@ class Asset
             $this->routes->add($route);
             $route->setAsset($this);
         }
-
         return $this;
     }
 
@@ -403,34 +328,9 @@ class Asset
                 $route->setAsset(null);
             }
         }
-
         return $this;
     }
 
-    public function addIncome(Income $income): static
-    {
-        if (!$this->incomes->contains($income)) {
-            $this->incomes->add($income);
-            $income->setAsset($this);
-        }
-
-        return $this;
-    }
-
-    public function removeIncome(Income $income): static
-    {
-        if ($this->incomes->removeElement($income)) {
-            if ($income->getAsset() === $this) {
-                $income->setAsset(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
     public function hasCaptain(): bool
     {
         foreach ($this->crews as $crew) {
@@ -459,17 +359,5 @@ class Asset
     public function hasMortgageSigned(): bool
     {
         return $this->getMortgage()?->isSigned() === true;
-    }
-
-
-
-
-
-    /**
-     * @return Collection<int, Transaction>
-     */
-    public function getTransactions(): Collection
-    {
-        return $this->transactions;
     }
 }

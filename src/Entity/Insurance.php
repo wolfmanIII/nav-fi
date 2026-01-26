@@ -31,7 +31,7 @@ class Insurance
     /**
      * @var Collection<int, Mortgage>
      */
-    #[ORM\OneToMany(targetEntity: Mortgage::class, mappedBy: 'insurace')]
+    #[ORM\OneToMany(targetEntity: Mortgage::class, mappedBy: 'insurance')]
     private Collection $mortgages;
 
     public function __construct()

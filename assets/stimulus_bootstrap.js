@@ -1,5 +1,4 @@
 import { startStimulusApp } from '@symfony/stimulus-bundle';
-import AiConsoleController from './controllers/ai_console_controller.js';
 import BulkSelectController from './controllers/bulk_select_controller.js';
 import CampaignAssetController from './controllers/campaign_asset_controller.js';
 import ImperialDateController from './controllers/imperial_date_controller.js';
@@ -20,7 +19,6 @@ import ConfirmModalController from './controllers/confirm_modal_controller.js';
 
 const app = startStimulusApp();
 
-app.register('ai-console', AiConsoleController);
 app.register('bulk-select', BulkSelectController);
 app.register('campaign-asset', CampaignAssetController);
 app.register('imperial-date', ImperialDateController);

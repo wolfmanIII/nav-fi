@@ -27,13 +27,15 @@ class TradeService
 
         $category = $this->incomeCategoryRepo->findOneBy(['code' => 'TRADE']);
         if (!$category) {
-            // Fallback or throw? Let's try 'speculative_trade' or similar if 'TRADE' fails, 
+            // Fallback or throw? Let's try 'speculative_trade' or similar if 'TRADE' fails,
             // but for now assume TRADE exists as counterpart to Cost TRADE
             throw new \RuntimeException("Income Category 'TRADE' not found.");
         }
 
         $income = new Income();
-        $income->setAsset($cost->getAsset());
+
+        // Link to FinancialAccount instead of Asset
+        $income->setFinancialAccount($cost->getFinancialAccount());
         $income->setUser($cost->getUser()); // Same owner
         $income->setIncomeCategory($category);
         $income->setTitle("Sale of Cargo: " . str_replace('Purchase Cargo: ', '', $cost->getTitle()));

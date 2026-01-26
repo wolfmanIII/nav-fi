@@ -52,7 +52,8 @@ class AnnualBudgetRepository extends ServiceEntityRepository
     public function findForUserWithFilters(User $user, array $filters, int $page, int $limit): array
     {
         $qb = $this->createQueryBuilder('b')
-            ->leftJoin('b.asset', 'a')
+            ->leftJoin('b.financialAccount', 'fa')
+            ->leftJoin('fa.asset', 'a')
             ->leftJoin('a.campaign', 'c')
             ->addSelect('a', 'c')
             ->andWhere('b.user = :user')

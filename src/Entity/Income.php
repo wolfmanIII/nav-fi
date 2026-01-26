@@ -11,7 +11,7 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: IncomeRepository::class)]
 #[ORM\Index(name: 'idx_income_user', columns: ['user_id'])]
-#[ORM\Index(name: 'idx_income_asset', columns: ['asset_id'])]
+#[ORM\Index(name: 'idx_income_fin_acc', columns: ['financial_account_id'])]
 #[ORM\Index(name: 'idx_income_category', columns: ['income_category_id'])]
 class Income
 {
@@ -24,11 +24,60 @@ class Income
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 36)]
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    #[ORM\Column(type: Types::GUID)]
     private ?string $code = null;
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): static
+    {
+        $this->code = $code;
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): static
+    {
+        $this->title = $title;
+        return $this;
+    }
+
+    public function getPatronAlias(): ?string
+    {
+        return $this->patronAlias;
+    }
+
+    public function setPatronAlias(?string $patronAlias): static
+    {
+        $this->patronAlias = $patronAlias;
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+        return $this;
+    }
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $patronAlias = null;
@@ -91,31 +140,17 @@ class Income
     #[ORM\JoinColumn(nullable: false)]
     private ?IncomeCategory $incomeCategory = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Asset $asset = null;
+    #[ORM\ManyToOne(inversedBy: 'incomes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?FinancialAccount $financialAccount = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
 
-    public function __construct()
-    {
-        $this->setCode(Uuid::v7());
-        $this->status = self::STATUS_DRAFT;
-    }
-
-    public function getDetails(): array
+    public function getDetails(): ?array
     {
         return $this->details ?? [];
-    }
-
-    /**
-     * Restituisce un wrapper "smart" (IncomeDetails) per accedere ai dati JSON in modo tipizzato.
-     */
-    public function getDetailsData(): \App\Model\IncomeDetails
-    {
-        return new \App\Model\IncomeDetails($this->getDetails());
     }
 
     public function setDetails(?array $details): static
@@ -135,157 +170,14 @@ class Income
         return $this;
     }
 
-    public function getId(): ?int
+    public function getIncomeCategory(): ?IncomeCategory
     {
-        return $this->id;
+        return $this->incomeCategory;
     }
 
-    public function getCode(): ?string
+    public function setIncomeCategory(?IncomeCategory $incomeCategory): static
     {
-        return $this->code;
-    }
-
-    public function setCode(string $code): static
-    {
-        $this->code = $code;
-
-        return $this;
-    }
-
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): static
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getPatronAlias(): ?string
-    {
-        return $this->patronAlias;
-    }
-
-    public function setPatronAlias(?string $patronAlias): static
-    {
-        $this->patronAlias = $patronAlias;
-
-        return $this;
-    }
-
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-    public function setStatus(?string $status): static
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    public function isSigned(): bool
-    {
-        return $this->status === self::STATUS_SIGNED;
-    }
-
-    public function getSigningDay(): ?int
-    {
-        return $this->signingDay;
-    }
-
-    public function setSigningDay(?int $signingDay): static
-    {
-        $this->signingDay = $signingDay;
-
-        return $this;
-    }
-
-    public function getSigningYear(): ?int
-    {
-        return $this->signingYear;
-    }
-
-    public function setSigningYear(?int $signingYear): static
-    {
-        $this->signingYear = $signingYear;
-
-        return $this;
-    }
-
-    public function getPaymentDay(): ?int
-    {
-        return $this->paymentDay;
-    }
-
-    public function setPaymentDay(?int $paymentDay): static
-    {
-        $this->paymentDay = $paymentDay;
-
-        return $this;
-    }
-
-    public function getPaymentYear(): ?int
-    {
-        return $this->paymentYear;
-    }
-
-    public function setPaymentYear(?int $paymentYear): static
-    {
-        $this->paymentYear = $paymentYear;
-
-        return $this;
-    }
-
-    public function getCancelDay(): ?int
-    {
-        return $this->cancelDay;
-    }
-
-    public function setCancelDay(?int $cancelDay): static
-    {
-        $this->cancelDay = $cancelDay;
-
-        return $this;
-    }
-
-    public function getCancelYear(): ?int
-    {
-        return $this->cancelYear;
-    }
-
-    public function setCancelYear(?int $cancelYear): static
-    {
-        $this->cancelYear = $cancelYear;
-
-        return $this;
-    }
-
-    public function getExpirationDay(): ?int
-    {
-        return $this->expirationDay;
-    }
-
-    public function setExpirationDay(?int $expirationDay): static
-    {
-        $this->expirationDay = $expirationDay;
-
-        return $this;
-    }
-
-    public function getExpirationYear(): ?int
-    {
-        return $this->expirationYear;
-    }
-
-    public function setExpirationYear(?int $expirationYear): static
-    {
-        $this->expirationYear = $expirationYear;
-
+        $this->incomeCategory = $incomeCategory;
         return $this;
     }
 
@@ -297,7 +189,6 @@ class Income
     public function setAmount(string $amount): static
     {
         $this->amount = $amount;
-
         return $this;
     }
 
@@ -309,22 +200,109 @@ class Income
     public function setNote(?string $note): static
     {
         $this->note = $note;
-
         return $this;
     }
 
-    public function getIncomeCategory(): ?IncomeCategory
+    public function getSigningDay(): ?int
     {
-        return $this->incomeCategory;
+        return $this->signingDay;
     }
 
-    public function setIncomeCategory(?IncomeCategory $incomeCategory): static
+    public function setSigningDay(?int $signingDay): static
     {
-        $this->incomeCategory = $incomeCategory;
-
+        $this->signingDay = $signingDay;
         return $this;
     }
 
+    public function getSigningYear(): ?int
+    {
+        return $this->signingYear;
+    }
+
+    public function setSigningYear(?int $signingYear): static
+    {
+        $this->signingYear = $signingYear;
+        return $this;
+    }
+
+    public function getPaymentDay(): ?int
+    {
+        return $this->paymentDay;
+    }
+
+    public function setPaymentDay(?int $paymentDay): static
+    {
+        $this->paymentDay = $paymentDay;
+        return $this;
+    }
+
+    public function getPaymentYear(): ?int
+    {
+        return $this->paymentYear;
+    }
+
+    public function setPaymentYear(?int $paymentYear): static
+    {
+        $this->paymentYear = $paymentYear;
+        return $this;
+    }
+
+    public function getExpirationDay(): ?int
+    {
+        return $this->expirationDay;
+    }
+
+    public function setExpirationDay(?int $expirationDay): static
+    {
+        $this->expirationDay = $expirationDay;
+        return $this;
+    }
+
+    public function getExpirationYear(): ?int
+    {
+        return $this->expirationYear;
+    }
+
+    public function setExpirationYear(?int $expirationYear): static
+    {
+        $this->expirationYear = $expirationYear;
+        return $this;
+    }
+
+    public function getCancelDay(): ?int
+    {
+        return $this->cancelDay;
+    }
+
+    public function setCancelDay(?int $cancelDay): static
+    {
+        $this->cancelDay = $cancelDay;
+        return $this;
+    }
+
+    public function getCancelYear(): ?int
+    {
+        return $this->cancelYear;
+    }
+
+    public function setCancelYear(?int $cancelYear): static
+    {
+        $this->cancelYear = $cancelYear;
+        return $this;
+    }
+
+    public function getFinancialAccount(): ?FinancialAccount
+    {
+        return $this->financialAccount;
+    }
+
+    public function setFinancialAccount(?FinancialAccount $financialAccount): static
+    {
+        $this->financialAccount = $financialAccount;
+        return $this;
+    }
+
+    /* 
     public function getAsset(): ?Asset
     {
         return $this->asset;
@@ -333,9 +311,9 @@ class Income
     public function setAsset(?Asset $asset): static
     {
         $this->asset = $asset;
-
         return $this;
     }
+    */
 
     public function getUser(): ?User
     {
@@ -344,7 +322,7 @@ class Income
 
     public function setUser(?User $user): static
     {
-        $this->user = $user;
+        $this->setCode(Uuid::v7()->toRfc4122());
 
         return $this;
     }
