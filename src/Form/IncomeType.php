@@ -25,6 +25,8 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\Campaign;
+use App\Entity\FinancialAccount;
+use App\Repository\FinancialAccountRepository;
 
 class IncomeType extends AbstractType
 {
@@ -134,14 +136,11 @@ class IncomeType extends AbstractType
                 ],
             ])
             ->add('financialAccount', EntityType::class, [
-                'class' => \App\Entity\FinancialAccount::class,
+                'class' => FinancialAccount::class,
                 'placeholder' => '-- Select a Financial Account --',
                 'required' => false,
-                'choice_label' => fn(\App\Entity\FinancialAccount $fa) =>
-                $fa->getAsset()
-                    ? sprintf('%s - %s(%s)', $fa->getAsset()->getName(), $fa->getAsset()->getType(), $fa->getAsset()->getClass())
-                    : 'Unlinked Account (' . $fa->getCode() . ')',
-                'choice_attr' => function (\App\Entity\FinancialAccount $fa): array {
+                'choice_label' => fn(FinancialAccount $fa) => $fa->getDisplayName(),
+                'choice_attr' => function (FinancialAccount $fa): array {
                     $asset = $fa->getAsset();
                     if (!$asset) return [];
                     $start = $asset->getCampaign()?->getStartingYear();
@@ -151,23 +150,21 @@ class IncomeType extends AbstractType
                         'data-campaign' => $campaignId ? (string) $campaignId : '',
                     ];
                 },
-                'query_builder' => function (\App\Repository\FinancialAccountRepository $repo) use ($user) {
+                'query_builder' => function (FinancialAccountRepository $repo) use ($user) {
                     $qb = $repo->createQueryBuilder('fa')
                         ->leftJoin('fa.asset', 'a')
                         ->orderBy('a.name', 'ASC');
                     if ($user) {
                         $qb->andWhere('fa.user = :user')->setParameter('user', $user);
                     }
-                    // Optional: Filter only FAs that have assets for now? User said "Asset stays on Mortgage", but FA replaces connection.
-                    // FAs with Assets are what users likely want to select for "Income from Ship X".
                     return $qb;
                 },
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-controller' => 'income-details year-limit',
-                    'data-year-limit-default-value' => $this->dayYearLimits->getYearMin(),
-                    'data-action' => 'change->year-limit#onAssetChange', // We might need to adjust JS if it expects 'asset'
-                    'data-campaign-asset-target' => 'asset', // Keep target name compatible or update JS
+                    'data-year-limit-default-value' => $this->incomeDetailsSubscriber instanceof \App\Form\EventSubscriber\IncomeDetailsSubscriber ? $this->dayYearLimits->getYearMin() : 0, // Fallback safe
+                    'data-action' => 'change->year-limit#onAssetChange',
+                    'data-campaign-asset-target' => 'asset',
                 ],
             ])
             ->add('company', EntityType::class, [

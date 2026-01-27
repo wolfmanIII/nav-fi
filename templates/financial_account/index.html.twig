@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nav-Fi&sup3; - Financial Accounts{% endblock %}
+
+{% import '_tooltip.html.twig' as tooltip %}
+
+{% block pageContent %}
+
+    <div class="">
+
+    {# HEADER / STATUS BAR #}
+    <div class="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800 p-6 shadow-lg mb-6">
+        <div class="absolute top-0 right-0 p-4 opacity-10">
+            {% include 'icons/wallet.html.twig' with { dim: 128, class: 'text-cyan-500' } %}
+        </div>
+        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+            <div>
+                 <div class="flex items-center gap-2 text-cyan-400/80 mb-1">
+                    {% include 'icons/wallet.html.twig' with { dim: 16 } %}
+                    <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">NAV-FI // BANKING</p>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight flex items-center gap-3 font-orbitron">
+                    FINANCIAL ACCOUNTS
+                    <span class="text-xs align-top opacity-50 font-mono pt-2 normal-case tracking-normal text-slate-400">
+                        // Ledger
+                    </span>
+                </h1>
+                <p class="text-xs text-slate-500 font-mono uppercase tracking-wider mt-1">
+                    Manage institutional accounts, credit lines, and asset-linked balances.
+                </p>
+            </div>
+            
+            <div class="flex flex-wrap gap-2">
+                 {{ tooltip.link('Open new account',
+                                'New Account',
+                                'icons/plus.html.twig',
+                                path('app_financial_account_new'),
+                                { position: 'tooltip-left', dim: 16, linkClass: 'btn btn-outline btn-primary btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase' }) }}
+            </div>
+        </div>
+    </div>
+
+
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+            {% if accounts|length > 0 %}
+                {% for account in accounts %}
+                    <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
+                        {# Card Header: Actions #}
+                        <div class="flex items-center justify-between mb-4">
+                             <div class="flex items-center gap-2">
+                                <div class="px-2 py-1 rounded border border-slate-700 bg-slate-800 text-xs font-mono tracking-widest text-slate-400 uppercase">
+                                    ID: {{ account.id }}
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                {# Quick Actions #}
+                                {{ tooltip.link('Add Income', '', 'icons/income.html.twig', path('app_income_new', { financialAccount: account.id }), { position: 'tooltip-top', dim: 14, linkClass: 'p-1.5 rounded bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition-all' }) }}
+                                {{ tooltip.link('Add Cost', '', 'icons/cost.html.twig', path('app_cost_new', { financialAccount: account.id }), { position: 'tooltip-top', dim: 14, linkClass: 'p-1.5 rounded bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-all' }) }}
+                                {{ tooltip.link('Annual Projections', '', 'icons/annual-budget.html.twig', path('app_annual_budget_index', { asset: account.asset ? account.asset.id : null }), { position: 'tooltip-top', dim: 14, linkClass: 'p-1.5 rounded bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 transition-all' }) }}
+                                <div class="w-px h-4 bg-slate-800 mx-1"></div>
+                                {{ tooltip.link('Edit details', '', 'icons/action-edit.html.twig', path('app_financial_account_edit', {id: account.id}), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-400' }) }}
+                            </div>
+                        </div>
+
+                        {# Card Body: Identity #}
+                        <div class="mb-4">
+                            <div class="flex items-start justify-between">
+                                <h2 class="text-xl font-bold text-slate-200 group-hover:text-cyan-400 transition-colors uppercase tracking-tight font-orbitron truncate">
+                                    {% if account.bank %}
+                                        {{ account.bank.name }}
+                                    {% else %}
+                                        {{ account.bankName|default('Unknown Institution') }}
+                                    {% endif %}
+                                </h2>
+                                <div class="text-cyan-500 opacity-50 group-hover:opacity-100 transition-opacity">
+                                     {% include 'icons/wallet.html.twig' with { dim: 24 } %}
+                                </div>
+                            </div>
+                            <p class="text-sm font-medium text-slate-500 font-rajdhani tracking-widest uppercase">
+                                ID: {{ account.id }} // CODE: {{ account.code|slice(0, 8) }}
+                            </p>
+                        </div>
+
+                        {# Card Detail: Balance #}
+                        <div class="grid grid-cols-1 gap-2 mb-6 p-2 rounded-lg bg-slate-900/50 border border-slate-800/50">
+                            <div class="flex flex-col items-end">
+                                <span class="text-[10px] text-slate-500 uppercase tracking-wider font-rajdhani">Balance</span>
+                                <span class="text-cyan-300 font-mono text-xl tracking-tight">
+                                    {{ account.credits|default('0')|format_number({ min_fraction_digit: 0, max_fraction_digit: 0, grouping_used: true }, 'decimal', 'default', app.request.locale) }} <span class="text-sm text-cyan-500/60">Cr</span>
+                                </span>
+                            </div>
+                        </div>
+
+
+
+                        {# Card Context: Links #}
+                        <div class="mt-3 flex flex-col gap-2">
+                            {% if account.asset %}
+                                <div class="flex items-center gap-2 overflow-hidden" title="Linked Asset">
+                                    <div class="text-cyan-500/50">{% include 'icons/assets.html.twig' with { dim: 14 } %}</div>
+                                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider truncate font-rajdhani">{{ account.asset.name }}</span>
+                                </div>
+                            {% endif %}
+                             {% if account.campaign %}
+                                <div class="flex items-center gap-2 overflow-hidden" title="Linked Campaign">
+                                    <div class="text-cyan-500/50">{% include 'icons/alien-structure-1.html.twig' with { dim: 14 } %}</div>
+                                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider truncate font-rajdhani">{{ account.campaign.title }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-span-full py-12 text-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50 flex flex-col items-center justify-center">
+                    <p class="text-slate-500 font-rajdhani tracking-widest uppercase mb-6 text-sm">No financial accounts opened.</p>
+                     {{ tooltip.link('Open new account',
+                                    'Create Account',
+                                    'icons/plus.html.twig',
+                                    path('app_financial_account_new'),
+                                    { position: 'tooltip-bottom', dim: 20, linkClass: 'btn btn-outline btn-primary btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase' }) }}
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+{% endblock %}

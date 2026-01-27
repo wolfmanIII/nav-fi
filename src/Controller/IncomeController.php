@@ -95,6 +95,15 @@ final class IncomeController extends BaseController
                 $this->clearUnusedDetails($income, $em);
             }
         }
+
+        $faId = $request->query->get('financialAccount');
+        if ($faId) {
+            $fa = $em->getRepository(\App\Entity\FinancialAccount::class)->find($faId);
+            if ($fa && $fa->getUser() === $user) {
+                $income->setFinancialAccount($fa);
+            }
+        }
+
         $form = $this->createForm(IncomeType::class, $income, ['user' => $user]);
         $form->handleRequest($request);
 

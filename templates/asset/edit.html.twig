@@ -190,9 +190,28 @@
 
             <div class="col-span-1">
                 <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.bank, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(form.bank, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
+                <div class="mt-1">{{ form_help(form.bank) }}</div>
+                {{ form_errors(form.bank) }}
+            </div>
+
+            <div class="col-span-1">
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.bankName, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(form.bankName, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
+                <div class="mt-1">{{ form_help(form.bankName) }}</div>
+                {{ form_errors(form.bankName) }}
+            </div>
+
+            <div class="col-span-1">
+                <div class="flex items-baseline h-5 mb-1">
                     {{ form_label(form.credits, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                 </div>
                 {{ form_widget(form.credits, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 font-mono text-cyan-400' } }) }}
+                <div class="mt-1">{{ form_help(form.credits) }}</div>
                 {{ form_errors(form.credits) }}
             </div>
         </fieldset>

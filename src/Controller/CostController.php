@@ -80,6 +80,13 @@ final class CostController extends BaseController
         }
 
         $cost = new Cost();
+        $faId = $request->query->get('financialAccount');
+        if ($faId) {
+            $fa = $em->getRepository(\App\Entity\FinancialAccount::class)->find($faId);
+            if ($fa && $fa->getUser() === $user) {
+                $cost->setFinancialAccount($fa);
+            }
+        }
 
         $form = $this->createForm(CostType::class, $cost, ['user' => $user]);
         $form->handleRequest($request);

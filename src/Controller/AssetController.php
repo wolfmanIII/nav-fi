@@ -101,13 +101,17 @@ final class AssetController extends BaseController
 
             // Handle FinancialAccount
             $credits = $form->get('credits')->getData();
+            $bank = $form->get('bank')->getData();
+            $bankName = $form->get('bankName')->getData();
+
             $financialAccount = new \App\Entity\FinancialAccount();
             $financialAccount->setUser($user);
             $financialAccount->setAsset($asset);
-            if ($credits) {
-                $financialAccount->setCredits((string)$credits);
-            }
-            // Link to campaign if asset has one?
+            $financialAccount->setCredits((string)($credits ?? 0));
+            $financialAccount->setBank($bank);
+            $financialAccount->setBankName($bankName);
+
+            // Link to campaign if asset has one
             if ($asset->getCampaign()) {
                 $financialAccount->setCampaign($asset->getCampaign());
             }
@@ -119,6 +123,14 @@ final class AssetController extends BaseController
             $em->persist($asset);
             $em->persist($financialAccount);
             $em->flush();
+
+            $bankDisplayName = $bank ? $bank->getName() : ($bankName ?: 'Independent');
+            $this->addFlash('success', sprintf(
+                'Asset protocol committed. Linked Financial Account initiated at %s with %s Cr.',
+                $bankDisplayName,
+                number_format((float)$credits, 0)
+            ));
+
             return $this->redirectToRoute('app_asset_index', ['category' => $asset->getCategory()]);
         }
 
@@ -162,6 +174,9 @@ final class AssetController extends BaseController
 
             // Handle FinancialAccount
             $credits = $form->get('credits')->getData();
+            $bank = $form->get('bank')->getData();
+            $bankName = $form->get('bankName')->getData();
+
             $financialAccount = $asset->getFinancialAccount();
             if (!$financialAccount) {
                 $financialAccount = new \App\Entity\FinancialAccount();
@@ -169,9 +184,12 @@ final class AssetController extends BaseController
                 $financialAccount->setAsset($asset);
                 $em->persist($financialAccount);
             }
+
             if ($credits !== null) {
                 $financialAccount->setCredits((string)$credits);
             }
+            $financialAccount->setBank($bank);
+            $financialAccount->setBankName($bankName);
 
             // Sync Campaign
             if ($asset->getCampaign()) {
@@ -192,6 +210,14 @@ final class AssetController extends BaseController
 
             $em->persist($asset);
             $em->flush();
+
+            $bankDisplayName = $bank ? $bank->getName() : ($bankName ?: 'Independent');
+            $this->addFlash('info', sprintf(
+                'Unit ledger synchronized. Account status updated at %s (Current Balance: %s Cr).',
+                $bankDisplayName,
+                number_format((float)$financialAccount->getCredits(), 0)
+            ));
+
             return $this->redirectToRoute('app_asset_index', ['category' => $asset->getCategory()]);
         }
 

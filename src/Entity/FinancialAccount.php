@@ -12,6 +12,7 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Entity(repositoryClass: FinancialAccountRepository::class)]
 #[ORM\Index(name: 'idx_fin_acc_user', columns: ['user_id'])]
 #[ORM\Index(name: 'idx_fin_acc_campaign', columns: ['campaign_id'])]
+#[ORM\Index(name: 'idx_fin_acc_bank', columns: ['bank_id'])]
 class FinancialAccount
 {
     #[ORM\Id]
@@ -24,6 +25,13 @@ class FinancialAccount
 
     #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, options: ['default' => '0.00'])]
     private ?string $credits = '0.00';
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $bankName = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Company $bank = null;
 
     #[ORM\OneToOne(inversedBy: 'financialAccount', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
@@ -82,6 +90,28 @@ class FinancialAccount
     public function setCredits(string $credits): static
     {
         $this->credits = $credits;
+        return $this;
+    }
+
+    public function getBankName(): ?string
+    {
+        return $this->bankName;
+    }
+
+    public function setBankName(?string $bankName): static
+    {
+        $this->bankName = $bankName;
+        return $this;
+    }
+
+    public function getBank(): ?Company
+    {
+        return $this->bank;
+    }
+
+    public function setBank(?Company $bank): static
+    {
+        $this->bank = $bank;
         return $this;
     }
 
@@ -230,5 +260,18 @@ class FinancialAccount
             }
         }
         return $this;
+    }
+
+    public function getDisplayName(): string
+    {
+        $bank = $this->bank ? $this->bank->getName() : ($this->bankName ?: 'Unknown Institution');
+        $asset = $this->asset ? $this->asset->getName() : 'Unlinked Asset';
+
+        return sprintf('%s - %s (ID: #%d / %s)', $bank, $asset, $this->id, substr((string) $this->code, 0, 8));
+    }
+
+    public function __toString(): string
+    {
+        return $this->getDisplayName();
     }
 }
