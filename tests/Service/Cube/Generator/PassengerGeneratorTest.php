@@ -21,7 +21,11 @@ class PassengerGeneratorTest extends TestCase
         $repo = $this->createMock(\App\Repository\CompanyRepository::class);
         $repo->method('findAll')->willReturn([]);
 
-        $generator = new PassengerGenerator($config, $repo);
+        $rules = $this->createMock(\App\Service\GameRulesEngine::class);
+        // Mock default rules behavior
+        $rules->method('get')->willReturnCallback(fn($key, $default) => $default);
+
+        $generator = new PassengerGenerator($config, $repo, $rules);
         $this->assertTrue($generator->supports('PASSENGERS'));
         $this->assertEquals('PASSENGERS', $generator->getType());
 
@@ -33,7 +37,11 @@ class PassengerGeneratorTest extends TestCase
             'session_year' => 1105
         ];
 
-        $opp = $generator->generate($context, 2);
+        // Mock Randomizer
+        $engine = new \Random\Engine\Xoshiro256StarStar(hash('sha256', 'TEST_SEED', true));
+        $randomizer = new \Random\Randomizer($engine);
+
+        $opp = $generator->generate($context, 2, $randomizer);
 
         $this->assertEquals('PASSENGERS', $opp->type);
         $this->assertEquals(2, $opp->distance);

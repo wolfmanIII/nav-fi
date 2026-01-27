@@ -3,6 +3,9 @@
 namespace App\Service\Cube\Generator;
 
 use App\Dto\Cube\CubeOpportunityData;
+use App\Repository\CompanyRepository;
+use App\Service\GameRulesEngine;
+use Random\Randomizer;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class PassengerGenerator implements OpportunityGeneratorInterface
@@ -10,7 +13,8 @@ class PassengerGenerator implements OpportunityGeneratorInterface
     public function __construct(
         #[Autowire('%app.cube.economy%')]
         private readonly array $economyConfig,
-        private readonly \App\Repository\CompanyRepository $companyRepo
+        private readonly CompanyRepository $companyRepo,
+        private readonly GameRulesEngine $rules
     ) {}
 
     public function supports(string $type): bool
@@ -23,16 +27,25 @@ class PassengerGenerator implements OpportunityGeneratorInterface
         return 'PASSENGERS';
     }
 
-    public function generate(array $context, int $maxDist, \Random\Randomizer $randomizer): CubeOpportunityData
+    public function generate(array $context, int $maxDist, Randomizer $randomizer): CubeOpportunityData
     {
         $dist = $context['distance'];
-        $paxCount = $randomizer->getInt(2, 12);
 
-        // Determina la classe
+        // Load Rules
+        $minPax = $this->rules->get('passenger.pax_min', 2);
+        $maxPax = $this->rules->get('passenger.pax_max', 12);
+
+        $paxCount = $randomizer->getInt($minPax, $maxPax);
+
+        // Determina la classe usando regole dinamiche
+        $rollHigh = $this->rules->get('passenger.class_chance.high', 10);
+        $rollMiddle = $this->rules->get('passenger.class_chance.middle', 40);
+        $rollBasic = $this->rules->get('passenger.class_chance.basic', 80);
+
         $classRoll = $randomizer->getInt(1, 100);
-        if ($classRoll <= 10) $class = 'high';
-        elseif ($classRoll <= 40) $class = 'middle';
-        elseif ($classRoll <= 80) $class = 'basic';
+        if ($classRoll <= $rollHigh) $class = 'high';
+        elseif ($classRoll <= $rollMiddle) $class = 'middle';
+        elseif ($classRoll <= $rollBasic) $class = 'basic';
         else $class = 'low';
 
         $ticketPrice = $this->economyConfig['passengers'][$class][$dist] ?? 500;

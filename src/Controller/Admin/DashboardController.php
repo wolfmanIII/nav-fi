@@ -24,6 +24,7 @@ class DashboardController extends AbstractDashboardController
     public function index(): Response
     {
         $links = [
+            'Game Rules' => $this->adminUrlGenerator->setController(GameRuleCrudController::class)->setAction('index')->generateUrl(),
             'Interest Rate' => $this->adminUrlGenerator->setController(InterestRateCrudController::class)->setAction('index')->generateUrl(),
             'Insurance' => $this->adminUrlGenerator->setController(InsuranceCrudController::class)->setAction('index')->generateUrl(),
             'Asset Role' => $this->adminUrlGenerator->setController(AssetRoleCrudController::class)->setAction('index')->generateUrl(),
@@ -49,6 +50,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToRoute('Nav-Fi', 'fa fa-home', 'app_home');
 
+        yield MenuItem::linkToCrud('Game Rules', 'fas fa-cogs', \App\Entity\GameRule::class);
         yield MenuItem::section('Settings');
         yield MenuItem::linkToCrud('Interest Rate', 'fas fa-list', InterestRate::class);
         yield MenuItem::linkToCrud('Insurance', 'fas fa-list', Insurance::class);

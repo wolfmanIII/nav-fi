@@ -4,10 +4,15 @@ namespace App\Service\Cube\Generator;
 
 use App\Dto\Cube\CubeOpportunityData;
 
+use App\Repository\CompanyRepository;
+use App\Service\GameRulesEngine;
+use Random\Randomizer;
+
 class TradeGenerator implements OpportunityGeneratorInterface
 {
     public function __construct(
-        private readonly \App\Repository\CompanyRepository $companyRepo
+        private readonly CompanyRepository $companyRepo,
+        private readonly GameRulesEngine $rules
     ) {}
 
     public function supports(string $type): bool
@@ -20,35 +25,51 @@ class TradeGenerator implements OpportunityGeneratorInterface
         return 'TRADE';
     }
 
-    public function generate(array $context, int $maxDist, \Random\Randomizer $randomizer): CubeOpportunityData
+    public function generate(array $context, int $maxDist, Randomizer $randomizer): CubeOpportunityData
     {
+        // Risorse disponibili (TODO: Spostare in configurazione o DB in futuro)
         $resources = ['Radioactives', 'Metals', 'Crystals', 'Luxuries', 'Electronics', 'Pharmaceuticals', 'Industrial Machinery'];
         $resource = $resources[$randomizer->getInt(0, count($resources) - 1)];
 
-        // Quantity (Tons) with Weighted Distribution
+        // Quantità (Tonnellate) con Distribuzione Pesata
+        // Recupera le soglie di probabilità dalle Game Rules
+        $rollSmall = $this->rules->get('trade.quantity_chance.small', 50);
+        $rollMedium = $this->rules->get('trade.quantity_chance.medium', 85);
+
         $sizeRoll = $randomizer->getInt(1, 100);
-        if ($sizeRoll <= 50) {
-            // Small: 5-20 tons
-            $tons = $randomizer->getInt(5, 20);
-        } elseif ($sizeRoll <= 85) {
-            // Medium: 25-80 tons
-            $tons = $randomizer->getInt(25, 80);
+
+        if ($sizeRoll <= $rollSmall) {
+            // Piccolo: default 5-20 tons
+            $min = $this->rules->get('trade.tonnage.small.min', 5);
+            $max = $this->rules->get('trade.tonnage.small.max', 20);
+            $tons = $randomizer->getInt($min, $max);
+        } elseif ($sizeRoll <= $rollMedium) {
+            // Medio: default 25-80 tons
+            $min = $this->rules->get('trade.tonnage.medium.min', 25);
+            $max = $this->rules->get('trade.tonnage.medium.max', 80);
+            $tons = $randomizer->getInt($min, $max);
         } else {
-            // Large: 100-500 tons
-            $tons = $randomizer->getInt(10, 50) * 10;
+            // Grande: default 100-500 tons
+            $minBase = $this->rules->get('trade.tonnage.large.base_min', 10);
+            $maxBase = $this->rules->get('trade.tonnage.large.base_max', 50);
+            $multiplier = $this->rules->get('trade.tonnage.large.multiplier', 10);
+            $tons = $randomizer->getInt($minBase, $maxBase) * $multiplier;
         }
 
-        // Pricing
-        $basePrice = $randomizer->getInt(1000, 5000); // Per Ton
+        // Prezzi
+        $minPrice = $this->rules->get('trade.price.min', 1000);
+        $maxPrice = $this->rules->get('trade.price.max', 5000);
+        $basePrice = $randomizer->getInt($minPrice, $maxPrice); // Per Tonnellata
         $totalCost = $basePrice * $tons;
 
-        // Potential Profit logic (just for flavor/UI)
-        $markup = $randomizer->getInt(120, 180) / 100;
+        // Logica Profitto Potenziale (solo per flavor/UI)
+        $minMarkup = $this->rules->get('trade.markup.min', 120);
+        $maxMarkup = $this->rules->get('trade.markup.max', 180);
+        $markup = $randomizer->getInt($minMarkup, $maxMarkup) / 100;
 
-        // Select Supplier (Company)
-        // Optimization: In a real app, filter by sector or context. Here random is fine for MVP.
-        // We'll fetch a random active company.
-        $companies = $this->companyRepo->findAll(); // Caching/limiting advisable in prod
+        // Selezione Fornitore (Compagnia)
+        // Ottimizzazione: In prod sarebbe meglio filtrare o cachare.
+        $companies = $this->companyRepo->findAll();
         $supplier = null;
         if (!empty($companies)) {
             $supplier = $companies[$randomizer->getInt(0, count($companies) - 1)];
@@ -60,17 +81,17 @@ class TradeGenerator implements OpportunityGeneratorInterface
         }
 
         return new CubeOpportunityData(
-            signature: '', // Will be set by engine
+            signature: '', // Sarà impostato dall'engine
             type: 'TRADE',
             summary: $summary,
             distance: $context['distance'],
-            amount: (float)$totalCost, // User PAYS this amount
+            amount: (float)$totalCost, // L'utente PAGA questo importo
             details: [
                 'origin' => $context['origin'],
                 'destination' => $context['destination'],
                 'dest_hex' => $context['dest_hex'],
-                'goods' => $resource, // Key expected by Converter
-                'tons' => $tons,      // Key expected by Converter
+                'goods' => $resource, // Chiave attesa dal Converter
+                'tons' => $tons,      // Chiave attesa dal Converter
                 'unit_price' => $basePrice,
                 'markup_estimate' => $markup,
                 'company_id' => $supplier?->getId(),

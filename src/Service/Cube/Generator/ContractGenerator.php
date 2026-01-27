@@ -4,10 +4,15 @@ namespace App\Service\Cube\Generator;
 
 use App\Dto\Cube\CubeOpportunityData;
 
+use App\Service\Cube\NarrativeService;
+use App\Service\GameRulesEngine;
+use Random\Randomizer;
+
 class ContractGenerator implements OpportunityGeneratorInterface
 {
     public function __construct(
-        private readonly \App\Service\Cube\NarrativeService $narrative
+        private readonly NarrativeService $narrative,
+        private readonly GameRulesEngine $rules
     ) {}
 
     public function supports(string $type): bool
@@ -20,14 +25,24 @@ class ContractGenerator implements OpportunityGeneratorInterface
         return 'CONTRACT';
     }
 
-    public function generate(array $context, int $maxDist, \Random\Randomizer $randomizer): CubeOpportunityData
+    public function generate(array $context, int $maxDist, Randomizer $randomizer): CubeOpportunityData
     {
         // 1. Determina il livello (Tier)
         $tierRoll = $randomizer->getInt(1, 100);
-        $tierKey = ($tierRoll <= 60) ? 'routine' : (($tierRoll <= 90) ? 'hazardous' : 'black_ops');
+
+        // Soglie di rischio configurabili
+        $thresholdRoutine = $this->rules->get('contract.tier_chance.routine', 60);
+        $thresholdHazardous = $this->rules->get('contract.tier_chance.hazardous', 90);
+
+        $tierKey = ($tierRoll <= $thresholdRoutine) ? 'routine' : (($tierRoll <= $thresholdHazardous) ? 'hazardous' : 'black_ops');
 
         $tierConfig = $this->narrative->resolveTiers($tierKey);
-        $amount = $randomizer->getInt($tierConfig['min'] ?? 1000, $tierConfig['max'] ?? 5000);
+
+        // Calcolo ricompensa base
+        $minReward = $tierConfig['min'] ?? 1000;
+        $maxReward = $tierConfig['max'] ?? 5000;
+
+        $amount = $randomizer->getInt($minReward, $maxReward);
         $amount = round($amount / 500) * 500;
 
         // 2. Generazione Narrativa tramite il nuovo Motore

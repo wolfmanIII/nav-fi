@@ -31,7 +31,10 @@ class ContractGeneratorTest extends TestCase
 
         $narrative->method('generateStory')->willReturn($storyMock);
 
-        $generator = new ContractGenerator($narrative);
+        $rules = $this->createMock(\App\Service\GameRulesEngine::class);
+        $rules->method('get')->willReturnCallback(fn($key, $default) => $default);
+
+        $generator = new ContractGenerator($narrative, $rules);
         $this->assertTrue($generator->supports('CONTRACT'));
 
         $context = [
@@ -43,7 +46,10 @@ class ContractGeneratorTest extends TestCase
             'session_year' => 1105
         ];
 
-        $opp = $generator->generate($context, 2);
+        $engine = new \Random\Engine\Xoshiro256StarStar(hash('sha256', 'TEST', true));
+        $randomizer = new \Random\Randomizer($engine);
+
+        $opp = $generator->generate($context, 2, $randomizer);
 
         $this->assertEquals('CONTRACT', $opp->type);
         $this->assertGreaterThanOrEqual(1000, $opp->amount);

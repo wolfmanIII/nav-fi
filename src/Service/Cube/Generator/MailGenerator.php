@@ -3,6 +3,9 @@
 namespace App\Service\Cube\Generator;
 
 use App\Dto\Cube\CubeOpportunityData;
+use App\Repository\CompanyRepository;
+use App\Service\GameRulesEngine;
+use Random\Randomizer;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class MailGenerator implements OpportunityGeneratorInterface
@@ -10,7 +13,8 @@ class MailGenerator implements OpportunityGeneratorInterface
     public function __construct(
         #[Autowire('%app.cube.economy%')]
         private readonly array $economyConfig,
-        private readonly \App\Repository\CompanyRepository $companyRepo
+        private readonly CompanyRepository $companyRepo,
+        private readonly GameRulesEngine $rules
     ) {}
 
     public function supports(string $type): bool
@@ -23,17 +27,25 @@ class MailGenerator implements OpportunityGeneratorInterface
         return 'MAIL';
     }
 
-    public function generate(array $context, int $maxDist, \Random\Randomizer $randomizer): CubeOpportunityData
+    public function generate(array $context, int $maxDist, Randomizer $randomizer): CubeOpportunityData
     {
         $dist = $context['distance'];
-        $containers = $randomizer->getInt(1, 3);
+
+        // Numero Contenitori (di solito 1-3)
+        $minContainers = $this->rules->get('mail.containers.min', 1);
+        $maxContainers = $this->rules->get('mail.containers.max', 3);
+        $containers = $randomizer->getInt($minContainers, $maxContainers);
+
         $rate = $this->economyConfig['mail']['flat_rate'];
         $total = $containers * $rate;
 
-        // Mail is usually official
+        // La posta è tipicamente ufficiale
         $patron = 'Imperial Interstellar Scout Service (IISS)';
-        // 20% chance of Private Courier Contract
-        if ($randomizer->getInt(1, 100) <= 20) {
+
+        // Probabilità Contratto Privato (es. 20%)
+        $privateChance = $this->rules->get('mail.private_courier.chance', 20);
+
+        if ($randomizer->getInt(1, 100) <= $privateChance) {
             $companies = $this->companyRepo->findAll();
             if (!empty($companies)) {
                 $c = $companies[$randomizer->getInt(0, count($companies) - 1)];

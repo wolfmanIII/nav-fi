@@ -3,6 +3,9 @@
 namespace App\Service\Cube\Generator;
 
 use App\Dto\Cube\CubeOpportunityData;
+use App\Repository\CompanyRepository;
+use App\Service\GameRulesEngine;
+use Random\Randomizer;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class FreightGenerator implements OpportunityGeneratorInterface
@@ -10,7 +13,8 @@ class FreightGenerator implements OpportunityGeneratorInterface
     public function __construct(
         #[Autowire('%app.cube.economy%')]
         private readonly array $economyConfig,
-        private readonly \App\Repository\CompanyRepository $companyRepo
+        private readonly CompanyRepository $companyRepo,
+        private readonly GameRulesEngine $rules
     ) {}
 
     public function supports(string $type): bool
@@ -23,15 +27,21 @@ class FreightGenerator implements OpportunityGeneratorInterface
         return 'FREIGHT';
     }
 
-    public function generate(array $context, int $maxDist, \Random\Randomizer $randomizer): CubeOpportunityData
+    public function generate(array $context, int $maxDist, Randomizer $randomizer): CubeOpportunityData
     {
         $dist = $context['distance'];
-        $tons = $randomizer->getInt(1, 6) * 10; // 10-60 tonnellate
+
+        // Calcolo Tonnellaggio tramite regole
+        $tonsMinFactor = $this->rules->get('freight.tons_factor.min', 1);
+        $tonsMaxFactor = $this->rules->get('freight.tons_factor.max', 6);
+        $tonsMultiplier = $this->rules->get('freight.tons_multiplier', 10);
+
+        $tons = $randomizer->getInt($tonsMinFactor, $tonsMaxFactor) * $tonsMultiplier;
 
         $baseRate = $this->economyConfig['freight_pricing'][$dist] ?? 1000;
         $total = $tons * $baseRate;
 
-        // Select Shipper
+        // Selezione Spedizioniere
         $companies = $this->companyRepo->findAll();
         $shipper = null;
         if (!empty($companies)) {

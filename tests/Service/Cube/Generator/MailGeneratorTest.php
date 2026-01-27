@@ -16,7 +16,10 @@ class MailGeneratorTest extends TestCase
         $repo = $this->createMock(\App\Repository\CompanyRepository::class);
         $repo->method('findAll')->willReturn([]);
 
-        $generator = new MailGenerator($config, $repo);
+        $rules = $this->createMock(\App\Service\GameRulesEngine::class);
+        $rules->method('get')->willReturnCallback(fn($key, $default) => $default);
+
+        $generator = new MailGenerator($config, $repo, $rules);
         $this->assertTrue($generator->supports('MAIL'));
         $this->assertEquals('MAIL', $generator->getType());
 
@@ -28,7 +31,10 @@ class MailGeneratorTest extends TestCase
             'session_year' => 1105
         ];
 
-        $opp = $generator->generate($context, 2);
+        $engine = new \Random\Engine\Xoshiro256StarStar(hash('sha256', 'TEST', true));
+        $randomizer = new \Random\Randomizer($engine);
+
+        $opp = $generator->generate($context, 2, $randomizer);
 
         $this->assertEquals('MAIL', $opp->type);
         // Containers 1-3. Flat rate 25000.
