@@ -5,11 +5,13 @@
 {% block pageContent %}
     <div class="space-y-6">
         {# HEADER / STATUS BAR #}
-        <div class="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800 p-6 shadow-lg">
-             <div class="absolute top-0 right-0 p-4 opacity-20">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-32 h-32 text-cyan-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <div class="relative rounded-2xl bg-slate-950 border border-slate-800 shadow-lg">
+             <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
+                 <div class="absolute top-0 right-0 p-4 opacity-20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-32 h-32 text-cyan-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
             </div>
-            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+            <div class="relative z-10 p-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                      <div class="flex items-center gap-2 text-cyan-400/80 mb-1">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-4">

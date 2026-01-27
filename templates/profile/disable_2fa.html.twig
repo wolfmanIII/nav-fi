@@ -5,24 +5,22 @@
 {% block pageContent %}
 <div class="">
     {# Header Section #}
-    <div class="relative rounded-xl border border-red-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-red-900/50 shadow-lg mb-6">
-        <div class="absolute inset-0 rounded-xl opacity-30 mix-blend-screen pointer-events-none"
-             style="background: radial-gradient(circle at 20% 20%, rgba(239,68,68,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(220,38,38,0.25), transparent 35%);">
+    <div class="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800 p-6 shadow-lg mb-6">
+         <div class="absolute top-0 right-0 p-4 opacity-10">
+            {% include 'icons/radar.html.twig' with { dim: 128, class: 'text-red-500' } %}
         </div>
-        <div class="relative p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div class="flex items-start gap-4">
-                <div class="p-3 rounded-lg bg-red-500/10 border border-red-400/40 text-red-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                        <line x1="8" y1="11" x2="8" y2="7"/><line x2="16" y1="11" y2="7"/>
-                        <circle cx="12" cy="16" r="1"/>
-                    </svg>
+        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+            <div>
+                 <div class="flex items-center gap-2 text-red-500/80 mb-1">
+                    {% include 'icons/radar.html.twig' with { dim: 16 } %}
+                    <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">Critical Protocol</p>
                 </div>
-                <div>
-                    <p class="uppercase text-xs tracking-[0.25em] text-red-300/70">Critical Protocol</p>
-                    <h1 class="text-3xl font-semibold text-red-100 leading-tight">Emergency De-authorization</h1>
-                    <p class="text-sm text-red-100/80">Initiating the removal of biometric transponder encryption. Confirm credentials to proceed.</p>
-                </div>
+                <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight flex items-center gap-3 font-orbitron">
+                    EMERGENCY DE-AUTHORIZATION
+                </h1>
+                <p class="text-xs text-slate-500 font-mono uppercase tracking-wider mt-1">
+                    Initiating the removal of biometric transponder encryption. Confirm credentials to proceed.
+                </p>
             </div>
         </div>
     </div>

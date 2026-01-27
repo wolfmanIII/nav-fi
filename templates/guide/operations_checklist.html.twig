@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Guida Operativa (Checklist){% endblock %}
+{% block title %}Operating Guide (Checklist){% endblock %}
 
 {% block pageContent %}
 <div class="min-h-[80vh] space-y-8">
@@ -16,13 +16,13 @@
                     <circle cx="12" cy="12" r="3"></circle>
                     <path d="M3 12h18M8 7l-2 5 2 5M16 7l2 5-2 5"></path>
                 </svg>
-                <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">Procedura Operativa Standard</p>
+                <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">Standard Operating Procedure</p>
             </div>
             <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight leading-none font-orbitron">
-                Checklist <span class="text-cyan-500">Operazioni</span>
+                Operations <span class="text-cyan-500">Checklist</span>
             </h1>
             <p class="text-lg text-slate-400 leading-relaxed font-light">
-                Segui questo piano di volo per attivare una missione Traveller: orologio di sessione, scafi, equipaggi, controparti, costi, entrate, mutui e la striscia di budget annuale.
+                Follow this flight plan to activate a Traveller mission: session clock, hulls, crews, counterparties, costs, income, mortgages, and the annual budget strip.
             </p>
             
             <div class="flex flex-wrap gap-2 mt-2">
@@ -44,11 +44,11 @@
                     {% include 'icons/alien-structure-1.html.twig' with { dim: 20 } %}
                 </div>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Avvia la Missione</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Dai un nome all'operazione, scrivi un breve briefing e imposta il calendario di sessione (giorno/anno). <strong class="text-amber-400/80">Autorità Arbitro:</strong> Hai controllo totale sull'orologio di sessione. Il sistema fornisce avvisi informativi per la verifica temporale ma non blocca mai i salvataggi.</p>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Initialize Mission</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Name the operation, write a brief, and set the session calendar (day/year). <strong class="text-amber-400/80">Referee Authority:</strong> You have total control over the session clock. The system provides advisory alerts for timeline verification but never blocks saves.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                Controllo Missione
+                Mission Control
             </div>
         </div>
 
@@ -60,11 +60,11 @@
                     {% include 'icons/assets.html.twig' with { dim: 20 } %}
                 </div>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Registra Asset</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Inserisci <strong>Navi, Basi o Team</strong>. Dai loro una classe, prezzo e dettagli. Gli asset NPC (es. una compagnia mercenaria rivale) possono "navigare" senza mutui o costi se sono solo scenario.</p>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Register Assets</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Enter <strong>Ships, Bases, or Teams</strong>. Give them a class, price, and specs. NPC assets (e.g. rival merc company) can "sail" without mortgages or costs if they are just scenery.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                Registro Asset
+                Asset Registry
             </div>
         </div>
 
@@ -76,11 +76,11 @@
                     {% include 'icons/company.html.twig' with { dim: 20 } %}
                 </div>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Imposta Compagnie</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Aggiungi controparti con ruoli ed etichette — queste compagnie rimangono cross-missione, quindi ogni nuovo scafo o contratto può riusare lo stesso fornitore più il suo bagaglio di Leggi Locali.</p>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Setup Companies</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Add counterparties with roles and tags — these companies remain cross-mission, so every new hull or contract can reuse the same provider plus its Local Law baggage.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                Controparti
+                Counterparties
             </div>
         </div>
 
@@ -94,11 +94,11 @@
                     </span>
                 </div>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Assegna asset alla Missione</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Collega ogni asset alla missione così ogni data traccia lo stesso orologio di sessione. Il giorno/anno di sessione guiderà PDF asset, mutui e contratti automaticamente.</p>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Assign Assets to Mission</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Link each asset to the mission so every date tracks the same session clock. The session day/year will drive asset PDFs, mortgages, and contracts automatically.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                Sync Sessione
+                Session Sync
             </div>
         </div>
 
@@ -110,11 +110,11 @@
                     {% include 'icons/crew.html.twig' with { dim: 20 } %}
                 </div>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Equipaggio & Buste Paga</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Aggiungi equipaggio, assegna ruoli di ponte e lega le persone ai loro asset. <strong class="text-emerald-400">Le buste paga sono automatiche:</strong> Il sistema traccia il ciclo imperiale di 28 giorni e gestisce i calcoli pro-rata per i nuovi assunti automaticamente.</p>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Crew & Payroll</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Add crew, assign bridge roles, and bind people to their assets. <strong class="text-emerald-400">Payroll is automatic:</strong> The system tracks the 28-day Imperial cycle and handles pro-rata calculations for new hires automatically.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                Ruolino Equipaggio
+                Crew Manifest
             </div>
         </div>
 
@@ -126,11 +126,11 @@
                     {% include 'icons/cost.html.twig' with { dim: 20 } %}
                 </div>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Log Spese (Costi)</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Registra i costi per asset e categoria, aggiungi dettagli riga per riga e data di pagamento. Mantieni compagnia/legge locale allineati così i PDF portano la giusta giurisdizione.</p>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Log Expenses (Costs)</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Record costs per asset and category, add line-by-line details and payment date. Keep company/local law aligned so PDFs carry the right jurisdiction.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                Mantenimento
+                Maintenance
             </div>
         </div>
 
@@ -142,11 +142,11 @@
                     {% include 'icons/income.html.twig' with { dim: 20 } %}
                 </div>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Log Entrate (Income)</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Aggiungi entrate per asset/categoria. Il sistema divide automaticamente Depositi (Data Firma) vs Saldi (Data Pagamento) e include i Bonus. Data firma/luogo e legge locale mantengono i contratti coerenti.</p>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Log Income</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Add income per asset/category. The system automatically splits Deposits (Signature Date) vs Final Payouts (Payment Date) and includes Bonuses. Signature date/place and local law keep contracts consistent.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                Crediti In
+                Credits In
             </div>
         </div>
 
@@ -158,8 +158,8 @@
                     {% include 'icons/handbook.html.twig' with { dim: 20 } %}
                 </div>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Imposta Mutui</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Per asset finanziati (Navi/Basi): imposta tasso, assicurazione, rate; firma con data sessione + luogo; stampa il PDF (bozza o firmato).</p>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Setup Mortgages</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">For financed assets (Ships/Bases): set rate, insurance, payments; sign with session date + place; print the PDF (draft or signed).</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
                 Bank Deck
@@ -174,8 +174,8 @@
                     {% include 'icons/ship-components.html.twig' with { dim: 20 } %}
                 </div>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Log Asset Amendment</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Gli asset firmati possono cambiare solo tramite Amendment. Collega ogni amendment a un costo tecnico con data pagamento; quella data diventa l'effettivo giorno/anno dell'amendment.</p>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Log Asset Amendments</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Signed assets change only via Amendments. Link each amendment to a technical cost with payment date; that date becomes the effective amendment day/year.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
                 Dossier Upgrade
@@ -190,8 +190,8 @@
                     {% include 'icons/routes.html.twig' with { dim: 20 } %}
                 </div>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Traccia Rotte</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Definisci waypoint settore + esagono, poi valida distanze salto e consumo carburante. La mappa apre TravellerMap e gli esagoni start/destinazione sigillano il primo e ultimo waypoint.</p>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Track Routes</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Define sector waypoints + hex, then validate jump distances and fuel burn. Map links open TravellerMap and start/dest hexes seal the first and last waypoint.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
                 Plotting Nav
@@ -206,11 +206,11 @@
                     {% include 'icons/annual-budget.html.twig' with { dim: 20 } %}
                 </div>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Costruisci Budget Annuo</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Per ogni asset: aggrega entrate, costi e rate nell'anno corrente e leggi la striscia di bilancio + timeline. Usalo per pianificare il prossimo salto o operazione di settore.</p>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Build Annual Budget</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">For each asset: aggregate income, costs, and payments in the current year and read the balance strip + timeline. Use it to plan the next jump or sector operation.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                Striscia Annuale
+                Annual Strip
             </div>
         </div>
 
@@ -222,11 +222,11 @@
                     {% include 'icons/search.html.twig' with { dim: 20 } %}
                 </div>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Scansione Rapida liste</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Usa i filtri integrati e il paging su asset, crew, costi, entrate, mutui, budget, missioni e rotte per mantenere il tavolo fluido durante il gioco.</p>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Rapid List Scan</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Use integrated filters and paging on assets, crew, costs, income, mortgages, budgets, missions, and routes to keep the table flowing during play.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                Filtri Rapidi
+                Quick Filters
             </div>
         </div>
 
@@ -238,11 +238,11 @@
                     {% include 'icons/pdf.html.twig' with { dim: 20 } %}
                 </div>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Stampa PDF contratti</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Quando un lavoro è pronto, esporta il PDF del contratto e tieni visibile controparte e legge locale al tavolo. Ogni PDF porta un marker di versione template per audit e ristampe.</p>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Print Contract PDFs</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">When a job is ready, export the contract PDF and keep counterparty and local law visible at the table. Each PDF carries a template version marker for audit and reprints.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                Copia Firmata
+                Signed Copy
             </div>
         </div>
 
@@ -250,9 +250,9 @@
 
     {# ADVISORY NOTE #}
     <div class="mt-12 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-6 text-center">
-        <h3 class="text-sm font-bold text-amber-100 uppercase tracking-widest mb-2 font-orbitron">/// Sistema Validazione Consultivo</h3>
+        <h3 class="text-sm font-bold text-amber-100 uppercase tracking-widest mb-2 font-orbitron">/// Advisory Validation System</h3>
         <p class="text-xs text-slate-400 max-w-2xl mx-auto leading-relaxed italic">
-            Nav-Fi&sup3; prioritizza la flessibilità narrativa e il controllo Arbitro. Il sistema fornisce avvisi informativi per la verifica cronologica dei dati, ma tutti i record rimangono pienamente modificabili indipendentemente dallo stato di firma o pagamento. L'Arbitro mantiene completa autorità sulla coerenza dei dati.
+            Nav-Fi&sup3; prioritizes narrative flexibility and Referee control. The system provides advisory alerts for data chronology verification, but all records remain fully editable regardless of signed/paid status. The Referee maintains complete authority over data consistency.
         </p>
     </div>
 </div>

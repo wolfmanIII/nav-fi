@@ -6,20 +6,25 @@
     {% import '_tooltip.html.twig' as tooltip %}
 
     <div class="p-10">
-        <div class="relative overflow-hidden rounded-xl border border-indigo-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-900 shadow-lg mb-6">
-            <div class="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none"
-                 style="background: radial-gradient(circle at 20% 20%, rgba(99,102,241,0.25), transparent 35%), radial-gradient(circle at 80% 30%, rgba(79,70,229,0.25), transparent 35%);">
+        <div class="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800 p-6 shadow-lg mb-6">
+             <div class="absolute top-0 right-0 p-4 opacity-10">
+                {% include 'icons/annual-budget.html.twig' with { dim: 128, class: 'text-indigo-500' } %}
             </div>
-            <div class="relative p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                <div class="flex items-start gap-4">
-                    <div class="p-3 rounded-lg bg-indigo-500/10 border border-indigo-400/40 text-indigo-400">
-                        {% include 'icons/annual-budget.html.twig' %}
+            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                <div>
+                     <div class="flex items-center gap-2 text-indigo-500/80 mb-1">
+                        {% include 'icons/annual-budget.html.twig' with { dim: 16 } %}
+                        <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">Budget Analysis</p>
                     </div>
-                    <div>
-                        <p class="uppercase text-xs tracking-[0.25em] text-indigo-300/70">Budget Analysis</p>
-                        <h1 class="text-3xl font-semibold text-indigo-100 leading-tight">{{ budget.asset.name }}</h1>
-                        <p class="text-sm text-indigo-100/80 font-mono">{{ budget.startYear }} — <span class="text-indigo-300">{{ budget.note|default('Budget') }}</span></p>
-                    </div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight flex items-center gap-3 font-orbitron">
+                        {{ budget.asset.name|upper }}
+                        <span class="text-xs align-top opacity-50 font-mono pt-2 normal-case tracking-normal text-slate-400">
+                             // {{ budget.startYear }} — {{ budget.note|default('Budget') }}
+                        </span>
+                    </h1>
+                    <p class="text-xs text-slate-500 font-mono uppercase tracking-wider mt-1">
+                         Incoming vs outgoing credits analysis for this asset.
+                    </p>
                 </div>
                 <div class="flex gap-2">
                     {{ tooltip.link('Return to budget list', 'Back', 'icons/action-back.html.twig', path('app_annual_budget_index'), { position: 'tooltip-left', dim: 20, linkClass: 'btn btn-square btn-ghost text-slate-400 hover:bg-slate-800' }) }}

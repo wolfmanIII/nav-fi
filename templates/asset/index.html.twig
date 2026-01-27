@@ -11,31 +11,33 @@
     <div class="">
 
     {# HEADER / STATUS BAR #}
-    <div class="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800 p-6 shadow-lg mb-6">
-        <div class="absolute top-0 right-0 p-4 opacity-10">
-            {% set active_category = app.request.query.get('category') %}
-            {% set is_categorical = app.request.query.get('view') == 'categorical' %}
-            
-            {# Determine icon and color based on category #}
-            {% set icon_template = 'icons/assets.html.twig' %}
-            {% set icon_color = 'text-slate-500' %}
-            
-            {% if is_categorical %}
-                {% if active_category == 'ship' %}
-                    {% set icon_template = 'icons/far-trader.html.twig' %}
-                    {% set icon_color = 'text-cyan-500' %}
-                {% elseif active_category == 'base' %}
-                    {% set icon_template = 'icons/spaceport.html.twig' %}
-                    {% set icon_color = 'text-amber-500' %}
-                {% elseif active_category == 'team' %}
-                    {% set icon_template = 'icons/team.html.twig' %}
-                    {% set icon_color = 'text-emerald-500' %}
+    <div class="relative rounded-2xl bg-slate-950 border border-slate-800 shadow-lg mb-6">
+        <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
+            <div class="absolute top-0 right-0 p-4 opacity-10">
+                {% set active_category = app.request.query.get('category') %}
+                {% set is_categorical = app.request.query.get('view') == 'categorical' %}
+                
+                {# Determine icon and color based on category #}
+                {% set icon_template = 'icons/assets.html.twig' %}
+                {% set icon_color = 'text-slate-500' %}
+                
+                {% if is_categorical %}
+                    {% if active_category == 'ship' %}
+                        {% set icon_template = 'icons/far-trader.html.twig' %}
+                        {% set icon_color = 'text-cyan-500' %}
+                    {% elseif active_category == 'base' %}
+                        {% set icon_template = 'icons/spaceport.html.twig' %}
+                        {% set icon_color = 'text-amber-500' %}
+                    {% elseif active_category == 'team' %}
+                        {% set icon_template = 'icons/team.html.twig' %}
+                        {% set icon_color = 'text-emerald-500' %}
+                    {% endif %}
                 {% endif %}
-            {% endif %}
 
-            {% include icon_template with { dim: 128, class: icon_color } %}
+                {% include icon_template with { dim: 128, class: icon_color } %}
+            </div>
         </div>
-        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+        <div class="relative z-10 p-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
             <div>
                  <div class="flex items-center gap-2 text-cyan-400/80 mb-1">
                     {% include icon_template with { dim: 16 } %}

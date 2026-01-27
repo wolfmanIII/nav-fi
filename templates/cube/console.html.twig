@@ -6,11 +6,13 @@
 <div class="space-y-6" data-controller="cube" data-cube-session-id-value="{{ active_session.id }}">
     
     {# HEADER: Active Session #}
-    <div class="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800 p-6 shadow-lg">
-        <div class="absolute top-0 right-0 p-4 opacity-10">
-            {% include 'icons/cube.html.twig' with { dim: 128, class: 'text-emerald-500' } %}
+    <div class="relative rounded-2xl bg-slate-950 border border-slate-800 shadow-lg">
+        <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
+            <div class="absolute top-0 right-0 p-4 opacity-10">
+                {% include 'icons/cube.html.twig' with { dim: 128, class: 'text-emerald-500' } %}
+            </div>
         </div>
-        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+        <div class="relative z-10 p-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
             <div>
                  <div class="flex items-center gap-2 text-emerald-400/80 mb-1">
                     {% include 'icons/cube.html.twig' with { dim: 16 } %}
