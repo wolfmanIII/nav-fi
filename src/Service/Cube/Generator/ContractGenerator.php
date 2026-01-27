@@ -20,19 +20,19 @@ class ContractGenerator implements OpportunityGeneratorInterface
         return 'CONTRACT';
     }
 
-    public function generate(array $context, int $maxDist): CubeOpportunityData
+    public function generate(array $context, int $maxDist, \Random\Randomizer $randomizer): CubeOpportunityData
     {
         // 1. Determina il livello (Tier)
-        $tierRoll = mt_rand(1, 100);
+        $tierRoll = $randomizer->getInt(1, 100);
         $tierKey = ($tierRoll <= 60) ? 'routine' : (($tierRoll <= 90) ? 'hazardous' : 'black_ops');
 
         $tierConfig = $this->narrative->resolveTiers($tierKey);
-        $amount = mt_rand($tierConfig['min'] ?? 1000, $tierConfig['max'] ?? 5000);
+        $amount = $randomizer->getInt($tierConfig['min'] ?? 1000, $tierConfig['max'] ?? 5000);
         $amount = round($amount / 500) * 500;
 
         // 2. Generazione Narrativa tramite il nuovo Motore
         $sector = $context['sector'] ?? 'Unknown';
-        $story = $this->narrative->generateStory($sector);
+        $story = $this->narrative->generateStory($sector, $randomizer);
 
         $destination = $context['destination'] ?? 'Local/System';
         $distance = $context['distance'] ?? 0;

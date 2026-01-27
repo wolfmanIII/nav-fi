@@ -14,7 +14,7 @@ interface OpportunityGeneratorInterface
     /**
      * Generates an opportunity.
      */
-    public function generate(array $context, int $maxDist): CubeOpportunityData;
+    public function generate(array $context, int $maxDist, \Random\Randomizer $randomizer): CubeOpportunityData;
 
     /**
      * Returns the type identifier for this generator (e.g., 'FREIGHT', 'PASSENGER').

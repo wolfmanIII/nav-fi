@@ -9,10 +9,12 @@ Per bilanciare il gioco (es. "troppe missioni passeggeri, poche merci"), è nece
 **Consiglio:**
 Spostare queste tabelle di probabilità e parametri in un file di configurazione (`yaml`) o, ancora meglio, nel database (es. entità `GameRules`). Questo permetterebbe di bilanciare il gioco dinamicamente senza toccare il motore logico.
 
-## 2. La fragilità del "Determinismo" (`mt_srand`)
+## 2. La fragilità del "Determinismo" (`mt_srand`) [RISOLTO]
 L'uso di un seed per rendere le missioni deterministiche è un'ottima idea per il gameplay, ma l'implementazione attuale basata su `mt_srand()` globale è rischiosa.
 
-**Il Problema:**
+**Status (2026-01-27):** Risolto implementando `Random\Engine\Xoshiro256StarStar` locale. I servizi procedurali (`TheCubeEngine` e i generatori) ora utilizzano un'istanza isolata di `Randomizer` senza impattare lo stato globale.
+
+**Il Problema Originario:**
 `mt_srand` modifica lo stato *globale* del generatore di numeri casuali del processo PHP. Se una libreria di terze parti (o Symfony stesso) dovesse chiamare `mt_rand()` nel mezzo dell'esecuzione, o subito prima della logica del Cube, la sequenza "deterministica" verrebbe rotta. Inoltre, in ambienti asincroni o concorrenti (come Swoole o FrankenPHP), questo approccio è distruttivo perché lo stato globale è condiviso.
 
 **Consiglio:**

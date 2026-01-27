@@ -23,20 +23,20 @@ class MailGenerator implements OpportunityGeneratorInterface
         return 'MAIL';
     }
 
-    public function generate(array $context, int $maxDist): CubeOpportunityData
+    public function generate(array $context, int $maxDist, \Random\Randomizer $randomizer): CubeOpportunityData
     {
         $dist = $context['distance'];
-        $containers = mt_rand(1, 3);
+        $containers = $randomizer->getInt(1, 3);
         $rate = $this->economyConfig['mail']['flat_rate'];
         $total = $containers * $rate;
 
         // Mail is usually official
         $patron = 'Imperial Interstellar Scout Service (IISS)';
         // 20% chance of Private Courier Contract
-        if (mt_rand(1, 100) <= 20) {
+        if ($randomizer->getInt(1, 100) <= 20) {
             $companies = $this->companyRepo->findAll();
             if (!empty($companies)) {
-                $c = $companies[mt_rand(0, count($companies) - 1)];
+                $c = $companies[$randomizer->getInt(0, count($companies) - 1)];
                 $patron = $c->getName();
             } else {
                 $patron = 'Private Courier Network';

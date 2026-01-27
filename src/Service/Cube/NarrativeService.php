@@ -28,21 +28,24 @@ class NarrativeService
     /**
      * Genera una storia completa basata sull'archetipo e il patrono.
      */
-    public function generateStory(string $sector): \App\Model\Cube\Narrative\Story
+    /**
+     * Genera una storia completa basata sull'archetipo e il patrono.
+     */
+    public function generateStory(string $sector, \Random\Randomizer $randomizer): \App\Model\Cube\Narrative\Story
     {
         // 1. Seleziona Patron
-        $patronInfo = $this->patronConfig[mt_rand(0, count($this->patronConfig) - 1)];
+        $patronInfo = $this->patronConfig[$randomizer->getInt(0, count($this->patronConfig) - 1)];
         $patronName = $patronInfo['name'];
         $allowedArchetypes = $patronInfo['archetypes'] ?? array_keys($this->archetypes);
 
         // 2. Seleziona Archetipo tra quelli permessi dal patrono
-        $archetypeCode = $allowedArchetypes[mt_rand(0, count($allowedArchetypes) - 1)];
+        $archetypeCode = $allowedArchetypes[$randomizer->getInt(0, count($allowedArchetypes) - 1)];
         $archetype = $this->archetypes[$archetypeCode] ?? reset($this->archetypes);
 
         // 3. Risolvi variabili dell'archetipo
         $variables = [];
         foreach ($archetype->variables as $varName => $options) {
-            $variables[$varName] = $options[mt_rand(0, count($options) - 1)];
+            $variables[$varName] = $options[$randomizer->getInt(0, count($options) - 1)];
         }
 
         // 4. Genera Summary e Briefing
@@ -53,9 +56,9 @@ class NarrativeService
             $briefingTemplate,
             $patronName,
             $summary,
-            $this->getRandom('locations'),
-            $this->getRandom('time_constraints'),
-            $this->getRandom('opposition')
+            $this->getRandom('locations', $randomizer),
+            $this->getRandom('time_constraints', $randomizer),
+            $this->getRandom('opposition', $randomizer)
         );
 
         return new \App\Model\Cube\Narrative\Story(
@@ -63,7 +66,7 @@ class NarrativeService
             archetypeCode: $archetypeCode,
             summary: $summary,
             briefing: $briefing,
-            twist: $this->getRandom('twists'),
+            twist: $this->getRandom('twists', $randomizer),
             variables: $variables
         );
     }
@@ -76,10 +79,10 @@ class NarrativeService
         return $template;
     }
 
-    private function getRandom(string $key): string
+    private function getRandom(string $key, \Random\Randomizer $randomizer): string
     {
         $list = $this->economyConfig['contract']['narrative'][$key] ?? ['None'];
-        return $list[mt_rand(0, count($list) - 1)];
+        return $list[$randomizer->getInt(0, count($list) - 1)];
     }
 
     public function resolveTiers(string $tierName): array

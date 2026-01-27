@@ -5,6 +5,12 @@ Tutte le modifiche notevoli a questo progetto saranno documentate in questo file
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/it/1.0.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/lang/it/).
 
+## [Unreleased]
+
+### Sicurezza/Refactoring
+- **Randomness Engine**: Sostituito `mt_srand()` (Global scope) con `Random\Engine\Xoshiro256StarStar` (Object scope). Garantisce generazione deterministica isolata per ogni sessione del *Cube* senza impattare lo stato globale del PHP.
+- Refactoring di tutti i generatori procedurali (`Trade`, `Freight`, `Passenger`, `Mail`, `Contract`, `Narrative`) per accettare dependency injection del `Randomizer`.
+
 ## [1.2.0] - 2026-01-19
 
 ### Aggiunto

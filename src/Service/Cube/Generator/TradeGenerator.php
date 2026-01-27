@@ -20,30 +20,30 @@ class TradeGenerator implements OpportunityGeneratorInterface
         return 'TRADE';
     }
 
-    public function generate(array $context, int $maxDist): CubeOpportunityData
+    public function generate(array $context, int $maxDist, \Random\Randomizer $randomizer): CubeOpportunityData
     {
         $resources = ['Radioactives', 'Metals', 'Crystals', 'Luxuries', 'Electronics', 'Pharmaceuticals', 'Industrial Machinery'];
-        $resource = $resources[mt_rand(0, count($resources) - 1)];
+        $resource = $resources[$randomizer->getInt(0, count($resources) - 1)];
 
         // Quantity (Tons) with Weighted Distribution
-        $sizeRoll = mt_rand(1, 100);
+        $sizeRoll = $randomizer->getInt(1, 100);
         if ($sizeRoll <= 50) {
             // Small: 5-20 tons
-            $tons = mt_rand(5, 20);
+            $tons = $randomizer->getInt(5, 20);
         } elseif ($sizeRoll <= 85) {
             // Medium: 25-80 tons
-            $tons = mt_rand(25, 80);
+            $tons = $randomizer->getInt(25, 80);
         } else {
             // Large: 100-500 tons
-            $tons = mt_rand(10, 50) * 10;
+            $tons = $randomizer->getInt(10, 50) * 10;
         }
 
         // Pricing
-        $basePrice = mt_rand(1000, 5000); // Per Ton
+        $basePrice = $randomizer->getInt(1000, 5000); // Per Ton
         $totalCost = $basePrice * $tons;
 
         // Potential Profit logic (just for flavor/UI)
-        $markup = mt_rand(120, 180) / 100;
+        $markup = $randomizer->getInt(120, 180) / 100;
 
         // Select Supplier (Company)
         // Optimization: In a real app, filter by sector or context. Here random is fine for MVP.
@@ -51,7 +51,7 @@ class TradeGenerator implements OpportunityGeneratorInterface
         $companies = $this->companyRepo->findAll(); // Caching/limiting advisable in prod
         $supplier = null;
         if (!empty($companies)) {
-            $supplier = $companies[mt_rand(0, count($companies) - 1)];
+            $supplier = $companies[$randomizer->getInt(0, count($companies) - 1)];
         }
 
         $summary = "Bulk Sale: $tons tons of $resource";

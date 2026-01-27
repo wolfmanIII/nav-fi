@@ -19,18 +19,23 @@ class TheCubeEngine
     /**
      * Genera un batch di candidati basato sul seed della sessione.
      * Questo metodo è DETERMINISTICO: stessa sessione + stesso seed = stessi risultati.
+     * Utilizza Random\Engine\Xoshiro256StarStar per garantire isolamento dallo stato globale (mt_srand).
+     *
      * @return \App\Dto\Cube\CubeOpportunityData[]
      */
     public function generateBatch(BrokerSession $session, array $originSystemData, array $allSystems = [], ?int $count = null): array
     {
-        // 1. Inizializza PRNG
+        // 1. Inizializza PRNG Isolato (PHP 8.2+)
         $seedString = sprintf('%s_%s_%s', $session->getSeed(), $session->getSector(), $session->getOriginHex());
-        $numericSeed = crc32($seedString);
-        mt_srand($numericSeed);
+        // Hash the seed to get a robust binary string for Xoshiro
+        $seedHash = hash('sha256', $seedString, true);
+
+        $engine = new \Random\Engine\Xoshiro256StarStar($seedHash);
+        $randomizer = new \Random\Randomizer($engine);
 
         // Determine count deterministically based on seed if not provided
         if ($count === null) {
-            $count = mt_rand(10, 20);
+            $count = $randomizer->getInt(10, 20);
         }
 
         $results = [];
@@ -62,24 +67,24 @@ class TheCubeEngine
         $sector = $session->getSector();
 
         for ($i = 0; $i < $count; $i++) {
-            $results[] = $this->generateSingle($originName, $originHex, $destinations, $maxDist, $i, $sessionDay, $sessionYear, $sector);
+            $results[] = $this->generateSingle($randomizer, $originName, $originHex, $destinations, $maxDist, $i, $sessionDay, $sessionYear, $sector);
         }
 
         return $results;
     }
 
-    private function generateSingle(string $originName, string $originHex, array $destinations, int $maxDist, int $index, int $sessionDay, int $sessionYear, string $sector): \App\Dto\Cube\CubeOpportunityData
+    private function generateSingle(\Random\Randomizer $randomizer, string $originName, string $originHex, array $destinations, int $maxDist, int $index, int $sessionDay, int $sessionYear, string $sector): \App\Dto\Cube\CubeOpportunityData
     {
         // Seleziona destinazione
         $destination = null;
-        $dist = mt_rand(1, $maxDist); // Distanza di fallback
+        $dist = $randomizer->getInt(1, $maxDist); // Distanza di fallback
         $destName = 'Unknown';
         $destHex = '????';
 
         if (!empty($destinations)) {
             // Scegli un valore casuale dalla lista filtrata
-            // Nota: dato che mt_srand è seedato, è deterministico per la stessa lista
-            $randIndex = mt_rand(0, count($destinations) - 1);
+            // Nota: dato che l'engine è seedato, è deterministico per la stessa lista
+            $randIndex = $randomizer->getInt(0, count($destinations) - 1);
             $destination = $destinations[$randIndex];
             $dist = $destination['distance'];
             $destName = $destination['name'];
@@ -98,11 +103,14 @@ class TheCubeEngine
             'sector' => $sector,
         ];
 
-        // Genera firma deterministica
+        // Genera firma deterministica (rimane basata su CRC32 per compatibilità o semplicità, 
+        // ma la logica di gioco usa il randomizer)
+        // Nota: Qui usiamo serialize. Per il determinismo puro, il context deve essere ordinato.
+        // Ma va bene così per ora.
         $signature = sprintf('OPP-%s-%d', crc32(serialize($context) . $index), $index);
 
         // Seleziona il tipo in base a un tiro
-        $roll = mt_rand(1, 100);
+        $roll = $randomizer->getInt(1, 100);
 
         $type = 'TRADE';
         if ($roll <= 40) $type = 'FREIGHT';
@@ -121,7 +129,6 @@ class TheCubeEngine
 
         if (!$selectedGenerator) {
             // Fallback to TRADE if not found (should not happen if configured correctly)
-            // or throw exception. For robustness, logic fallback:
             foreach ($this->generators as $generator) {
                 if ($generator->supports('TRADE')) {
                     $selectedGenerator = $generator;
@@ -134,7 +141,7 @@ class TheCubeEngine
             throw new \RuntimeException("No suitable generator found for type: $type");
         }
 
-        $opp = $selectedGenerator->generate($context, $maxDist);
+        $opp = $selectedGenerator->generate($context, $maxDist, $randomizer);
 
         // Ricostruiamo il DTO con la firma corretta
         return new \App\Dto\Cube\CubeOpportunityData(

@@ -23,13 +23,13 @@ class PassengerGenerator implements OpportunityGeneratorInterface
         return 'PASSENGERS';
     }
 
-    public function generate(array $context, int $maxDist): CubeOpportunityData
+    public function generate(array $context, int $maxDist, \Random\Randomizer $randomizer): CubeOpportunityData
     {
         $dist = $context['distance'];
-        $paxCount = mt_rand(2, 12);
+        $paxCount = $randomizer->getInt(2, 12);
 
         // Determina la classe
-        $classRoll = mt_rand(1, 100);
+        $classRoll = $randomizer->getInt(1, 100);
         if ($classRoll <= 10) $class = 'high';
         elseif ($classRoll <= 40) $class = 'middle';
         elseif ($classRoll <= 80) $class = 'basic';
@@ -42,7 +42,7 @@ class PassengerGenerator implements OpportunityGeneratorInterface
         $companies = $this->companyRepo->findAll();
         $agent = null;
         if (!empty($companies)) {
-            $agent = $companies[mt_rand(0, count($companies) - 1)];
+            $agent = $companies[$randomizer->getInt(0, count($companies) - 1)];
         }
 
         return new CubeOpportunityData(

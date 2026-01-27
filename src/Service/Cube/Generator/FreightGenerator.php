@@ -23,10 +23,10 @@ class FreightGenerator implements OpportunityGeneratorInterface
         return 'FREIGHT';
     }
 
-    public function generate(array $context, int $maxDist): CubeOpportunityData
+    public function generate(array $context, int $maxDist, \Random\Randomizer $randomizer): CubeOpportunityData
     {
         $dist = $context['distance'];
-        $tons = mt_rand(1, 6) * 10; // 10-60 tonnellate
+        $tons = $randomizer->getInt(1, 6) * 10; // 10-60 tonnellate
 
         $baseRate = $this->economyConfig['freight_pricing'][$dist] ?? 1000;
         $total = $tons * $baseRate;
@@ -35,7 +35,7 @@ class FreightGenerator implements OpportunityGeneratorInterface
         $companies = $this->companyRepo->findAll();
         $shipper = null;
         if (!empty($companies)) {
-            $shipper = $companies[mt_rand(0, count($companies) - 1)];
+            $shipper = $companies[$randomizer->getInt(0, count($companies) - 1)];
         }
 
         $summary = "Freight: $tons dt to {$context['destination']}";
