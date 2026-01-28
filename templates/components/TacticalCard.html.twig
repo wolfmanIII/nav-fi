@@ -5,7 +5,7 @@
 
 {% set locale = app.request.locale ?? 'en' %}
 
-<div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
+<twig:TacticalContainer>
     {# Card Header: Actions & REF #}
     <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-2">
@@ -116,4 +116,4 @@
             {% include 'icons/crew.html.twig' with { dim: 14 } %}
             </a>
     </div>
-</div>
+</twig:TacticalContainer>

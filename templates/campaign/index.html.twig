@@ -45,60 +45,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {% if campaigns|length > 0 %}
                 {% for campaign in campaigns %}
-                    <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-amber-500/30 hover:shadow-amber-500/10 hover:-translate-y-1">
-                        {# Card Header: Title & Actions #}
-                        <div class="flex items-start justify-between mb-4">
-                            <h2 class="text-2xl font-bold text-slate-100 group-hover:text-amber-400 transition-colors font-orbitron tracking-tight leading-tight">
-                                {{ campaign.title }}
-                            </h2>
-                            <div class="flex items-center gap-1 ml-4 shrink-0">
-                                {{ tooltip.link('Refine session agenda', '', 'icons/action-edit.html.twig', path('app_campaign_edit', {id: campaign.id}), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-amber-500/20 text-slate-400 hover:text-amber-400' }) }}
-                                {% set can_delete = is_granted('campaign_delete', campaign) %}
-                                {{ tooltip.link('Retire mission', '', 'icons/action-trash.html.twig', path('app_campaign_delete', {id: campaign.id}), {
-                                    position: 'tooltip-left',
-                                    dim: 16,
-                                    linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none')
-                                }) }}
-                            </div>
-                        </div>
-
-                        {# Card Body: Description #}
-                        <div class="mb-6 flex-grow">
-                            <p class="text-sm text-slate-400 leading-relaxed line-clamp-3 font-medium">
-                                {{ campaign.description ?? 'No description logged.' }}
-                            </p>
-                        </div>
-
-                        {# Info Grid: Stats #}
-                        <div class="grid grid-cols-3 gap-2 mb-6 p-3 rounded-lg bg-slate-900/50 border border-slate-800/50">
-                            <div class="flex flex-col items-center justify-center text-center">
-                                <span class="text-[10px] text-slate-500 uppercase tracking-widest font-rajdhani mb-1">Start Year</span>
-                                <span class="text-amber-100 font-mono text-sm font-bold">{{ campaign.startingYear ?? '—' }}</span>
-                            </div>
-                            <div class="flex flex-col items-center justify-center text-center border-l border-slate-800/50">
-                                <span class="text-[10px] text-slate-500 uppercase tracking-widest font-rajdhani mb-1">Current</span>
-                                <span class="text-amber-100 font-mono text-sm font-bold">
-                                     {% if campaign.sessionDay and campaign.sessionYear %}
-                                        {{ (campaign.sessionDay is not null and campaign.sessionYear is not null) ? (campaign.sessionDay|imperial_date(campaign.sessionYear)) : '—' }}
-                                    {% else %}
-                                        —
-                                    {% endif %}
-                                </span>
-                            </div>
-                            <div class="flex flex-col items-center justify-center text-center border-l border-slate-800/50">
-                                <span class="text-[10px] text-slate-500 uppercase tracking-widest font-rajdhani mb-1">Assets</span>
-                                <span class="text-amber-100 font-mono text-sm font-bold">{{ campaign.assets|length }}</span>
-                            </div>
-                        </div>
-
-                        {# Footer: Details #}
-                        <div class="mt-auto pt-4 border-t border-slate-800 flex justify-end">
-                            <a href="{{ path('app_campaign_details', {id: campaign.id}) }}" class="flex items-center gap-2 text-sm font-bold text-slate-300 hover:text-amber-400 uppercase tracking-widest font-rajdhani transition-colors group/link">
-                                Mission Details & Clock
-                                <span class="group-hover/link:translate-x-1 transition-transform">→</span>
-                            </a>
-                        </div>
-                    </div>
+                    <twig:TacticalCampaignCard :campaign="campaign" />
                 {% endfor %}
             {% else %}
                  <div class="col-span-full py-16 text-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
