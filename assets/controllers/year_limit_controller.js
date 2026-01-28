@@ -26,6 +26,11 @@ export default class extends Controller {
             ? parseInt(startYearAttr, 10)
             : NaN;
 
+        const sessionYearAttr = option?.dataset.sessionYear;
+        const sessionYear = sessionYearAttr !== undefined && sessionYearAttr !== ''
+            ? parseInt(sessionYearAttr, 10)
+            : NaN;
+
         if (!Number.isNaN(startYear)) {
             min = Math.max(defaultMin, startYear);
         }
@@ -36,18 +41,24 @@ export default class extends Controller {
             return;
         }
 
-        // Trova tutti gli input con nome che termina in [year] che hanno data-min-year
-        const yearInputs = form.querySelectorAll('input[name$="[year]"][data-min-year]');
+        // Trova tutti gli input anno nello stesso form (target del controller imperial-date)
+        const yearInputs = form.querySelectorAll('input[data-imperial-date-target="year"]');
+        console.log('YearLimit: Found', yearInputs.length, 'year inputs, sessionYear=', sessionYear);
 
         yearInputs.forEach((input) => {
             input.min = min;
             input.setAttribute('data-min-year', min);
+            console.log('YearLimit: Updating input', input.name, 'with min=', min, 'defaultYear=', !Number.isNaN(sessionYear) ? sessionYear : null);
 
             // Trova il container del controller imperial-date e invia l'evento
             const imperialDateContainer = input.closest('[data-controller*="imperial-date"]');
             if (imperialDateContainer) {
                 imperialDateContainer.dispatchEvent(new CustomEvent('year-limits-changed', {
-                    detail: { min, max: input.dataset.maxYear }
+                    detail: {
+                        min,
+                        max: input.dataset.maxYear,
+                        defaultYear: !Number.isNaN(sessionYear) ? sessionYear : null
+                    }
                 }));
             }
 

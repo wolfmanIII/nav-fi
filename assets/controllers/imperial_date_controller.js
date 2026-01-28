@@ -65,17 +65,23 @@ export default class extends Controller {
     handleYearLimitsChanged = (event) => {
         const min = event.detail.min;
         const max = event.detail.max;
+        const defaultYear = event.detail.defaultYear;
 
         if (min) {
             this.yearTarget.dataset.minYear = min;
-            // Se l'anno corrente è vuoto o inferiore al nuovo minimo, aggiornalo
-            if (!this.yearTarget.value || parseInt(this.yearTarget.value, 10) < min) {
-                this.yearTarget.value = min;
-                this.updateDisplay();
-            }
         }
         if (max) {
             this.yearTarget.dataset.maxYear = max;
+        }
+
+        // Se l'anno corrente è vuoto, usa defaultYear (sessionYear) se disponibile, altrimenti min
+        if (!this.yearTarget.value || parseInt(this.yearTarget.value, 10) < min) {
+            if (defaultYear) {
+                this.yearTarget.value = defaultYear;
+            } else if (min) {
+                this.yearTarget.value = min;
+            }
+            this.updateDisplay();
         }
 
         // Aggiorna l'input anno nel popover se è aperto

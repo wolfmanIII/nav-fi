@@ -118,7 +118,7 @@
                 {{ form_widget(form.asset, { attr: {
                     class: 'select select-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-asset-roles-toggle-target': 'assetSelect',
-                    'data-action': 'change->asset-roles-toggle#refresh'
+                    'data-action': 'change->asset-roles-toggle#refresh change->year-limit#onAssetChange'
                 }}) }}
                 {{ form_errors(form.asset) }}
             </div>
