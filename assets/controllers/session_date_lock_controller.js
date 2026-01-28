@@ -65,6 +65,20 @@ export default class extends Controller {
                     el.setAttribute('data-min-year', startingYear);
                     // Aggiorna anche l'attributo min per la validazione HTML5
                     el.setAttribute('min', startingYear);
+
+                    // Dispatch event for ImperialDateController
+                    const imperialDateContainer = el.closest('[data-controller*="imperial-date"]');
+                    if (imperialDateContainer) {
+                        imperialDateContainer.dispatchEvent(new CustomEvent('year-limits-changed', {
+                            detail: { min: startingYear }
+                        }));
+                    }
+
+                    // Se il valore corrente è vuoto o inferiore al nuovo minimo, aggiornalo
+                    if (!el.value || parseInt(el.value, 10) < startingYear) {
+                        el.value = startingYear;
+                        // Notifica il cambiamento se necessario (ma ImperialDateController legge il value)
+                    }
                 });
             }
         }
