@@ -43,12 +43,26 @@ export default class extends Controller {
 
         // Trova tutti gli input anno nello stesso form (target del controller imperial-date)
         const yearInputs = form.querySelectorAll('input[data-imperial-date-target="year"]');
-        console.log('YearLimit: Found', yearInputs.length, 'year inputs, sessionYear=', sessionYear);
 
         yearInputs.forEach((input) => {
+            // Skip inputs marked to ignore year limits (e.g., birthDate)
+            const container = input.closest('[data-controller*="imperial-date"]');
+            if (container && container.dataset.ignoreYearLimit === 'true') {
+                // Still dispatch defaultYear for prefilling, but without min constraint
+                if (container) {
+                    container.dispatchEvent(new CustomEvent('year-limits-changed', {
+                        detail: {
+                            min: null,
+                            max: null,
+                            defaultYear: !Number.isNaN(sessionYear) ? sessionYear : null
+                        }
+                    }));
+                }
+                return;
+            }
+
             input.min = min;
             input.setAttribute('data-min-year', min);
-            console.log('YearLimit: Updating input', input.name, 'with min=', min, 'defaultYear=', !Number.isNaN(sessionYear) ? sessionYear : null);
 
             // Trova il container del controller imperial-date e invia l'evento
             const imperialDateContainer = input.closest('[data-controller*="imperial-date"]');

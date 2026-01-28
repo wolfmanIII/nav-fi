@@ -73,7 +73,6 @@ class CostType extends AbstractType
                 'required' => false,
                 'label' => 'Payment date',
                 'data' => $paymentDate,
-                'required' => false,
                 'min_year' => $minYear,
                 'max_year' => $this->limits->getYearMax(),
             ])
@@ -116,9 +115,11 @@ class CostType extends AbstractType
                     $asset = $fa->getAsset();
                     if (!$asset) return [];
                     $start = $asset->getCampaign()?->getStartingYear();
+                    $session = $asset->getCampaign()?->getSessionYear();
                     $campaignId = $asset->getCampaign()?->getId();
                     return [
                         'data-start-year' => $start ?? '',
+                        'data-session-year' => $session ?? '',
                         'data-campaign' => $campaignId ? (string) $campaignId : '',
                     ];
                 },

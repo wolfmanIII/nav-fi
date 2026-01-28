@@ -82,9 +82,11 @@ class RouteType extends AbstractType
                 'choice_label' => fn(Asset $asset) => sprintf('%s - %s(%s)', $asset->getName(), $asset->getType(), $asset->getClass()),
                 'choice_attr' => function (Asset $asset): array {
                     $start = $asset->getCampaign()?->getStartingYear();
+                    $session = $asset->getCampaign()?->getSessionYear();
                     $campaignId = $asset->getCampaign()?->getId();
                     return [
                         'data-start-year' => $start ?? '',
+                        'data-session-year' => $session ?? '',
                         'data-campaign' => $campaignId ? (string) $campaignId : '',
                     ];
                 },

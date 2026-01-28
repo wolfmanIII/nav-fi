@@ -40,7 +40,7 @@ class ImperialDateType extends AbstractType
                 'required' => false,
                 'label' => false,
                 'data' => $displayValue,
-                'attr' => [
+                'attr' => array_filter([
                     'class' => 'input m-1 w-full datepicker',
                     'readonly' => true,
                     'data-imperial-date-target' => 'display',
@@ -48,7 +48,8 @@ class ImperialDateType extends AbstractType
                     'data-imperial-date-initial-day' => $initialDay ?? '',
                     'data-imperial-date-initial-year' => $initialYear ?? '',
                     'placeholder' => 'Select day/year',
-                ],
+                    'data-ignore-year-limit' => $options['ignore_year_limit'] ? 'true' : null,
+                ], fn($v) => $v !== null),
             ])
             ->add('year', HiddenType::class, [
                 'required' => false,
@@ -117,6 +118,7 @@ class ImperialDateType extends AbstractType
             'data_class' => ImperialDate::class,
             'min_year' => $this->minYear,
             'max_year' => $this->maxYear,
+            'ignore_year_limit' => false,
             'error_bubbling' => false,
             'error_mapping' => ['.' => 'display'],
             'constraints' => static function (Options $options): array {
@@ -125,5 +127,6 @@ class ImperialDateType extends AbstractType
                 ];
             },
         ]);
+        $resolver->setAllowedTypes('ignore_year_limit', 'bool');
     }
 }

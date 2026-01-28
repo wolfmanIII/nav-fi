@@ -58,6 +58,8 @@ class SalaryType extends AbstractType
                 'choice_attr' => function (Asset $asset) {
                     return [
                         'data-campaign' => $asset->getCampaign()?->getId() ? (string) $asset->getCampaign()->getId() : '',
+                        'data-start-year' => $asset->getCampaign()?->getStartingYear() ?? '',
+                        'data-session-year' => $asset->getCampaign()?->getSessionYear() ?? '',
                     ];
                 },
                 'query_builder' => function (EntityRepository $er) use ($user) {
@@ -71,7 +73,8 @@ class SalaryType extends AbstractType
                 'attr' => [
                     'class' => 'select select-bordered w-full',
                     'data-salary-target' => 'asset',
-                    'data-action' => 'change->salary#onAssetChange',
+                    'data-controller' => 'year-limit',
+                    'data-action' => 'change->salary#onAssetChange change->year-limit#onAssetChange',
                 ],
             ])
             ->add('crew', EntityType::class, [

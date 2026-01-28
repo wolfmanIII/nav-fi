@@ -70,7 +70,7 @@
                 {{ form_errors(form.birthWorld) }}
             </div>
 
-            <div class="col-span-1" data-controller="imperial-date">
+            <div class="col-span-1" data-controller="imperial-date" data-ignore-year-limit="true">
                 <div class="flex items-baseline h-5 mb-1">
                     {{ form_label(form.birthDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                 </div>
