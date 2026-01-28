@@ -64,78 +64,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
             {% if crew|length > 0 %}
                 {% for member in crew %}
-                    <div class="group relative flex flex-col rounded-xl border border-indigo-500/20 bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 p-4 shadow-lg transition-all hover:border-indigo-500/50 hover:shadow-indigo-500/10 hover:-translate-y-1">
-                        {# Card Header: Actions & REF #}
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center gap-2">
-                                <div class="px-2 py-1 rounded border border-indigo-500/20 bg-indigo-500/5 text-xs font-mono tracking-widest text-indigo-400/80 uppercase">
-                                    D_ID: {{ member.code }}
-                                </div>
-                                {% if member.mortgageSigned %}
-                                    <span class="px-2 py-1 rounded bg-cyan-500/10 text-xs font-bold tracking-tighter uppercase border border-cyan-500/30 text-cyan-400 flex items-center gap-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                        VERIFIED
-                                    </span>
-                                {% endif %}
-                            </div>
-                            <div class="flex items-center gap-1">
-                                {{ tooltip.link('Update crew profile', '', 'icons/action-edit.html.twig', path('app_crew_edit', {id: member.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-indigo-500/20 text-indigo-400' }) }}
-                                {% set CAN_DELETE = constant('App\\Security\\Voter\\CrewVoter::DELETE') %}
-                                {% set can_delete = is_granted(CAN_DELETE, member) %}
-                                {{ tooltip.link('Release crew member', '', 'icons/action-trash.html.twig', path('app_crew_delete', {id: member.id}), {
-                                    dim: 16,
-                                    linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none')
-                                }) }}
-                            </div>
-                        </div>
-
-                        {# Card Body: Identity #}
-                        <div class="mb-4">
-                            <h2 class="text-2xl font-bold text-indigo-100 group-hover:text-indigo-400 transition-colors uppercase tracking-tight font-orbitron">
-                                {{ member.name }} {{ member.surname }}
-                            </h2>
-                            {% if member.nickname %}
-                                <p class="text-sm font-medium text-indigo-300/60 font-rajdhani tracking-widest uppercase">
-                                    // CALLSIGN: {{ member.nickname }}
-                                </p>
-                            {% endif %}
-                        </div>
-
-                        {# Card Detail: Roles #}
-                        <div class="flex flex-wrap gap-2 mb-6">
-                            {% for role in member.assetRoles %}
-                                <span class="px-2 py-0.5 rounded-full bg-slate-800/80 border border-slate-700 text-[10px] font-bold text-slate-300 uppercase tracking-wider font-rajdhani">
-                                    {{ role.name }}
-                                </span>
-                            {% endfor %}
-                            {% if member.assetRoles|length == 0 %}
-                                <span class="px-2 py-0.5 rounded-full bg-slate-800/40 border border-slate-800 text-[10px] font-bold text-slate-500 uppercase tracking-wider font-rajdhani italic">
-                                    Unassigned
-                                </span>
-                            {% endif %}
-                        </div>
-
-                        {# Card Footer: Assignment #}
-                        <div class="mt-auto pt-4 border-t border-indigo-500/10 flex flex-col gap-2">
-                            <div class="flex items-center justify-between text-xs font-rajdhani tracking-wider">
-                                <span class="text-slate-500 uppercase">Hull Assignment</span>
-                                <span class="text-indigo-300 font-bold uppercase">
-                                    {% if member.asset %}{{ member.asset.name }}{% else %}<span class="text-slate-600">N/A</span>{% endif %}
-                                </span>
-                            </div>
-                            <div class="flex items-center justify-between text-xs font-rajdhani tracking-wider">
-                                <span class="text-slate-500 uppercase">Sector / Mission</span>
-                                <span class="text-teal-400 font-bold uppercase flex items-center gap-1.5">
-                                    {% if member.asset and member.asset.campaign %}
-                                        {% include 'icons/alien-structure-1.html.twig' %}
-                                        {{ member.asset.campaign.title }}
-                                    {% else %}
-                                        <span class="text-slate-600">Deep Space</span>
-                                    {% endif %}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+                    <twig:TacticalCrewCard :member="member" />
                 {% endfor %}
             {% else %}
                 <div class="col-span-full py-12 text-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
