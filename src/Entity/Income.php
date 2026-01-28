@@ -312,18 +312,21 @@ class Income
         return $this;
     }
 
-    /* 
     public function getAsset(): ?Asset
     {
-        return $this->asset;
+        return $this->getFinancialAccount()?->getAsset();
     }
 
     public function setAsset(?Asset $asset): static
     {
-        $this->asset = $asset;
+        if ($asset) {
+            $this->setFinancialAccount($asset->getFinancialAccount());
+        } else {
+            $this->setFinancialAccount(null);
+        }
+
         return $this;
     }
-    */
 
     public function getUser(): ?User
     {

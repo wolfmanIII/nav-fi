@@ -7,34 +7,22 @@
 
     <div class="">
 
-        <div class="relative rounded-2xl bg-slate-950 border border-slate-800 shadow-lg mb-6">
-             <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
-                 <div class="absolute top-0 right-0 p-4 opacity-10">
-                    {% include 'icons/company.html.twig' with { dim: 128, class: 'text-cyan-500' } %}
-                </div>
-            </div>
-            <div class="relative z-10 p-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-                <div>
-                     <div class="flex items-center gap-2 text-cyan-500/80 mb-1">
-                        {% include 'icons/company.html.twig' with { dim: 16 } %}
-                        <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">Partners Registry</p>
-                    </div>
-                    <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight flex items-center gap-3 font-orbitron">
-                        COMPANIES
-                    </h1>
-                    <p class="text-xs text-slate-500 font-mono uppercase tracking-wider mt-1">
-                        Counterparties, roles and contacts ready for contracts and documents.
-                    </p>
-                </div>
-                <div class="flex gap-2">
-                    {{ tooltip.link('Register counterparty',
-                                    'Add company',
-                                    'icons/company.html.twig',
-                                    path('app_company_new'),
-                                    { dim: 24, linkClass: 'btn btn-outline btn-primary btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase' }) }}
-                </div>
-            </div>
-        </div>
+    {% embed 'components/_hero_header.html.twig' with {
+        icon: 'icons/company.html.twig',
+        theme: 'cyan',
+        subheader: 'Partners Registry',
+        title: 'COMPANIES',
+        description: 'Counterparties, roles and contacts ready for contracts and documents.'
+    } %}
+        {% import '_tooltip.html.twig' as tooltip %}
+        {% block actions %}
+            {{ tooltip.link('Register counterparty',
+                            'Add company',
+                            'icons/company.html.twig',
+                            path('app_company_new'),
+                            { dim: 24, linkClass: 'btn btn-outline btn-primary btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase' }) }}
+        {% endblock %}
+    {% endembed %}
 
 
 

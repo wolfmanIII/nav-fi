@@ -13,43 +13,7 @@
             color: #e2e8f0;
         }
 
-        .dashboard-header {
-            background: linear-gradient(to right, #0f172a, #1e293b, #164e63);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-        }
-        
-        .dashboard-header::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.15), transparent 35%), 
-                        radial-gradient(circle at 80% 30%, rgba(14,165,233,0.15), transparent 35%);
-            pointer-events: none;
-        }
 
-        .dashboard-header h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #cffafe; /* cyan-100 */
-            margin-bottom: 0.5rem;
-            letter-spacing: 0.05em;
-        }
-
-        .dashboard-header p {
-            color: rgba(207, 250, 254, 0.8);
-            font-family: 'Rajdhani', sans-serif;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            margin: 0;
-        }
 
         .dashboard-grid {
             display: grid;
@@ -124,15 +88,15 @@
     </style>
 
     <div class="nav-fi-dashboard container-fluid px-2 px-lg-0 mt-3">
-        <div class="dashboard-header">
-            <div>
-                <p>System Administration</p>
-                <h1>Command Console</h1>
-                <p style="margin-top: 0.5rem; color: #94a3b8; text-transform: none; letter-spacing: normal;">Low-level entity management and database oversight.</p>
-            </div>
-        </div>
+        {% include 'components/_hero_header.html.twig' with {
+            icon: 'icons/admin.html.twig',
+            theme: 'cyan',
+            subheader: 'System Administration',
+            title: 'Command Console',
+            description: 'Low-level entity management and database oversight.'
+        } %}
 
-        <div class="dashboard-grid">
+        <div class="dashboard-grid mt-6">
             {% for label, url in links %}
                 <a href="{{ url }}" class="dashboard-card">
                     <span>{{ label }}</span>

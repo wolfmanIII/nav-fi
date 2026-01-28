@@ -1,0 +1,77 @@
+{# Hero Header Component #}
+{# 
+  Parameters:
+  - icon: (string) template path
+  - theme: (string) tailwind color base (e.g. 'cyan', 'indigo')
+  - subheader: (string)
+  - title: (string)
+  - titleSuffix: (string) optional
+  - description: (string) optional
+  - asset: (object) optional, for session date indicator
+#}
+{% set theme = theme|default('cyan') %}
+{% set icon = icon|default(null) %}
+{% set subheader = subheader|default(null) %}
+{% set titleSuffix = titleSuffix|default(null) %}
+{% set description = description|default(null) %}
+{% set asset = asset|default(null) %}
+
+<div class="relative rounded-2xl bg-slate-950 border border-slate-800 shadow-lg mb-6">
+    <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
+        <div class="absolute top-0 right-0 p-4 opacity-10">
+            {% if icon %}
+                {% include icon with { dim: 128, class: 'text-' ~ theme ~ '-500' } %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="relative z-10 p-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+        <div>
+            {% if subheader %}
+                <div class="flex items-center gap-2 text-{{ theme }}-500/80 mb-1">
+                    {% if icon %}
+                        {% include icon with { dim: 16 } %}
+                    {% endif %}
+                    <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">{{ subheader }}</p>
+                </div>
+            {% endif %}
+            
+            <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight flex items-center gap-3 font-orbitron">
+                {{ title }}
+                {% if titleSuffix %}
+                    <span class="text-xs align-top opacity-50 font-mono pt-2 normal-case tracking-normal text-slate-400">
+                        {{ titleSuffix }}
+                    </span>
+                {% endif %}
+            </h1>
+
+            {% if description %}
+                <p class="text-xs text-slate-500 font-mono uppercase tracking-wider mt-1">
+                    {{ description }}
+                </p>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+
+            {# Session Date Indicator (Automated for Assets) #}
+            {% set campaign = asset ? asset.campaign|default(null) : null %}
+            {% if campaign %}
+                <div class="flex flex-wrap gap-2 mt-3">
+                    <div class="badge badge-neutral gap-1.5 px-2.5 py-1.5 text-[10px] font-mono border border-slate-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <span class="font-bold tracking-wider text-slate-400">{{ campaign.title }}:</span>
+                        <span class="text-slate-300">{{ campaign.sessionDay|imperial_date(campaign.sessionYear) }}</span>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="flex flex-wrap gap-2">
+            {% block actions %}{% endblock %}
+        </div>
+    </div>
+</div>

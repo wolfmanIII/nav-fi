@@ -150,6 +150,22 @@ class Cost
         return $this;
     }
 
+    public function getAsset(): ?Asset
+    {
+        return $this->getFinancialAccount()?->getAsset();
+    }
+
+    public function setAsset(?Asset $asset): static
+    {
+        if ($asset) {
+            $this->setFinancialAccount($asset->getFinancialAccount());
+        } else {
+            $this->setFinancialAccount(null);
+        }
+
+        return $this;
+    }
+
     public function getCostCategory(): ?CostCategory
     {
         return $this->costCategory;
