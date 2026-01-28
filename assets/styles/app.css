@@ -82,6 +82,14 @@
         color: rgb(220 38 38);
         margin-left: 0.25rem;
     }
+
+    /* Select option: sfondo solido per evitare trasparenza */
+    select option {
+        background-color: #0f172a;
+        /* slate-900 */
+        color: #e2e8f0;
+        /* slate-200 */
+    }
 }
 
 @layer components {
@@ -186,6 +194,13 @@
 
     .ts-wrapper.single .ts-control {
         box-shadow: none !important;
+        outline: none !important;
+    }
+
+    .ts-wrapper.focus .ts-control {
+        border-color: transparent !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
 
     .ts-wrapper .ts-control::before,

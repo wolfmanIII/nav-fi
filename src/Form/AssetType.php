@@ -2,17 +2,18 @@
 
 namespace App\Form;
 
-use App\Entity\Campaign;
-use App\Entity\Asset;
 use App\Dto\AssetDetailsData;
-use App\Repository\CampaignRepository;
-use App\Form\AssetDetailsType;
-use App\Form\Type\TravellerMoneyType;
+use App\Entity\Asset;
+use App\Entity\Campaign;
 use App\Entity\Company;
 use App\Entity\CompanyRole;
+use App\Entity\FinancialAccount;
+use App\Form\Type\TravellerMoneyType;
+use App\Repository\CampaignRepository;
 use App\Repository\CompanyRepository;
-use Symfony\Bundle\SecurityBundle\Security;
+use App\Repository\FinancialAccountRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -69,24 +70,36 @@ class AssetType extends AbstractType
                 'label' => 'Price(Cr)',
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
-            ->add('credits', TravellerMoneyType::class, [
-                'label' => 'Initial Credits',
-                'attr' => ['class' => 'input m-1 w-full'],
+            ->add('financialAccount', EntityType::class, [
+                'class' => FinancialAccount::class,
+                'choice_label' => fn(FinancialAccount $fa) => $fa->getDisplayName(),
+                'label' => 'Link Existing Ledger',
+                'required' => false,
                 'mapped' => false,
-                'data' => $asset->getFinancialAccount()?->getCredits(),
-                'help' => 'Required. The initial balance of the linked Financial Account.',
+                'placeholder' => '// ACCOUNT',
+                'data' => $asset->getFinancialAccount(),
+                'query_builder' => function (FinancialAccountRepository $repo) use ($asset) {
+                    $qb = $repo->createQueryBuilder('fa')
+                        ->where('fa.user = :user')
+                        ->setParameter('user', $this->security->getUser())
+                        ->orderBy('fa.id', 'DESC');
+                    if ($asset->getFinancialAccount()) {
+                        $qb->andWhere('fa.id != :current OR fa.id = :current')
+                            ->setParameter('current', $asset->getFinancialAccount()->getId());
+                    }
+                    return $qb;
+                },
+                'help' => 'Optional. Select an existing Financial Account to link. If none selected, use the fields below to open a new one.',
                 'help_attr' => ['class' => 'text-xs text-slate-500 ml-1'],
-                'constraints' => [
-                    new NotBlank(['message' => 'Please provide the initial balance.']),
-                ],
+                'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('bank', EntityType::class, [
                 'class' => Company::class,
                 'choice_label' => 'name',
-                'label' => 'Opening Bank // Institution',
+                'label' => 'New Account // Banking Institution',
                 'required' => false,
                 'mapped' => false,
-                'placeholder' => 'Select a Bank (or enter custom name below)',
+                'placeholder' => '// BANK',
                 'data' => $asset->getFinancialAccount()?->getBank(),
                 'query_builder' => function (CompanyRepository $cr) {
                     return $cr->createQueryBuilder('c')
@@ -97,31 +110,19 @@ class AssetType extends AbstractType
                         ->setParameter('role', CompanyRole::ROLE_BANK)
                         ->orderBy('c.name', 'ASC');
                 },
-                'help' => 'Select an existing institution or provide a custom name below.',
+                'help' => 'To create a NEW Financial Account, select a registered banking institution here OR enter a custom name below.',
                 'help_attr' => ['class' => 'text-xs text-slate-500 ml-1'],
                 'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('bankName', TextType::class, [
-                'label' => 'Custom Bank Name (fallback)',
+                'label' => 'New Account // Custom Institution Name',
                 'required' => false,
                 'mapped' => false,
                 'data' => $asset->getFinancialAccount()?->getBankName(),
-                'help' => 'Mandatory if no institution is selected.',
+                'help' => 'Enter a custom institution name if not listed above. A new banking entity will be registered automatically.',
                 'help_attr' => ['class' => 'text-xs text-slate-500 ml-1'],
-                'attr' => ['class' => 'input m-1 w-full', 'placeholder' => 'e.g. Imperial Navy Bank'],
+                'attr' => ['class' => 'input m-1 w-full', 'placeholder' => 'e.g. Spinward Marches Credit Union'],
             ]);
-
-        // Cross-field validation: at least bank or bankName must be filled
-        $builder->addEventListener(\Symfony\Component\Form\FormEvents::POST_SUBMIT, function (\Symfony\Component\Form\FormEvent $event) {
-            $form = $event->getForm();
-            $bank = $form->get('bank')->getData();
-            $bankName = $form->get('bankName')->getData();
-
-            if (!$bank && !$bankName) {
-                $form->get('bank')->addError(new \Symfony\Component\Form\FormError('You must select a bank or provide a custom name.'));
-                $form->get('bankName')->addError(new \Symfony\Component\Form\FormError('You must provide a custom name if no bank is selected.'));
-            }
-        });
 
         if ($asset->getCategory() === Asset::CATEGORY_SHIP) {
             // Usa il nuovo DTO ShipDetailsData

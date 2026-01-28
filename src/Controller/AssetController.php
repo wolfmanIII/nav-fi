@@ -2,27 +2,29 @@
 
 namespace App\Controller;
 
+use App\Dto\AssetDetailsData;
 use App\Dto\CrewSelection;
-use App\Entity\Crew;
 use App\Entity\Asset;
 use App\Entity\Campaign;
-use App\Service\PdfGenerator;
-use App\Form\CrewSelectType;
-use App\Form\AssetType;
+use App\Entity\Crew;
+use App\Entity\LocalLaw;
 use App\Form\AssetRoleAssignmentType;
+use App\Form\AssetType;
+use App\Form\CrewSelectType;
+use App\Repository\CostRepository;
 use App\Security\Voter\AssetVoter;
-use App\Dto\AssetDetailsData;
+use App\Service\Cube\TradeService;
+use App\Service\FinancialAccountManager;
 use App\Service\ListViewHelper;
+use App\Service\PdfGenerator;
+use App\Service\Trade\TradePricer;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Repository\CostRepository;
-use App\Service\Cube\TradeService;
-use App\Service\Trade\TradePricer;
-use App\Entity\LocalLaw;
 
 final class AssetController extends BaseController
 {
@@ -73,8 +75,11 @@ final class AssetController extends BaseController
     }
 
     #[Route('/asset/new', name: 'app_asset_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em): Response
-    {
+    public function new(
+        Request $request,
+        EntityManagerInterface $em,
+        FinancialAccountManager $financialAccountManager
+    ): Response {
         $asset = new Asset();
         $user = $this->getUser();
         if ($user instanceof \App\Entity\User) {
@@ -90,46 +95,48 @@ final class AssetController extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $details = null;
-            if ($asset->getCategory() === Asset::CATEGORY_SHIP) {
-                $details = $form->get('shipDetails')->getData();
-            } elseif ($asset->getCategory() === Asset::CATEGORY_BASE) {
-                $details = $form->get('baseDetails')->getData();
-            } else {
-                $details = $form->get('assetDetails')->getData();
-            }
-
-            // Handle FinancialAccount
-            $credits = $form->get('credits')->getData();
-            $bank = $form->get('bank')->getData();
-            $bankName = $form->get('bankName')->getData();
-
-            $financialAccount = new \App\Entity\FinancialAccount();
-            $financialAccount->setUser($user);
-            $financialAccount->setAsset($asset);
-            $financialAccount->setCredits((string)($credits ?? 0));
-            $financialAccount->setBank($bank);
-            $financialAccount->setBankName($bankName);
-
-            // Link to campaign if asset has one
-            if ($asset->getCampaign()) {
-                $financialAccount->setCampaign($asset->getCampaign());
-            }
+            $details = $this->extractAssetDetails($form, $asset);
 
             if (is_object($details) && method_exists($details, 'toArray')) {
                 $asset->setAssetDetails($details->toArray());
             }
 
+            // Gestione FinancialAccount: esistente o nuovo
+            $existingAccount = $form->get('financialAccount')->getData();
+            $bank = $form->get('bank')->getData();
+            $bankName = $form->get('bankName')->getData();
+
+            if ($existingAccount) {
+                // Usa l'account esistente selezionato
+                $account = $existingAccount;
+                $account->setAsset($asset);
+            } else {
+                // Crea nuovo account solo se c'e' almeno bank o bankName
+                if ($bank || $bankName) {
+                    $account = $financialAccountManager->createForAsset(
+                        $asset,
+                        $user,
+                        '0',
+                        $bank,
+                        $bankName,
+                        $asset->getCampaign()
+                    );
+                } else {
+                    $account = null;
+                }
+            }
+
             $em->persist($asset);
-            $em->persist($financialAccount);
             $em->flush();
 
-            $bankDisplayName = $bank ? $bank->getName() : ($bankName ?: 'Independent');
-            $this->addFlash('success', sprintf(
-                'Asset protocol committed. Linked Financial Account initiated at %s with %s Cr.',
-                $bankDisplayName,
-                number_format((float)$credits, 0)
-            ));
+            if ($account && $account->getBank()) {
+                $this->addFlash('success', sprintf(
+                    'Asset protocol committed. Linked Financial Account at %s.',
+                    $account->getBank()->getName()
+                ));
+            } else {
+                $this->addFlash('success', 'Asset protocol committed successfully.');
+            }
 
             return $this->redirectToRoute('app_asset_index', ['category' => $asset->getCategory()]);
         }
@@ -145,7 +152,8 @@ final class AssetController extends BaseController
     public function edit(
         int $id,
         Request $request,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        FinancialAccountManager $financialAccountManager
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
@@ -163,41 +171,33 @@ final class AssetController extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $details = null;
-            if ($asset->getCategory() === Asset::CATEGORY_SHIP) {
-                $details = $form->get('shipDetails')->getData();
-            } elseif ($asset->getCategory() === Asset::CATEGORY_BASE) {
-                $details = $form->get('baseDetails')->getData();
-            } else {
-                $details = $form->get('assetDetails')->getData();
-            }
-
-            // Handle FinancialAccount
-            $credits = $form->get('credits')->getData();
-            $bank = $form->get('bank')->getData();
-            $bankName = $form->get('bankName')->getData();
-
-            $financialAccount = $asset->getFinancialAccount();
-            if (!$financialAccount) {
-                $financialAccount = new \App\Entity\FinancialAccount();
-                $financialAccount->setUser($user);
-                $financialAccount->setAsset($asset);
-                $em->persist($financialAccount);
-            }
-
-            if ($credits !== null) {
-                $financialAccount->setCredits((string)$credits);
-            }
-            $financialAccount->setBank($bank);
-            $financialAccount->setBankName($bankName);
-
-            // Sync Campaign
-            if ($asset->getCampaign()) {
-                $financialAccount->setCampaign($asset->getCampaign());
-            }
+            $details = $this->extractAssetDetails($form, $asset);
 
             if (is_object($details) && method_exists($details, 'toArray')) {
                 $asset->setAssetDetails($details->toArray());
+            }
+
+            // Gestione FinancialAccount: esistente selezionato o aggiornamento
+            $existingAccount = $form->get('financialAccount')->getData();
+            $bank = $form->get('bank')->getData();
+            $bankName = $form->get('bankName')->getData();
+
+            if ($existingAccount) {
+                // Usa l'account esistente selezionato
+                $account = $existingAccount;
+                $account->setAsset($asset);
+            } else if ($bank || $bankName) {
+                // Aggiorna o crea account solo se c'e' almeno bank o bankName
+                $account = $financialAccountManager->updateForAsset(
+                    $asset,
+                    $user,
+                    null,
+                    $bank,
+                    $bankName,
+                    $asset->getCampaign()
+                );
+            } else {
+                $account = $asset->getFinancialAccount();
             }
 
             if ($originalCampaign && $asset->getCampaign() === null) {
@@ -211,12 +211,15 @@ final class AssetController extends BaseController
             $em->persist($asset);
             $em->flush();
 
-            $bankDisplayName = $bank ? $bank->getName() : ($bankName ?: 'Independent');
-            $this->addFlash('info', sprintf(
-                'Unit ledger synchronized. Account status updated at %s (Current Balance: %s Cr).',
-                $bankDisplayName,
-                number_format((float)$financialAccount->getCredits(), 0)
-            ));
+            if ($account && $account->getBank()) {
+                $this->addFlash('info', sprintf(
+                    'Unit ledger synchronized. Account status updated at %s (Current Balance: %s Cr).',
+                    $account->getBank()->getName(),
+                    number_format((float)$account->getCredits(), 0)
+                ));
+            } else {
+                $this->addFlash('info', 'Asset updated successfully.');
+            }
 
             return $this->redirectToRoute('app_asset_index', ['category' => $asset->getCategory()]);
         }
@@ -642,5 +645,21 @@ final class AssetController extends BaseController
         }
 
         return $this->redirectToRoute('app_asset_cargo', ['id' => $id]);
+    }
+
+    /**
+     * Estrae i dati dei dettagli dal form in base alla categoria dell'asset.
+     * Mappa automaticamente il campo form corretto (shipDetails, baseDetails, assetDetails).
+     */
+    private function extractAssetDetails(FormInterface $form, Asset $asset): ?object
+    {
+        $fieldMap = [
+            Asset::CATEGORY_SHIP => 'shipDetails',
+            Asset::CATEGORY_BASE => 'baseDetails',
+        ];
+
+        $fieldName = $fieldMap[$asset->getCategory()] ?? 'assetDetails';
+
+        return $form->has($fieldName) ? $form->get($fieldName)->getData() : null;
     }
 }

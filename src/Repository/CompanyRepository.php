@@ -54,13 +54,13 @@ class CompanyRepository extends ServiceEntityRepository
             ->setParameter('user', $user);
 
         if (!empty($filters['name'])) {
-            $name = '%'.strtolower($filters['name']).'%';
+            $name = '%' . strtolower($filters['name']) . '%';
             $qb->andWhere('LOWER(c.name) LIKE :name')
                 ->setParameter('name', $name);
         }
 
         if (!empty($filters['contact'])) {
-            $contact = '%'.strtolower($filters['contact']).'%';
+            $contact = '%' . strtolower($filters['contact']) . '%';
             $qb->andWhere('LOWER(c.contact) LIKE :contact')
                 ->setParameter('contact', $contact);
         }
@@ -82,5 +82,23 @@ class CompanyRepository extends ServiceEntityRepository
             'items' => iterator_to_array($paginator),
             'total' => $paginator->count(),
         ];
+    }
+
+    /**
+     * Cerca una Company con nome normalizzato (case-insensitive, trim).
+     * Usato per evitare duplicati durante la creazione automatica di banche.
+     */
+    public function findOneByNormalizedName(string $name, User $user, string $roleCode): ?Company
+    {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.companyRole', 'r')
+            ->where('LOWER(TRIM(c.name)) = LOWER(TRIM(:name))')
+            ->andWhere('c.user = :user')
+            ->andWhere('r.code = :role')
+            ->setParameter('name', $name)
+            ->setParameter('user', $user)
+            ->setParameter('role', $roleCode)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }
