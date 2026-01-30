@@ -8,7 +8,11 @@ use App\Entity\Mortgage;
 use App\Entity\Asset;
 use App\Entity\Campaign;
 use App\Entity\Company;
+use App\Entity\CompanyRole;
+use App\Entity\FinancialAccount;
 use App\Entity\LocalLaw;
+use App\Repository\CompanyRepository;
+use App\Repository\FinancialAccountRepository;
 use App\Form\Config\DayYearLimits;
 use App\Form\Type\ImperialDateType;
 use App\Form\Type\TravellerMoneyType;
@@ -55,7 +59,7 @@ class MortgageType extends AbstractType
                 'class' => Campaign::class,
                 'mapped' => false,
                 'required' => true,
-                'placeholder' => '-- Select a Campaign --',
+                'placeholder' => '// MISSION',
                 'choice_label' => fn(Campaign $campaign) => sprintf('%s (%03d/%04d)', $campaign->getTitle(), $campaign->getSessionDay(), $campaign->getSessionYear()),
                 'data' => $mortgage->getAsset()?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
@@ -73,7 +77,7 @@ class MortgageType extends AbstractType
             ])
             ->add('asset', EntityType::class, [
                 'label' => 'Asset // Name // Price',
-                'placeholder' => '-- Select an Asset --',
+                'placeholder' => '// ASSET',
                 'class' => Asset::class,
                 'choice_label' => fn(Asset $asset) =>
                 sprintf(
@@ -82,12 +86,14 @@ class MortgageType extends AbstractType
                     $asset->getName(),
                     number_format((float) $asset->getPrice(), 2, ',', '.') . " Cr"
                 ),
-                'choice_attr' => function (Asset $asset): array {
-                    $start = $asset->getCampaign()?->getStartingYear();
-                    $campaignId = $asset->getCampaign()?->getId();
+                'choice_attr' => function (Asset $a): array {
+                    $start = $a->getCampaign()?->getStartingYear();
+                    $campaignId = $a->getCampaign()?->getId();
+                    $financialAccount = $a->getFinancialAccount();
                     return [
                         'data-start-year' => $start ?? '',
                         'data-campaign' => $campaignId ? (string) $campaignId : '',
+                        'data-financial-account-id' => $financialAccount ? (string) $financialAccount->getId() : '',
                     ];
                 },
                 'query_builder' => function (AssetRepository $repo) use ($user, $currentAssetId) {
@@ -141,23 +147,88 @@ class MortgageType extends AbstractType
                 'multiple' => false,
                 'expanded' => false,
             ])
-            ->add('company', EntityType::class, [
-                'class' => Company::class,
-                'placeholder' => '-- Select a Company --',
-                'required' => true,
-                'choice_label' => fn(Company $c) => sprintf('%s - %s', $c->getName(), $c->getCompanyRole()->getShortDescription()),
-                'query_builder' => function (EntityRepository $er) use ($user) {
-                    $qb = $er->createQueryBuilder('c')->orderBy('c.name', 'ASC');
-                    if ($user) {
-                        $qb->andWhere('c.user = :user')->setParameter('user', $user);
+            // DEBIT ACCOUNT (Chi paga)
+            ->add('financialAccount', EntityType::class, [
+                'class' => FinancialAccount::class,
+                'choice_label' => fn(FinancialAccount $fa) => $fa->getDisplayName(),
+                'label' => 'Link Existing Ledger (Debit)',
+                'required' => false,
+                'mapped' => false,
+                'placeholder' => '// DEBIT ACCOUNT',
+                'data' => $mortgage->getFinancialAccount(),
+                'query_builder' => function (FinancialAccountRepository $repo) use ($user, $mortgage) {
+                    $qb = $repo->createQueryBuilder('fa')
+                        ->where('fa.user = :user')
+                        ->setParameter('user', $user)
+                        ->orderBy('fa.id', 'DESC');
+                    if ($mortgage->getFinancialAccount()) {
+                        $qb->andWhere('fa.id != :current OR fa.id = :current')
+                            ->setParameter('current', $mortgage->getFinancialAccount()->getId());
                     }
                     return $qb;
                 },
+                'help' => 'Account that pays the mortgage. Select an existing one OR create new below.',
+                'help_attr' => ['class' => 'text-xs text-slate-500 ml-1'],
                 'attr' => ['class' => 'select m-1 w-full'],
+            ])
+            ->add('bank', EntityType::class, [
+                'class' => Company::class,
+                'choice_label' => 'name',
+                'label' => 'New Ledger // Banking Institution',
+                'required' => false,
+                'mapped' => false,
+                'placeholder' => '// BANK',
+                'query_builder' => function (CompanyRepository $cr) use ($user) {
+                    return $cr->createQueryBuilder('c')
+                        ->innerJoin('c.companyRole', 'r')
+                        ->where('c.user = :user')
+                        ->andWhere('r.code = :role')
+                        ->setParameter('user', $user)
+                        ->setParameter('role', CompanyRole::ROLE_BANK)
+                        ->orderBy('c.name', 'ASC');
+                },
+                'help' => 'To create a NEW Debit Account, select a bank here OR enter custom name below.',
+                'help_attr' => ['class' => 'text-xs text-slate-500 ml-1'],
+                'attr' => ['class' => 'select m-1 w-full'],
+            ])
+            ->add('bankName', TextType::class, [
+                'label' => 'New Ledger // Custom Institution Name',
+                'required' => false,
+                'mapped' => false,
+                'help' => 'Enter a custom bank name for the new Debit Account.',
+                'help_attr' => ['class' => 'text-xs text-slate-500 ml-1'],
+                'attr' => ['class' => 'input m-1 w-full', 'placeholder' => 'e.g. Spinward Marches Credit Union'],
+            ])
+
+            // CREDIT INSTITUTION (Chi riceve)
+            ->add('company', EntityType::class, [
+                'label' => 'Lender (Credit Institution)',
+                'class' => Company::class,
+                'placeholder' => '// LENDER',
+                'required' => false, // Gestito manualmente se newLenderName è presente
+                'choice_label' => fn(Company $c) => sprintf('%s - %s', $c->getName(), $c->getCompanyRole()->getShortDescription()),
+                'query_builder' => function (EntityRepository $er) use ($user) {
+                    return $er->createQueryBuilder('c')
+                        ->innerJoin('c.companyRole', 'r')
+                        ->where('c.user = :user')
+                        ->andWhere('r.code = :role')
+                        ->setParameter('user', $user)
+                        ->setParameter('role', CompanyRole::ROLE_BANK)
+                        ->orderBy('c.name', 'ASC');
+                },
+                'attr' => ['class' => 'select m-1 w-full'],
+            ])
+            ->add('creditInstitutionName', TextType::class, [
+                'label' => 'New Lender // Custom Name',
+                'required' => false,
+                'mapped' => false,
+                'help' => 'If Lender not listed, enter name to create new Banking Entity.',
+                'help_attr' => ['class' => 'text-xs text-slate-500 ml-1'],
+                'attr' => ['class' => 'input m-1 w-full', 'placeholder' => 'e.g. Imperial Naval Bank'],
             ])
             ->add('localLaw', EntityType::class, [
                 'class' => LocalLaw::class,
-                'placeholder' => '-- Select a Local Law --',
+                'placeholder' => '// LOCAL LAW',
                 'required' => true,
                 'choice_label' => function (LocalLaw $l): string {
                     $label = $l->getShortDescription() ?: $l->getDescription();

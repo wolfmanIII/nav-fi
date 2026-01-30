@@ -70,7 +70,7 @@
             </div>
         {% endif %}
 
-        {{ form_start(form, { attr: { id: 'mortgage_form' } }) }}
+        {{ form_start(form, { attr: { id: 'mortgage_form', 'data-controller': 'form-visibility financial-lock' } }) }}
 
         <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Asset Deployment</legend>
@@ -87,62 +87,126 @@
                 <div class="flex items-baseline h-5 mb-1">
                     {{ form_label(form.asset, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                 </div>
-                {{ form_widget(form.asset, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                {{ form_widget(form.asset, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700', 'data-form-visibility-target': 'trigger', 'data-financial-lock-target': 'asset', 'data-action': 'change->form-visibility#toggle change->financial-lock#check' } }) }}
                 {{ form_errors(form.asset) }}
             </div>
 
-            <div class="col-span-2 md:col-span-1">
-                <div class="flex items-baseline h-5 mb-1">
-                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">First Installment Date</label>
-                </div>
-                <div class="flex items-center gap-2">
-                    <input type="text" readonly disabled
-                        class="input input-bordered w-full bg-slate-950/50 border-slate-700 text-slate-400 font-mono text-sm"
-                        value="{{ mortgage.startDay ? (mortgage.startDay|imperial_date(mortgage.startYear)) : 'Not Scheduled' }}">
-                    
-                    {% if can_set_start_date %}
-                        <button type="button" class="btn btn-square btn-outline btn-warning" onclick="document.getElementById('start_date_modal').showModal();" title="Set First Installment Date">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                        </button>
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="col-span-2 md:col-span-1">
-                <div class="flex items-baseline h-5 mb-1">
-                    <label class="block text-slate-100 text-[10px] uppercase tracking-widest font-bold font-orbitron">Authorization // signing Date</label>
-                </div>
-                <div class="flex items-center gap-2">
-                    <p class="mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">AUTHORIZATION PROTOCOL: </p>
-                    <p class="text-xs font-mono text-cyan-400 font-bold uppercase mt-1">
-                        {% if mortgage.signed %}
-                            <span class="animate-pulse mr-2">●</span>
-                            AUTH_LOG: {{ mortgage.signingDay|imperial_date(mortgage.signingYear) }}
-                        {% else %}
-                            <span class="opacity-50 font-rajdhani uppercase tracking-tighter">Awaiting Authorization Signature</span>
+            {# SEZIONE DIPENDENTE DALL'ASSET #}
+            <div class="col-span-2 grid grid-cols-2 gap-6 contents" data-form-visibility-target="container">
+                <div class="col-span-2 md:col-span-1">
+                    <div class="flex items-baseline h-5 mb-1">
+                        <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">First Installment Date</label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="text" readonly disabled
+                            class="input input-bordered w-full bg-slate-950/50 border-slate-700 text-slate-400 font-mono text-sm"
+                            value="{{ mortgage.startDay ? (mortgage.startDay|imperial_date(mortgage.startYear)) : 'Not Scheduled' }}">
+                        
+                        {% if can_set_start_date %}
+                            <button type="button" class="btn btn-square btn-outline btn-warning" onclick="document.getElementById('start_date_modal').showModal();" title="Set First Installment Date">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            </button>
                         {% endif %}
-                    </p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="col-span-2 md:col-span-1">
-                <div class="flex items-baseline h-5 mb-1">
-                    {{ form_label(form.company, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                <div class="col-span-2 md:col-span-1">
+                    <div class="flex items-baseline h-5 mb-1">
+                        <label class="block text-slate-100 text-[10px] uppercase tracking-widest font-bold font-orbitron">Authorization // signing Date</label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <p class="mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">AUTHORIZATION PROTOCOL: </p>
+                        <p class="text-xs font-mono text-cyan-400 font-bold uppercase mt-1">
+                            {% if mortgage.signed %}
+                                <span class="animate-pulse mr-2">●</span>
+                                AUTH_LOG: {{ mortgage.signingDay|imperial_date(mortgage.signingYear) }}
+                            {% else %}
+                                <span class="opacity-50 font-rajdhani uppercase tracking-tighter">Awaiting Authorization Signature</span>
+                            {% endif %}
+                        </p>
+                    </div>
                 </div>
-                {{ form_widget(form.company, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
-                {{ form_errors(form.company) }}
-            </div>
 
-            <div class="col-span-2">
-                <div class="flex items-baseline h-5 mb-1">
-                    {{ form_label(form.localLaw, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                <div class="col-span-2">
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(form.localLaw, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(form.localLaw, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    {{ form_errors(form.localLaw) }}
                 </div>
-                {{ form_widget(form.localLaw, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
-                {{ form_errors(form.localLaw) }}
             </div>
         </fieldset>
 
-        <fieldset class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+        <fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative" data-form-visibility-target="container">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-teal-500/80 uppercase">Financial Ledger</legend>
+
+            {# DEBIT SIDE #}
+            <div class="col-span-1 space-y-4">
+                <div class="pb-2 border-b border-slate-800 mb-2">
+                   <h4 class="text-[10px] uppercase tracking-widest font-bold font-orbitron text-red-400/80">Debit // Paying Account</h4>
+                </div>
+                
+                <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(form.financialAccount, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(form.financialAccount, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700', 'data-financial-lock-target': 'debitAccount' } }) }}
+                    {{ form_help(form.financialAccount) }}
+                    {{ form_errors(form.financialAccount) }}
+                </div>
+
+                <div class="p-3 rounded border border-slate-800 bg-slate-950/30" data-financial-lock-target="debitCreation">
+                    <p class="text-[9px] uppercase tracking-widest font-bold font-orbitron text-slate-500 mb-2">Or open new account</p>
+                    <div class="grid grid-cols-1 gap-3">
+                        <div>
+                             <div class="flex items-baseline h-5 mb-1">
+                                {{ form_label(form.bank, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                            </div>
+                            {{ form_widget(form.bank, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                            {{ form_help(form.bank) }}
+                            {{ form_errors(form.bank) }}
+                        </div>
+                        <div>
+                            <div class="flex items-baseline h-5 mb-1">
+                                {{ form_label(form.bankName, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                            </div>
+                            {{ form_widget(form.bankName, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                            {{ form_help(form.bankName) }}
+                            {{ form_errors(form.bankName) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# CREDIT SIDE #}
+            <div class="col-span-1 space-y-4">
+                 <div class="pb-2 border-b border-slate-800 mb-2">
+                   <h4 class="text-[10px] uppercase tracking-widest font-bold font-orbitron text-emerald-400/80">Credit // Lending Institution</h4>
+                </div>
+
+                <div>
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(form.company, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(form.company, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    {{ form_errors(form.company) }}
+                </div>
+                
+                 <div class="p-3 rounded border border-slate-800 bg-slate-950/30">
+                    <p class="text-[9px] uppercase tracking-widest font-bold font-orbitron text-slate-500 mb-2">Or register new lender</p>
+                    <div>
+                        <div class="flex items-baseline h-5 mb-1">
+                            {{ form_label(form.creditInstitutionName, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                        </div>
+                        {{ form_widget(form.creditInstitutionName, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                        {{ form_help(form.creditInstitutionName) }}
+                        {{ form_errors(form.creditInstitutionName) }}
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative" data-form-visibility-target="container">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Financial Architecture</legend>
 
             <div class="col-span-1 md:col-span-1 lg:col-span-1">
@@ -180,7 +244,7 @@
         </fieldset>
 
         {% if mortgage.id %}
-            <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative" data-form-visibility-target="container">
                 <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-emerald-500/80 uppercase">Amortization Logs</legend>
                 {{ include('mortgage/mortgage_summary.html.twig') }}
                 {{ include('mortgage/crew_table.html.twig') }}

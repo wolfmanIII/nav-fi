@@ -30,13 +30,17 @@ export default class extends Controller {
         });
 
         if (!hasCampaign) {
-            assetSelect.value = '';
+            if (assetSelect.value !== '') {
+                assetSelect.value = '';
+                assetSelect.dispatchEvent(new Event('change', { bubbles: true }));
+            }
             return;
         }
 
         const selectedOption = assetSelect.options[assetSelect.selectedIndex];
         if (selectedOption && selectedOption.value && selectedOption.dataset.campaign !== campaignId) {
             assetSelect.value = '';
+            assetSelect.dispatchEvent(new Event('change', { bubbles: true }));
         }
     }
 }

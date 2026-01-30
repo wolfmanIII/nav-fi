@@ -76,7 +76,7 @@ final class MortgageController extends BaseController
     }
 
     #[Route('/mortgage/new', name: 'app_mortgage_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    public function new(Request $request, EntityManagerInterface $em, \App\Service\FinancialAccountManager $accountManager): Response
     {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
@@ -92,16 +92,60 @@ final class MortgageController extends BaseController
             $mortgage->setName("MOR - " . $mortgage->getAsset()->getName());
             $mortgage->setUser($user);
 
-            $asset = $mortgage->getAsset();
-            if ($asset) {
-                $financialAccount = $asset->getFinancialAccount();
-                if (!$financialAccount) {
-                    $financialAccount = new \App\Entity\FinancialAccount();
-                    $financialAccount->setUser($user);
-                    $financialAccount->setAsset($asset);
-                    $em->persist($financialAccount);
+            // 1. Gestione DEBIT ACCOUNT (Chi paga)
+            // Se selezionato account esistente, usa quello
+            $financialAccount = $form->get('financialAccount')->getData();
+
+            // Se non selezionato, prova a creare/aggiornare basandosi su bank/bankName
+            if (!$financialAccount) {
+                $bank = $form->get('bank')->getData();
+                $bankName = $form->get('bankName')->getData();
+
+                // Se abbiamo dati per la banca, creiamo/aggiorniamo il conto per l'asset
+                if ($bank || $bankName) {
+                    $financialAccount = $accountManager->updateForAsset(
+                        $mortgage->getAsset(),
+                        $user,
+                        null, // Non cambiamo i crediti
+                        $bank,
+                        $bankName,
+                        $mortgage->getAsset()->getCampaign()
+                    );
+                } else {
+                    // Fallback: se l'asset ha già un conto, usa quello
+                    $financialAccount = $mortgage->getAsset()->getFinancialAccount();
                 }
+            }
+
+            // Se ancora null e non abbiamo dati, creiamo un conto "orfano" (legacy logic) o errore?
+            // La logica originale creava un conto vuoto se mancava. Manteniamola per sicurezza se l'asset è orfano.
+            if (!$financialAccount && $mortgage->getAsset()) {
+                // Oppure usiamo FAM per creare un conto default senza banca?
+                // Per ora manteniamo la logica base se l'utente non ha specificato nulla, ma FAM richiede banca o nome.
+                // Se l'utente non seleziona nulla, lasciamo che il mutuo non abbia conto o creiamo uno vuoto?
+                // Logica precedente: creava new FinancialAccount senza bank.
+                // Facciamo fallback a creazione manuale base se FAM non può operare
+                $financialAccount = new \App\Entity\FinancialAccount();
+                $financialAccount->setUser($user);
+                $financialAccount->setAsset($mortgage->getAsset());
+                $em->persist($financialAccount);
+            }
+
+            if ($financialAccount) {
                 $mortgage->setFinancialAccount($financialAccount);
+            }
+
+
+            // 2. Gestione CREDIT INSTITUTION (Chi riceve / Lender)
+            $lender = $mortgage->getCompany();
+            if (!$lender) {
+                // Se non selezionato, controlla campo custom name
+                $newLenderName = $form->get('creditInstitutionName')->getData();
+                if ($newLenderName) {
+                    // Usa FAM per risolvere/creare la banca
+                    $lender = $accountManager->resolveBank(null, $newLenderName, $user);
+                    $mortgage->setCompany($lender);
+                }
             }
 
             $em->persist($mortgage);
@@ -133,7 +177,8 @@ final class MortgageController extends BaseController
         int $id,
         Request $request,
         EntityManagerInterface $em,
-        DayYearLimits $limits
+        DayYearLimits $limits,
+        \App\Service\FinancialAccountManager $accountManager
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
@@ -149,6 +194,40 @@ final class MortgageController extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
+            // 1. Gestione DEBIT ACCOUNT (Chi paga)
+            $financialAccount = $form->get('financialAccount')->getData();
+
+            if (!$financialAccount) {
+                $bank = $form->get('bank')->getData();
+                $bankName = $form->get('bankName')->getData();
+
+                if ($bank || $bankName) {
+                    $financialAccount = $accountManager->updateForAsset(
+                        $mortgage->getAsset(),
+                        $user,
+                        null,
+                        $bank,
+                        $bankName,
+                        $mortgage->getAsset()->getCampaign()
+                    );
+                }
+            }
+
+            if ($financialAccount) {
+                $mortgage->setFinancialAccount($financialAccount);
+            }
+
+            // 2. Gestione CREDIT INSTITUTION (Chi riceve / Lender)
+            // 'company' è mapped, quindi se selezionato è già in $mortgage->getCompany()
+            if (!$mortgage->getCompany()) {
+                $newLenderName = $form->get('creditInstitutionName')->getData();
+                if ($newLenderName) {
+                    $lender = $accountManager->resolveBank(null, $newLenderName, $user);
+                    $mortgage->setCompany($lender);
+                }
+            }
+
             $em->flush();
             $this->addFlash('warning', 'LEDGER INTEGRITY EVENT. Correction appended. Original error archived for forensic audit.');
 
