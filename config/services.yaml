@@ -8,6 +8,7 @@ parameters:
     app.day_max: "%env(int:APP_DAY_MAX)%"
     app.year_min: "%env(int:APP_YEAR_MIN)%"
     app.year_max: "%env(int:APP_YEAR_MAX)%"
+    env(GOTENBERG_ENDPOINT): "http://localhost:3000"
 
 services:
     # configurazione di default per i servizi in *questo* file

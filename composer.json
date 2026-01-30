@@ -13,7 +13,6 @@
         "doctrine/orm": "^3.5",
         "easycorp/easyadmin-bundle": "^4.27",
         "endroid/qr-code-bundle": "^6.0",
-        "knplabs/knp-snappy-bundle": "^1.10",
         "knpuniversity/oauth2-client-bundle": "^2.20",
         "league/oauth2-google": "^4.1",
         "nyholm/psr7": "^1.8",

@@ -39,23 +39,33 @@ Applicazione **Symfony 7.4** per la gestione di navi, equipaggi, contratti e mut
 - Composer
 - Database supportato da Doctrine (PostgreSQL/MySQL/SQLite)
 
-## KnpSnappy e wkhtmltopdf (patched Qt)
-- Configurazione binario: `config/packages/knp_snappy.yaml` legge `%env(WKHTMLTOPDF_PATH)%` (default suggerito `/usr/local/bin/wkhtmltopdf`).
-- Installazione wkhtmltopdf patchato (Ubuntu 22.04/Jammy):
-  ```bash
-  sudo apt-get update
-  sudo apt-get install -y wget xfonts-75dpi
+## PDF Generation (Gotenberg)
+La generazione PDF utilizza **Gotenberg**, un container Docker che espone un'API HTTP per la conversione HTML→PDF tramite Chromium.
 
-  cd ~
-  wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+### Avvio del container
+```bash
+docker compose up -d gotenberg
+```
 
-  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
-  ```
-- Verifica:
-  ```bash
-  wkhtmltopdf --version
-  ```
-  Deve mostrare `wkhtmltopdf 0.12.6.1 (with patched qt)`.
+### Verifica funzionamento
+```bash
+# Health check
+curl http://localhost:3000/health
+
+# Test generazione PDF
+php bin/console app:test:pdf
+```
+
+### Configurazione
+Il servizio `GotenbergPdfGenerator` usa la variabile d'ambiente `GOTENBERG_ENDPOINT` (default: `http://localhost:3000`).
+
+Per produzione (Cloud Run), deployare Gotenberg come servizio separato e configurare:
+```env
+GOTENBERG_ENDPOINT=https://gotenberg-service-url.run.app
+```
+
+### Immagini nei PDF
+I template PDF usano `{{ asset_data_uri('img/...') }}` per incorporare le immagini come base64, evitando problemi di accesso a URL locali da parte di Gotenberg.
 
 ## Configurazione
 1. Installa le dipendenze:
@@ -107,8 +117,8 @@ Applicazione **Symfony 7.4** per la gestione di navi, equipaggi, contratti e mut
    APP_DAY_MAX=365
    APP_YEAR_MIN=0
    APP_YEAR_MAX=6000
-   # wkhtmltopdf
-   WKHTMLTOPDF_PATH="/usr/local/bin/wkhtmltopdf"
+   # Gotenberg (opzionale, default: http://localhost:3000)
+   GOTENBERG_ENDPOINT=http://localhost:3000
    ```
 5. Esegui le migrazioni:
    ```bash

@@ -9,7 +9,7 @@ use App\Form\IncomeType;
 use App\Security\Voter\IncomeVoter;
 use App\Entity\IncomeCategory;
 use App\Service\ImperialDateHelper;
-use App\Service\PdfGenerator;
+use App\Service\Pdf\PdfGeneratorInterface;
 use App\Service\ListViewHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -193,7 +193,7 @@ final class IncomeController extends BaseController
     public function pdf(
         int $id,
         EntityManagerInterface $em,
-        PdfGenerator $pdfGenerator
+        PdfGeneratorInterface $pdfGenerator
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {

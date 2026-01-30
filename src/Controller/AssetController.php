@@ -16,7 +16,7 @@ use App\Security\Voter\AssetVoter;
 use App\Service\Cube\TradeService;
 use App\Service\FinancialAccountManager;
 use App\Service\ListViewHelper;
-use App\Service\PdfGenerator;
+use App\Service\Pdf\PdfGeneratorInterface;
 use App\Service\Trade\TradePricer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormInterface;
@@ -235,7 +235,7 @@ final class AssetController extends BaseController
     public function pdf(
         int $id,
         EntityManagerInterface $em,
-        PdfGenerator $pdfGenerator,
+        PdfGeneratorInterface $pdfGenerator,
         Request $request
     ): Response {
         $user = $this->getUser();

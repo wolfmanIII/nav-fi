@@ -9,7 +9,7 @@ use App\Entity\CostCategory;
 use App\Form\CostType;
 use App\Security\Voter\CostVoter;
 use App\Service\ListViewHelper;
-use App\Service\PdfGenerator;
+use App\Service\Pdf\PdfGeneratorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -173,7 +173,7 @@ final class CostController extends BaseController
     public function pdf(
         int $id,
         EntityManagerInterface $em,
-        PdfGenerator $pdfGenerator,
+        PdfGeneratorInterface $pdfGenerator,
         Request $request
     ): Response {
         $user = $this->getUser();

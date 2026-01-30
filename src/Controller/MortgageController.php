@@ -19,6 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Form\Type\ImperialDateType;
 use App\Model\ImperialDate;
 use App\Form\Config\DayYearLimits;
+use App\Service\Pdf\PdfGeneratorInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -405,7 +406,7 @@ final class MortgageController extends BaseController
     public function pdf(
         int $id,
         EntityManagerInterface $em,
-        \App\Service\PdfGenerator $pdfGenerator,
+        PdfGeneratorInterface $pdfGenerator,
         Request $request
     ): Response {
         $user = $this->getUser();
