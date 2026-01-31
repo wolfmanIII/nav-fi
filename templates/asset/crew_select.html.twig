@@ -12,7 +12,7 @@
     <div class="">
 
         {% set theme = asset.category == 'base' ? 'amber' : (asset.category == 'team' ? 'emerald' : 'cyan') %}
-        {% include 'components/_hero_header.html.twig' with {
+        {% embed 'components/_hero_header.html.twig' with {
             icon: 'icons/crew.html.twig',
             theme: theme,
             subheader: 'Asset Crew Roster // Personnel',
@@ -20,6 +20,12 @@
             titleSuffix: '// ' ~ asset.code,
             description: asset.type ~ ' — ' ~ asset.class
         } %}
+            {% block actions %}
+                <a href="{{ path('app_asset_index') }}?category={{ asset.category }}&view=categorical" class="btn btn-outline btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase">
+                    {% include 'icons/back.html.twig' %}
+                </a>
+            {% endblock %}
+        {% endembed %}
 
         {% if asset.mortgageSigned %}
             <div class="alert alert-info alert-outline border-cyan-500/50 bg-cyan-950/30 mb-6">
@@ -99,10 +105,22 @@
                                     <div class="flex items-baseline h-5 mb-1">
                                         <span class="text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Status</span>
                                     </div>
-                                    <div class="flex items-center gap-1.5 px-2 py-1 bg-emerald-500/5 border border-emerald-500/20 rounded">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                        <span class="text-[9px] text-emerald-400/80 font-bold font-orbitron uppercase tracking-widest">Active</span>
-                                    </div>
+                                    {% if member.status == constant('App\\Entity\\Crew::STATUS_PENDING') %}
+                                         <div class="flex items-center gap-1.5 px-2 py-1 bg-amber-500/5 border border-amber-500/20 rounded">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                            <span class="text-[9px] text-amber-400/80 font-bold font-orbitron uppercase tracking-widest">Pending</span>
+                                        </div>
+                                    {% elseif member.status == constant('App\\Entity\\Crew::STATUS_ACTIVE') %}
+                                        <div class="flex items-center gap-1.5 px-2 py-1 bg-emerald-500/5 border border-emerald-500/20 rounded">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                            <span class="text-[9px] text-emerald-400/80 font-bold font-orbitron uppercase tracking-widest">Active</span>
+                                        </div>
+                                    {% else %}
+                                        <div class="flex items-center gap-1.5 px-2 py-1 bg-slate-500/5 border border-slate-500/20 rounded">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+                                            <span class="text-[9px] text-slate-400/80 font-bold font-orbitron uppercase tracking-widest">{{ member.status|default('Unknown') }}</span>
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

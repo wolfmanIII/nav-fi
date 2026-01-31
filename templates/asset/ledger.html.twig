@@ -5,7 +5,7 @@
 {% import '_tooltip.html.twig' as tooltip %}
 
 {% block pageContent %}
-    <div class="p-10">
+    <div class="">
 
         {# ASSET HEADER (Reused style) #}
         {# ASSET HEADER (Reused style) #}
@@ -21,7 +21,6 @@
             {% block actions %}
                  <a href="{{ path('app_asset_edit', { id: asset.id }) }}" class="btn btn-outline btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase">
                     {% include 'icons/back.html.twig' %}
-                    Back to Asset
                 </a>
             {% endblock %}
         {% endembed %}

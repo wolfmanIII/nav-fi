@@ -62,7 +62,7 @@ class Asset
     /**
      * @var Collection<int, Crew>
      */
-    #[ORM\OneToMany(targetEntity: Crew::class, mappedBy: 'asset', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Crew::class, mappedBy: 'asset', cascade: ['persist'])]
     private Collection $crews;
 
     /**

@@ -16,6 +16,7 @@ use Symfony\Component\Uid\Uuid;
 class Crew
 {
     public const STATUS_ACTIVE = 'Active';
+    public const STATUS_PENDING = 'Pending';
     public const STATUS_ON_LEAVE = 'On Leave';
     public const STATUS_RETIRED = 'Retired';
     public const STATUS_MIA = 'Missing (MIA)';
@@ -25,6 +26,7 @@ class Crew
     {
         return [
             self::STATUS_ACTIVE => self::STATUS_ACTIVE,
+            self::STATUS_PENDING => self::STATUS_PENDING,
             self::STATUS_ON_LEAVE => self::STATUS_ON_LEAVE,
             self::STATUS_RETIRED => self::STATUS_RETIRED,
             self::STATUS_MIA => self::STATUS_MIA,

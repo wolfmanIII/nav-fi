@@ -14,6 +14,12 @@
                     VERIFIED
                 </span>
             {% endif %}
+            {% if member.status == constant('App\\Entity\\Crew::STATUS_PENDING') %}
+                 <span class="px-2 py-1 rounded bg-amber-500/10 text-xs font-bold tracking-tighter uppercase border border-amber-500/30 text-amber-400 flex items-center gap-1" title="Waiting for mission deployment">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                    PENDING
+                </span>
+            {% endif %}
         </div>
         <div class="flex items-center gap-1">
             {{ tooltip.link('Update crew profile', '', 'icons/action-edit.html.twig', path('app_crew_edit', {id: member.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-indigo-500/20 text-indigo-400' }) }}

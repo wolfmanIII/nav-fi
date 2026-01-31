@@ -30,6 +30,11 @@
                     </p>
                 </div>
                 <div class="flex flex-wrap gap-2">
+                    <div class="tooltip tooltip-left" data-tip="Back to Mission List">
+                        <a href="{{ path('app_campaign_index') }}" class="btn btn-outline btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase">
+                            {% include 'icons/back.html.twig' %}
+                        </a>
+                    </div>
                     <div class="tooltip tooltip-left" data-tip="Update session date">
                         <button class="btn btn-outline btn-warning btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase" onclick="m_calendar.showModal()">
                             {% include 'icons/calendar.html.twig' with { dim: 16 } %}

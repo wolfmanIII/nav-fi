@@ -152,7 +152,8 @@ final class CampaignController extends BaseController
         Request $request,
         DayYearLimits $limits,
         EntityManagerInterface $em,
-        ListViewHelper $listViewHelper
+        ListViewHelper $listViewHelper,
+        \App\Service\CrewAssignmentService $crewAssignmentService
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
@@ -192,7 +193,9 @@ final class CampaignController extends BaseController
 
             foreach ($selections as $selection) {
                 if ($selection->isSelected()) {
-                    $campaign->addAsset($selection->getAsset());
+                    $asset = $selection->getAsset();
+                    $campaign->addAsset($asset);
+                    $crewAssignmentService->activatePendingCrew($asset);
                 }
             }
 
@@ -419,7 +422,8 @@ final class CampaignController extends BaseController
     #[Route('/campaign/asset/{id}/remove', name: 'app_campaign_asset_remove', methods: ['GET', 'POST'])]
     public function removeAsset(
         int $id,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        \App\Service\CrewAssignmentService $crewAssignmentService
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof \App\Entity\User) {
@@ -438,6 +442,7 @@ final class CampaignController extends BaseController
 
         $this->denyAccessUnlessGranted(AssetVoter::CAMPAIGN_REMOVE, $asset);
 
+        $crewAssignmentService->deactivateCrew($asset);
         $campaign->removeAsset($asset);
         $em->persist($campaign);
         $em->flush();
