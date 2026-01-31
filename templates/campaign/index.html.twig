@@ -47,13 +47,10 @@
                     <twig:TacticalCampaignCard :campaign="campaign" />
                 {% endfor %}
             {% else %}
-                 <div class="col-span-full py-16 text-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
-                    <p class="text-slate-500 font-rajdhani tracking-widest uppercase mb-6 text-sm">Archives empty // No missions running</p>
-                     {{ tooltip.link('Create a new mission',
-                                    'Initialize Protocol',
-                                    'icons/alien-structure-1.html.twig',
-                                    path('app_campaign_new'),
-                                    { position: 'tooltip-left', dim: 24, linkClass: 'btn btn-primary btn-outline' }) }}
+                <div class="col-span-full py-20 flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
+                    <div class="text-slate-500 mb-2">{% include 'icons/alien-structure-1.html.twig' with {'dim': 48} %}</div>
+                    <p class="text-slate-400 uppercase tracking-widest text-sm mb-6">Archives empty // No missions running</p>
+                    <a href="{{ path('app_campaign_new') }}" class="text-emerald-400 hover:text-emerald-300 text-xs font-bold uppercase underline underline-offset-4 decoration-emerald-500/30 transition-colors">Initialize Protocol</a>
                 </div>
             {% endif %}
         </div>

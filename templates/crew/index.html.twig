@@ -67,13 +67,10 @@
                     <twig:TacticalCrewCard :member="member" />
                 {% endfor %}
             {% else %}
-                <div class="col-span-full py-12 text-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
-                    <p class="text-slate-500 font-rajdhani tracking-widest uppercase mb-4 text-sm">Manifest is empty // No personnel detected</p>
-                    {{ tooltip.link('Recruit crew member',
-                                    'Initialize Recruitment',
-                                    'icons/crew.html.twig',
-                                    path('app_crew_new'),
-                                    { dim: 20, linkClass: 'btn btn-primary btn-sm btn-outline' }) }}
+                <div class="col-span-full py-20 flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
+                    <div class="text-slate-500 mb-2">{% include 'icons/crew.html.twig' with {'dim': 48} %}</div>
+                    <p class="text-slate-400 uppercase tracking-widest text-sm mb-6">Manifest is empty // No personnel detected</p>
+                    <a href="{{ path('app_crew_new') }}" class="text-indigo-400 hover:text-indigo-300 text-xs font-bold uppercase underline underline-offset-4 decoration-indigo-500/30 transition-colors">Initialize Recruitment</a>
                 </div>
             {% endif %}
         </div>

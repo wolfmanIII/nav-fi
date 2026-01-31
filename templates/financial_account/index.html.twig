@@ -104,13 +104,10 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <div class="col-span-full py-12 text-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50 flex flex-col items-center justify-center">
-                    <p class="text-slate-500 font-rajdhani tracking-widest uppercase mb-6 text-sm">No financial accounts opened.</p>
-                     {{ tooltip.link('Open new account',
-                                    'Create Account',
-                                    'icons/plus.html.twig',
-                                    path('app_financial_account_new'),
-                                    { position: 'tooltip-bottom', dim: 20, linkClass: 'btn btn-outline btn-primary btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase' }) }}
+                <div class="col-span-full py-20 flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
+                    <div class="text-slate-500 mb-2">{% include 'icons/wallet.html.twig' with {'dim': 48} %}</div>
+                    <p class="text-slate-400 uppercase tracking-widest text-sm mb-6">No financial accounts opened</p>
+                    <a href="{{ path('app_financial_account_new') }}" class="text-cyan-400 hover:text-cyan-300 text-xs font-bold uppercase underline underline-offset-4 decoration-cyan-500/30 transition-colors">Create Account</a>
                 </div>
             {% endif %}
         </div>

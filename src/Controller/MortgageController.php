@@ -23,6 +23,9 @@ use App\Service\Pdf\PdfGeneratorInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use App\Entity\FinancialAccount;
+use App\Entity\User;
+use App\Service\FinancialAccountManager;
 
 final class MortgageController extends BaseController
 {
@@ -46,7 +49,7 @@ final class MortgageController extends BaseController
         $assets = [];
         $campaigns = [];
 
-        if ($user instanceof \App\Entity\User) {
+        if ($user instanceof User) {
             $result = $em->getRepository(Mortgage::class)->findForUserWithFilters($user, $filters, $page, $perPage);
             $mortgages = $result['items'];
             $total = $result['total'];
@@ -76,10 +79,10 @@ final class MortgageController extends BaseController
     }
 
     #[Route('/mortgage/new', name: 'app_mortgage_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em, \App\Service\FinancialAccountManager $accountManager): Response
+    public function new(Request $request, EntityManagerInterface $em, FinancialAccountManager $accountManager): Response
     {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -124,7 +127,7 @@ final class MortgageController extends BaseController
                 // Se l'utente non seleziona nulla, lasciamo che il mutuo non abbia conto o creiamo uno vuoto?
                 // Logica precedente: creava new FinancialAccount senza bank.
                 // Facciamo fallback a creazione manuale base se FAM non può operare
-                $financialAccount = new \App\Entity\FinancialAccount();
+                $financialAccount = new FinancialAccount();
                 $financialAccount->setUser($user);
                 $financialAccount->setAsset($mortgage->getAsset());
                 $em->persist($financialAccount);

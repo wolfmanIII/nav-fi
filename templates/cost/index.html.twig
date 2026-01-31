@@ -207,8 +207,8 @@
             {% else %}
                 <div class="col-span-full py-20 flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-700 bg-slate-900/50">
                     <div class="text-slate-500 mb-2">{% include 'icons/cost.html.twig' with {'dim': 48} %}</div>
-                    <p class="text-slate-400 uppercase tracking-widest text-sm">No expenses detected in current cycle</p>
-                    <a href="{{ path('app_cost_new') }}" class="mt-4 text-amber-400 hover:text-amber-300 text-xs font-bold uppercase underline underline-offset-4 decoration-amber-500/30">Record initial outflow</a>
+                    <p class="text-slate-400 uppercase tracking-widest text-sm mb-6">No expenses detected in current cycle</p>
+                    <a href="{{ path('app_cost_new') }}" class="text-amber-400 hover:text-amber-300 text-xs font-bold uppercase underline underline-offset-4 decoration-amber-500/30 transition-colors">Record initial outflow</a>
                 </div>
             {% endif %}
         </div>
