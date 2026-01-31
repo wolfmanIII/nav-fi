@@ -29,8 +29,9 @@
             </div>
             
             <div class="flex items-center gap-3">
-                 <a href="{{ path('app_cube_index') }}" class="btn btn-sm btn-outline border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 uppercase font-orbitron tracking-widest text-[10px]">
-                    <span class="mr-2">&times;</span> Disconnect
+                 <a href="{{ path('app_cube_index') }}" class="btn btn-sm btn-outline border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 uppercase font-orbitron tracking-widest text-[10px] gap-2">
+                    {% include 'icons/disconnect.html.twig' with { dim: 14 } %}
+                    Disconnect
                 </a>
             </div>
         </div>
