@@ -72,9 +72,11 @@
         </div>
         <div>
              {{ form_label(form.totalCost, null, { label_attr: { class: 'mb-1 text-slate-400 text-[10px] uppercase tracking-widest font-bold font-orbitron' } }) }}
-             <div class="join w-full">
-                 {{ form_widget(form.totalCost, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50 font-mono text-cyan-400 join-item', 'data-asset-details-target': 'totalInput' } }) }}
-                 <button type="button" class="btn btn-sm btn-outline btn-cyan join-item" data-action="asset-details#recalcTotal">Auto-Sum</button>
+             <div class="w-full">
+                 {{ form_widget(form.totalCost, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/20 border-slate-800 text-cyan-400 font-mono cursor-not-allowed', 'data-asset-details-target': 'totalInput', 'readonly': 'readonly' } }) }}
+                 <p class="text-[9px] text-slate-500 mt-1 leading-tight">
+                    <span class="text-cyan-600 font-bold">AUTO-CALCULATED.</span> Sum of all components (MCr). Does NOT affect Asset Price.
+                 </p>
              </div>
         </div>
     </div>

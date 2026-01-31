@@ -57,6 +57,7 @@ class AssetType extends AbstractType
 
         $builder
             ->add('campaign', EntityType::class, [
+                'label' => 'Mission',
                 'class' => Campaign::class,
                 'placeholder' => '// MISSION',
                 'required' => false,

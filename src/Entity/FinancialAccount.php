@@ -11,7 +11,6 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: FinancialAccountRepository::class)]
 #[ORM\Index(name: 'idx_fin_acc_user', columns: ['user_id'])]
-#[ORM\Index(name: 'idx_fin_acc_campaign', columns: ['campaign_id'])]
 #[ORM\Index(name: 'idx_fin_acc_bank', columns: ['bank_id'])]
 class FinancialAccount
 {
@@ -40,10 +39,6 @@ class FinancialAccount
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
-
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Campaign $campaign = null;
 
     #[ORM\OneToMany(mappedBy: 'financialAccount', targetEntity: Income::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $incomes;
@@ -145,13 +140,7 @@ class FinancialAccount
 
     public function getCampaign(): ?Campaign
     {
-        return $this->campaign;
-    }
-
-    public function setCampaign(?Campaign $campaign): static
-    {
-        $this->campaign = $campaign;
-        return $this;
+        return $this->asset?->getCampaign();
     }
 
     /**

@@ -25,6 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class AssetController extends BaseController
 {
@@ -564,6 +565,28 @@ final class AssetController extends BaseController
     }
 
     #[Route('/asset/{id}/cargo', name: 'app_asset_cargo')]
+    #[Route('/api/assets/by-campaign', name: 'api_assets_by_campaign', methods: ['GET'])]
+    public function apiListByCampaign(Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $campaignId = $request->query->get('campaign');
+        $user = $this->getUser();
+
+        $qb = $em->getRepository(Asset::class)->createQueryBuilder('a')
+            ->select('a.id', 'a.name')
+            ->where('a.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('a.name', 'ASC');
+
+        if ($campaignId) {
+            $qb->andWhere('a.campaign = :campaign')
+                ->setParameter('campaign', $campaignId);
+        }
+
+        $assets = $qb->getQuery()->getArrayResult();
+
+        return new JsonResponse($assets);
+    }
+
     public function cargo(
         int $id,
         EntityManagerInterface $em,

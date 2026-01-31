@@ -108,8 +108,7 @@ final class MortgageController extends BaseController
                         $user,
                         null, // Non cambiamo i crediti
                         $bank,
-                        $bankName,
-                        $mortgage->getAsset()->getCampaign()
+                        $bankName
                     );
                 } else {
                     // Fallback: se l'asset ha già un conto, usa quello
@@ -208,8 +207,7 @@ final class MortgageController extends BaseController
                         $user,
                         null,
                         $bank,
-                        $bankName,
-                        $mortgage->getAsset()->getCampaign()
+                        $bankName
                     );
                 }
             }

@@ -58,6 +58,7 @@ class RouteType extends AbstractType
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 3],
             ])
             ->add('campaign', EntityType::class, [
+                'label' => 'Mission',
                 'class' => Campaign::class,
                 'required' => true,
                 'placeholder' => '// MISSION',

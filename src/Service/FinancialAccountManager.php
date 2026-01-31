@@ -31,8 +31,7 @@ class FinancialAccountManager
         User $user,
         string $credits,
         ?Company $bank,
-        ?string $bankName,
-        ?Campaign $campaign = null
+        ?string $bankName
     ): FinancialAccount {
         $resolvedBank = $this->resolveBank($bank, $bankName, $user);
 
@@ -43,9 +42,7 @@ class FinancialAccountManager
         $account->setBank($resolvedBank);
         $account->setBankName(null);
 
-        if ($campaign !== null) {
-            $account->setCampaign($campaign);
-        }
+
 
         $this->em->persist($account);
 
@@ -61,8 +58,7 @@ class FinancialAccountManager
         User $user,
         ?string $credits,
         ?Company $bank,
-        ?string $bankName,
-        ?Campaign $campaign = null
+        ?string $bankName
     ): FinancialAccount {
         $account = $asset->getFinancialAccount();
 
@@ -72,8 +68,7 @@ class FinancialAccountManager
                 $user,
                 $credits ?? '0',
                 $bank,
-                $bankName,
-                $campaign
+                $bankName
             );
         }
 
@@ -86,9 +81,7 @@ class FinancialAccountManager
         $account->setBank($resolvedBank);
         $account->setBankName(null);
 
-        if ($campaign !== null) {
-            $account->setCampaign($campaign);
-        }
+
 
         return $account;
     }

@@ -58,18 +58,26 @@ class FinancialAccountType extends AbstractType
                     'step' => '1',
                 ]
             ])
+
             ->add('campaign', EntityType::class, [
                 'class' => Campaign::class,
                 'choice_label' => 'title',
-                'label' => 'Operating Theater // Campaign',
+                'label' => 'Mission',
                 'required' => false,
-                'placeholder' => 'Global // Administrative',
+                'mapped' => false,
+                'placeholder' => '// All Missions (Show All Assets)',
                 'query_builder' => function (CampaignRepository $cr) use ($user) {
                     return $cr->createQueryBuilder('c')
                         ->where('c.user = :user')
                         ->setParameter('user', $user)
                         ->orderBy('c.title', 'ASC');
                 },
+                'help' => 'Select a mission to filter the Asset list.',
+                'attr' => [
+                    'class' => 'select m-1 w-full',
+                    'data-action' => 'change->campaign-filter#filterAssets',
+                    'data-campaign-filter-target' => 'campaignSelect'
+                ],
             ])
             ->add('asset', EntityType::class, [
                 'class' => Asset::class,
@@ -83,7 +91,11 @@ class FinancialAccountType extends AbstractType
                         ->setParameter('user', $user)
                         ->orderBy('a.name', 'ASC');
                 },
-                'help' => 'Linking to an asset will bind this account to the asset\'s ledger.'
+                'help' => 'Linking to an asset will bind this account to the asset\'s ledger.',
+                'attr' => [
+                    'class' => 'select m-1 w-full',
+                    'data-campaign-filter-target' => 'assetSelect'
+                ]
             ])
         ;
     }
