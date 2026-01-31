@@ -39,7 +39,18 @@
                 <div>
                     <h3 class="font-semibold">Credits on this budget window</h3>
                     <p class="text-sm opacity-80">
-                        Incoming vs outgoing credits for this asset between {{ (budget.startDay is not null and budget.startYear is not null) ? (budget.startDay|imperial_date(budget.startYear)) : '—' }} and {{ (budget.endDay is not null and budget.endYear is not null) ? (budget.endDay|imperial_date(budget.endYear)) : '—' }}.
+                        Incoming vs outgoing credits- **Behavior**: The Asset dropdown is disabled until a Mission is chosen, preventing Mortgages from being created without a proper Campaign context.
+
+# Route Optimization
+
+## Scalable TSP Algorithm
+- **Problem**: The original Traveling Salesperson Problem (TSP) implementation used brute force ($O(N!)$), which could crash or hang the server with more than ~8-9 waypoints.
+- **Solution**: Implemented a **Hybrid Algorithm** in `RouteOptimizationService`:
+    - **Brute Force (Exact)**: Still used for $N \le 6$ destinations to guarantee the mathematically optimal route for small sets.
+    - **Nearest Neighbor (Heuristic)**: Used for $N > 6$ destinations to ensure fast results ($O(N^2)$) as lists grow.
+- **Verification**:
+    - Verified existing tests pass.
+    - Added `testOptimizeMultiStopRouteHeuristic` for $N = 7$ destinations, confirming correct pathing and performance. null) ? (budget.startDay|imperial_date(budget.startYear)) : '—' }} and {{ (budget.endDay is not null and budget.endYear is not null) ? (budget.endDay|imperial_date(budget.endYear)) : '—' }}.
                     </p>
                 </div>
             </div>

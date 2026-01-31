@@ -40,10 +40,27 @@ class RouteOptimizationService
             }
         }
 
-        // 2. Risolvi il TSP (Brute Force per N piccolo, solitamente N <= 5 destinazioni)
-        // Dato che la lista destinazioni è piccola (Nav-Fi gestisce di solito < 5 waypoint), le permutazioni vanno bene.
+        // 2. Risolvi il TSP
+        // SE N <= 6: Usa Brute Force (Esatto) -> O(N!)
+        // SE N > 6: Usa Nearest Neighbor (Euristico) -> O(N^2)
+
+        if (count($destinations) <= 6) {
+            $bestRoute = $this->solveTspBruteForce($startHex, $destinations, $systemMap, $jumpRating);
+        } else {
+            $bestRoute = $this->solveTspNearestNeighbor($startHex, $destinations, $systemMap, $jumpRating);
+        }
+
+        return $bestRoute;
+    }
+
+    /**
+     * Risolve TSP usando permutazioni complete (O(N!)).
+     * Ottimo per N piccolo, garantisce la rotta più breve assoluta.
+     */
+    private function solveTspBruteForce(string $startHex, array $destinations, array $systemMap, int $jumpRating): array
+    {
         $permutations = $this->getPermutations($destinations);
-        
+
         $bestRoute = null;
         $minTotalJumps = PHP_INT_MAX;
 
@@ -54,23 +71,21 @@ class RouteOptimizationService
             $possible = true;
 
             foreach ($perm as $destHex) {
-                // Trova percorso da Corrente a Prossima Destinazione
                 $path = $this->findShortestPath($systemMap, $currentHex, $destHex, $jumpRating);
-                
+
                 if ($path === null) {
                     $possible = false;
                     break;
                 }
 
-                // Aggiungi percorso (escludendo il nodo iniziale che è già in fullPath)
                 $segmentJumps = count($path) - 1;
                 $totalJumps += $segmentJumps;
-                
+
                 // Aggiungi tappe intermedie e destinazione
                 for ($i = 1; $i < count($path); $i++) {
                     $fullPath[] = $path[$i];
                 }
-                
+
                 $currentHex = $destHex;
             }
 
@@ -91,6 +106,60 @@ class RouteOptimizationService
     }
 
     /**
+     * Risolve TSP usando l'euristica Nearest Neighbor (O(N^2)).
+     * Non garantisce l'ottimo globale, ma è molto veloce per N > 6.
+     */
+    private function solveTspNearestNeighbor(string $startHex, array $destinations, array $systemMap, int $jumpRating): array
+    {
+        $unvisited = $destinations;
+        $currentHex = $startHex;
+        $fullPath = [$startHex];
+        $totalJumps = 0;
+
+        while (!empty($unvisited)) {
+            $nearestHex = null;
+            $minDist = PHP_INT_MAX;
+            $bestIdx = null;
+
+            // Trova la destinazione non visitata più vicina (in termini di Distanza Geometrica, non salti effettivi per velocità)
+            foreach ($unvisited as $idx => $candHex) {
+                $dist = $this->mathHelper->distance($currentHex, $candHex);
+                if ($dist < $minDist) {
+                    $minDist = $dist;
+                    $nearestHex = $candHex;
+                    $bestIdx = $idx;
+                }
+            }
+
+            if ($nearestHex === null) {
+                break; // Should not happen
+            }
+
+            // Calcola percorso reale verso il più vicino
+            $path = $this->findShortestPath($systemMap, $currentHex, $nearestHex, $jumpRating);
+
+            if ($path === null) {
+                throw new \RuntimeException("Impossibile raggiungere $nearestHex da $currentHex con Jump-$jumpRating");
+            }
+
+            $segmentJumps = count($path) - 1;
+            $totalJumps += $segmentJumps;
+
+            for ($i = 1; $i < count($path); $i++) {
+                $fullPath[] = $path[$i];
+            }
+
+            $currentHex = $nearestHex;
+            unset($unvisited[$bestIdx]);
+        }
+
+        return [
+            'path' => $fullPath,
+            'total_jumps' => $totalJumps
+        ];
+    }
+
+    /**
      * Algoritmo di Pathfinding A* (A-Star)
      * Restituisce array di hex [Start, ..., End] o null se irraggiungibile.
      */
@@ -103,7 +172,7 @@ class RouteOptimizationService
         // Coda di Priorità: [hex, f_score]
         $openSet = [$startHex];
         $cameFrom = []; // hex -> hex_genitore
-        
+
         $gScore = [$startHex => 0]; // Costo dalla partenza
         $fScore = [$startHex => $this->heuristic($startHex, $endHex, $jumpRating)]; // Costo totale stimato
 
@@ -159,7 +228,7 @@ class RouteOptimizationService
         // Ottimizzazione geometrica:
         // Iteriamo su tutta la mappa (brute force su ~1000 item è veloce in PHP)
         // TODO: Ottimizzare se i settori diventano enormi.
-        
+
         foreach ($systemMap as $hex => $data) {
             if ($hex === $centerHex) continue;
 
@@ -198,7 +267,7 @@ class RouteOptimizationService
         foreach ($elements as $key => $element) {
             $remaining = $elements;
             unset($remaining[$key]);
-            
+
             foreach ($this->getPermutations(array_values($remaining)) as $perm) {
                 $permutations[] = array_merge([$element], $perm);
             }
