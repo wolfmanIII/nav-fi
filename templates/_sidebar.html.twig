@@ -160,7 +160,10 @@
                     or current_route starts with 'app_cost' 
                     or current_route starts with 'app_mortgage' 
                     or current_route starts with 'app_salary' 
-                    or current_route starts with 'app_annual_budget' %}
+                    or current_route starts with 'app_annual_budget' 
+                    or current_route starts with 'app_financial_account'
+                    or current_route starts with 'app_money_transfer'
+                    or current_route starts with 'app_financial_core_guide' %}
                 <details {% if finance_active %}open{% endif %} data-controller="sidebar-module" data-action="toggle->sidebar-module#toggle">
                     <summary data-sidebar-module-target="summary" class="text-xs uppercase tracking-widest text-slate-400 hover:text-cyan-300 relative overflow-hidden">Credits & Debt</summary>
                     <ul data-sidebar-module-target="content">

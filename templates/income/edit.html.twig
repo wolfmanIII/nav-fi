@@ -41,7 +41,7 @@
                     {{ tooltip.link('Open income PDF', 'Income PDF', 'icons/pdf.html.twig', path('app_income_pdf', { id: income.id }), { dim: 16, linkClass: 'btn btn-outline btn-primary btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase', position: 'tooltip-left', attrs: { target: '_blank', rel: 'noopener' } }) }}
                 {% endif %}
                 <a href="{{ path('app_income_index') }}" class="btn btn-outline btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase">
-                    Back to List
+                    {% include 'icons/back.html.twig' %}
                 </a>
             {% endblock %}
         {% endembed %}
