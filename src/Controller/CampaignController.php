@@ -25,6 +25,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Entity\User;
+use App\Service\CrewAssignmentService;
 
 final class CampaignController extends BaseController
 {
@@ -34,7 +36,7 @@ final class CampaignController extends BaseController
     public function index(Request $request, EntityManagerInterface $em, ListViewHelper $listViewHelper): Response
     {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -71,7 +73,7 @@ final class CampaignController extends BaseController
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -100,7 +102,7 @@ final class CampaignController extends BaseController
         EntityManagerInterface $em
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -129,7 +131,7 @@ final class CampaignController extends BaseController
     public function delete(int $id, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -153,10 +155,10 @@ final class CampaignController extends BaseController
         DayYearLimits $limits,
         EntityManagerInterface $em,
         ListViewHelper $listViewHelper,
-        \App\Service\CrewAssignmentService $crewAssignmentService
+        CrewAssignmentService $crewAssignmentService
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -423,10 +425,10 @@ final class CampaignController extends BaseController
     public function removeAsset(
         int $id,
         EntityManagerInterface $em,
-        \App\Service\CrewAssignmentService $crewAssignmentService
+        CrewAssignmentService $crewAssignmentService
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 

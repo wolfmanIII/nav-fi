@@ -16,7 +16,8 @@ class NarrativeService
     public function __construct(
         #[Autowire('%app.cube.economy%')]
         private readonly array $economyConfig,
-        private readonly CompanyRepository $companyRepository
+        private readonly CompanyRepository $companyRepository,
+        private readonly NameGeneratorService $nameGenerator
     ) {
         $narrative = $this->economyConfig['contract']['narrative'] ?? [];
         $this->patronConfig = $narrative['patrons'] ?? [];
@@ -34,7 +35,8 @@ class NarrativeService
     {
         // 1. Seleziona Patron
         $patronInfo = $this->patronConfig[$randomizer->getInt(0, count($this->patronConfig) - 1)];
-        $patronName = $patronInfo['name'];
+        $patronType = $patronInfo['type'] ?? 'Individual';
+        $patronName = $this->nameGenerator->generateForPatron($patronType, null, $randomizer);
         $allowedArchetypes = $patronInfo['archetypes'] ?? array_keys($this->archetypes);
 
         // 2. Seleziona Archetipo tra quelli permessi dal patrono

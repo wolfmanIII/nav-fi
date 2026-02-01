@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Entity\User;
 
 final class AssetAmendmentController extends BaseController
 {
@@ -24,7 +25,7 @@ final class AssetAmendmentController extends BaseController
         AssetAmendmentRepository $repository
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 

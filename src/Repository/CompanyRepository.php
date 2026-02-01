@@ -85,20 +85,39 @@ class CompanyRepository extends ServiceEntityRepository
     }
 
     /**
-     * Cerca una Company con nome normalizzato (case-insensitive, trim).
-     * Usato per evitare duplicati durante la creazione automatica di banche.
+     * Cerca una Company utilizzando il nome canonico (normalizzato).
+     * Implementa una ricerca "elastica": prova prima il match esatto, poi se uno è sotto-insieme dell'altro.
      */
-    public function findOneByNormalizedName(string $name, User $user, string $roleCode): ?Company
+    public function findOneByCanonicalName(string $canonicalName, User $user, ?string $roleCode = null): ?Company
     {
-        return $this->createQueryBuilder('c')
-            ->innerJoin('c.companyRole', 'r')
-            ->where('LOWER(TRIM(c.name)) = LOWER(TRIM(:name))')
+        $baseQb = $this->createQueryBuilder('c')
             ->andWhere('c.user = :user')
-            ->andWhere('r.code = :role')
-            ->setParameter('name', $name)
-            ->setParameter('user', $user)
-            ->setParameter('role', $roleCode)
-            ->getQuery()
-            ->getOneOrNullResult();
+            ->setParameter('user', $user);
+
+        if ($roleCode) {
+            $baseQb->innerJoin('c.companyRole', 'r')
+                ->andWhere('r.code = :role')
+                ->setParameter('role', $roleCode);
+        }
+
+        // 1. Match Esatto (Più veloce e preciso)
+        $qbExact = clone $baseQb;
+        $qbExact->andWhere('c.canonicalName = :canonical')
+            ->setParameter('canonical', $canonicalName);
+
+        $exactMatch = $qbExact->getQuery()->getOneOrNullResult();
+        if ($exactMatch) {
+            return $exactMatch;
+        }
+
+        // 2. Match Elastico: Il record nel DB è contenuto nel nome cercato (es: DB 'eliasvane' vs SEARCH 'eliasthornevane')
+        // Oppure il nome cercato è contenuto nel record nel DB (es: DB 'eliasthornevane' vs SEARCH 'eliasvane')
+        $qbElastic = clone $baseQb;
+        $qbElastic->andWhere(':canonical LIKE CONCAT(\'%\', c.canonicalName, \'%\') OR c.canonicalName LIKE :canonical_like')
+            ->setParameter('canonical', $canonicalName)
+            ->setParameter('canonical_like', '%' . $canonicalName . '%')
+            ->setMaxResults(1); // Prendiamo il primo match utile
+
+        return $qbElastic->getQuery()->getOneOrNullResult();
     }
 }

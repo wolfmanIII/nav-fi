@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route as RouteAttr;
+use App\Entity\User;
 
 final class RouteController extends BaseController
 {
@@ -37,7 +38,7 @@ final class RouteController extends BaseController
         $assets = [];
         $campaigns = [];
 
-        if ($user instanceof \App\Entity\User) {
+        if ($user instanceof User) {
             $result = $em->getRepository(Route::class)->findForUserWithFilters($user, $filters, $page, $perPage);
             $routes = $result['items'];
             $total = $result['total'];
@@ -69,7 +70,7 @@ final class RouteController extends BaseController
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -111,7 +112,7 @@ final class RouteController extends BaseController
     public function edit(int $id, Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -146,7 +147,7 @@ final class RouteController extends BaseController
     public function details(int $id, Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -190,7 +191,7 @@ final class RouteController extends BaseController
     public function waypointLookup(Request $request, TravellerMapSectorLookup $lookup): JsonResponse
     {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -216,7 +217,7 @@ final class RouteController extends BaseController
     public function delete(int $id, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 

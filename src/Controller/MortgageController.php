@@ -180,10 +180,10 @@ final class MortgageController extends BaseController
         Request $request,
         EntityManagerInterface $em,
         DayYearLimits $limits,
-        \App\Service\FinancialAccountManager $accountManager
+        FinancialAccountManager $accountManager
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -291,7 +291,7 @@ final class MortgageController extends BaseController
         EntityManagerInterface $em
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -315,7 +315,7 @@ final class MortgageController extends BaseController
         EntityManagerInterface $em
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -347,7 +347,7 @@ final class MortgageController extends BaseController
         DayYearLimits $limits
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -423,7 +423,7 @@ final class MortgageController extends BaseController
         DayYearLimits $limits
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -490,7 +490,7 @@ final class MortgageController extends BaseController
         Request $request
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -536,7 +536,7 @@ final class MortgageController extends BaseController
         Request $request
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -560,7 +560,7 @@ final class MortgageController extends BaseController
         EntityManagerInterface $em
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 

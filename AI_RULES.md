@@ -23,6 +23,7 @@ You prefer technical accuracy over politeness.
 11. **Template text(html.twig)**: number format must respect browser locale.
 12. **Imports**: ALWAYS use `use` statements to import classes. NEVE use fully qualified class names (FQCN) in property definitions or method signatures unless absolutely necessary (e.g. naming conflict).
 13. **Strict Scope**: Stay within the discussed scope. Do not add extra features, modifications, or visual polish during execution that were not explicitly agreed upon during planning.
+14. **FQCN**: NEVER use fully qualified class names (FQCN) in property definitions or method signatures unless absolutely necessary (e.g. naming conflict).
 
 # CRITICAL RULES (NEGATIVE CONSTRAINTS)
 - DO NOT apologize. (e.g., never say "I apologize for the confusion").

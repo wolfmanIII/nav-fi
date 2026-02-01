@@ -26,6 +26,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Entity\Transaction;
+use App\Entity\User;
+use App\Entity\Cost;
+use App\Service\CrewAssignmentService;
 
 final class AssetController extends BaseController
 {
@@ -48,7 +52,7 @@ final class AssetController extends BaseController
         $total = 0;
         $campaigns = [];
 
-        if ($user instanceof \App\Entity\User) {
+        if ($user instanceof User) {
             $result = $em->getRepository(Asset::class)->findForUserWithFilters($user, $filters, $page, $perPage);
             $assets = $result['items'];
             $total = $result['total'];
@@ -83,7 +87,7 @@ final class AssetController extends BaseController
     ): Response {
         $asset = new Asset();
         $user = $this->getUser();
-        if ($user instanceof \App\Entity\User) {
+        if ($user instanceof User) {
             $asset->setUser($user);
         }
 
@@ -157,7 +161,7 @@ final class AssetController extends BaseController
         FinancialAccountManager $financialAccountManager
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -240,7 +244,7 @@ final class AssetController extends BaseController
         Request $request
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -283,7 +287,7 @@ final class AssetController extends BaseController
         Request $request
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -307,7 +311,7 @@ final class AssetController extends BaseController
         EntityManagerInterface $em
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -332,10 +336,10 @@ final class AssetController extends BaseController
         Request $request,
         EntityManagerInterface $em,
         ListViewHelper $listViewHelper,
-        \App\Service\CrewAssignmentService $crewAssignmentService
+        CrewAssignmentService $crewAssignmentService
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -427,7 +431,7 @@ final class AssetController extends BaseController
         EntityManagerInterface $em
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -492,10 +496,10 @@ final class AssetController extends BaseController
         int $id,
         Request $request,
         EntityManagerInterface $em,
-        \App\Service\CrewAssignmentService $crewAssignmentService
+        CrewAssignmentService $crewAssignmentService
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -528,7 +532,7 @@ final class AssetController extends BaseController
         ListViewHelper $listViewHelper
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -540,7 +544,7 @@ final class AssetController extends BaseController
         $page = $listViewHelper->getPage($request);
         $perPage = 20;
 
-        $transactionRepo = $em->getRepository(\App\Entity\Transaction::class);
+        $transactionRepo = $em->getRepository(Transaction::class);
         // Use FinancialAccount
         $account = $asset->getFinancialAccount();
         if (!$account) {
@@ -594,7 +598,7 @@ final class AssetController extends BaseController
         TradePricer $tradePricer
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -635,12 +639,12 @@ final class AssetController extends BaseController
         TradePricer $tradePricer
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
         $asset = $em->getRepository(Asset::class)->findOneForUser($id, $user);
-        $cost = $em->getRepository(\App\Entity\Cost::class)->findOneForUser($costId, $user);
+        $cost = $em->getRepository(Cost::class)->findOneForUser($costId, $user);
 
         if (!$asset || !$cost || $cost->getAsset() !== $asset) {
             throw new NotFoundHttpException();

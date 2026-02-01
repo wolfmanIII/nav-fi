@@ -1,0 +1,34 @@
+parameters:
+    # Definizione dei "pezzi LEGO" per la generazione di nomi Sci-Fi (Traveller oriented)
+    app.names.lego:
+        solomani:
+            prefix: ["Val", "Mar", "Ali", "Jul", "Nov", "Bel", "Sar", "E", "Vik", "Ing", "Ter", "Kry", "Oli", "Jon"]
+            middle: ["er", "an", "el", "is", "ton", "gar", "de", "fi", "ro"]
+            suffix: ["ius", "on", "a", "us", "ander", "ina", "ric", "mon", "tine", "sia", "vane"]
+        vilani:
+            prefix: ["Adi", "Ishi", "Khu", "Zaru", "En", "Ga", "Ir", "Na", "Shu", "Irim", "Gash"]
+            middle: ["ka", "ni", "shum", "za", "ri", "mu", "nu"]
+            suffix: ["riish", "kar", "ur", "id", "um", "musha", "gi", "sha", "nam"]
+        aslan:
+            prefix: ["Khair", "Tlai", "Hry", "Ftuh", "Hlyu", "Syo", "Raei", "Khtoi", "Iyora", "Hlyu"]
+            middle: [] # Nomi Aslan tendenzialmente bi-sillabici o aspirati
+            suffix: ["u", "o", "aha", "is", "ea", "oa", "yi", "eon"]
+        vargr:
+            prefix: ["Gvegh", "Aekhu", "Soug", "Urth", "Rarrk", "Kforz", "Gvalk", "Dzogh", "Khar"]
+            middle: ["-na-", "-za-", "-vo-", "-u-", "-ko-"]
+            suffix: ["zon", "lukh", "vez", "agh", "ghk", "dzogh", "arr", "khu"]
+
+    # Gerarchia Titoli Imperiali per il type: NOBLE
+    app.names.imperial_titles:
+        - { title: "Knight", address: "Sir", address_f: "Dame", rank: 1 }
+        - { title: "Baronet", address: "Baronet", address_f: "Baronetess", rank: 2 }
+        - { title: "Baron", address: "Baron", address_f: "Baroness", rank: 3 }
+        - { title: "Marquis", address: "Marquis", address_f: "Marchioness", rank: 4 }
+        - { title: "Count", address: "Count", address_f: "Countess", rank: 5 }
+        - { title: "Duke", address: "Duke", address_f: "Duchess", rank: 6 }
+        - { title: "Archduke", address: "Archduke", address_f: "Archduchess", rank: 7 }
+
+    # Componenti per nomi aziendali (Type: CORPORATE)
+    app.names.corporate:
+        sectors: ["Mining", "Xeno-Tech", "Logistics", "Holdings", "Trading", "Research", "Manufacturing", "Security", "Bio-Tech", "Exports", "Deep Space", "Orbital"]
+        suffixes: ["Corp", "Ltd", "Inc", "Group", "Solutions", "Systems", "Consortium", "Holdings", "Industries"]

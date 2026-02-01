@@ -4,6 +4,8 @@ namespace App\Service;
 
 use App\Entity\Asset;
 use App\Entity\Transaction;
+use App\Entity\Campaign;
+use App\Entity\FinancialAccount;
 use App\Repository\TransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
@@ -97,7 +99,7 @@ class LedgerService
         if (!$financialAccount) {
             // Auto-create or throw? Throwing is safer as Asset should have it.
             // Or create one on the fly?
-            $financialAccount = new \App\Entity\FinancialAccount();
+            $financialAccount = new FinancialAccount();
             $financialAccount->setUser($asset->getUser());
             $financialAccount->setAsset($asset);
             $this->entityManager->persist($financialAccount);
@@ -170,7 +172,7 @@ class LedgerService
     }
 
     // Metodo per sincronizzare il Libro Mastro con la Data Campagna (Viaggio nel Tempo)
-    public function processCampaignSync(\App\Entity\Campaign $campaign): void
+    public function processCampaignSync(Campaign $campaign): void
     {
         $currentDay = $campaign->getSessionDay() ?? 0;
         $currentYear = $campaign->getSessionYear() ?? 0;

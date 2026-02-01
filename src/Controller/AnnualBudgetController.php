@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Entity\User;
 
 final class AnnualBudgetController extends BaseController
 {
@@ -41,7 +42,7 @@ final class AnnualBudgetController extends BaseController
         $assets = [];
         $campaigns = [];
 
-        if ($user instanceof \App\Entity\User) {
+        if ($user instanceof User) {
             $result = $em->getRepository(AnnualBudget::class)->findForUserWithFilters($user, $filters, $page, $perPage);
             $budgets = $result['items'];
             $total = $result['total'];
@@ -74,7 +75,7 @@ final class AnnualBudgetController extends BaseController
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -103,7 +104,7 @@ final class AnnualBudgetController extends BaseController
         EntityManagerInterface $em
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -137,7 +138,7 @@ final class AnnualBudgetController extends BaseController
         EntityManagerInterface $em
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -158,7 +159,7 @@ final class AnnualBudgetController extends BaseController
     public function chart(int $id, EntityManagerInterface $em, ImperialDateHelper $imperialDateHelper): Response
     {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 

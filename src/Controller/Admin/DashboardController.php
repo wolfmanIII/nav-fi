@@ -12,6 +12,7 @@ use App\Entity\LocalLaw;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+use App\Entity\GameRule;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,7 +51,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToRoute('Nav-Fi', 'fa fa-home', 'app_home');
 
-        yield MenuItem::linkToCrud('Game Rules', 'fas fa-cogs', \App\Entity\GameRule::class);
+        yield MenuItem::linkToCrud('Game Rules', 'fas fa-cogs', GameRule::class);
         yield MenuItem::section('Settings');
         yield MenuItem::linkToCrud('Interest Rate', 'fas fa-list', InterestRate::class);
         yield MenuItem::linkToCrud('Insurance', 'fas fa-list', Insurance::class);

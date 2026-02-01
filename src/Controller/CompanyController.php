@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Entity\User;
 
 final class CompanyController extends BaseController
 {
@@ -33,7 +34,7 @@ final class CompanyController extends BaseController
         $totalPages = 1;
         $roles = [];
 
-        if ($user instanceof \App\Entity\User) {
+        if ($user instanceof User) {
             $result = $em->getRepository(Company::class)->findForUserWithFilters($user, $filters, $page, $perPage);
             $companies = $result['items'];
             $total = $result['total'];
@@ -64,7 +65,7 @@ final class CompanyController extends BaseController
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -90,7 +91,7 @@ final class CompanyController extends BaseController
     public function edit(int $id, Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -120,7 +121,7 @@ final class CompanyController extends BaseController
     public function delete(int $id, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 

@@ -6,6 +6,7 @@ use App\Entity\Cost;
 use App\Entity\Income;
 use App\Repository\IncomeCategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\LocalLaw;
 
 class TradeService
 {
@@ -20,7 +21,7 @@ class TradeService
         string $location,
         int $day,
         int $year,
-        ?\App\Entity\LocalLaw $localLaw = null
+        ?LocalLaw $localLaw = null
     ): Income {
         // Validation: Ensure cost is TRADE type and not already sold?
         // Rely on caller or check here? Check here for safety.

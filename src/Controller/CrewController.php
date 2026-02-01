@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Entity\User;
+use App\Service\CrewAssignmentService;
 
 final class CrewController extends BaseController
 {
@@ -37,7 +39,7 @@ final class CrewController extends BaseController
         $assets = [];
         $campaigns = [];
 
-        if ($user instanceof \App\Entity\User) {
+        if ($user instanceof User) {
             $result = $em->getRepository(Crew::class)->findForUserWithFilters($user, $filters, $page, $perPage);
             $crew = $result['items'];
             $total = $result['total'];
@@ -70,7 +72,7 @@ final class CrewController extends BaseController
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -108,10 +110,10 @@ final class CrewController extends BaseController
         int $id,
         Request $request,
         EntityManagerInterface $em,
-        \App\Service\CrewAssignmentService $crewAssignmentService
+        CrewAssignmentService $crewAssignmentService
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
@@ -161,7 +163,7 @@ final class CrewController extends BaseController
         EntityManagerInterface $em
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 

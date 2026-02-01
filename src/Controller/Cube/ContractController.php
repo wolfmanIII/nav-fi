@@ -11,6 +11,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\LocalLaw;
+use App\Entity\User;
+use App\Entity\Company;
+use App\Entity\CompanyRole;
+use App\Service\CompanyManager;
 use Doctrine\ORM\EntityManagerInterface;
 
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -23,7 +27,8 @@ class ContractController extends AbstractController
     public function __construct(
         private readonly BrokerService $brokerService,
         private readonly AssetRepository $assetRepo,
-        private readonly EntityManagerInterface $em
+        private readonly EntityManagerInterface $em,
+        private readonly CompanyManager $companyManager,
     ) {}
 
     #[Route('/{id}', name: 'show', methods: ['GET'])]
@@ -36,9 +41,9 @@ class ContractController extends AbstractController
         $patronName = $opportunity->getData()['details']['patron'] ?? null;
         if ($patronName) {
             $user = $this->getUser();
-            if ($user instanceof \App\Entity\User) {
-                $existingPatron = $this->em->getRepository(\App\Entity\Company::class)
-                    ->findOneBy(['name' => $patronName, 'user' => $user]);
+            if ($user instanceof User) {
+                // Centralizzato tramite CompanyManager (SOLID)
+                $existingPatron = $this->companyManager->findByCanonical($patronName, $user);
             }
         }
 
@@ -46,7 +51,7 @@ class ContractController extends AbstractController
             'opportunity' => $opportunity,
             'assets' => $this->assetRepo->findAll(), // TODO: Filter by Campaign
             'localLaws' => $this->em->getRepository(LocalLaw::class)->findAll(),
-            'companyRoles' => $this->em->getRepository(\App\Entity\CompanyRole::class)->findAll(),
+            'companyRoles' => $this->em->getRepository(CompanyRole::class)->findAll(),
             'existingPatron' => $existingPatron,
         ]);
     }

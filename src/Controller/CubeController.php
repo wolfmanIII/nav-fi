@@ -12,9 +12,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Service\CompanyManager;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Entity\LocalLaw;
+use App\Entity\User;
+use App\Entity\Company;
+use App\Entity\CompanyRole;
+use App\Entity\Asset;
+use App\Entity\BrokerOpportunity;
+use App\Dto\Cube\CubeOpportunityData;
 
 #[Route('/cube')]
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
@@ -25,12 +32,13 @@ class CubeController extends AbstractController
         private readonly BrokerSessionRepository $sessionRepo,
         private readonly TravellerMapSectorLookup $travellerMap,
         private readonly EntityManagerInterface $entityManager,
+        private readonly CompanyManager $companyManager,
     ) {}
 
     #[Route('/', name: 'app_cube_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         // Get session_id from query if provided
@@ -118,7 +126,7 @@ class CubeController extends AbstractController
         }
 
         // Pass ALL systems to the engine so it can pick destinations
-        /** @var \App\Dto\Cube\CubeOpportunityData[] $opportunities */
+        /** @var CubeOpportunityData[] $opportunities */
         $opportunities = $this->brokerService->generateOpportunities($session, $originData, $systems);
 
         // Filter out already saved opportunities
@@ -166,7 +174,7 @@ class CubeController extends AbstractController
     #[Route('/unsave/{id}', name: 'app_cube_unsave', methods: ['POST'])]
     public function unsave(int $id, EntityManagerInterface $em): JsonResponse
     {
-        $opportunity = $em->getRepository(\App\Entity\BrokerOpportunity::class)->find($id);
+        $opportunity = $em->getRepository(BrokerOpportunity::class)->find($id);
 
         if (!$opportunity) {
             return $this->json(['error' => 'Opportunity not found'], 404);
@@ -185,7 +193,7 @@ class CubeController extends AbstractController
     #[Route('/contract/{id}', name: 'app_cube_contract_show', methods: ['GET'])]
     public function show(int $id, EntityManagerInterface $em): Response
     {
-        $opportunity = $em->getRepository(\App\Entity\BrokerOpportunity::class)->find($id);
+        $opportunity = $em->getRepository(BrokerOpportunity::class)->find($id);
 
         if (!$opportunity) {
             throw $this->createNotFoundException('Contract Manifest not found.');
@@ -196,14 +204,14 @@ class CubeController extends AbstractController
         $patronName = $opportunity->getData()['details']['patron'] ?? null;
         if ($patronName) {
             $user = $this->getUser();
-            if ($user instanceof \App\Entity\User) {
-                $existingPatron = $em->getRepository(\App\Entity\Company::class)
-                    ->findOneBy(['name' => $patronName, 'user' => $user]);
+            if ($user instanceof User) {
+                // Centralizzato tramite CompanyManager (SOLID)
+                $existingPatron = $this->companyManager->findByCanonical($patronName, $user);
             }
         }
 
         $campaign = $opportunity->getSession()->getCampaign();
-        $assets = $em->getRepository(\App\Entity\Asset::class)->findBy([
+        $assets = $em->getRepository(Asset::class)->findBy([
             'campaign' => $campaign
         ]);
 
@@ -211,7 +219,7 @@ class CubeController extends AbstractController
             'opportunity' => $opportunity,
             'assets' => $assets,
             'localLaws' => $em->getRepository(LocalLaw::class)->findAll(),
-            'companyRoles' => $em->getRepository(\App\Entity\CompanyRole::class)->findAll(),
+            'companyRoles' => $em->getRepository(CompanyRole::class)->findAll(),
             'existingPatron' => $existingPatron,
         ]);
     }
@@ -219,13 +227,14 @@ class CubeController extends AbstractController
     #[Route('/contract/{id}/accept', name: 'app_cube_contract_accept', methods: ['POST'])]
     public function accept(int $id, Request $request, EntityManagerInterface $em): Response
     {
-        $opportunity = $em->getRepository(\App\Entity\BrokerOpportunity::class)->find($id);
+        $opportunity = $em->getRepository(BrokerOpportunity::class)->find($id);
         if (!$opportunity) {
             throw $this->createNotFoundException('Contract not found.');
         }
 
         $assetId = $request->request->get('asset_id');
-        $asset = $em->getRepository(\App\Entity\Asset::class)->find($assetId);
+        $asset = $em->getRepository(Asset::class)
+            ->find($assetId);
 
         if (!$asset) {
             $this->addFlash('error', 'Invalid Asset selected.');
