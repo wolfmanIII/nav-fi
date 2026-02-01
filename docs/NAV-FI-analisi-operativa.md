@@ -12,33 +12,29 @@ Il sistema è gerarchico: l'**Utente** possiede una **Campagna**, la Campagna ge
 
 ## 3. Ciclo Operativo di Missione
 
-### Fase 1: Pianificazione (The Cube)
-1.  Inizializzare una **Broker Session** nel sistema di destinazione.
-2.  Generare e salvare le opportunità interessanti.
-3.  **Accettazione Avanzata**: In fase di firma, selezionare l'Asset responsabile e impostare la data reale di missione (es. *Pickup Date* per cargo).
+### Fase 1: Pianificazione & Context (Smart Forms)
+Nav-Fi³ utilizza **Smart Forms** che si adattano al contesto. Quando si registra un'operazione:
+1.  **Asset Selection**: Selezionare prima l'Asset (Nave). I dettagli finanziari e i limiti temporali verranno caricati dinamicamente.
+2.  **Ledger Linking**: Se l'Asset ha già un conto collegato, il sistema lo blocca automaticamente per prevenire errori. Se è necessario un nuovo conto, appariranno i campi per la creazione rapida.
 
-### Fase 2: Trading e Speculazione
-1.  **Acquisto**: Accettare un'opportunità di tipo `TRADE` deduce immediatamente i fondi dall'Asset.
-2.  **Inventory**: Le merci acquistate rimangono visibili nella lista "Unsold Cargo" dell'Asset.
-3.  **Vendita/Liquidazione**: Al mercato di destinazione, registrare la vendita legandola all'acquisto originale. Il sistema calcola profitto/perdita e libera lo spazio in magazzino.
+### Fase 2: Esecuzione e Spese (Cost & Logistics)
+1.  **Vendor Management**: Durante la registrazione di un `Cost`, è possibile selezionare un Vendor (Compagnia) esistente o inserirne uno nuovo testualmente. In caso di nuovo inserimento, il sistema lo registrerà come entità permanente.
+2.  **Trade & Inventory**: Gli acquisti di merci (`TRADE`) richiedono un link a un `FinancialAccount` attivo. La merce rimane in inventario finché non viene liquidata con un `Income` corrispondente.
 
-### Fase 3: Esecuzione e Spese
-Registrare spese operative (Fuel, Berthing, Repairs) come `Cost`. Ogni operazione genera una transazione nel ledger che impatta il saldo basandosi sulla data corrente della campagna.
+### Fase 3: Incassi e Contratti (Income)
+La registrazione di un `Income` segue la stessa logica XOR:
+*   **Payer**: Può essere un Patron registrato o un nuovo Alias.
+*   **Receiver**: È il conto dell'Asset che riceve i fondi.
 
 ## 4. Gestione HR e Salari
-1.  **Reclutamento**: Assegnare Crew all'Asset con stato `Active`.
-2.  **Configurazione Paga**: Creare un record `Salary` per il membro dell'equipaggio.
-3.  **First Payment**: Impostare la data del primo pagamento. Il sistema suggerisce un importo pro-rata basato sui giorni effettivamente lavorati fino a quella data.
-4.  **Automazione**: Ogni 28 giorni dal primo pagamento, il sistema genererà automaticamente un prelievo per lo stipendio mensile.
+1.  **Setup**: Assegnare Crew all'Asset e configurare lo stipendio.
+2.  **Temporal Trigger**: Il sistema calcola il pro-rata iniziale. I pagamenti successivi avvengono automaticamente ogni 28 giorni imperiali al variare della Data Sessione.
 
-## 5. Chiusura Sessione (Temporal Advance)
-1.  Il Referee avanza la data della Campagna.
-2.  **Sincronizzazione**: Al salvataggio, il sistema:
-    *   Posta i pagamenti in sospeso (Income/Stipendi).
-    *   Ricalcola i saldi degli Asset.
-    *   Verifica eventuali stati di insolvenza ("Hard Deck Breach").
-
-## 6. Glossario UI
+## 5. Chiusura Sessione (Temporal Advance & Sync)
+Il Referee ha la responsabilità dell'integrità del log:
+1.  **Avanzamento Data**: Quando la data della Campagna viene aggiornata, il sistema esegue la **Sincronizzazione Finanziaria**.
+2.  **Post-Processing**: Transazioni `PENDING` diventano `POSTED`. In questa fase, i saldi di cassa degli Asset vengono aggiornati definitivamente.
+3.  **Audit**: Eventuali correzioni a transazioni già postate devono essere effettuate tramite storni (`REVERSAL`), non modificando i record originali.## 6. Glossario UI
 *   **Cyan (Abyss)**: Operatività, Liste, Dati tecnici.
 *   **Emerald**: Flussi di cassa positivi, Saldi attivi.
 *   **Amber**: Dati in attesa (Pending), Scadenze imminenti.

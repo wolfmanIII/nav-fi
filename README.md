@@ -16,14 +16,13 @@ Applicazione **Symfony 7.4** per la gestione di navi, equipaggi, contratti e mut
 - **External Uplink (Google OAuth)**: Login rapido tramite account Google.
 - **Ownership Lockdown**: Sistema granulare che isola i dati (Ship, Crew, Financials) sull’utente proprietario.
 
-### Financial Core & Asset Management
-- **Vessel Liability (Mortgage)**: Gestione mutui con piani di ammortamento a 13 periodi, tassi variabili e assicurazioni.
-- **Full-Spectrum Ledger**: Tracciamento di entrate (`Income`) e uscite (`Cost`) con status dinamico **Draft/Signed**.
-- **Trade & Speculation**:
-    - **Liquidation Protocol**: Gestione della vendita del carico con calcolo automatico di profitto/perdita.
-    - **Active Hold Monitoring**: Tracciamento della merce stoccata e non ancora venduta (Unsold Trade Goods).
-    - **Market Pricing**: Integrazione di markup dinamici basati sui Trade Code dei sistemi.
-- **Annual Projections**: Aggregazione automatica di cashflow per nave e grafici finanziari.
+### Financial Core & Asset Management (3.0)
+- **Time-Aware Ledger Service**: Advanced synchronization between mission dates and fund availability (`PENDING` vs `POSTED`).
+- **Temporal Immutability**: Strict audit log with `REVERSAL` protocols for historical corrections.
+- **Form Intelligence Layer**: Progressive disclosure and Smart Visibility driven by Asset context.
+- **Hybrid Entity Resolution**: Seamless on-the-fly creation of Vendors and Financial Accounts with XOR strictness.
+- **Total Asset Liability**: Integrated mortgage management with amortization schedules and insurance tracking.
+- **Annual Projections**: Real-time aggregation of cashflow and financial health charts.
 
 ### Operations & Navigation
 - **Mission Control**: Calendario di sessione centralizzato (`DDD/YYYY`) che propaga le date a tutti i moduli.
