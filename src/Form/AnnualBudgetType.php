@@ -53,7 +53,7 @@ class AnnualBudgetType extends AbstractType
                 'class' => Campaign::class,
                 'mapped' => false,
                 'required' => true,
-                'placeholder' => '-- Select a Campaign --',
+                'placeholder' => '// MISSION',
                 'choice_label' => fn(Campaign $campaign) => sprintf('%s (%03d/%04d)', $campaign->getTitle(), $campaign->getSessionDay(), $campaign->getSessionYear()),
                 'data' => $budget->getAsset()?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
@@ -71,7 +71,7 @@ class AnnualBudgetType extends AbstractType
             ])
             ->add('asset', EntityType::class, [
                 'class' => Asset::class,
-                'placeholder' => '-- Select an Asset --',
+                'placeholder' => '// ASSET',
                 'choice_label' => fn(Asset $asset) => sprintf('%s (%s)', $asset->getName(), $asset->getClass()),
                 'choice_attr' => function (Asset $asset): array {
                     $start = $asset->getCampaign()?->getStartingYear();
