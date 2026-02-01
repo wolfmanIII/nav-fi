@@ -197,11 +197,11 @@
          <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
              <div class="flex items-center gap-2 text-cyan-500/50 group-hover:text-cyan-400 mb-3 transition-colors">
                 {% include 'icons/handbook.html.twig' with { dim: 20 } %}
-                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Pledge Files</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Pledge Files <span class="ml-2 text-emerald-500 bg-emerald-500/10 px-1 rounded">v3.0</span></p>
             </div>
             <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Mortgage</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Mortgages are signed using the mission session date and a registered signing location. A signed mortgage can be printed as an official record or kept as a draft.
+                Mortgages are signed using the mission session date. Documentation parity ensures that existing accounts are reused or new ones created on-the-fly with <strong>Strict XOR Validation</strong>.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
@@ -210,7 +210,7 @@
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Crew panels in UI/PDF show only Active crew at signature date or later.</span>
+                    <span><strong>Smart Visibility:</strong> Ledger fields appear only after Asset selection.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
@@ -223,11 +223,11 @@
          <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
              <div class="flex items-center gap-2 text-cyan-500/50 group-hover:text-cyan-400 mb-3 transition-colors">
                 {% include 'icons/income.html.twig' with { dim: 20 } %}
-                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Revenue Docket</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Revenue Docket <span class="ml-2 text-emerald-500 bg-emerald-500/10 px-1 rounded">v3.0</span></p>
             </div>
             <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Income</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Record all revenue streams with automated logic to handle deposits, bonuses, and final payouts. Now includes a <strong>Cancellation Workflow</strong> with visual VOID badges and PDF watermarks.
+                Record all revenue with automated handling of deposits and payouts. Features <strong>Hybrid Resolution</strong> for Payer/Alias and <strong>Exclusive Selection</strong> for receiver accounts.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
@@ -236,7 +236,7 @@
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span><strong>CancelDate Support:</strong> Automatically marks related future transactions as VOID.</span>
+                    <span><strong>Creation on-the-fly:</strong> Register new Patrons or Accounts directly in the form.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
@@ -249,11 +249,11 @@
          <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
              <div class="flex items-center gap-2 text-cyan-500/50 group-hover:text-cyan-400 mb-3 transition-colors">
                 {% include 'icons/cost.html.twig' with { dim: 20 } %}
-                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Expense Ledger</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Expense Ledger <span class="ml-2 text-emerald-500 bg-emerald-500/10 px-1 rounded">v3.0</span></p>
             </div>
             <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Costs</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Costs are logged per asset with line items. Local Law and counterparties are printed in PDF for jurisdictional clarity.
+                Full parity with Income/Mortgage. Includes <strong>Asset-Driven Disclosure</strong> and <strong>XOR Integrity</strong> for Vendor/Account selection.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
@@ -262,7 +262,7 @@
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Payment dates use Imperial day/year.</span>
+                    <span><strong>Hybrid Vendor Creation:</strong> Define new Companies as vendors instantly.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>

@@ -107,48 +107,48 @@
             </div>
         </div>
 
-        {# STEP 6 #}
+        {# STEP 06 #}
         <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
             <div class="flex items-center justify-between mb-4">
-                <p class="text-[10px] uppercase tracking-[0.25em] text-cyan-500 font-bold bg-cyan-950/20 px-2 py-1 rounded border border-cyan-500/10">Step 06</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] text-cyan-500 font-bold bg-cyan-950/20 px-2 py-1 rounded border border-cyan-500/10">Step 06 <span class="ml-1 text-emerald-500 opacity-60">v3.0</span></p>
                 <div class="text-cyan-500/50 group-hover:text-cyan-400 transition-colors">
                     {% include 'icons/cost.html.twig' with { dim: 20 } %}
                 </div>
             </div>
             <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Log Expenses (Costs)</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Record costs per asset and category, add line-by-line details and payment date. Keep company/local law aligned so PDFs carry the right jurisdiction.</p>
+            <p class="text-sm text-slate-400 leading-relaxed">Record costs per asset. <strong>Smart Context:</strong> Fields appear after Asset selection. You can now define a <strong>New Vendor</strong> directly in the form; the system handles the persistent record creation automatically.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                Maintenance
+                Maintenance & Logistics
             </div>
         </div>
 
-         {# STEP 7 #}
+        {# STEP 07 #}
         <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
             <div class="flex items-center justify-between mb-4">
-                <p class="text-[10px] uppercase tracking-[0.25em] text-cyan-500 font-bold bg-cyan-950/20 px-2 py-1 rounded border border-cyan-500/10">Step 07</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] text-cyan-500 font-bold bg-cyan-950/20 px-2 py-1 rounded border border-cyan-500/10">Step 07 <span class="ml-1 text-emerald-500 opacity-60">v3.0</span></p>
                 <div class="text-cyan-500/50 group-hover:text-cyan-400 transition-colors">
                     {% include 'icons/income.html.twig' with { dim: 20 } %}
                 </div>
             </div>
             <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Log Income</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">Add income per asset/category. The system automatically splits Deposits (Signature Date) vs Final Payouts (Payment Date) and includes Bonuses. Signature date/place and local law keep contracts consistent.</p>
+            <p class="text-sm text-slate-400 leading-relaxed">Add income streams. Supports <strong>Hybrid Resolution</strong> for Payer/Alias. Deposits vs Final Payouts are auto-split. XOR integrity ensures you either choose a registered account or define a new one.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                Credits In
+                Credits Inflow
             </div>
         </div>
 
-        {# STEP 8 #}
+        {# STEP 08 #}
         <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
             <div class="flex items-center justify-between mb-4">
-                <p class="text-[10px] uppercase tracking-[0.25em] text-cyan-500 font-bold bg-cyan-950/20 px-2 py-1 rounded border border-cyan-500/10">Step 08</p>
+                <p class="text-[10px] uppercase tracking-[0.25em] text-cyan-500 font-bold bg-cyan-950/20 px-2 py-1 rounded border border-cyan-500/10">Step 08 <span class="ml-1 text-emerald-500 opacity-60">v3.0</span></p>
                 <div class="text-cyan-500/50 group-hover:text-cyan-400 transition-colors">
                     {% include 'icons/handbook.html.twig' with { dim: 20 } %}
                 </div>
             </div>
             <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Setup Mortgages</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">For financed assets (Ships/Bases): set rate, insurance, payments; sign with session date + place; print the PDF (draft or signed).</p>
+            <p class="text-sm text-slate-400 leading-relaxed">For Ships/Bases: set rate and insurance. Form parity ensures that choosing an existing financing account or <strong>creating a new one</strong> is a strictly validated XOR operation.</p>
              <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
                 Bank Deck

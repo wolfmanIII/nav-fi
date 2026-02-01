@@ -109,18 +109,18 @@
             </div>
         </section>
 
-        {# 2. TIME CURSOR #}
+        {# 2. TIME CURSOR & INTEGRITY #}
         <section id="time-cursor" class="mb-12 scroll-mt-6">
             <div class="rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/10 border border-amber-500/30 p-8">
                 <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2 font-orbitron">
-                    <span class="text-amber-400">02 ///</span> The Time Cursor: Historical & Future Analysis
+                    <span class="text-amber-400">02 ///</span> Time Cursor & Ledger Integrity (v3.0)
                 </h2>
 
                 <div class="grid md:grid-cols-3 gap-6">
                     <div class="md:col-span-2 space-y-4">
                         <p class="text-slate-300 text-sm leading-relaxed">
-                            The <strong>Mission Session Date</strong> is not just a "current date" field. It acts as a <strong class="text-amber-300">Time Cursor</strong> for the entire financial simulation.
-                            By moving this date, you are effectively shifting the "Now" point of your campaign's financial reality.
+                            The <strong>Mission Session Date</strong> is not just a "current date" field. It acts as a <strong class="text-amber-300">Time Cursor</strong> for the entire financial simulation. 
+                            In version 3.0, we've implemented strict synchronization protocols to ensure data integrity during temporal shifts.
                         </p>
                         
                         <div class="space-y-4 mt-6">
@@ -131,10 +131,10 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <h4 class="text-slate-200 font-bold mb-1">Looking Back</h4>
+                                    <h4 class="text-slate-200 font-bold mb-1">Temporal Reconciliation</h4>
                                     <p class="text-slate-400 text-xs">
-                                        If you set the Session Date to a past year, the <strong>Ledger</strong> and <strong>Budget</strong> will recalculate to show you the state of finances <em>at that exact moment</em>.
-                                        Future transactions (relative to that past date) become "Pending" again. This allows for accurate historical auditing.
+                                        When you advance or retreat the Session Date, the system triggers a <strong>Reconciliation Event</strong>. 
+                                        Transactions move between <strong>PENDING</strong> and <strong>POSTED</strong> states automatically, updating Asset credits in real-time.
                                     </p>
                                 </div>
                             </div>
@@ -142,15 +142,14 @@
                              <div class="flex gap-4 p-4 rounded-lg bg-slate-950/50 border border-slate-800">
                                 <div class="mt-1 flex-shrink-0">
                                     <div class="w-8 h-8 rounded-full bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 12"/></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M25 21l-7-7m0 0l7-7m-7 7H3"/></svg>
                                     </div>
                                 </div>
                                 <div>
-                                    <h4 class="text-amber-200 font-bold mb-1">Projecting Forward</h4>
+                                    <h4 class="text-amber-200 font-bold mb-1">Immutability & Reversal</h4>
                                     <p class="text-slate-400 text-xs">
-                                        Advance the Session Date into the future to see what happens when "Pending" transactions trigger.
-                                        Will the mortgage payment pass? Will that big contract payout arrive in time?
-                                        <strong class="text-amber-300">The Ledger simulates the future</strong> based on data you've entered.
+                                        To maintain a proper audit trail, <strong>POSTED</strong> transactions are historically locked. 
+                                        Corrections generate a <strong>REVERSAL</strong> entry (cancelling the original amount) followed by a new transaction, preserving the timeline truth.
                                     </p>
                                 </div>
                             </div>
@@ -159,7 +158,7 @@
 
                     <div class="space-y-4">
                         <div class="rounded-lg bg-amber-950/20 border border-amber-500/20 p-5">
-                            <h3 class="text-sm font-bold text-amber-100 uppercase tracking-wider mb-2">Automated Ledger Logic</h3>
+                            <h3 class="text-xs font-bold text-amber-100 uppercase tracking-wider mb-2">Automated Ledger Logic</h3>
                             <ul class="space-y-3 text-xs text-slate-300">
                                 <li class="flex gap-2">
                                     <span class="text-emerald-400 font-mono">1.</span>
@@ -171,13 +170,67 @@
                                 </li>
                                 <li class="flex gap-2">
                                     <span class="text-cyan-400 font-mono">3.</span>
-                                    <span><strong>Auto-Correction:</strong> Moving the Session Cursor automatically flips transactions between POSTED and PENDING states.</span>
+                                    <span><strong>Auto-Recovery:</strong> The system resolves entity contexts during Form Submission even if UI components are disabled by JS.</span>
                                 </li>
                                 <li class="flex gap-2">
                                     <span class="text-rose-400 font-mono">4.</span>
-                                    <span><strong>Void Logic:</strong> Cancelled contracts trigger <strong>VOID</strong> status for all transactions scheduled <em>after</em> the cancellation date.</span>
+                                    <span><strong>Strict XOR:</strong> Forms enforce a "Choose Existing OR Create New" rule for Banks and Vendors to prevent ambiguity.</span>
                                 </li>
                             </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {# 2b. SMART INTERFACE #}
+        <section id="smart-interface" class="mb-12 scroll-mt-6">
+            <div class="rounded-xl bg-slate-900 border border-cyan-500/30 p-8 overflow-hidden relative">
+                <div class="absolute top-0 right-0 p-4 opacity-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-32 h-32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2 font-orbitron">
+                    <span class="text-cyan-400">02B ///</span> Smart Interface & Hybrid Resolution
+                </h2>
+                
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div class="rounded-lg bg-slate-950 p-5 border border-slate-800">
+                            <h3 class="text-lg font-bold text-cyan-300 mb-2 font-rajdhani uppercase tracking-widest">Progressive Disclosure</h3>
+                            <p class="text-slate-400 text-sm">
+                                Fin-Core forms are now <strong>Context-Aware</strong>. You must select an <strong>Asset</strong> first to unlock the ledger fields. 
+                                This prevents orphan transactions and ensures every credit is tracked to a specific ship or team.
+                            </p>
+                        </div>
+                        
+                        <div class="rounded-lg bg-slate-950 p-5 border border-slate-800">
+                            <h3 class="text-lg font-bold text-emerald-300 mb-2 font-rajdhani uppercase tracking-widest">Hybrid Resolution (On-the-fly)</h3>
+                            <p class="text-slate-400 text-sm">
+                                No more jumping between pages to register a new bank or vendor. 
+                                In any form, you can select an existing Company or simply <strong>type a new name</strong>. 
+                                The system will resolve the entity on-the-fly, creating the necessary records in the background.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-cyan-950/10 rounded-lg p-6 border border-cyan-500/20 flex flex-col justify-center">
+                        <h4 class="text-cyan-100 font-bold mb-4 flex items-center gap-2">
+                             <span class="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 text-xs">!</span>
+                             XOR Validation Protocol
+                        </h4>
+                        <p class="text-xs text-slate-400 leading-relaxed italic border-l-2 border-cyan-500/30 pl-4 mb-4">
+                            "The machine requires binary clarity. You may link a known entity OR define a new one. Attempting both will trigger a Protocol Error (FormError)."
+                        </p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="p-2 bg-slate-950 rounded text-[10px] text-emerald-400 border border-emerald-500/20 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Select Registered Bank
+                            </div>
+                            <div class="p-2 bg-slate-950 rounded text-[10px] text-emerald-400 border border-emerald-500/20 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Type New Bank Name
+                            </div>
+                             <div class="col-span-2 p-2 bg-slate-950 rounded text-[10px] text-rose-400 border border-rose-500/20 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg> Selected BOTH (Protocol Error)
+                            </div>
                         </div>
                     </div>
                 </div>
