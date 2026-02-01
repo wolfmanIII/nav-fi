@@ -21,14 +21,28 @@
 
 Il sistema finanziario di Nav-Fi³ è stato consolidato in un'architettura **Stateless & Time-Aware** che garantisce l'integrità dei dati tramite tre layer di controllo.
 
-### 2.1. Ledger Service & Time Cursor Sync
-Il `LedgerService` è il motore di calcolo primario. A differenza dei sistemi contabili tradizionali, Nav-Fi³ gestisce il tempo in modo fluido tramite un **Time Cursor**:
+### 2. Anatomia Finanziaria di un Asset
+Il Financial Core 3.0 non è solo un registro di transazioni, ma un sistema gerarchico che modella la capacità economica di un'entità di gioco.
+
+#### Gerarchia delle Entità
+1.  **Asset (L'Entità)**: La nave, la base o il team. È il proprietario legale dei fondi.
+2.  **Financial Account (Il Portafoglio)**: Collegato 1:1 all'Asset. Contiene il saldo corrente (`credits`) e il riferimento all'istituto bancario (`bank`).
+3.  **Transaction (L'Evento)**: L'atomo del Ledger. Ogni transazione è legata a un Account e modifica il saldo solo quando diventa `POSTED`.
+
+> [!IMPORTANT]
+> **Stato vs Storia**
+> Il `FinancialAccount` mantiene lo *Stato* (quanti soldi ci sono *adesso*), mentre il `Ledger` mantiene la *Storia* (perché e quando i soldi sono cambiati). Il `LedgerService` garantisce che lo Stato sia sempre la somma algebrica della Storia filtrata dal Time Cursor.
+
+---
+
+### 3. LedgerService: Core Engine
+Il `LedgerService` è il motore di calcolo che governa il flusso monetario. A differenza dei sistemi contabili tradizionali, Nav-Fi³ gestisce il tempo in modo fluido tramite un **Time Cursor**:
 *   **Temporal Immutability**: Ogni modifica a una transazione postata (data <= sessione) genera automaticamente una transazione di `REVERSAL` (storno) e l'emissione di una nuova voce correttiva.
 *   **Lifecycle Sync (`processCampaignSync`)**: Al variare della data sessione della Campagna, il sistema scansiona il mastro:
     *   **Future -> Present (`PENDING` -> `POSTED`)**: I fondi vengono accreditati/addebitati nel saldo reale dell'Asset.
     *   **Present -> Future (`POSTED` -> `PENDING`)**: In caso di "viaggio nel tempo" all'indietro, le transazioni vengono stornate dai saldi e riportate in attesa.
 
-### 2.2. Hybrid Entity Resolution (`FinancialAccountManager`)
+### 4. Hybrid Entity Resolution (`FinancialAccountManager`)
 Il sistema supporta l'inserimento rapido tramite un layer di risoluzione ibrida che minimizza l'attrito durante la sessione di gioco:
 *   **Entity Linking Protocol**: Utilizza una logica XOR rigorosa. L'utente può collegare un'entità esistente (Company/FinancialAccount) OR inserirne una nuova testualmente.
 *   **On-the-fly Creation**: Se viene inserito un nome nuovo (es. `bankName` o `vendorName`), il manager:

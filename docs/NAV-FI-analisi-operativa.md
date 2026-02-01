@@ -26,15 +26,41 @@ La registrazione di un `Income` segue la stessa logica XOR:
 *   **Payer**: Può essere un Patron registrato o un nuovo Alias.
 *   **Receiver**: È il conto dell'Asset che riceve i fondi.
 
-## 4. Gestione HR e Salari
+## 4. Procedure Operative (SOP)
+
+### SOP-FIN-01: Inizializzare la Finanza di una Nave
+Questa procedura deve essere seguita al momento dell'acquisto o dell'acquisizione di un nuovo Asset (Nave/Base/Team).
+
+1.  **Registrazione Asset**: Creare l'Asset (es. "Beowulf") definendo il prezzo di acquisto.
+2.  **Apertura Conto (Financial Account)**: Non esiste una pagina "Crea Conto". Il conto viene creato automaticamente alla prima operazione finanziaria (Mutuo o Costo).
+    *   *Raccomandato*: Creare subito un **Mortgage** (Mutuo).
+    *   Nella form del Mutuo, selezionare l'Asset "Beowulf".
+    *   In "Bank // New Name", scrivere il nome della banca (es. "Imperial Bank").
+    *   Al salvataggio, il sistema creerà: 1. La Company (Bank), 2. Il Financial Account collegato alla porta "Beowulf" presso "Imperial Bank".
+3.  **Versamento Iniziale (Funding)**:
+    *   Creare un nuovo **Income**.
+    *   Selezionare l'Asset "Beowulf" e il Financial Account appena creato.
+    *   Inserire l'importo iniziale (es. i risparmi dell'equipaggio).
+    *   Impostare la data di pagamento uguale alla data sessione corrente.
+4.  **Verifica**: Controllare nell'Annual Budget che il saldo iniziale sia `POSTED` (colore verde).
+
+> [!TIP]
+> **Dove sono i miei soldi?**
+> Se i crediti non appaiono nell'Asset, controlla il **Time Cursor**: se la data della transazione è nel futuro rispetto alla data sessione, i soldi sono `PENDING` (non ancora disponibili).
+
+---
+
+## 5. Gestione HR e Salari
 1.  **Setup**: Assegnare Crew all'Asset e configurare lo stipendio.
 2.  **Temporal Trigger**: Il sistema calcola il pro-rata iniziale. I pagamenti successivi avvengono automaticamente ogni 28 giorni imperiali al variare della Data Sessione.
 
-## 5. Chiusura Sessione (Temporal Advance & Sync)
+## 6. Chiusura Sessione (Temporal Advance & Sync)
 Il Referee ha la responsabilità dell'integrità del log:
 1.  **Avanzamento Data**: Quando la data della Campagna viene aggiornata, il sistema esegue la **Sincronizzazione Finanziaria**.
 2.  **Post-Processing**: Transazioni `PENDING` diventano `POSTED`. In questa fase, i saldi di cassa degli Asset vengono aggiornati definitivamente.
-3.  **Audit**: Eventuali correzioni a transazioni già postate devono essere effettuate tramite storni (`REVERSAL`), non modificando i record originali.## 6. Glossario UI
+3.  **Audit**: Eventuali correzioni a transazioni già postate devono essere effettuate tramite storni (`REVERSAL`), non modificando i record originali.
+
+## 7. Glossario UI
 *   **Cyan (Abyss)**: Operatività, Liste, Dati tecnici.
 *   **Emerald**: Flussi di cassa positivi, Saldi attivi.
 *   **Amber**: Dati in attesa (Pending), Scadenze imminenti.

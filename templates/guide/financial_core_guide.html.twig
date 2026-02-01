@@ -109,11 +109,112 @@
             </div>
         </section>
 
+        {# 2. THE WALLET (FINANCIAL ACCOUNT) #}
+        <section id="wallet" class="mb-12 scroll-mt-6">
+            <div class="rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/20 border border-emerald-500/30 p-8">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2 font-orbitron">
+                    <span class="text-emerald-400">02 ///</span> The Ship's Wallet (Financial Account)
+                </h2>
+
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Ogni <strong>Asset</strong> (Nave, Base, Team) possiede un unico <strong class="text-emerald-300">Financial Account</strong>. 
+                            Pensa a questo come al "Portafoglio" fisico o al conto corrente dedicato esclusivamente a quell'entità.
+                        </p>
+                        
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="p-4 rounded-lg bg-slate-950/50 border border-slate-800">
+                                <h4 class="text-emerald-200 font-bold mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-1"/></svg>
+                                    Cosa contiene?
+                                </h4>
+                                <ul class="text-slate-400 text-[11px] space-y-2">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-emerald-500">•</span>
+                                        <span><strong>Credits:</strong> Il saldo liquido disponibile *adesso*.</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-emerald-500">•</span>
+                                        <span><strong>Bank Ref:</strong> L'istituto che garantisce i fondi.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="p-4 rounded-lg bg-slate-950/50 border border-slate-800">
+                                <h4 class="text-emerald-200 font-bold mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                    Chi lo governa?
+                                </h4>
+                                <p class="text-slate-400 text-[11px] leading-relaxed">
+                                    Il saldo degli account non viene modificato manualmente. 
+                                    Solo le <strong>Transazioni Posted</strong> possono muovere i crediti. Questo garantisce che ogni singolo credito abbia una giustificazione nel Ledger.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950/80 rounded-lg p-6 border border-slate-800">
+                             <h4 class="text-slate-200 font-bold mb-4 text-xs uppercase tracking-widest text-center">Lifecycle: Dalla Nave al Credito</h4>
+                             <div class="flex items-center justify-between max-w-md mx-auto relative cursor-default">
+                                 <div class="absolute top-1/2 left-0 w-full h-px bg-slate-800 -translate-y-1/2"></div>
+                                 <div class="z-10 bg-slate-900 border border-slate-700 p-3 rounded group hover:border-cyan-500 transition-colors">
+                                     {% include 'icons/assets.html.twig' with { dim: 20 } %}
+                                     <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] uppercase font-bold text-slate-500 group-hover:text-cyan-400 whitespace-nowrap">1. Asset</span>
+                                 </div>
+                                 <div class="z-10 bg-slate-900 border border-slate-700 p-3 rounded group hover:border-emerald-500 transition-colors">
+                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h11M15 15l2 2 4-4"/></svg>
+                                     <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] uppercase font-bold text-slate-500 group-hover:text-emerald-400 whitespace-nowrap">2. Account</span>
+                                 </div>
+                                 <div class="z-10 bg-slate-900 border border-slate-700 p-3 rounded group hover:border-amber-500 transition-colors">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M5 5h14M5 19h14M2 12h20L12 2z"/></svg>
+                                     <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] uppercase font-bold text-slate-500 group-hover:text-amber-400 whitespace-nowrap">3. Ledger</span>
+                                 </div>
+                                  <div class="z-10 bg-slate-900 border border-slate-700 p-3 rounded group hover:border-emerald-500 transition-colors">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                     <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] uppercase font-bold text-slate-500 group-hover:text-emerald-400 whitespace-nowrap">4. Credits</span>
+                                 </div>
+                             </div>
+                             <div class="mt-12 text-center">
+                                 <p class="text-[10px] text-slate-500 italic">"Senza un Account, un Asset non può avere un Ledger. Senza un Ledger, non può avere Crediti."</p>
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="rounded-lg bg-amber-950/20 border border-amber-500/20 p-5">
+                            <h3 class="text-xs font-bold text-amber-100 uppercase tracking-wider mb-4">Practical: Dove trovo il Saldo?</h3>
+                            
+                            <div class="space-y-4 text-xs">
+                                <div class="border-l-2 border-slate-800 pl-3">
+                                    <p class="text-slate-200 font-bold">1. Nell'Asset List</p>
+                                    <p class="text-slate-400 mt-1">Ogni card asset mostra il saldo corrente in tempo reale.</p>
+                                </div>
+                                <div class="border-l-2 border-slate-800 pl-3">
+                                    <p class="text-slate-200 font-bold">2. Nell'Annual Budget</p>
+                                    <p class="text-slate-400 mt-1">È il posto migliore per auditare il saldo e vedere come cambierà nel corso dell'anno.</p>
+                                </div>
+                                <div class="border-l-2 border-slate-800 pl-3">
+                                    <p class="text-slate-200 font-bold">3. Nella form Asset</p>
+                                    <p class="text-slate-400 mt-1">Il pannello Financial Account mostra i dettagli del conto e della banca collegata.</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 pt-6 border-t border-amber-500/10">
+                                <p class="text-[10px] text-amber-500/80 font-bold uppercase tracking-widest mb-2">Protocol Warning</p>
+                                <p class="text-[11px] text-slate-400 italic leading-relaxed">
+                                    Se elimini un Asset, il sistema eliminerà automaticamente il suo Financial Account e tutta la storia del Ledger associata.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         {# 2. TIME CURSOR & INTEGRITY #}
         <section id="time-cursor" class="mb-12 scroll-mt-6">
             <div class="rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/10 border border-amber-500/30 p-8">
                 <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2 font-orbitron">
-                    <span class="text-amber-400">02 ///</span> Time Cursor & Ledger Integrity (v3.0)
+                    <span class="text-amber-400">03 ///</span> Time Cursor & Ledger Integrity (v3.0)
                 </h2>
 
                 <div class="grid md:grid-cols-3 gap-6">
@@ -183,14 +284,14 @@
             </div>
         </section>
 
-        {# 2b. SMART INTERFACE #}
+        {# 4. SMART INTERFACE #}
         <section id="smart-interface" class="mb-12 scroll-mt-6">
             <div class="rounded-xl bg-slate-900 border border-cyan-500/30 p-8 overflow-hidden relative">
                 <div class="absolute top-0 right-0 p-4 opacity-10">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-32 h-32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
                 </div>
                 <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2 font-orbitron">
-                    <span class="text-cyan-400">02B ///</span> Smart Interface & Hybrid Resolution
+                    <span class="text-cyan-400">04 ///</span> Smart Interface & Hybrid Resolution
                 </h2>
                 
                 <div class="grid lg:grid-cols-2 gap-8">
@@ -237,11 +338,11 @@
             </div>
         </section>
 
-        {# 3. MODULE DEEP DIVE #}
+        {# 5. MODULE DEEP DIVE #}
         <section id="modules" class="mb-12 scroll-mt-6">
             <div class="rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-purple-950/10 border border-slate-800 p-8">
-                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2 font-orbitron">
-                    <span class="text-purple-400">03 ///</span> Module Deep Dive
+                <h2 class="text-2xl font-bold text-white mb-8 flex items-center gap-2 font-orbitron">
+                    <span class="text-purple-400">05 ///</span> Financial Modules Deep Dive
                 </h2>
 
                 <div class="space-y-12">
@@ -381,12 +482,13 @@
             </div>
         </section>
 
-        {# 4. SYSTEM PROTOCOLS #}
+        {# 6. SYSTEM PROTOCOLS #}
         <section id="protocols" class="mb-12 scroll-mt-6">
-            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2 font-orbitron">
-                <span class="text-cyan-400">04 ///</span> System Protocols (Voice of the Machine)
-            </h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="rounded-xl bg-slate-900 border border-slate-800 p-8">
+                <h2 class="text-2xl font-bold text-white mb-8 flex items-center gap-2 font-orbitron">
+                    <span class="text-rose-500">06 ///</span> Critical System Protocols
+                </h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {# SYNC #}
                 <div class="p-4 rounded-lg bg-emerald-500/5 border border-emerald-500/20">
                     <div class="text-[10px] uppercase tracking-widest text-emerald-400 mb-2 font-bold font-rajdhani">System Event</div>

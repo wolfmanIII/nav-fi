@@ -16,12 +16,15 @@ Applicazione **Symfony 7.4** per la gestione di navi, equipaggi, contratti e mut
 - **External Uplink (Google OAuth)**: Login rapido tramite account Google.
 - **Ownership Lockdown**: Sistema granulare che isola i dati (Ship, Crew, Financials) sull’utente proprietario.
 
-### Financial Core & Asset Management (3.0)
-- **Time-Aware Ledger Service**: Advanced synchronization between mission dates and fund availability (`PENDING` vs `POSTED`).
-- **Temporal Immutability**: Strict audit log with `REVERSAL` protocols for historical corrections.
-- **Form Intelligence Layer**: Progressive disclosure and Smart Visibility driven by Asset context.
-- **Hybrid Entity Resolution**: Seamless on-the-fly creation of Vendors and Financial Accounts with XOR strictness.
-- **Total Asset Liability**: Integrated mortgage management with amortization schedules and insurance tracking.
+### Financial Core 4.0**: A robust, time-aware ledger system with:
+    - **Financial Anatomy**: Clean hierarchy (Asset > Wallet > Transaction).
+    - **Time Cursor Sync**: Automated PENDING/POSTED transitions.
+    - **Temporal Immutability**: REVERSAL-based correction logs.
+    - **Hybrid Entity Resolution**: On-the-fly Account/Bank creation.
+    - **Form Intelligence**: Progressive disclosure and XOR validation.
+- **Crew & Manifest**: Timeline-based lifecycle management.
+- **Asset Amendment**: Log-based technical upgrade tracking.
+- **Route & Nav**: Coordinate-synced waypoints with TravellerMap integration.
 - **Annual Projections**: Real-time aggregation of cashflow and financial health charts.
 
 ### Operations & Navigation
