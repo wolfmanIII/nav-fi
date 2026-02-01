@@ -16,7 +16,7 @@ Applicazione **Symfony 7.4** per la gestione di navi, equipaggi, contratti e mut
 - **External Uplink (Google OAuth)**: Login rapido tramite account Google.
 - **Ownership Lockdown**: Sistema granulare che isola i dati (Ship, Crew, Financials) sull’utente proprietario.
 
-### Financial Core 4.0**: A robust, time-aware ledger system with:
+### Financial Core (Ship Wallets & Wallets Registry)e ledger system with:
     - **Financial Anatomy**: Clean hierarchy (Asset > Wallet > Transaction).
     - **Time Cursor Sync**: Automated PENDING/POSTED transitions.
     - **Temporal Immutability**: REVERSAL-based correction logs.
