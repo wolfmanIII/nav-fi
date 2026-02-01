@@ -26,27 +26,29 @@ La registrazione di un `Income` segue la stessa logica XOR:
 *   **Payer**: Può essere un Patron registrato o un nuovo Alias.
 *   **Receiver**: È il conto dell'Asset che riceve i fondi.
 
-## 4. Procedure Operative (SOP)
+### 4. Procedure Operative (SOP)
 
-### SOP-FIN-01: Inizializzare la Finanza di una Nave
-Questa procedura deve essere seguita al momento dell'acquisto o dell'acquisizione di un nuovo Asset (Nave/Base/Team).
+#### SOP-FIN-01: Inizializzare la Finanza di una Nave
+Esistono due modalità per gestire l'apertura dei conti finanziari dell'Asset.
 
-1.  **Registrazione Asset**: Creare l'Asset (es. "Beowulf") definendo il prezzo di acquisto.
-2.  **Apertura Conto (Financial Account)**: Non esiste una pagina "Crea Conto". Il conto viene creato automaticamente alla prima operazione finanziaria (Mutuo o Costo).
-    *   *Raccomandato*: Creare subito un **Mortgage** (Mutuo).
-    *   Nella form del Mutuo, selezionare l'Asset "Beowulf".
-    *   In "Bank // New Name", scrivere il nome della banca (es. "Imperial Bank").
-    *   Al salvataggio, il sistema creerà: 1. La Company (Bank), 2. Il Financial Account collegato alla porta "Beowulf" presso "Imperial Bank".
-3.  **Versamento Iniziale (Funding)**:
-    *   Creare un nuovo **Income**.
-    *   Selezionare l'Asset "Beowulf" e il Financial Account appena creato.
-    *   Inserire l'importo iniziale (es. i risparmi dell'equipaggio).
-    *   Impostare la data di pagamento uguale alla data sessione corrente.
-4.  **Verifica**: Controllare nell'Annual Budget che il saldo iniziale sia `POSTED` (colore verde).
+##### A. Metodo Tattico (Manuale - Raccomandato per Audit)
+1.  **Registrazione Asset**: Creare l'Asset (es. "Beowulf") dalla pagina Asset.
+2.  **Creazione Conto**: Accedere alla pagina **Financial Accounts** (link in sidebar).
+3.  **Nuovo Conto**: Cliccare su "New". 
+    - Selezionare l'Asset "Beowulf".
+    - Selezionare una banca esistente o scriverne una nuova in `Bank Name`.
+    - Inserire il saldo iniziale (`credits`).
+4.  **Conferma**: Il conto apparirà nella lista e sarà immediatamente utilizzabile per Mutui e Spese.
+
+##### B. Metodo Rapido (Automatico - Smart Forms)
+1.  **Azione Diretta**: Creare un **Mortgage**, un **Income** o un **Cost**.
+2.  **Risoluzione Ibrida**: Nella sezione Ledger, selezionare l'Asset "Beowulf".
+3.  **Creazione on-the-fly**: Invece di selezionare un conto esistente, compilare i campi "Bank // Alias" e "New Bank Name".
+4.  **Auto-Settle**: Al salvataggio della form, il sistema creerà automaticamente il `FinancialAccount` e lo collegherà all'Asset.
 
 > [!TIP]
 > **Dove sono i miei soldi?**
-> Se i crediti non appaiono nell'Asset, controlla il **Time Cursor**: se la data della transazione è nel futuro rispetto alla data sessione, i soldi sono `PENDING` (non ancora disponibili).
+> Se i crediti non appaiono nell'Asset, controlla il **Time Cursor**: se la data della transazione è nel futuro rispetto alla data sessione, i soldi sono `PENDING` (non ancora disponibili). Puoi verificare tutti i saldi nella pagina **Financial Account Index**.
 
 ---
 
