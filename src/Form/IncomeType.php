@@ -96,7 +96,7 @@ class IncomeType extends AbstractType
             ])
             ->add('incomeCategory', EntityType::class, [
                 'class' => IncomeCategory::class,
-                'placeholder' => '-- Select a Category --',
+                'placeholder' => '// Category',
                 'choice_label' => fn(IncomeCategory $cat) => sprintf('%s - %s', $cat->getCode(), $cat->getDescription()),
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
@@ -116,10 +116,11 @@ class IncomeType extends AbstractType
                 'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('campaign', EntityType::class, [
+                'label' => 'Mission',
                 'class' => Campaign::class,
                 'mapped' => false,
                 'required' => false,
-                'placeholder' => '-- Select a Campaign --',
+                'placeholder' => '// MISSION',
                 'choice_label' => fn(Campaign $campaign) => sprintf('%s (%03d/%04d)', $campaign->getTitle(), $campaign->getSessionDay(), $campaign->getSessionYear()),
                 'data' => $asset?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
@@ -135,23 +136,61 @@ class IncomeType extends AbstractType
                     'data-action' => 'change->campaign-asset#onCampaignChange',
                 ],
             ])
-            ->add('financialAccount', EntityType::class, [
-                'class' => FinancialAccount::class,
-                'placeholder' => '-- Select a Financial Account --',
+            ->add('asset', EntityType::class, [
+                'label' => 'Asset // Name', // Label style from Mortgage
+                'placeholder' => '// ASSET',
+                'class' => Asset::class,
+                'mapped' => false, // Income è collegato a FinancialAccount, non direttamente all'Asset nella proprietà dell'entità (solitamente)
                 'required' => false,
-                'choice_label' => fn(FinancialAccount $fa) => $fa->getDisplayName(),
-                'choice_attr' => function (FinancialAccount $fa): array {
-                    $asset = $fa->getAsset();
-                    if (!$asset) return [];
-                    $start = $asset->getCampaign()?->getStartingYear();
-                    $session = $asset->getCampaign()?->getSessionYear();
-                    $campaignId = $asset->getCampaign()?->getId();
+                'choice_label' => fn(Asset $asset) =>
+                sprintf(
+                    '%s - %s',
+                    ucfirst($asset->getCategory()),
+                    $asset->getName()
+                ),
+                'choice_attr' => function (Asset $a): array {
+                    // Se l'account non è legato a un asset, non ha campagna (es. conto personale generico),
+                    // quindi lo lasciamo visibile o lo gestiamo come "senza campagna".
+                    // Per ora assumiamo logica simile a Mortgage: mostriamo se match campagna.
+                    $campaignId = $a->getCampaign()?->getId();
+
+                    $start = $a->getCampaign()?->getStartingYear();
+                    $financialAccount = $a->getFinancialAccount();
+
                     return [
                         'data-start-year' => $start ?? '',
-                        'data-session-year' => $session ?? '',
                         'data-campaign' => $campaignId ? (string) $campaignId : '',
+                        'data-financial-account-id' => $financialAccount ? (string) $financialAccount->getId() : '',
                     ];
                 },
+                'query_builder' => function (AssetRepository $repo) use ($user) {
+                    $qb = $repo->createQueryBuilder('s')
+                        ->orderBy('s.name', 'ASC');
+                    if ($user) {
+                        $qb->andWhere('s.user = :user')->setParameter('user', $user);
+                    }
+                    // Logica di filtro simile a Mortgage se necessario, oppure ampia
+                    $qb->andWhere('s.campaign IS NOT NULL');
+                    return $qb;
+                },
+                'attr' => [
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                    'data-campaign-asset-target' => 'asset', // Questo è il target per il cambio Campagna
+                    'data-controller' => 'year-limit',
+                    'data-year-limit-default-value' => $this->dayYearLimits->getYearMin(),
+                    'data-action' => 'change->year-limit#onAssetChange',
+                ],
+            ])
+            // CONTO DI ACCREDITO (Chi riceve / Dove vanno i soldi)
+            ->add('financialAccount', EntityType::class, [
+                'class' => FinancialAccount::class,
+                'placeholder' => '// CREDIT ACCOUNT', // Placeholder coerente
+                'label' => 'Link Existing Ledger (Credit)', // Dove entrano i soldi
+                'required' => false,
+                'choice_label' => fn(FinancialAccount $fa) => $fa->getDisplayName(),
+                // Logica per mostrare se l'account appartiene all'asset selezionato è spesso fatta via query_builder o attributi dati se JS lo filtra.
+                // Mortgage usa filtro JS (data-financial-account-id su opzione Asset solitamente?) O filtro standard.
+                // Qui ci atteniamo al pattern:
                 'query_builder' => function (FinancialAccountRepository $repo) use ($user) {
                     $qb = $repo->createQueryBuilder('fa')
                         ->leftJoin('fa.asset', 'a')
@@ -161,17 +200,42 @@ class IncomeType extends AbstractType
                     }
                     return $qb;
                 },
+                'help' => 'Account that receives the payment. Select existing OR create new below.',
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
-                    'data-controller' => 'income-details year-limit',
-                    'data-year-limit-default-value' => $this->incomeDetailsSubscriber instanceof \App\Form\EventSubscriber\IncomeDetailsSubscriber ? $this->dayYearLimits->getYearMin() : 0, // Fallback safe
-                    'data-action' => 'change->year-limit#onAssetChange',
-                    'data-campaign-asset-target' => 'asset',
+                    // Nota: Manteniamo potenziali target per sicurezza
                 ],
             ])
+            ->add('bank', EntityType::class, [
+                'class' => Company::class,
+                'choice_label' => 'name',
+                'label' => 'New Ledger // Company',
+                'required' => false,
+                'mapped' => false,
+                'placeholder' => '// COMPANY',
+                'query_builder' => function (EntityRepository $cr) use ($user) {
+                    return $cr->createQueryBuilder('c')
+                        ->where('c.user = :user')
+                        ->setParameter('user', $user)
+                        ->orderBy('c.name', 'ASC');
+                },
+                'help' => 'To create a NEW Credit Account for the Asset, select a company here OR enter custom name below.',
+                'help_attr' => ['class' => 'text-xs text-slate-500 ml-1'],
+                'attr' => ['class' => 'select m-1 w-full'],
+            ])
+            ->add('bankName', TextType::class, [
+                'label' => 'New Ledger // Custom Company Name',
+                'required' => false,
+                'mapped' => false,
+                'help' => 'Enter a custom company name for the new Credit Account.',
+                'help_attr' => ['class' => 'text-xs text-slate-500 ml-1'],
+                'attr' => ['class' => 'input m-1 w-full', 'placeholder' => 'e.g. Spinward Marches Trading Post'],
+            ])
+            // PAGANTE (Chi paga / Fonte dei fondi)
             ->add('company', EntityType::class, [
                 'class' => Company::class,
-                'placeholder' => '-- Select a Company --',
+                'label' => 'Payer (Company / Source)',
+                'placeholder' => '// PAYER (COMPANY)',
                 'required' => false,
                 'choice_label' => fn(Company $c) => sprintf('%s - %s', $c->getName(), $c->getCompanyRole()->getShortDescription()),
                 'query_builder' => function (EntityRepository $er) use ($user) {
@@ -181,16 +245,32 @@ class IncomeType extends AbstractType
                     }
                     return $qb;
                 },
+                'help' => 'Who is paying this amount? (Commercial Client or Entity)',
+                'help_attr' => ['class' => 'text-xs text-slate-500 ml-1'],
+                'attr' => ['class' => 'select m-1 w-full'],
+            ])
+            ->add('payerCompanyRole', EntityType::class, [
+                'class' => \App\Entity\CompanyRole::class,
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Role (if new)',
+                'placeholder' => '// ROLE',
+                'choice_label' => 'shortDescription',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('cr')->orderBy('cr.code', 'ASC');
+                },
                 'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('patronAlias', TextType::class, [
                 'required' => false,
-                'label' => 'Patron Alias (if no Company)',
+                'label' => 'Payer // Alias (if no Company)',
+                'help' => 'Enter a name if the payer is not a registered Company (e.g. Private Individual).',
+                'help_attr' => ['class' => 'text-xs text-slate-500 ml-1'],
                 'attr' => ['class' => 'input m-1 w-full', 'placeholder' => 'e.g. "Colonial Governor"'],
             ])
             ->add('localLaw', EntityType::class, [
                 'class' => LocalLaw::class,
-                'placeholder' => '-- Select a Local Law --',
+                'placeholder' => '// LOCAL LAW',
                 'required' => true,
                 'choice_label' => function (LocalLaw $l): string {
                     $label = $l->getShortDescription() ?: $l->getDescription();
@@ -249,6 +329,61 @@ class IncomeType extends AbstractType
         });
 
         $builder->addEventSubscriber($this->incomeDetailsSubscriber);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
+    }
+
+    public function onPostSubmit(FormEvent $event): void
+    {
+        /** @var Income $income */
+        $income = $event->getData();
+        $form = $event->getForm();
+
+        // 1. VALIDAZIONE CREDIT (Receiver / Dove vanno i soldi)
+        $financialAccount = $form->get('financialAccount')->getData();
+        $bank = $form->get('bank')->getData();
+        $bankName = $form->get('bankName')->getData();
+        $asset = $form->get('asset')->getData();
+
+        $hasAccount = $financialAccount !== null;
+        $hasNewLedger = !empty($bank) || !empty($bankName);
+
+        // Recupero automatico per campi disabilitati via JS:
+        // Se JS disabilita l'input perché l'Asset ha un conto, questo non viene inviato.
+        // Recuperiamo il conto dell'Asset e lo impostiamo, garantendo che la validazione passi.
+        if (!$hasAccount && !$hasNewLedger && $asset && $asset->getFinancialAccount()) {
+            $financialAccount = $asset->getFinancialAccount();
+            $income->setFinancialAccount($financialAccount);
+            $hasAccount = true;
+        }
+
+        if ($hasAccount && $hasNewLedger) {
+            $form->get('financialAccount')->addError(new FormError('Protocol Conflict: Cannot link existing account AND create a new one simultaneously. Choose one.'));
+        }
+
+        if (!$hasAccount && !$hasNewLedger) {
+            $form->get('financialAccount')->addError(new FormError('Missing Target: Select an existing Credit Account OR create a new one (Institution/Name).'));
+        }
+
+        // 2. VALIDAZIONE DEBIT (Payer / Chi paga)
+        $company = $form->get('company')->getData();
+        $patronAlias = $form->get('patronAlias')->getData();
+        $role = $form->get('payerCompanyRole')->getData();
+
+        $hasCompany = $company !== null;
+        $hasAlias = !empty($patronAlias);
+
+        if ($hasCompany && $hasAlias) {
+            $form->get('company')->addError(new FormError('Source Conflict: Cannot select a registered Company AND a new Alias. Clear one field.'));
+        }
+
+        if (!$hasCompany && !$hasAlias) {
+            $form->get('company')->addError(new FormError('Missing Source: Select a Payer Company OR enter a new Alias.'));
+        }
+
+        // Strict Role Requirement for New Payers
+        if ($hasAlias && !$role) {
+            $form->get('payerCompanyRole')->addError(new FormError('Role Required: When creating a new Payer Company, you must specify its Role.'));
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

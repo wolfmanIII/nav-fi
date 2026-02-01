@@ -19,7 +19,7 @@ export default class extends Controller {
         const assetSelect = this.assetTarget;
         const selectedOption = assetSelect.options[assetSelect.selectedIndex];
 
-        // Se non c'è opzione selezionata o valore vuoto, resetta (unlock)
+        // Se non c'è opzione selezionata o valore vuoto, resetta (unlock) e aggiorna visibilità
         if (!selectedOption || !assetSelect.value) {
             this.unlock();
             return;
@@ -34,6 +34,10 @@ export default class extends Controller {
         }
     }
 
+    onAccountChange() {
+        this.updateVisibility();
+    }
+
     lock(accountId) {
         const debitSelect = this.debitAccountTarget;
 
@@ -44,8 +48,7 @@ export default class extends Controller {
         debitSelect.disabled = true;
         debitSelect.classList.add('opacity-60', 'cursor-not-allowed');
 
-        // Nascondi creazione
-        this.debitCreationTargets.forEach(el => el.classList.add('hidden'));
+        this.updateVisibility();
     }
 
     unlock() {
@@ -55,7 +58,17 @@ export default class extends Controller {
         debitSelect.disabled = false;
         debitSelect.classList.remove('opacity-60', 'cursor-not-allowed');
 
-        // Mostra creazione
-        this.debitCreationTargets.forEach(el => el.classList.remove('hidden'));
+        this.updateVisibility();
+    }
+
+    updateVisibility() {
+        const hasAccount = this.debitAccountTarget.value !== '';
+        this.debitCreationTargets.forEach(el => {
+            if (hasAccount) {
+                el.classList.add('hidden');
+            } else {
+                el.classList.remove('hidden');
+            }
+        });
     }
 }

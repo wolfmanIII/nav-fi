@@ -26,6 +26,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MortgageType extends AbstractType
@@ -118,9 +119,10 @@ class MortgageType extends AbstractType
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-campaign-asset-target' => 'asset',
+                    'data-financial-lock-target' => 'asset',
                     'data-controller' => 'year-limit',
                     'data-year-limit-default-value' => $this->limits->getYearMin(),
-                    'data-action' => 'change->year-limit#onAssetChange',
+                    'data-action' => 'change->year-limit#onAssetChange change->financial-lock#check',
                 ],
             ])
             ->add('interestRate', EntityType::class, [
@@ -169,7 +171,7 @@ class MortgageType extends AbstractType
                 },
                 'help' => 'Account that pays the mortgage. Select an existing one OR create new below.',
                 'help_attr' => ['class' => 'text-xs text-slate-500 ml-1'],
-                'attr' => ['class' => 'select m-1 w-full'],
+                'attr' => ['class' => 'select m-1 w-full', 'data-financial-lock-target' => 'debitAccount', 'data-action' => 'change->financial-lock#onAccountChange'],
             ])
             ->add('bank', EntityType::class, [
                 'class' => Company::class,
@@ -189,7 +191,7 @@ class MortgageType extends AbstractType
                 },
                 'help' => 'To create a NEW Debit Account, select a bank here OR enter custom name below.',
                 'help_attr' => ['class' => 'text-xs text-slate-500 ml-1'],
-                'attr' => ['class' => 'select m-1 w-full'],
+                'attr' => ['class' => 'select m-1 w-full', 'data-financial-lock-target' => 'debitCreation'],
             ])
             ->add('bankName', TextType::class, [
                 'label' => 'New Ledger // Custom Institution Name',
@@ -197,7 +199,7 @@ class MortgageType extends AbstractType
                 'mapped' => false,
                 'help' => 'Enter a custom bank name for the new Debit Account.',
                 'help_attr' => ['class' => 'text-xs text-slate-500 ml-1'],
-                'attr' => ['class' => 'input m-1 w-full', 'placeholder' => 'e.g. Spinward Marches Credit Union'],
+                'attr' => ['class' => 'input m-1 w-full', 'placeholder' => 'e.g. Spinward Marches Credit Union', 'data-financial-lock-target' => 'debitCreation'],
             ])
 
             // CREDIT INSTITUTION (Chi riceve)
@@ -238,11 +240,67 @@ class MortgageType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
-            /** @var Mortgage $mortgage */
-            $mortgage = $event->getData();
-            $form = $event->getForm();
-        });
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
+    }
+
+    public function onPostSubmit(FormEvent $event): void
+    {
+        $form = $event->getForm();
+        /** @var Mortgage $mortgage */
+        $mortgage = $event->getData();
+
+        // 1. DEBIT PROTOCOL (Account that Pays)
+        // Logic: specific Financial Account XOR (New Account via Bank/Name)
+        $financialAccount = $form->get('financialAccount')->getData();
+        $bank = $form->get('bank')->getData();
+        $bankName = $form->get('bankName')->getData();
+        $asset = $form->get('asset')->getData();
+
+        $hasAccount = $financialAccount !== null;
+        $hasNewLedger = !empty($bank) || !empty($bankName);
+
+        // Recupero automatico per campi disabilitati via JS:
+        // Se JS disabilita l'input perché l'Asset ha un conto, questo non viene inviato.
+        // Recuperiamo il conto dell'Asset e lo impostiamo, garantendo che la validazione passi.
+        if (!$hasAccount && !$hasNewLedger && $asset && $asset->getFinancialAccount()) {
+            $financialAccount = $asset->getFinancialAccount();
+            $mortgage->setFinancialAccount($financialAccount);
+            $hasAccount = true;
+        }
+
+        if ($hasAccount && $hasNewLedger) {
+            $form->get('financialAccount')->addError(new FormError('Protocol Conflict: Cannot link existing account AND open a new one. Choose one method.'));
+        }
+        if (!$hasAccount && !$hasNewLedger) {
+            $form->get('financialAccount')->addError(new FormError('Missing Debit Source: Select an existing Account OR open a new one.'));
+        }
+
+        // 2. CREDIT PROTOCOL (Lender / Institution)
+        // Logic: specific Company (Lender) XOR New Custom Name
+        $company = $form->get('company')->getData();
+        $newLenderName = $form->get('creditInstitutionName')->getData();
+
+        $hasCompany = $company !== null;
+        $hasNewLender = !empty($newLenderName);
+
+        if ($hasCompany && $hasNewLender) {
+            $form->get('company')->addError(new FormError('Lender Conflict: Cannot select registered Lender AND enter a new Name. Clear one.'));
+        }
+        if (!$hasCompany && !$hasNewLender) {
+            $form->get('company')->addError(new FormError('Missing Lender: Select a Registered Institution OR enter a new Name.'));
+        }
+
+        // 3. VALIDAZIONE ESSENZIALI (Interessi & Assicurazione)
+        // L'utente ha richiesto validazione esplicita. Usiamo FormError invece di Flash per evidenziare il campo.
+        $interestRate = $form->get('interestRate')->getData();
+        if (!$interestRate) {
+            $form->get('interestRate')->addError(new FormError('Interest Rate Required: Please select a valid mortgage plan.'));
+        }
+
+        $insurance = $form->get('insurance')->getData();
+        if (!$insurance) {
+            $form->get('insurance')->addError(new FormError('Insurance Required: Asset must be insured for mortgage approval.'));
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
