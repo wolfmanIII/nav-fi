@@ -270,18 +270,31 @@
                                 <div class="text-[9px] text-slate-500 uppercase font-bold">Patron Name</div>
                             </div>
                             
-                            <select name="patron_role_id" class="select select-bordered select-sm bg-slate-900 border-slate-800 text-white w-full">
-                                <option value="" selected>-- Register as Company? (Select Role) --</option>
-                                {% for role in companyRoles %}
-                                    <option value="{{ role.id }}">{{ role.shortDescription|default(role.code) }}</option>
-                                {% endfor %}
-                            </select>
-                            <div class="text-[9px] text-slate-600 italic">If a role is selected, a new Company entity will be created automatically.</div>
+                            {% if existingPatron %}
+                                <div class="p-3 bg-emerald-900/10 border border-emerald-500/20 rounded flex items-center justify-between">
+                                    <div class="flex flex-col">
+                                        <span class="text-[9px] text-emerald-500 uppercase font-bold tracking-widest">Recognized Entity</span>
+                                        <span class="text-xs text-white">{{ existingPatron.name }}</span>
+                                    </div>
+                                    <div class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20">
+                                        {{ existingPatron.companyRole.shortDescription|default(existingPatron.companyRole.code) }}
+                                    </div>
+                                </div>
+                                <input type="hidden" name="patron_company_id" value="{{ existingPatron.id }}">
+                                <div class="text-[9px] text-slate-500 italic">This patron is already in your ledger. It will be linked automatically.</div>
+                            {% else %}
+                                <select name="patron_role_id" class="select select-bordered select-sm bg-slate-900 border-slate-800 text-white w-full">
+                                    <option value="" selected>-- Register as Company? (Select Role) --</option>
+                                    {% for role in companyRoles %}
+                                        <option value="{{ role.id }}">{{ role.shortDescription|default(role.code) }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="text-[9px] text-slate-600 italic">If a role is selected, a new Company entity will be created automatically.</div>
+                            {% endif %}
                         </div>
                     </div>
                 {% endif %}
 
-                {% if opportunity.data.type == 'TRADE' %}
                 <div class="form-control w-full mb-6">
                     <label class="label">
                         <span class="label-text text-slate-400 text-xs uppercase font-bold">Local Law (Jurisdiction)</span>
@@ -294,6 +307,7 @@
                     </select>
                 </div>
 
+                {% if opportunity.data.type == 'TRADE' %}
                 <div class="alert bg-amber-950/30 border border-amber-500/20 text-amber-200 text-xs mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-4 w-4" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                     <span>Warning: Accepting this trade will immediately deduct <strong>{{ opportunity.amount|format_number({ min_fraction_digit: 0, max_fraction_digit: 0 }, 'decimal', 'default', app.request.locale) }} Cr</strong> from the asset's account.</span>

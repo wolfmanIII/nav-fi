@@ -156,9 +156,20 @@ class OpportunityConverter
         $income->setSigningDay((int)($overrides['day'] ?? ($overrides['startDay'] ?? ($opp->details['start_day'] ?? 1))));
         $income->setSigningYear((int)($overrides['year'] ?? ($overrides['startYear'] ?? ($opp->details['start_year'] ?? 1105))));
 
+        if (!empty($overrides['local_law_id'])) {
+            $law = $this->entityManager->getRepository(LocalLaw::class)->find($overrides['local_law_id']);
+            if ($law) {
+                $income->setLocalLaw($law);
+            }
+        }
+
         // Mappatura Patron/Company
         $company = null;
-        if (!empty($opp->details['company_id'])) {
+        if (!empty($overrides['patron_company_id'])) {
+            $company = $this->companyRepository->find($overrides['patron_company_id']);
+        }
+
+        if (!$company && !empty($opp->details['company_id'])) {
             $company = $this->companyRepository->find($opp->details['company_id']);
         }
 

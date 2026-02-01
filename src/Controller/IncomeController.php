@@ -134,6 +134,8 @@ final class IncomeController extends BaseController
                 }
             }
 
+            // Se financialAccount è nullo qui, il listener di IncomeType lo recupererà dall'Asset se possibile.
+            // Mapping o listener di IncomeType gestiranno se non è un conto nuovo.
             if ($financialAccount) {
                 $income->setFinancialAccount($financialAccount);
             }
@@ -234,6 +236,8 @@ final class IncomeController extends BaseController
                 }
             }
 
+            // Mapping o listener di IncomeType gestiranno se non è un conto nuovo.
+            // Mapping o listener di IncomeType gestiranno se non è un conto nuovo.
             if ($financialAccount) {
                 $income->setFinancialAccount($financialAccount);
             }

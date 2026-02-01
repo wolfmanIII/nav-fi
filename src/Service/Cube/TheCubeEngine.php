@@ -4,16 +4,21 @@ namespace App\Service\Cube;
 
 use App\Entity\BrokerSession;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
+use App\Service\Cube\Generator\OpportunityGeneratorInterface;
+use App\Service\RouteMathHelper;
+use App\Dto\Cube\CubeOpportunityData;
+use Random\Engine\Xoshiro256StarStar;
+use Random\Randomizer;
 
 class TheCubeEngine
 {
     /**
-     * @param iterable<\App\Service\Cube\Generator\OpportunityGeneratorInterface> $generators
+     * @param iterable<OpportunityGeneratorInterface> $generators
      */
     public function __construct(
         #[AutowireIterator('app.cube.generator')]
         private readonly iterable $generators,
-        private readonly \App\Service\RouteMathHelper $routeMath
+        private readonly RouteMathHelper $routeMath
     ) {}
 
     /**
@@ -21,7 +26,7 @@ class TheCubeEngine
      * Questo metodo è DETERMINISTICO: stessa sessione + stesso seed = stessi risultati.
      * Utilizza Random\Engine\Xoshiro256StarStar per garantire isolamento dallo stato globale (mt_srand).
      *
-     * @return \App\Dto\Cube\CubeOpportunityData[]
+     * @return CubeOpportunityData[]
      */
     public function generateBatch(BrokerSession $session, array $originSystemData, array $allSystems = [], ?int $count = null): array
     {
@@ -30,8 +35,8 @@ class TheCubeEngine
         // Hash the seed to get a robust binary string for Xoshiro
         $seedHash = hash('sha256', $seedString, true);
 
-        $engine = new \Random\Engine\Xoshiro256StarStar($seedHash);
-        $randomizer = new \Random\Randomizer($engine);
+        $engine = new Xoshiro256StarStar($seedHash);
+        $randomizer = new Randomizer($engine);
 
         // Determine count deterministically based on seed if not provided
         if ($count === null) {
@@ -73,7 +78,7 @@ class TheCubeEngine
         return $results;
     }
 
-    private function generateSingle(\Random\Randomizer $randomizer, string $originName, string $originHex, array $destinations, int $maxDist, int $index, int $sessionDay, int $sessionYear, string $sector): \App\Dto\Cube\CubeOpportunityData
+    private function generateSingle(Randomizer $randomizer, string $originName, string $originHex, array $destinations, int $maxDist, int $index, int $sessionDay, int $sessionYear, string $sector): CubeOpportunityData
     {
         // Seleziona destinazione
         $destination = null;
@@ -144,7 +149,7 @@ class TheCubeEngine
         $opp = $selectedGenerator->generate($context, $maxDist, $randomizer);
 
         // Ricostruiamo il DTO con la firma corretta
-        return new \App\Dto\Cube\CubeOpportunityData(
+        return new CubeOpportunityData(
             signature: $signature,
             type: $opp->type,
             summary: $opp->summary,

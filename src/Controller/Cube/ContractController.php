@@ -31,11 +31,23 @@ class ContractController extends AbstractController
     {
         // Security check: ensure session belongs to campaign user has access to (TODO)
 
+        // Check if patron exists as an existing Company for this user
+        $existingPatron = null;
+        $patronName = $opportunity->getData()['details']['patron'] ?? null;
+        if ($patronName) {
+            $user = $this->getUser();
+            if ($user instanceof \App\Entity\User) {
+                $existingPatron = $this->em->getRepository(\App\Entity\Company::class)
+                    ->findOneBy(['name' => $patronName, 'user' => $user]);
+            }
+        }
+
         return $this->render('cube/show.html.twig', [
             'opportunity' => $opportunity,
             'assets' => $this->assetRepo->findAll(), // TODO: Filter by Campaign
             'localLaws' => $this->em->getRepository(LocalLaw::class)->findAll(),
             'companyRoles' => $this->em->getRepository(\App\Entity\CompanyRole::class)->findAll(),
+            'existingPatron' => $existingPatron,
         ]);
     }
 
@@ -63,6 +75,7 @@ class ContractController extends AbstractController
             'deadlineYear' => $request->request->get('deadline_year'),
             'local_law_id' => $request->request->get('localLaw'),
             'patron_role_id' => $request->request->get('patron_role_id'),
+            'patron_company_id' => $request->request->get('patron_company_id'),
         ];
 
         try {

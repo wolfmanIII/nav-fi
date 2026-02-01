@@ -191,9 +191,17 @@ class CubeController extends AbstractController
             throw $this->createNotFoundException('Contract Manifest not found.');
         }
 
-        // Fetch assets for the selection modal
-        // TODO: Filter assets by campaign or location if needed?
-        // For now, show all assets belonging to the user/campaign
+        // Check if patron exists as an existing Company for this user
+        $existingPatron = null;
+        $patronName = $opportunity->getData()['details']['patron'] ?? null;
+        if ($patronName) {
+            $user = $this->getUser();
+            if ($user instanceof \App\Entity\User) {
+                $existingPatron = $em->getRepository(\App\Entity\Company::class)
+                    ->findOneBy(['name' => $patronName, 'user' => $user]);
+            }
+        }
+
         $campaign = $opportunity->getSession()->getCampaign();
         $assets = $em->getRepository(\App\Entity\Asset::class)->findBy([
             'campaign' => $campaign
@@ -204,6 +212,7 @@ class CubeController extends AbstractController
             'assets' => $assets,
             'localLaws' => $em->getRepository(LocalLaw::class)->findAll(),
             'companyRoles' => $em->getRepository(\App\Entity\CompanyRole::class)->findAll(),
+            'existingPatron' => $existingPatron,
         ]);
     }
 
@@ -231,6 +240,7 @@ class CubeController extends AbstractController
                 'deadline_year' => $request->request->get('deadline_year'),
                 'local_law_id' => $request->request->get('localLaw'),
                 'patron_role_id' => $request->request->get('patron_role_id'),
+                'patron_company_id' => $request->request->get('patron_company_id'),
             ];
 
             $this->brokerService->acceptOpportunity($opportunity, $asset, array_filter($overrides));

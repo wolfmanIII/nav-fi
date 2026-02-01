@@ -115,6 +115,7 @@ final class CostController extends BaseController
                 }
             }
 
+            // Mapping o listener di CostType gestiranno se non è un conto nuovo.
             if ($financialAccount) {
                 $cost->setFinancialAccount($financialAccount);
             }
@@ -200,6 +201,7 @@ final class CostController extends BaseController
                 }
             }
 
+            // Mapping o listener di CostType gestiranno se non è un conto nuovo.
             if ($financialAccount) {
                 $cost->setFinancialAccount($financialAccount);
             }

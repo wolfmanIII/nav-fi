@@ -7,6 +7,9 @@ use App\Entity\BrokerSession;
 use App\Entity\Campaign;
 use App\Repository\BrokerSessionRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Asset;
+use App\Entity\Income;
+use App\Entity\Cost;
 
 class BrokerService
 {
@@ -64,7 +67,7 @@ class BrokerService
         return $opp;
     }
 
-    public function acceptOpportunity(BrokerOpportunity $opportunity, \App\Entity\Asset $asset, array $overrides = []): \App\Entity\Income|\App\Entity\Cost
+    public function acceptOpportunity(BrokerOpportunity $opportunity, Asset $asset, array $overrides = []): Income|Cost
     {
         // 1. Converti in DTO per passare i dati puliti
         $dto = \App\Dto\Cube\CubeOpportunityData::fromArray($opportunity->getData());

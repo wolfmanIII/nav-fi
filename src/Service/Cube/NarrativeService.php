@@ -3,8 +3,10 @@
 namespace App\Service\Cube;
 
 use App\Repository\CompanyRepository;
-use App\Entity\Company;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use App\Model\Cube\Narrative\Story;
+use App\Model\Cube\Narrative\MissionArchetype;
+use Random\Randomizer;
 
 class NarrativeService
 {
@@ -21,17 +23,14 @@ class NarrativeService
 
         $this->archetypes = [];
         foreach ($narrative['archetypes'] ?? [] as $code => $config) {
-            $this->archetypes[$code] = \App\Model\Cube\Narrative\MissionArchetype::fromArray($code, $config);
+            $this->archetypes[$code] = MissionArchetype::fromArray($code, $config);
         }
     }
 
     /**
      * Genera una storia completa basata sull'archetipo e il patrono.
      */
-    /**
-     * Genera una storia completa basata sull'archetipo e il patrono.
-     */
-    public function generateStory(string $sector, \Random\Randomizer $randomizer): \App\Model\Cube\Narrative\Story
+    public function generateStory(string $sector, Randomizer $randomizer): Story
     {
         // 1. Seleziona Patron
         $patronInfo = $this->patronConfig[$randomizer->getInt(0, count($this->patronConfig) - 1)];
@@ -61,7 +60,7 @@ class NarrativeService
             $this->getRandom('opposition', $randomizer)
         );
 
-        return new \App\Model\Cube\Narrative\Story(
+        return new Story(
             patronName: $patronName,
             archetypeCode: $archetypeCode,
             summary: $summary,
@@ -79,7 +78,7 @@ class NarrativeService
         return $template;
     }
 
-    private function getRandom(string $key, \Random\Randomizer $randomizer): string
+    private function getRandom(string $key, Randomizer $randomizer): string
     {
         $list = $this->economyConfig['contract']['narrative'][$key] ?? ['None'];
         return $list[$randomizer->getInt(0, count($list) - 1)];
