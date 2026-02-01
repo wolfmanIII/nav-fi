@@ -90,8 +90,8 @@
 
     <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
-        {% set start_day = data ? data.startDay : null %}
-        {% set start_year = data ? data.startYear : null %}
+        {% set start_day = data.startDay ?? null %}
+        {% set start_year = data.startYear ?? null %}
         {% set start_value = (start_day is not null and start_year is not null) ? (start_day|imperial_date(start_year)) : '' %}
         {% set start_help_id = detail_form.startDate.vars.id ~ '-help' %}
         <div class="col-span-1" data-controller="imperial-date">
@@ -122,8 +122,8 @@
                 </div>
             </div>
         </div>
-        {% set end_day = data ? data.endDay : null %}
-        {% set end_year = data ? data.endYear : null %}
+        {% set end_day = data.endDay ?? null %}
+        {% set end_year = data.endYear ?? null %}
         {% set end_value = (end_day is not null and end_year is not null) ? (end_day|imperial_date(end_year)) : '' %}
         {% set end_help_id = detail_form.endDate.vars.id ~ '-help' %}
         <div class="col-span-1" data-controller="imperial-date">
@@ -317,8 +317,8 @@
                 </div>
             </div>
         </div>
-        {% set proof_day = data ? data.deliveryProofDay : null %}
-        {% set proof_year = data ? data.deliveryProofYear : null %}
+        {% set proof_day = data.deliveryProofDay ?? null %}
+        {% set proof_year = data.deliveryProofYear ?? null %}
         {% set proof_value = (proof_day is not null and proof_year is not null) ? (proof_day|imperial_date(proof_year)) : '' %}
         {% set proof_date_help_id = detail_form.deliveryProofDate.vars.id ~ '-help' %}
         <div data-controller="imperial-date">

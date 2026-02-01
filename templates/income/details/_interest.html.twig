@@ -107,11 +107,11 @@
         </div>
     </div>
     {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
-    {% set start_day = data ? data.startDay : null %}
-    {% set start_year = data ? data.startYear : null %}
+    {% set start_day = data.startDay ?? null %}
+    {% set start_year = data.startYear ?? null %}
     {% set start_value = (start_day is not null and start_year is not null) ? (start_day|imperial_date(start_year)) : '' %}
-    {% set end_day = data ? data.endDay : null %}
-    {% set end_year = data ? data.endYear : null %}
+    {% set end_day = data.endDay ?? null %}
+    {% set end_year = data.endYear ?? null %}
     {% set end_value = (end_day is not null and end_year is not null) ? (end_day|imperial_date(end_year)) : '' %}
     <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set start_help_id = detail_form.startDate.vars.id ~ '-help' %}

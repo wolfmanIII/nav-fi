@@ -211,8 +211,8 @@
                 </div>
             </div>    
             {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
-            {% set delivery_day = (data and data.deliveryDay is defined) ? data.deliveryDay : null %}
-            {% set delivery_year = (data and data.deliveryYear is defined) ? data.deliveryYear : null %}
+            {% set delivery_day = data.deliveryDay ?? null %}
+            {% set delivery_year = data.deliveryYear ?? null %}
             {% set delivery_value = (delivery_day is not null and delivery_year is not null) ? (delivery_day|imperial_date(delivery_year)) : '' %}
             {% set delivery_help_id = detail_form.deliveryDate.vars.id ~ '-help' %}
             <div data-controller="imperial-date">
@@ -371,8 +371,8 @@
                 </div>
             </div>
         </div>
-        {% set proof_day = (data and data.deliveryProofDay is defined) ? data.deliveryProofDay : null %}
-        {% set proof_year = (data and data.deliveryProofYear is defined) ? data.deliveryProofYear : null %}
+        {% set proof_day = data.deliveryProofDay ?? null %}
+        {% set proof_year = data.deliveryProofYear ?? null %}
         {% set proof_value = (proof_day is not null and proof_year is not null) ? (proof_day|imperial_date(proof_year)) : '' %}
         {% set proof_date_help_id = detail_form.deliveryProofDate.vars.id ~ '-help' %}
         <div data-controller="imperial-date">

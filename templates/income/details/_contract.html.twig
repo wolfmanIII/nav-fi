@@ -111,11 +111,11 @@
     </div>
 
     {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
-    {% set start_day = data ? data.startDay : null %}
-    {% set start_year = data ? data.startYear : null %}
+    {% set start_day = data.startDay ?? null %}
+    {% set start_year = data.startYear ?? null %}
     {% set start_value = (start_day is not null and start_year is not null) ? (start_day|imperial_date(start_year)) : '' %}
-    {% set deadline_day = data ? data.deadlineDay : null %}
-    {% set deadline_year = data ? data.deadlineYear : null %}
+    {% set deadline_day = data.deadlineDay ?? null %}
+    {% set deadline_year = data.deadlineYear ?? null %}
     {% set deadline_value = (deadline_day is not null and deadline_year is not null) ? (deadline_day|imperial_date(deadline_year)) : '' %}
     <div class="col-span-2 grid grid-cols-2 gap-4">
         {% set start_help_id = detail_form.startDate.vars.id ~ '-help' %}
