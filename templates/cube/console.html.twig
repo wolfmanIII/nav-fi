@@ -91,6 +91,14 @@
                                     <span class="text-[10px] font-mono text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">{{ opp.data.type }}</span>
                                     <span class="text-xs font-mono text-emerald-400 font-bold">{{ opp.amount|format_number({ min_fraction_digit: 0, max_fraction_digit: 0 }, 'decimal', 'default', app.request.locale) }} Cr</span>
                                 </div>
+                                {# Route Indicator #}
+                                <div class="flex items-center gap-2 mt-2 text-[9px] font-mono uppercase tracking-tighter">
+                                    <span class="text-slate-500">FROM:</span>
+                                    <span class="text-slate-300">{{ opp.data.details.origin|default('Unknown') }}</span>
+                                    <span class="text-cyan-500/50">&rarr;</span>
+                                    <span class="text-slate-500">TO:</span>
+                                    <span class="text-cyan-400">{{ opp.data.details.destination|default('Unknown') }}</span>
+                                </div>
                             </a>
                             <div class="shrink-0">
                                 <button class="flex items-center gap-1.5 text-[9px] text-slate-400 hover:text-rose-400 font-bold font-orbitron uppercase tracking-widest transition-all border border-slate-800 px-3 py-2 rounded bg-slate-900/80 hover:bg-rose-950/30 hover:border-rose-500/40" 
@@ -140,6 +148,15 @@
                 <div class="text-[10px] text-rose-400 font-mono font-bold bg-rose-500/10 px-2 py-1 rounded border border-rose-500/20 hidden" data-slot="twist"></div>
             </div>
 
+            <!-- Route Block -->
+            <div class="flex items-center gap-2 mb-3 text-[10px] font-mono uppercase tracking-widest bg-slate-900/50 p-2 rounded border border-slate-800/50">
+                <span class="text-slate-600">FROM</span>
+                <span class="text-slate-300" data-slot="origin">ORIGIN</span>
+                <span class="text-cyan-500 font-bold px-1">&rarr;</span>
+                <span class="text-slate-600">TO</span>
+                <span class="text-cyan-400" data-slot="destination">DESTINATION</span>
+            </div>
+
             <div class="text-[10px] text-slate-500 font-mono border-t border-slate-800 pt-2 line-clamp-1" data-slot="details">Details...</div>
             
             <div class="flex justify-end gap-2 mt-4 pt-2">
@@ -165,6 +182,14 @@
                 <div class="flex items-center gap-2 mt-1">
                     <span class="text-[10px] font-mono text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800" data-slot="type">TYPE</span>
                     <span class="text-xs font-mono text-emerald-400 font-bold" data-slot="amount">0 Cr</span>
+                </div>
+                {# Route Indicator #}
+                <div class="flex items-center gap-2 mt-2 text-[9px] font-mono uppercase tracking-tighter">
+                    <span class="text-slate-500">FROM:</span>
+                    <span class="text-slate-300" data-slot="origin">ORIGIN</span>
+                    <span class="text-cyan-500/50">&rarr;</span>
+                    <span class="text-slate-500">TO:</span>
+                    <span class="text-cyan-400" data-slot="destination">DESTINATION</span>
                 </div>
             </a>
             <div class="shrink-0">

@@ -48,6 +48,10 @@ export default class extends Controller {
         clone.querySelector('[data-slot="summary"]').textContent = item.summary;
         clone.querySelector('[data-slot="amount"]').textContent = new Intl.NumberFormat().format(item.amount);
 
+        // Route (New in 2.1)
+        clone.querySelector('[data-slot="origin"]').textContent = item.details?.origin || 'Unknown';
+        clone.querySelector('[data-slot="destination"]').textContent = item.details?.destination || 'Unknown';
+
         // Narrative & Difficulty (New in 2.0)
         if (item.details?.difficulty) {
             const diffSlot = clone.querySelector('[data-slot="difficulty"]');
@@ -194,6 +198,10 @@ export default class extends Controller {
         clone.querySelector('[data-slot="summary"]').textContent = item.summary;
         clone.querySelector('[data-slot="type"]').textContent = item.type;
         clone.querySelector('[data-slot="amount"]').textContent = new Intl.NumberFormat().format(item.amount) + ' Cr';
+
+        // Route (New in 2.1)
+        clone.querySelector('[data-slot="origin"]').textContent = item.details?.origin || 'Unknown';
+        clone.querySelector('[data-slot="destination"]').textContent = item.details?.destination || 'Unknown';
 
         // Imposta i pulsanti
         const unsaveBtn = clone.querySelector('[data-slot="unsave-btn"]');
