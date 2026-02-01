@@ -35,6 +35,7 @@ class ContractController extends AbstractController
             'opportunity' => $opportunity,
             'assets' => $this->assetRepo->findAll(), // TODO: Filter by Campaign
             'localLaws' => $this->em->getRepository(LocalLaw::class)->findAll(),
+            'companyRoles' => $this->em->getRepository(\App\Entity\CompanyRole::class)->findAll(),
         ]);
     }
 
@@ -61,6 +62,7 @@ class ContractController extends AbstractController
             'deadlineDay' => $request->request->get('deadline_day'),
             'deadlineYear' => $request->request->get('deadline_year'),
             'local_law_id' => $request->request->get('localLaw'),
+            'patron_role_id' => $request->request->get('patron_role_id'),
         ];
 
         try {

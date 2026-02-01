@@ -203,6 +203,7 @@ class CubeController extends AbstractController
             'opportunity' => $opportunity,
             'assets' => $assets,
             'localLaws' => $em->getRepository(LocalLaw::class)->findAll(),
+            'companyRoles' => $em->getRepository(\App\Entity\CompanyRole::class)->findAll(),
         ]);
     }
 
@@ -229,6 +230,7 @@ class CubeController extends AbstractController
                 'deadline_day' => $request->request->get('deadline_day'),
                 'deadline_year' => $request->request->get('deadline_year'),
                 'local_law_id' => $request->request->get('localLaw'),
+                'patron_role_id' => $request->request->get('patron_role_id'),
             ];
 
             $this->brokerService->acceptOpportunity($opportunity, $asset, array_filter($overrides));

@@ -257,6 +257,30 @@
                     </div>
                 {% endif %}
 
+                {% if opportunity.data.details.patron is defined %}
+                    <div class="form-control w-full mb-6 p-4 bg-slate-950/50 border border-slate-800 rounded-lg">
+                        <label class="label pt-0">
+                            <span class="label-text text-slate-400 text-[10px] uppercase font-bold tracking-widest">Counterparty Registration</span>
+                        </label>
+                        <div class="flex flex-col gap-3">
+                            <div class="flex items-center gap-3">
+                                <div class="px-3 py-2 bg-slate-900 border border-slate-700 rounded text-cyan-400 font-mono text-xs flex-1">
+                                    {{ opportunity.data.details.patron }}
+                                </div>
+                                <div class="text-[9px] text-slate-500 uppercase font-bold">Patron Name</div>
+                            </div>
+                            
+                            <select name="patron_role_id" class="select select-bordered select-sm bg-slate-900 border-slate-800 text-white w-full">
+                                <option value="" selected>-- Register as Company? (Select Role) --</option>
+                                {% for role in companyRoles %}
+                                    <option value="{{ role.id }}">{{ role.shortDescription|default(role.code) }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="text-[9px] text-slate-600 italic">If a role is selected, a new Company entity will be created automatically.</div>
+                        </div>
+                    </div>
+                {% endif %}
+
                 {% if opportunity.data.type == 'TRADE' %}
                 <div class="form-control w-full mb-6">
                     <label class="label">
