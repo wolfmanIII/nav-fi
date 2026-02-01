@@ -82,31 +82,76 @@
             <!-- Content -->
             <div class="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900" id="storage-container">
                 {% for opp in active_session.opportunities %}
-                    <div class="relative bg-slate-950 border border-slate-800 rounded-lg p-4 hover:border-amber-500/30 transition-all group overflow-hidden">
-                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50 rounded-l-lg"></div>
-                        <div class="pl-2 flex justify-between items-center gap-4">
-                            <a href="{{ path('app_cube_contract_show', {id: opp.id}) }}" class="flex-1 group/title">
-                                <h4 class="text-sm font-bold text-amber-100 font-rajdhani uppercase tracking-wide group-hover/title:text-cyan-400 transition-colors">{{ opp.summary }}</h4>
-                                <div class="flex items-center gap-2 mt-1">
-                                    <span class="text-[10px] font-mono text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">{{ opp.data.type }}</span>
-                                    <span class="text-xs font-mono text-emerald-400 font-bold">{{ opp.amount|format_number({ min_fraction_digit: 0, max_fraction_digit: 0 }, 'decimal', 'default', app.request.locale) }} Cr</span>
+                    <div class="card relative bg-slate-950 border border-slate-800 rounded-xl overflow-hidden hover:border-amber-500/40 transition-all group duration-300 shadow-lg">
+                        <div class="absolute inset-0 bg-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50 rounded-l-lg z-20"></div>
+                        
+                        <div class="p-4 relative z-10">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold font-mono uppercase tracking-wider bg-slate-900 border border-slate-700 text-slate-300">{{ opp.data.type }}</span>
+                                    {% if opp.data.details.difficulty is defined %}
+                                        {% set diff = opp.data.details.difficulty %}
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold font-mono uppercase tracking-wider 
+                                            {{ diff == 'Black Ops' ? 'bg-rose-950 text-rose-500 border-rose-900' : 
+                                               (diff == 'Hazardous' ? 'bg-amber-950 text-amber-500 border-amber-900' : 'bg-emerald-950 text-emerald-500 border-emerald-900') }} border">
+                                            {{ diff }}
+                                        </span>
+                                    {% endif %}
+                                    <span class="text-[10px] font-mono text-amber-400">{{ opp.data.distance > 0 ? (opp.data.distance ~ ' PC') : 'LOCAL' }}</span>
                                 </div>
-                                {# Route Indicator #}
-                                <div class="flex items-center gap-2 mt-2 text-[9px] font-mono uppercase tracking-tighter">
-                                    <span class="text-slate-500">FROM:</span>
-                                    <span class="text-slate-300">{{ opp.data.details.origin|default('Unknown') }}</span>
-                                    <span class="text-cyan-500/50">&rarr;</span>
-                                    <span class="text-slate-500">TO:</span>
-                                    <span class="text-cyan-400">{{ opp.data.details.destination|default('Unknown') }}</span>
+                                <div class="text-right leading-none">
+                                    <div class="text-lg font-bold font-mono text-emerald-400 drop-shadow-[0_0_5px_rgba(16,185,129,0.5)]">{{ opp.amount|format_number({ min_fraction_digit: 0, max_fraction_digit: 0 }, 'decimal', 'default', app.request.locale) }}</div>
+                                    <div class="text-[9px] text-slate-600 uppercase tracking-widest font-bold">Credits</div>
                                 </div>
+                            </div>
+                            
+                            <a href="{{ path('app_cube_contract_show', {id: opp.id}) }}" class="block group/title mb-2">
+                                <h3 class="font-bold text-sm text-amber-100 uppercase font-rajdhani tracking-wide group-hover/title:text-cyan-400 transition-colors">{{ opp.summary }}</h3>
                             </a>
-                            <div class="shrink-0">
-                                <button class="flex items-center gap-1.5 text-[9px] text-slate-400 hover:text-rose-400 font-bold font-orbitron uppercase tracking-widest transition-all border border-slate-800 px-3 py-2 rounded bg-slate-900/80 hover:bg-rose-950/30 hover:border-rose-500/40" 
+                            
+                            <!-- Narrative Block -->
+                            {% if opp.data.details.briefing is defined %}
+                                <div class="space-y-2 mb-3">
+                                    <div class="text-[11px] text-cyan-100/80 font-mono italic leading-relaxed border-l-2 border-amber-500/30 pl-2 py-1 bg-amber-500/5 rounded-r">
+                                        {{ opp.data.details.briefing }}
+                                    </div>
+                                    {% if opp.data.details.twist is defined and opp.data.details.twist != 'None' %}
+                                        <div class="text-[10px] text-rose-400 font-mono font-bold bg-rose-500/10 px-2 py-1 rounded border border-rose-500/20">
+                                            TWIST: <span class="glitch-text">{{ opp.data.details.twist }}</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+
+                            <!-- Route Block -->
+                            <div class="flex items-center gap-2 mb-3 text-[10px] font-mono uppercase tracking-widest bg-slate-900/50 p-2 rounded border border-slate-800/50">
+                                <span class="text-slate-600">FROM</span>
+                                <span class="text-slate-300">{{ opp.data.details.origin|default('Unknown') }}</span>
+                                <span class="text-amber-500 font-bold px-1">&rarr;</span>
+                                <span class="text-slate-600">TO</span>
+                                <span class="text-cyan-400">{{ opp.data.details.destination|default('Unknown') }}</span>
+                            </div>
+
+                            <div class="text-[10px] text-slate-500 font-mono border-t border-slate-800 pt-2 line-clamp-1">
+                                {% set internals = ['origin', 'destination', 'dest_hex', 'dest_dist', 'difficulty', 'mission_type', 'twist', 'tier', 'briefing', 'patron', 'variables', 'start_day', 'start_year'] %}
+                                {% for key, val in opp.data.details %}
+                                    {% if key not in internals %}
+                                        {{ key|replace({'_': ' '}) }}: {{ val }} {{ not loop.last ? '// ' : '' }}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="flex justify-end gap-2 mt-4 pt-2">
+                                <button class="px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-rose-400 hover:bg-rose-950/30 transition-all border border-transparent hover:border-rose-500/40" 
                                         data-action="cube#unsave"
                                         data-cube-id-param="{{ opp.id }}">
-                                    {% include 'icons/radar.html.twig' with { dim: 10, class: 'opacity-70' } %}
-                                    <span>PURGE</span>
+                                    PURGE
                                 </button>
+                                <a href="{{ path('app_cube_contract_show', {id: opp.id}) }}" class="px-3 py-1.5 rounded bg-amber-900/20 border border-amber-500/30 text-amber-400 hover:bg-amber-500 hover:text-black text-[10px] font-bold uppercase tracking-widest shadow-[0_0_10px_rgba(245,158,11,0.1)] hover:shadow-[0_0_15px_rgba(245,158,11,0.4)] transition-all flex items-center gap-1">
+                                    {% include 'icons/cube.html.twig' with { dim: 10 } %}
+                                    View Manifest
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -174,31 +219,54 @@
 
 <!-- Template for Storage Item -->
 <template id="storage-item-template">
-    <div class="relative bg-slate-950 border border-slate-800 rounded-lg p-4 hover:border-amber-500/30 transition-all group animate-[fadeIn_0.5s_ease-out] overflow-hidden">
-        <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50 rounded-l-lg"></div>
-        <div class="pl-2 flex justify-between items-center gap-4">
-            <a href="#" class="flex-1 group/title" data-slot="view-link">
-                <h4 class="text-sm font-bold text-amber-100 font-rajdhani uppercase tracking-wide group-hover/title:text-cyan-400 transition-colors" data-slot="summary">Summary</h4>
-                <div class="flex items-center gap-2 mt-1">
-                    <span class="text-[10px] font-mono text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800" data-slot="type">TYPE</span>
-                    <span class="text-xs font-mono text-emerald-400 font-bold" data-slot="amount">0 Cr</span>
+    <div class="card relative bg-slate-950 border border-slate-800 rounded-xl overflow-hidden hover:border-amber-500/40 transition-all group duration-300 shadow-lg animate-[fadeIn_0.5s_ease-out]">
+        <div class="absolute inset-0 bg-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50 rounded-l-lg z-20"></div>
+        
+        <div class="p-4 relative z-10">
+            <div class="flex justify-between items-start mb-3">
+                <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold font-mono uppercase tracking-wider bg-slate-900 border border-slate-700 text-slate-300" data-slot="type">TYPE</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold font-mono uppercase tracking-wider hidden" data-slot="difficulty"></span>
+                    <span class="text-[10px] font-mono text-amber-400" data-slot="dist">2 PC</span>
                 </div>
-                {# Route Indicator #}
-                <div class="flex items-center gap-2 mt-2 text-[9px] font-mono uppercase tracking-tighter">
-                    <span class="text-slate-500">FROM:</span>
-                    <span class="text-slate-300" data-slot="origin">ORIGIN</span>
-                    <span class="text-cyan-500/50">&rarr;</span>
-                    <span class="text-slate-500">TO:</span>
-                    <span class="text-cyan-400" data-slot="destination">DESTINATION</span>
+                <div class="text-right leading-none">
+                    <div class="text-lg font-bold font-mono text-emerald-400 drop-shadow-[0_0_5px_rgba(16,185,129,0.5)]" data-slot="amount">15,000</div>
+                    <div class="text-[9px] text-slate-600 uppercase tracking-widest font-bold">Credits</div>
                 </div>
+            </div>
+            
+            <a href="#" class="block group/title mb-2" data-slot="view-link">
+                <h3 class="font-bold text-sm text-amber-100 uppercase font-rajdhani tracking-wide group-hover/title:text-cyan-400 transition-colors" data-slot="summary">Summary</h3>
             </a>
-            <div class="shrink-0">
-                <button class="flex items-center gap-1.5 text-[9px] text-slate-400 hover:text-rose-400 font-bold font-orbitron uppercase tracking-widest transition-all border border-slate-800 px-3 py-2 rounded bg-slate-900/80 hover:bg-rose-950/30 hover:border-rose-500/40" 
+            
+            <!-- Narrative Block -->
+            <div class="space-y-2 mb-3 hidden" data-slot="narrative-block">
+                <div class="text-[11px] text-cyan-100/80 font-mono italic leading-relaxed border-l-2 border-amber-500/30 pl-2 py-1 bg-amber-500/5 rounded-r" data-slot="briefing"></div>
+                <div class="text-[10px] text-rose-400 font-mono font-bold bg-rose-500/10 px-2 py-1 rounded border border-rose-500/20 hidden" data-slot="twist"></div>
+            </div>
+
+            <!-- Route Block -->
+            <div class="flex items-center gap-2 mb-3 text-[10px] font-mono uppercase tracking-widest bg-slate-900/50 p-2 rounded border border-slate-800/50">
+                <span class="text-slate-600">FROM</span>
+                <span class="text-slate-300" data-slot="origin">ORIGIN</span>
+                <span class="text-amber-500 font-bold px-1">&rarr;</span>
+                <span class="text-slate-600">TO</span>
+                <span class="text-cyan-400" data-slot="destination">DESTINATION</span>
+            </div>
+
+            <div class="text-[10px] text-slate-500 font-mono border-t border-slate-800 pt-2 line-clamp-1" data-slot="details">Details...</div>
+            
+            <div class="flex justify-end gap-2 mt-4 pt-2">
+                <button class="px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-rose-400 hover:bg-rose-950/30 transition-all border border-transparent hover:border-rose-500/40" 
                         data-action="cube#unsave"
                         data-slot="unsave-btn">
-                    {% include 'icons/radar.html.twig' with { dim: 10, class: 'opacity-70' } %}
-                    <span>PURGE</span>
+                    PURGE
                 </button>
+                <a href="#" class="px-3 py-1.5 rounded bg-amber-900/20 border border-amber-500/30 text-amber-400 hover:bg-amber-500 hover:text-black text-[10px] font-bold uppercase tracking-widest shadow-[0_0_10px_rgba(245,158,11,0.1)] hover:shadow-[0_0_15px_rgba(245,158,11,0.4)] transition-all flex items-center gap-1" data-slot="view-link-btn">
+                    {% include 'icons/cube.html.twig' with { dim: 10 } %}
+                    View Manifest
+                </a>
             </div>
         </div>
     </div>

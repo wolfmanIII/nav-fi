@@ -193,22 +193,60 @@ export default class extends Controller {
 
         const template = document.getElementById('storage-item-template');
         const clone = template.content.cloneNode(true);
-        const cardElement = clone.querySelector('.relative');
+        const cardElement = clone.querySelector('.card');
 
         clone.querySelector('[data-slot="summary"]').textContent = item.summary;
         clone.querySelector('[data-slot="type"]').textContent = item.type;
-        clone.querySelector('[data-slot="amount"]').textContent = new Intl.NumberFormat().format(item.amount) + ' Cr';
+        clone.querySelector('[data-slot="amount"]').textContent = new Intl.NumberFormat().format(item.amount);
+        clone.querySelector('[data-slot="dist"]').textContent = item.distance > 0 ? `${item.distance} PC` : 'LOCAL';
 
-        // Route (New in 2.1)
+        // Difficulty
+        if (item.details?.difficulty) {
+            const diffSlot = clone.querySelector('[data-slot="difficulty"]');
+            diffSlot.textContent = item.details.difficulty.toUpperCase();
+            diffSlot.classList.remove('hidden');
+            if (item.details.difficulty === 'Black Ops') {
+                diffSlot.classList.add('bg-rose-950', 'text-rose-500', 'border-rose-900');
+            } else if (item.details.difficulty === 'Hazardous') {
+                diffSlot.classList.add('bg-amber-950', 'text-amber-500', 'border-amber-900');
+            } else {
+                diffSlot.classList.add('bg-emerald-950', 'text-emerald-500', 'border-emerald-900');
+            }
+        }
+
+        // Narrative
+        if (item.details?.briefing) {
+            clone.querySelector('[data-slot="narrative-block"]').classList.remove('hidden');
+            clone.querySelector('[data-slot="briefing"]').textContent = item.details.briefing;
+
+            if (item.details.twist && item.details.twist !== 'None') {
+                const twistSlot = clone.querySelector('[data-slot="twist"]');
+                twistSlot.innerHTML = `TWIST: <span class="glitch-text">${item.details.twist}</span>`;
+                twistSlot.classList.remove('hidden');
+            }
+        }
+
+        // Route
         clone.querySelector('[data-slot="origin"]').textContent = item.details?.origin || 'Unknown';
         clone.querySelector('[data-slot="destination"]').textContent = item.details?.destination || 'Unknown';
 
-        // Imposta i pulsanti
+        // Details
+        const internals = ['origin', 'destination', 'dest_hex', 'dest_dist', 'difficulty', 'mission_type', 'twist', 'tier', 'briefing', 'patron', 'variables', 'start_day', 'start_year'];
+        const details = Object.entries(item.details)
+            .filter(([k]) => !internals.includes(k))
+            .map(([k, v]) => `${k.replace('_', ' ')}: ${v}`)
+            .join(' // ');
+        clone.querySelector('[data-slot="details"]').textContent = details || 'Standard Terms Apply';
+
+        // Buttons
         const unsaveBtn = clone.querySelector('[data-slot="unsave-btn"]');
         unsaveBtn.dataset.id = id;
 
         const viewLink = clone.querySelector('[data-slot="view-link"]');
         viewLink.href = `/cube/contract/${id}`;
+
+        const viewBtnLink = clone.querySelector('[data-slot="view-link-btn"]');
+        if (viewBtnLink) viewBtnLink.href = `/cube/contract/${id}`;
 
         container.prepend(clone);
     }
