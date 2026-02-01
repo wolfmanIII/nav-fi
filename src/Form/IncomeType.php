@@ -141,6 +141,7 @@ class IncomeType extends AbstractType
                 'placeholder' => '// ASSET',
                 'class' => Asset::class,
                 'mapped' => false, // Income è collegato a FinancialAccount, non direttamente all'Asset nella proprietà dell'entità (solitamente)
+                'data' => $asset,
                 'required' => false,
                 'choice_label' => fn(Asset $asset) =>
                 sprintf(
@@ -350,10 +351,16 @@ class IncomeType extends AbstractType
         // Recupero automatico per campi disabilitati via JS:
         // Se JS disabilita l'input perché l'Asset ha un conto, questo non viene inviato.
         // Recuperiamo il conto dell'Asset e lo impostiamo, garantendo che la validazione passi.
-        if (!$hasAccount && !$hasNewLedger && $asset && $asset->getFinancialAccount()) {
-            $financialAccount = $asset->getFinancialAccount();
-            $income->setFinancialAccount($financialAccount);
-            $hasAccount = true;
+        if ($asset && !$hasNewLedger) {
+            $assetAccount = $asset->getFinancialAccount();
+            if ($assetAccount) {
+                // Se non è stato selezionato un conto diverso, forziamo quello dell'asset desiderato
+                if (!$financialAccount || $financialAccount !== $assetAccount) {
+                    $financialAccount = $assetAccount;
+                    $income->setFinancialAccount($financialAccount);
+                    $hasAccount = true;
+                }
+            }
         }
 
         if ($hasAccount && $hasNewLedger) {
