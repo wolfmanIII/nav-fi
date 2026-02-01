@@ -140,6 +140,15 @@ class IncomeDetailsType extends AbstractType
                 continue;
             }
 
+            // Gestione speciale per cargoQty (può contenere unità come "tons")
+            if ($fieldName === 'cargoQty') {
+                $this->addIfEnabled($builder, $options, 'cargoQty', TextType::class, [
+                    'required' => false,
+                    'attr' => ['class' => 'input m-1 w-full'],
+                ]);
+                continue;
+            }
+
             // Fallback su tipo dedotto dal nome o TextType
             $type = $this->deriveType($fieldName);
             $this->addIfEnabled($builder, $options, $fieldName, $type, [
