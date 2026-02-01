@@ -163,23 +163,35 @@
 
                         <div class="bg-slate-950/80 rounded-lg p-6 border border-slate-800">
                              <h4 class="text-slate-200 font-bold mb-4 text-xs uppercase tracking-widest text-center">Lifecycle: Dalla Nave al Credito</h4>
-                             <div class="flex items-center justify-between max-w-md mx-auto relative cursor-default">
+                             <div class="flex items-center justify-between max-w-lg mx-auto relative cursor-default">
                                  <div class="absolute top-1/2 left-0 w-full h-px bg-slate-800 -translate-y-1/2"></div>
-                                 <div class="z-10 bg-slate-900 border border-slate-700 p-3 rounded group hover:border-cyan-500 transition-colors">
-                                     {% include 'icons/assets.html.twig' with { dim: 20 } %}
-                                     <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] uppercase font-bold text-slate-500 group-hover:text-cyan-400 whitespace-nowrap">1. Asset</span>
+                                 
+                                 <div class="z-10 flex flex-col items-center gap-2">
+                                     <div class="bg-slate-900 border border-slate-700 p-3 rounded group hover:border-cyan-500 transition-colors">
+                                         {% include 'icons/assets.html.twig' with { dim: 20 } %}
+                                     </div>
+                                     <span class="text-[9px] uppercase font-bold text-slate-500 group-hover:text-cyan-400 whitespace-nowrap">1. Asset</span>
                                  </div>
-                                 <div class="z-10 bg-slate-900 border border-slate-700 p-3 rounded group hover:border-emerald-500 transition-colors">
-                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h11M15 15l2 2 4-4"/></svg>
-                                     <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] uppercase font-bold text-slate-500 group-hover:text-emerald-400 whitespace-nowrap">2. Account</span>
+
+                                 <div class="z-10 flex flex-col items-center gap-2">
+                                     <div class="bg-slate-900 border border-slate-700 p-3 rounded group hover:border-emerald-500 transition-colors">
+                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h11M15 15l2 2 4-4"/></svg>
+                                     </div>
+                                     <span class="text-[9px] uppercase font-bold text-slate-500 group-hover:text-emerald-400 whitespace-nowrap">2. Account</span>
                                  </div>
-                                 <div class="z-10 bg-slate-900 border border-slate-700 p-3 rounded group hover:border-amber-500 transition-colors">
-                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M5 5h14M5 19h14M2 12h20L12 2z"/></svg>
-                                     <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] uppercase font-bold text-slate-500 group-hover:text-amber-400 whitespace-nowrap">3. Ledger</span>
+
+                                 <div class="z-10 flex flex-col items-center gap-2">
+                                     <div class="bg-slate-900 border border-slate-700 p-3 rounded group hover:border-amber-500 transition-colors">
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M5 5h14M5 19h14M2 12h20L12 2z"/></svg>
+                                     </div>
+                                     <span class="text-[9px] uppercase font-bold text-slate-500 group-hover:text-amber-400 whitespace-nowrap">3. Ledger</span>
                                  </div>
-                                  <div class="z-10 bg-slate-900 border border-slate-700 p-3 rounded group hover:border-emerald-500 transition-colors">
-                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                                     <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] uppercase font-bold text-slate-500 group-hover:text-emerald-400 whitespace-nowrap">4. Credits</span>
+
+                                 <div class="z-10 flex flex-col items-center gap-2">
+                                      <div class="bg-slate-900 border border-slate-700 p-3 rounded group hover:border-emerald-500 transition-colors">
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+                                      </div>
+                                     <span class="text-[9px] uppercase font-bold text-slate-500 group-hover:text-emerald-400 whitespace-nowrap">4. Credits</span>
                                  </div>
                              </div>
                              <div class="mt-12 text-center">
