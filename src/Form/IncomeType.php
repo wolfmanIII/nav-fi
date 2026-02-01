@@ -188,7 +188,11 @@ class IncomeType extends AbstractType
                 'placeholder' => '// CREDIT ACCOUNT', // Placeholder coerente
                 'label' => 'Link Existing Ledger (Credit)', // Dove entrano i soldi
                 'required' => false,
-                'choice_label' => fn(FinancialAccount $fa) => $fa->getDisplayName(),
+                'choice_label' => function (FinancialAccount $fa) {
+                    $assetRef = $fa->getAsset() ? '[' . $fa->getAsset()->getName() . '] ' : '[GENERIC] ';
+                    $bankRef = $fa->getBankName() ?: ($fa->getBank() ? $fa->getBank()->getName() : 'Unknown institution');
+                    return sprintf('%s%s (%s)', $assetRef, $bankRef, $fa->getCredits());
+                },
                 // Logica per mostrare se l'account appartiene all'asset selezionato è spesso fatta via query_builder o attributi dati se JS lo filtra.
                 // Mortgage usa filtro JS (data-financial-account-id su opzione Asset solitamente?) O filtro standard.
                 // Qui ci atteniamo al pattern:

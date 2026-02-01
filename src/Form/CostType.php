@@ -49,6 +49,7 @@ class CostType extends AbstractType
                 'placeholder' => '// ASSET',
                 'class' => Asset::class,
                 'mapped' => false,
+                'data' => $asset,
                 'required' => false,
                 'choice_label' => fn(Asset $asset) =>
                 sprintf(
@@ -139,7 +140,11 @@ class CostType extends AbstractType
                 'class' => FinancialAccount::class,
                 'placeholder' => '// DEBIT ACCOUNT',
                 'label' => 'Source Account (Debit)',
-                'choice_label' => fn(FinancialAccount $fa) => $fa->getDisplayName(),
+                'choice_label' => function (FinancialAccount $fa) {
+                    $assetRef = $fa->getAsset() ? '[' . $fa->getAsset()->getName() . '] ' : '[GENERIC] ';
+                    $bankRef = $fa->getBankName() ?: ($fa->getBank() ? $fa->getBank()->getName() : 'Unknown institution');
+                    return sprintf('%s%s (%s)', $assetRef, $bankRef, $fa->getCredits());
+                },
                 'query_builder' => function (FinancialAccountRepository $repo) use ($user) {
                     $qb = $repo->createQueryBuilder('fa')
                         ->leftJoin('fa.asset', 'a')
@@ -321,10 +326,16 @@ class CostType extends AbstractType
         $hasNewLedger = !empty($bank) || !empty($bankName);
 
         // Auto-Recovery for JS-Disabled fields
-        if (!$hasAccount && !$hasNewLedger && $asset && $asset->getFinancialAccount()) {
-            $financialAccount = $asset->getFinancialAccount();
-            $cost->setFinancialAccount($financialAccount);
-            $hasAccount = true;
+        if ($asset && !$hasNewLedger) {
+            $assetAccount = $asset->getFinancialAccount();
+            if ($assetAccount) {
+                // If not manually selected or different from current asset's account, force it
+                if (!$financialAccount || $financialAccount !== $assetAccount) {
+                    $financialAccount = $assetAccount;
+                    $cost->setFinancialAccount($financialAccount);
+                    $hasAccount = true;
+                }
+            }
         }
 
         if ($hasAccount && $hasNewLedger) {
