@@ -15,26 +15,11 @@
             subheader: 'Asset expense // Logistical Outlay',
             title: 'LOG COSTS',
             titleSuffix: '// Expenses',
-            description: 'Fuel, life support and repairs: keep the hull pressurized.'
+            description: 'Fuel, life support and repairs: keep the hull pressurized.',
+            asset: cost.financialAccount.asset ?? null
         } %}
             {% import '_tooltip.html.twig' as tooltip %}
             {% block content %}
-                {# Session Date Indicator #}
-                {% set campaign = cost.financialAccount.asset.campaign ?? cost.financialAccount.campaign ?? null %}
-                {% if campaign %}
-                    <div class="flex flex-wrap gap-2 mt-3">
-                        <div class="badge badge-neutral gap-1.5 px-2.5 py-1.5 text-[10px] font-mono border border-slate-700">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                            </svg>
-                            <span class="font-bold tracking-wider text-slate-400">{{ campaign.title }}:</span>
-                            <span class="text-slate-300">{{ campaign.sessionDay|imperial_date(campaign.sessionYear) }}</span>
-                        </div>
-                    </div>
-                {% endif %}
             {% endblock %}
             {% block actions %}
                 {% if cost.id %}
@@ -57,12 +42,39 @@
             </div>
         {% endif %}
 
-
-
-        {{ form_start(form) }}
+        {{ form_start(form, { attr: { 'data-controller': 'form-visibility financial-lock' } }) }}
         {{ form_widget(form._token) }}
 
-        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+        {# ASSET CONTEXT (Top) #}
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative" data-controller="campaign-asset">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Asset Context</legend>
+
+            <div class="col-span-2 md:col-span-1">
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.campaign, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(form.campaign) }}
+                {{ form_errors(form.campaign) }}
+            </div>
+
+            <div class="col-span-2 md:col-span-1">
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.asset, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(form.asset, { attr: { 
+                    'class': 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                    'data-campaign-asset-target': 'asset',
+                    'data-controller': 'year-limit',
+                    'data-year-limit-default-value': form.asset.vars.attr['data-year-limit-default-value'] ?? '',
+                    'data-financial-lock-target': 'asset',
+                    'data-form-visibility-target': 'trigger',
+                    'data-action': 'change->year-limit#onAssetChange change->financial-lock#check change->form-visibility#toggle'
+                }}) }}
+                {{ form_errors(form.asset) }}
+            </div>
+        </fieldset>
+
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative" data-form-visibility-target="container">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Primary Data</legend>
 
             <div class="col-span-2">
@@ -73,23 +85,7 @@
                 {{ form_errors(form.title) }}
             </div>
 
-            <div class="col-span-2 md:col-span-1">
-                <div class="flex items-baseline h-5 mb-1">
-                    {{ form_label(form.campaign, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                </div>
-                {{ form_widget(form.campaign, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
-                {{ form_errors(form.campaign) }}
-            </div>
-
-            <div class="col-span-2 md:col-span-1">
-                <div class="flex items-baseline h-5 mb-1">
-                    {{ form_label(form.financialAccount, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                </div>
-                {{ form_widget(form.financialAccount) }}
-                {{ form_errors(form.financialAccount) }}
-            </div>
-
-            <div class="col-span-2 md:col-span-1">
+             <div class="col-span-2 md:col-span-1">
                 {% set amount_help_id = form.amount.vars.id ~ '-help' %}
                 <div class="flex items-baseline justify-between h-5 mb-1">
                     {{ form_label(form.amount, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
@@ -122,14 +118,107 @@
             </div>
         </fieldset>
 
-        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+        <fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative" data-form-visibility-target="container">
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-teal-500/80 uppercase">Financial Ledger</legend>
+
+            {# DEBIT SIDE (Source) #}
+            <div class="col-span-1 space-y-4">
+                 <div class="pb-2 border-b border-slate-800 mb-2">
+                   <h4 class="text-[10px] uppercase tracking-widest font-bold font-orbitron text-red-400/80">Debit // Source Account</h4>
+                </div>
+
+                <div>
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(form.financialAccount, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(form.financialAccount, { attr: { 
+                        'class': 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                        'data-financial-lock-target': 'debitAccount',
+                        'data-action': 'change->financial-lock#onAccountChange'
+                    } }) }}
+                    {{ form_errors(form.financialAccount) }}
+                    {% if form.financialAccount.vars.help is defined %}
+                        <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">{{ form.financialAccount.vars.help }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="p-3 rounded border border-slate-800 bg-slate-950/30" data-financial-lock-target="debitCreation">
+                    <p class="text-[9px] uppercase tracking-widest font-bold font-orbitron text-slate-500 mb-2">Or open new account</p>
+                    <div class="grid grid-cols-1 gap-3">
+                         <div>
+                             <div class="flex items-baseline h-5 mb-1">
+                                {{ form_label(form.bank, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                            </div>
+                            {{ form_widget(form.bank, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                            {{ form_errors(form.bank) }}
+                             {% if form.bank.vars.help is defined %}
+                                <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">{{ form.bank.vars.help }}</div>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <div class="flex items-baseline h-5 mb-1">
+                                {{ form_label(form.bankName, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                            </div>
+                            {{ form_widget(form.bankName, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 placeholder-slate-600' } }) }}
+                            {{ form_errors(form.bankName) }}
+                            {% if form.bankName.vars.help is defined %}
+                                <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">{{ form.bankName.vars.help }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# CREDIT SIDE (Vendor) #}
+            <div class="col-span-1 space-y-4" data-controller="exclusive-visibility">
+                 <div class="pb-2 border-b border-slate-800 mb-2">
+                   <h4 class="text-[10px] uppercase tracking-widest font-bold font-orbitron text-emerald-400/80">Credit // Vendor Entity</h4>
+                </div>
+
+                <div>
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(form.company, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(form.company, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700', 'data-exclusive-visibility-target': 'trigger', 'data-action': 'change->exclusive-visibility#check' } }) }}
+                    {{ form_errors(form.company) }}
+                    {% if form.company.vars.help is defined %}
+                        <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">{{ form.company.vars.help }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="p-3 rounded border border-slate-800 bg-slate-950/30" data-exclusive-visibility-target="target">
+                    <p class="text-[9px] uppercase tracking-widest font-bold font-orbitron text-slate-500 mb-2">Or new vendor</p>
+                    <div class="grid grid-cols-3 gap-3">
+                         <div class="col-span-2">
+                             <div class="flex items-baseline h-5 mb-1">
+                                {{ form_label(form.vendorName, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                            </div>
+                            {{ form_widget(form.vendorName, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 placeholder-slate-600' } }) }}
+                            {{ form_errors(form.vendorName) }}
+                            {% if form.vendorName.vars.help is defined %}
+                                <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">{{ form.vendorName.vars.help }}</div>
+                            {% endif %}
+                        </div>
+                         <div class="col-span-1">
+                            <div class="flex items-baseline h-5 mb-1">
+                                {{ form_label(form.vendorRole, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                            </div>
+                            {{ form_widget(form.vendorRole, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                            {{ form_errors(form.vendorRole) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative" data-form-visibility-target="container">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Logistics & Classification</legend>
             <div class="col-span-2 md:col-span-1">
                 <div class="flex items-baseline h-5 mb-1">
-                    {{ form_label(form.company, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    {{ form_label(form.targetDestination, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                 </div>
-                {{ form_widget(form.company, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
-                {{ form_errors(form.company) }}
+                {{ form_widget(form.targetDestination, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
+                {{ form_errors(form.targetDestination) }}
             </div>
             <div class="col-span-2 md:col-span-1">
                 <div class="flex items-baseline h-5 mb-1">
@@ -147,9 +236,11 @@
             </div>
         </fieldset>
 
-        {{ include('cost/_detail_items_form.html.twig', { form: form }) }}
+        <div data-form-visibility-target="container">
+           {{ include('cost/_detail_items_form.html.twig', { form: form }) }}
+        </div>
 
-        <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-8 relative">
+        <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-8 relative" data-form-visibility-target="container">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-slate-400 uppercase">Operational Notes</legend>
             <div>
                 <div class="flex items-baseline h-5 mb-1">

@@ -44,13 +44,72 @@ class CostType extends AbstractType
         $minYear = $campaignStartYear ?? $this->limits->getYearMin();
 
         $builder
+            ->add('asset', EntityType::class, [
+                'label' => 'Asset // Name',
+                'placeholder' => '// ASSET',
+                'class' => Asset::class,
+                'mapped' => false,
+                'required' => false,
+                'choice_label' => fn(Asset $asset) =>
+                sprintf(
+                    '%s - %s',
+                    ucfirst($asset->getCategory()),
+                    $asset->getName()
+                ),
+                'choice_attr' => function (Asset $a): array {
+                    $campaignId = $a->getCampaign()?->getId();
+                    $start = $a->getCampaign()?->getStartingYear();
+                    $financialAccount = $a->getFinancialAccount();
+
+                    return [
+                        'data-start-year' => $start ?? '',
+                        'data-campaign' => $campaignId ? (string) $campaignId : '',
+                        'data-financial-account-id' => $financialAccount ? (string) $financialAccount->getId() : '',
+                    ];
+                },
+                'query_builder' => function (AssetRepository $repo) use ($user) {
+                    $qb = $repo->createQueryBuilder('s')->orderBy('s.name', 'ASC');
+                    if ($user) {
+                        $qb->andWhere('s.user = :user')->setParameter('user', $user);
+                    }
+                    $qb->andWhere('s.campaign IS NOT NULL');
+                    return $qb;
+                },
+                'attr' => [
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                    'data-campaign-asset-target' => 'asset',
+                    'data-controller' => 'year-limit',
+                    'data-year-limit-default-value' => $this->limits->getYearMin(),
+                    'data-action' => 'change->year-limit#onAssetChange change->financial-lock#check change->form-visibility#toggle',
+                    'data-financial-lock-target' => 'asset',
+                ],
+            ])
+            ->add('campaign', EntityType::class, [
+                'class' => Campaign::class,
+                'mapped' => false,
+                'required' => false,
+                'placeholder' => '// MISSION',
+                'choice_label' => fn(Campaign $campaign) => sprintf('%s (%03d/%04d)', $campaign->getTitle(), $campaign->getSessionDay(), $campaign->getSessionYear()),
+                'data' => $asset?->getCampaign(),
+                'query_builder' => function (EntityRepository $er) use ($user) {
+                    $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
+                    if ($user) {
+                        $qb->andWhere('c.user = :user')->setParameter('user', $user);
+                    }
+                    return $qb;
+                },
+                'attr' => [
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                    'data-campaign-asset-target' => 'campaign',
+                    'data-action' => 'change->campaign-asset#onCampaignChange',
+                ],
+            ])
             ->add('title', TextType::class, [
                 'attr' => ['class' => 'input m-1 w-full'],
             ])
             ->add('amount', TravellerMoneyType::class, [
                 'label' => 'Amount (Cr)',
                 'attr' => ['class' => 'input m-1 w-full', 'readonly' => true],
-                //'empty_data' => '0.00',
             ])
             ->add('detailItems', CollectionType::class, [
                 'entry_type' => CostDetailItemType::class,
@@ -76,53 +135,11 @@ class CostType extends AbstractType
                 'min_year' => $minYear,
                 'max_year' => $this->limits->getYearMax(),
             ])
-            ->add('costCategory', EntityType::class, [
-                'class' => CostCategory::class,
-                'placeholder' => '-- Select a Category --',
-                'choice_label' => fn(CostCategory $cat) =>
-                sprintf('%s - %s', $cat->getCode(), $cat->getDescription()),
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('cc')
-                        ->orderBy('cc.code', 'ASC');
-                },
-                'attr' => ['class' => 'select m-1 w-full'],
-            ])
-            ->add('campaign', EntityType::class, [
-                'class' => Campaign::class,
-                'mapped' => false,
-                'required' => true,
-                'placeholder' => '-- Select a Campaign --',
-                'choice_label' => fn(Campaign $campaign) => sprintf('%s (%03d/%04d)', $campaign->getTitle(), $campaign->getSessionDay(), $campaign->getSessionYear()),
-                'data' => $asset?->getCampaign(),
-                'query_builder' => function (EntityRepository $er) use ($user) {
-                    $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
-                    if ($user) {
-                        $qb->andWhere('c.user = :user')->setParameter('user', $user);
-                    }
-                    return $qb;
-                },
-                'attr' => [
-                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
-                    'data-campaign-asset-target' => 'campaign',
-                    'data-action' => 'change->campaign-asset#onCampaignChange',
-                ],
-            ])
             ->add('financialAccount', EntityType::class, [
                 'class' => FinancialAccount::class,
-                'placeholder' => '-- Select a Financial Account --',
+                'placeholder' => '// DEBIT ACCOUNT',
+                'label' => 'Source Account (Debit)',
                 'choice_label' => fn(FinancialAccount $fa) => $fa->getDisplayName(),
-                'choice_attr' => function (FinancialAccount $fa): array {
-                    $asset = $fa->getAsset();
-                    if (!$asset) return [];
-                    $start = $asset->getCampaign()?->getStartingYear();
-                    $session = $asset->getCampaign()?->getSessionYear();
-                    $campaignId = $asset->getCampaign()?->getId();
-                    return [
-                        'data-start-year' => $start ?? '',
-                        'data-session-year' => $session ?? '',
-                        'data-campaign' => $campaignId ? (string) $campaignId : '',
-                    ];
-                },
                 'query_builder' => function (FinancialAccountRepository $repo) use ($user) {
                     $qb = $repo->createQueryBuilder('fa')
                         ->leftJoin('fa.asset', 'a')
@@ -134,16 +151,48 @@ class CostType extends AbstractType
                 },
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
-                    'data-controller' => 'year-limit',
-                    'data-year-limit-default-value' => $this->limits->getYearMin(),
-                    'data-action' => 'change->year-limit#onAssetChange',
-                    'data-campaign-asset-target' => 'asset',
+                    'data-financial-lock-target' => 'debitAccount',
+                    'data-action' => 'change->financial-lock#onAccountChange',
+                ],
+                'help' => 'Account that pays this cost.',
+            ])
+            ->add('bank', EntityType::class, [
+                'class' => Company::class,
+                'choice_label' => 'name',
+                'label' => 'New Ledger // Company',
+                'required' => false,
+                'mapped' => false,
+                'placeholder' => '// COMPANY',
+                'query_builder' => function (EntityRepository $cr) use ($user) {
+                    return $cr->createQueryBuilder('c')
+                        ->where('c.user = :user')
+                        ->setParameter('user', $user)
+                        ->orderBy('c.name', 'ASC');
+                },
+                'help' => 'Select a company to create a NEW Debit Account for this Asset.',
+                'help_attr' => ['class' => 'text-xs text-slate-500 ml-1'],
+                'attr' => [
+                    'class' => 'select m-1 w-full',
+                    'data-financial-lock-target' => 'debitCreation',
+                ],
+            ])
+            ->add('bankName', TextType::class, [
+                'label' => 'New Ledger // Custom Company Name',
+                'required' => false,
+                'mapped' => false,
+                'help' => 'Enter a custom company name for the new Debit Account.',
+                'help_attr' => ['class' => 'text-xs text-slate-500 ml-1'],
+                'attr' => [
+                    'class' => 'input m-1 w-full',
+                    'placeholder' => 'e.g. Starport Maintenance Fund',
+                    'data-financial-lock-target' => 'debitCreation',
                 ],
             ])
             ->add('company', EntityType::class, [
                 'class' => Company::class,
-                'placeholder' => '-- Select a Company --',
-                'required' => true,
+                'label' => 'Vendor (Company)',
+                'placeholder' => '// VENDOR (COMPANY)',
+                'required' => false, // Changed to false for XOR logic
                 'choice_label' => fn(Company $c) => sprintf('%s - %s', $c->getName(), $c->getCompanyRole()->getShortDescription()),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.name', 'ASC');
@@ -153,10 +202,42 @@ class CostType extends AbstractType
                     return $qb;
                 },
                 'attr' => ['class' => 'select m-1 w-full'],
+                'help' => 'Who are we paying? (Vendor/Entity)',
+            ])
+            ->add('vendorRole', EntityType::class, [
+                'class' => \App\Entity\CompanyRole::class, // Need to ensure use statement or fully qualified
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Role (if new)',
+                'placeholder' => '// ROLE',
+                'choice_label' => 'shortDescription',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('cr')->orderBy('cr.code', 'ASC');
+                },
+                'attr' => ['class' => 'select m-1 w-full'],
+            ])
+            ->add('vendorName', TextType::class, [
+                'required' => false,
+                'mapped' => false,
+                'label' => 'Vendor // New Company Name',
+                'help' => 'Enter a name if the vendor is not in the list.',
+                'help_attr' => ['class' => 'text-xs text-slate-500 ml-1'],
+                'attr' => ['class' => 'input m-1 w-full', 'placeholder' => 'e.g. "Joe\'s Repair Shop"'],
+            ])
+            ->add('costCategory', EntityType::class, [
+                'class' => CostCategory::class,
+                'placeholder' => '// CATEGORY',
+                'choice_label' => fn(CostCategory $cat) =>
+                sprintf('%s - %s', $cat->getCode(), $cat->getDescription()),
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('cc')
+                        ->orderBy('cc.code', 'ASC');
+                },
+                'attr' => ['class' => 'select m-1 w-full'],
             ])
             ->add('localLaw', EntityType::class, [
                 'class' => LocalLaw::class,
-                'placeholder' => '-- Select a Local Law --',
+                'placeholder' => '// LOCAL LAW',
                 'required' => true,
                 'choice_label' => function (LocalLaw $l): string {
                     $label = $l->getShortDescription() ?: $l->getDescription();
@@ -175,8 +256,7 @@ class CostType extends AbstractType
                     'class' => 'input m-1 w-full',
                     'placeholder' => 'e.g. Sol System, Station X... (Used for Trade Goods)'
                 ],
-            ])
-        ;
+            ]);
 
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
             /** @var Cost $cost */
@@ -189,9 +269,7 @@ class CostType extends AbstractType
                 $cost->setPaymentYear($date->getYear());
             }
 
-
-
-            // Calcolo server-side dell'importo totale dai detailItems per evitare valori null.
+            // Calcolo server-side dell'importo totale...
             $details = $cost->getDetailItems() ?? [];
             $validDetails = [];
             $total = 0.0;
@@ -201,7 +279,7 @@ class CostType extends AbstractType
                 $costRaw = $item['cost'] ?? null;
                 $hasAny = $description !== '' || $qtyRaw !== null && $qtyRaw !== '' || $costRaw !== null && $costRaw !== '';
                 if (!$hasAny) {
-                    continue; // riga vuota: ignorata
+                    continue;
                 }
                 $qty = is_numeric($qtyRaw) ? (float) $qtyRaw : null;
                 $lineCost = is_numeric($costRaw) ? (float) $costRaw : null;
@@ -213,7 +291,7 @@ class CostType extends AbstractType
                     'description' => $description,
                     'quantity' => $qty,
                     'cost' => $lineCost,
-                    'isSold' => $item['isSold'] ?? false, // Preserva lo stato di vendita
+                    'isSold' => $item['isSold'] ?? false,
                 ];
                 $total += $qty * $lineCost;
             }
@@ -223,6 +301,59 @@ class CostType extends AbstractType
             $cost->setDetailItems($validDetails);
             $cost->setAmount(sprintf('%.2f', $total));
         });
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
+    }
+
+    public function onPostSubmit(FormEvent $event): void
+    {
+        /** @var Cost $cost */
+        $cost = $event->getData();
+        $form = $event->getForm();
+
+        // 1. VALIDAZIONE DEBIT (Source / FinancialAccount)
+        $financialAccount = $form->get('financialAccount')->getData();
+        $bank = $form->get('bank')->getData();
+        $bankName = $form->get('bankName')->getData();
+        $asset = $form->get('asset')->getData();
+
+        $hasAccount = $financialAccount !== null;
+        $hasNewLedger = !empty($bank) || !empty($bankName);
+
+        // Auto-Recovery for JS-Disabled fields
+        if (!$hasAccount && !$hasNewLedger && $asset && $asset->getFinancialAccount()) {
+            $financialAccount = $asset->getFinancialAccount();
+            $cost->setFinancialAccount($financialAccount);
+            $hasAccount = true;
+        }
+
+        if ($hasAccount && $hasNewLedger) {
+            $form->get('financialAccount')->addError(new FormError('Protocol Conflict: Cannot link existing account AND create a new one simultaneously. Choose one.'));
+        }
+
+        if (!$hasAccount && !$hasNewLedger) {
+            $form->get('financialAccount')->addError(new FormError('Missing Source: Select an existing Debit Account OR create a new one.'));
+        }
+
+        // 2. VALIDAZIONE CREDIT (Vendor / Company)
+        $company = $form->get('company')->getData();
+        $vendorName = $form->get('vendorName')->getData();
+        $vendorRole = $form->get('vendorRole')->getData();
+
+        $hasCompany = $company !== null;
+        $hasNewVendor = !empty($vendorName);
+
+        if ($hasCompany && $hasNewVendor) {
+            $form->get('company')->addError(new FormError('Destination Conflict: Cannot select a registered Vendor AND a new Name. Clear one field.'));
+        }
+
+        if (!$hasCompany && !$hasNewVendor) {
+            $form->get('company')->addError(new FormError('Missing Vendor: Select a Vendor Company OR enter a new Name.'));
+        }
+
+        if ($hasNewVendor && !$vendorRole) {
+            $form->get('vendorRole')->addError(new FormError('Role Required: When creating a new Vendor, you must specify its Role.'));
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
