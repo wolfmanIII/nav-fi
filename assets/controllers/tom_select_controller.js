@@ -1,5 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
-import '../vendor/tom-select/tom-select.complete.min.js';
+import TomSelect from 'tom-select';
 
 export default class extends Controller {
     static values = {
@@ -7,8 +7,7 @@ export default class extends Controller {
     };
 
     connect() {
-        const TomSelect = window.TomSelect;
-        if (!TomSelect || this.element.tomselect) {
+        if (this.element.tomselect) {
             return;
         }
 

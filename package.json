@@ -8,8 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "copy-libs": "mkdir -p assets/vendor/tom-select assets/vendor/highlightjs && cp node_modules/tom-select/dist/js/tom-select.complete.min.js assets/vendor/tom-select/ && cp node_modules/tom-select/dist/css/tom-select.css assets/vendor/tom-select/ && cp node_modules/highlight.js/styles/github-dark.css assets/vendor/highlightjs/ && curl -L https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js -o assets/vendor/highlightjs/highlight.min.js",
-    "build": "npm run copy-libs"
+    "build": "echo 'No build step necessary'"
   },
   "keywords": [],
   "author": "",
@@ -19,8 +18,5 @@
     "@tailwindcss/typography": "^0.5.19",
     "daisyui": "^5.5.5"
   },
-  "dependencies": {
-    "highlight.js": "^11.11.1",
-    "tom-select": "^2.4.3"
-  }
+  "dependencies": {}
 }

@@ -9,22 +9,7 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-scripts --prefer-dist --optimize-autoloader --ignore-platform-reqs
 
 # ==============================================================================
-# FASE 2: Build Asset Frontend (Node.js)
-# ==============================================================================
-FROM node:20-bookworm AS build_assets
-
-WORKDIR /app
-COPY package.json package-lock.json ./
-# Installa dipendenze node
-RUN npm ci
-
-# Copia solo i file necessari per la build
-COPY assets ./assets
-# Costruisce gli asset (copia le librerie in assets/vendor)
-RUN npm run build
-
-# ==============================================================================
-# FASE 3: Immagine Finale di Produzione
+# FASE 2: Immagine Finale di Produzione (PHP/Nginx)
 # ==============================================================================
 FROM php:8.3-fpm-bookworm AS app_php
 
@@ -80,14 +65,11 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # 5. Configurazione Applicazione
 WORKDIR /var/www/html
 
-# Copia Codice Sorgente (Prima, così non sovrascriviamo vendor/assets dopo se si sovrappongono)
+# Copia Codice Sorgente
 COPY . .
 
 # Copia Vendor dalla Fase 1 (Sovrascrive vendor locale se presente)
 COPY --from=build_composer /app/vendor /var/www/html/vendor
-
-# Copia Asset dalla Fase 2 (Sovrascrive assets/vendor locale se presente)
-COPY --from=build_assets /app/assets /var/www/html/assets
 
 # 6. Setup Finale PHP/Symfony
 ENV APP_ENV=prod
@@ -101,18 +83,23 @@ ENV APP_DAY_MAX=365
 ENV APP_YEAR_MIN=0
 ENV APP_YEAR_MAX=9999
 
-# Argomenti di Build: I default permettono alla build di passare senza flag
-# Questi vengono sovrascritti dalle variabili d'ambiente di Cloud Run a runtime
+# Argomenti di Build
 ARG APP_SECRET=build_placeholder_secret
 ARG DATABASE_URL=sqlite:///%kernel.project_dir%/var/build.db
 ARG GOOGLE_CLIENT_ID=placeholder_client_id
 ARG GOOGLE_CLIENT_SECRET=placeholder_client_secret
 
-# Rende questi disponibili ai comandi RUN sottostanti (cache:warmup li richiede)
+# Rende questi disponibili ai comandi RUN sottostanti
 ENV APP_SECRET=$APP_SECRET
 ENV DATABASE_URL=$DATABASE_URL
 
-# Compila AssetMapper (richiede PHP & Vendor)
+# Scarica asset vendor (highlight.js, tom-select, etc. in assets/vendor)
+RUN php bin/console importmap:install
+
+# Compila CSS Tailwind (richiede symfonycasts/tailwind-bundle)
+RUN php bin/console tailwind:build --minify
+
+# Compila AssetMapper
 RUN php bin/console asset-map:compile
 
 # Cache warmup per la produzione

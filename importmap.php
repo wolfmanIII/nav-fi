@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Restituisce l'importmap per questa applicazione.
+ * Returns the importmap for this application.
  *
- * - "path" è un percorso all'interno del sistema asset mapper. Usa il
- *     comando "debug:asset-map" per vedere l'elenco completo dei percorsi.
+ * - "path" is a path inside the asset mapper system. Use the
+ *     "debug:asset-map" command to see the full list of paths.
  *
- * - "entrypoint" (solo JavaScript) impostato a true per qualsiasi modulo che
- *     verrà usato come "entrypoint" (e passato alla funzione Twig importmap()).
+ * - "entrypoint" (JavaScript only) set to true for any module that will
+ *     be used as an "entrypoint" (and passed to the importmap() Twig function).
  *
- * Il comando "importmap:require" può essere usato per aggiungere nuove voci a questo file.
+ * The "importmap:require" command can be used to add new entries to this file.
  */
 return [
     'app' => [
@@ -24,5 +24,25 @@ return [
     ],
     '@hotwired/turbo' => [
         'version' => '7.3.0',
+    ],
+    'highlight.js' => [
+        'version' => '11.11.1',
+    ],
+    'tom-select' => [
+        'version' => '2.4.4',
+    ],
+    '@orchidjs/sifter' => [
+        'version' => '1.1.0',
+    ],
+    '@orchidjs/unicode-variants' => [
+        'version' => '1.1.2',
+    ],
+    'highlight.js/styles/github-dark.css' => [
+        'version' => '11.11.1',
+        'type' => 'css',
+    ],
+    'tom-select/dist/css/tom-select.css' => [
+        'version' => '2.4.4',
+        'type' => 'css',
     ],
 ];
