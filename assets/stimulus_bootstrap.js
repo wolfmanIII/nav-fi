@@ -1,38 +1,5 @@
 import { startStimulusApp } from '@symfony/stimulus-bundle';
-import BulkSelectController from './controllers/bulk_select_controller.js';
-import CampaignAssetController from './controllers/campaign_asset_controller.js';
-import ImperialDateController from './controllers/imperial_date_controller.js';
-import IncomeDetailsController from './controllers/income_details_controller.js';
-import AssetDetailsController from './controllers/asset_details_controller.js';
-import SingleSelectTableController from './controllers/single_select_table_controller.js';
-import SessionDateLockController from './controllers/session_date_lock_controller.js';
-import YearLimitController from './controllers/year_limit_controller.js';
-import CostDetailsController from './controllers/cost_details_controller.js';
-import RoleSelectorController from './controllers/role_selector_controller.js';
-import AssetRolesToggleController from './controllers/asset_roles_toggle_controller.js';
-import CrewStatusDateController from './controllers/crew_status_date_controller.js';
-import TomSelectController from './controllers/tom_select_controller.js';
-import HighlightController from './controllers/highlight_controller.js';
-import RouteWaypointsController from './controllers/route_waypoints_controller.js';
-import RouteMapController from './controllers/route_map_controller.js';
-import ConfirmModalController from './controllers/confirm_modal_controller.js';
 
 const app = startStimulusApp();
-
-app.register('bulk-select', BulkSelectController);
-app.register('campaign-asset', CampaignAssetController);
-app.register('imperial-date', ImperialDateController);
-app.register('income-details', IncomeDetailsController);
-app.register('asset-details', AssetDetailsController);
-app.register('cost-details', CostDetailsController);
-app.register('single-select-table', SingleSelectTableController);
-app.register('session-date-lock', SessionDateLockController);
-app.register('year-limit', YearLimitController);
-app.register('role-selector', RoleSelectorController);
-app.register('asset-roles-toggle', AssetRolesToggleController);
-app.register('crew-status-date', CrewStatusDateController);
-app.register('tom-select', TomSelectController);
-app.register('highlight', HighlightController);
-app.register('route-waypoints', RouteWaypointsController);
-app.register('route-map', RouteMapController);
-app.register('confirm-modal', ConfirmModalController);
+// register any custom, 3rd party controllers here
+// app.register('some_controller_name', SomeImportedController);

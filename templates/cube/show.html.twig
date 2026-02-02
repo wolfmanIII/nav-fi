@@ -219,7 +219,7 @@
                             <span class="label-text text-slate-400 text-xs uppercase font-bold">Target Asset</span>
                         </label>
                         <select name="asset_id" class="select select-bordered bg-slate-950 border-slate-700 text-white w-full" required>
-                            <option value="" disabled selected>Select starship...</option>
+                            <option value="" disabled selected>// Select Ship</option>
                             {% for asset in assets %}
                                 <option value="{{ asset.id }}">{{ asset.name }} ({{ asset.type }})</option>
                             {% endfor %}
@@ -302,7 +302,7 @@
                                 <div class="text-[9px] text-slate-500 italic">This patron is already in your ledger. It will be linked automatically.</div>
                             {% else %}
                                 <select name="patron_role_id" class="select select-bordered select-sm bg-slate-900 border-slate-800 text-white w-full">
-                                    <option value="" selected>-- Register as Company? (Select Role) --</option>
+                                    <option value="" selected>// Register as Company? (Select Role)</option>
                                     {% for role in companyRoles %}
                                         <option value="{{ role.id }}">{{ role.shortDescription|default(role.code) }}</option>
                                     {% endfor %}
@@ -318,7 +318,7 @@
                         <span class="label-text text-slate-400 text-xs uppercase font-bold">Local Law (Jurisdiction)</span>
                     </label>
                     <select name="localLaw" class="select select-bordered bg-slate-950 border-slate-700 text-white w-full" required>
-                        <option value="" disabled selected>-- Select Current System Law --</option>
+                        <option value="" disabled selected>// Select Current System Law</option>
                         {% for law in localLaws %}
                              <option value="{{ law.id }}">{{ law.shortDescription|default(law.code) }}</option>
                         {% endfor %}
