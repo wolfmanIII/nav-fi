@@ -24,7 +24,23 @@ gcloud run deploy nav-fi \
   --set-env-vars="APP_ENV=prod" \
   --set-secrets="APP_SECRET=nav-fi-app-secret:latest,DATABASE_URL=nav-fi-db-url:latest,GOOGLE_CLIENT_ID=nav-fi-google-id:latest,GOOGLE_CLIENT_SECRET=nav-fi-google-secret:latest" \
   --add-cloudsql-instances="PROJECT:REGION:INSTANCE"
+  --add-cloudsql-instances="PROJECT:REGION:INSTANCE"
 ```
+
+### Deployment Scripts (Recommended)
+Instead of running manual commands, use the provided scripts:
+
+1.  **`scripts/migrate_and_deploy.sh`** (**Recommended**):
+    *   Builds the image.
+    *   Runs database migrations safely via a Cloud Run Job.
+    *   Deploys the application ONLY if migrations succeed.
+    *   *Safe to run even if no DB changes are present (migrations will just check).*
+
+2.  **`scripts/deploy.sh`**:
+    *   Only builds and deploys.
+    *   *Risky if you have pending database changes.*
+
+For secrets setup, refer to [`docs/setup_secrets_explained.md`](./setup_secrets_explained.md).
 
 ## 2. Production Maintenance (Cloud Run Jobs)
 Since containers are ephemeral, use **Cloud Run Jobs** for one-off tasks.
