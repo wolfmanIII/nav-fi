@@ -37,26 +37,71 @@ class GotenbergPdfGenerator implements PdfGeneratorInterface
         file_put_contents($tempFile, $html);
 
         $formFields = [
-            'files' => DataPart::fromPath($tempFile, 'index.html', 'text/html'),
+            'index.html' => DataPart::fromPath($tempFile, 'index.html', 'text/html'),
         ];
 
-        // Margini
-        if (isset($options['marginTop'])) {
-            $formFields['marginTop'] = (string) $options['marginTop'];
+        // Normalizza le opzioni (kebab-case -> camelCase)
+        $normalizedOptions = [];
+        foreach ($options as $key => $value) {
+            $camelKey = lcfirst(str_replace('-', '', ucwords($key, '-')));
+            $normalizedOptions[$camelKey] = $value;
         }
-        if (isset($options['marginBottom'])) {
-            $formFields['marginBottom'] = (string) $options['marginBottom'];
-        }
-        if (isset($options['marginLeft'])) {
-            $formFields['marginLeft'] = (string) $options['marginLeft'];
-        }
-        if (isset($options['marginRight'])) {
-            $formFields['marginRight'] = (string) $options['marginRight'];
+
+        // Mapping margins
+        $margins = ['marginTop', 'marginBottom', 'marginLeft', 'marginRight'];
+        foreach ($margins as $margin) {
+            if (isset($normalizedOptions[$margin])) {
+                $val = $normalizedOptions[$margin];
+                if (is_string($val) && str_ends_with($val, 'mm')) {
+                    $mm = (float)str_replace('mm', '', $val);
+                    $inches = $mm * 0.0393701;
+                    $formFields[$margin] = number_format($inches, 4, '.', ''); // Ensure dot separator
+                } elseif (is_numeric($val)) {
+                    $formFields[$margin] = number_format((float)$val, 4, '.', '');
+                }
+            }
         }
 
         // Orientamento
-        if (isset($options['landscape']) && $options['landscape']) {
+        if (isset($normalizedOptions['landscape']) && $normalizedOptions['landscape']) {
             $formFields['landscape'] = 'true';
+        }
+
+        // Handle Footers (Legacy wkhtmltopdf support)
+        // Supported: footer-right with "[page]" and "[toPage]" substitution
+        if (isset($options['footer-right'])) {
+            $footerContent = $options['footer-right'];
+            $footerContent = str_replace('[page]', '<span class="pageNumber"></span>', $footerContent);
+            $footerContent = str_replace('[toPage]', '<span class="totalPages"></span>', $footerContent);
+
+            $fontSize = $options['footer-font-size'] ?? '8';
+            $fontName = $options['footer-font-name'] ?? 'Arial';
+
+            // Build HTML for footer
+            // Chromium footer template needs specific styling
+            $footerHtml = <<<HTML
+            <html>
+            <head>
+                <style>
+                    body {
+                        font-family: "$fontName", sans-serif;
+                        font-size: {$fontSize}pt;
+                        width: 100%;
+                        margin: 0;
+                        padding: 0 10mm; /* Match document margins roughly */
+                        display: flex;
+                        justify-content: flex-end; /* footer-right */
+                    }
+                </style>
+            </head>
+            <body>
+                <div style="font-family: '$fontName', sans-serif;">$footerContent</div>
+            </body>
+            </html>
+HTML;
+            $tempFooter = tempnam(sys_get_temp_dir(), 'gotenberg_footer_');
+            file_put_contents($tempFooter, $footerHtml);
+            $formFields['footer.html'] = DataPart::fromPath($tempFooter, 'footer.html', 'text/html');
         }
 
         $formData = new FormDataPart($formFields);

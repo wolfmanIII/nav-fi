@@ -1,153 +1,56 @@
-{% extends 'base_plain.html.twig' %}
+{% extends 'pdf/base_pdf.html.twig' %}
 
 {% block title %}Cost Sheet{% endblock %}
 
-{% block stylesheets %}
-    <style>
-        /* Printer-friendly styles - Minimized ink usage */
-        body { 
-            font-family: 'Inter', 'Segoe UI', sans-serif; 
-            font-size: 10px; 
-            color: #1f2937; 
-            background: #ffffff; 
-        }
-        
-        .page { padding: 12px; }
-        
-        /* Tabella header - sfondo bianco */
-        .header-table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin-bottom: 10px;
-            background: #ffffff;
-        }
-        
-        .header-table td { vertical-align: middle; }
-        
-        .logo { height: 64px; }
-        
-        .subtitle { 
-            font-size: 10px; 
-            text-transform: uppercase; 
-            letter-spacing: 0.18em; 
-            color: #6b7280; 
-            margin: 0; 
-            text-align: right; 
-        }
-        
-        .title { 
-            font-size: 16px; 
-            font-weight: 700; 
-            margin: 2px 0 0 0; 
-            color: #1f2937; 
-            text-align: right; 
-        }
-        
-        /* Card - Very light background */
-        .card { 
-            background: #f9fafb; 
-            border: 1px solid #e5e7eb; 
-            border-radius: 6px; 
-            padding: 12px; 
-            margin-bottom: 10px; 
-            page-break-inside: avoid; 
-            break-inside: avoid; 
-        }
-        
-        .section-title { 
-            font-size: 11px; 
-            font-weight: 700; 
-            margin: 0 0 8px 0; 
-            color: #374151; 
-            text-transform: uppercase; 
-            letter-spacing: 0.06em; 
-        }
-        
-        .grid { display: grid; gap: 8px; }
-        .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        
-        /* Tabelle - sfondo bianco, bordi sottili */
-        .table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            font-size: 9px;
-            background: #ffffff;
-        }
-        
-        .table th, 
-        .table td { 
-            border: 1px solid #d1d5db; 
-            padding: 6px; 
-            vertical-align: top; 
-        }
-        
-        .table th { 
-            background: #f3f4f6; 
-            text-align: left;
-            font-weight: 600;
-            color: #374151;
-        }
-        
-        .table td {
-            color: #1f2937;
-        }
-        
-        /* Colori alternati delle righe */
-        .table tbody tr:nth-child(even) {
-            background: #f9fafb;
-        }
-        
-        .muted { color: #6b7280; font-size: 9px; }
-        .val { font-weight: 600; color: #1f2937; }
-    </style>
-{% endblock %}
-{% block javascripts %}{% endblock %}
-
-{% block pageContent %}
+{% block document_content %}
     {% set locale = locale ?? 'en' %}
-    <div class="page">
+    <div class="mb-6">
         <table class="header-table">
             <tr>
                 <td style="text-align: left;">
                     <img src="{{ asset_data_uri('img/nav-fi-logo.png') }}" alt="Nav-Fi&sup3;" class="logo">
                 </td>
                 <td style="text-align: right;">
-                    <p class="subtitle">Disbursement docket</p>
-                    <p class="title">Payable statement</p>
-                    <p class="muted" style="margin: 4px 0 0 0;">
+                    <p class="text-sm font-bold uppercase tracking-wider text-gray-500 m-0">Disbursement docket</p>
+                    <p class="text-xl font-bold text-gray-800 m-0">Payable statement</p>
+                    <p class="text-xs text-gray-500 mt-1">
                         Docket ref: {{ cost.code }} |
                         {{ (cost.paymentDay is not null and cost.paymentYear is not null) ? (cost.paymentDay|imperial_date(cost.paymentYear)) : '—' }}
                     </p>
-                    <p class="muted" style="margin: 2px 0 0 0;">
+                    <p class="text-xs text-gray-500 mt-1">
                         Template: {{ template_version('pdf/cost/SHEET.html.twig') }}
                     </p>
                 </td>
             </tr>
         </table>
+    </div>
 
-        <div class="card grid grid-2">
+    <div class="card mb-4">
+        <div class="card-body p-4 grid grid-cols-2 gap-4">
             <div>
-                <div class="muted">Title</div>
-                <div class="val">{{ cost.title }}</div>
+                <div class="text-xs text-gray-500">Title</div>
+                <div class="font-bold text-gray-800">{{ cost.title }}</div>
             </div>
             <div>
-                <div class="muted">Category</div>
-                <div class="val">{{ cost.costCategory ? cost.costCategory.description : '—' }}</div>
+                <div class="text-xs text-gray-500">Category</div>
+                <div class="font-bold text-gray-800">{{ cost.costCategory ? cost.costCategory.description : '—' }}</div>
             </div>
             <div>
-                <div class="muted">Company</div>
-                <div class="val">{{ cost.company ? cost.company.name ~ ' — ' ~ cost.company.code : '—' }}</div>
+                <div class="text-xs text-gray-500">Company</div>
+                <div class="font-bold text-gray-800">{{ cost.company ? cost.company.name ~ ' — ' ~ cost.company.code : '—' }}</div>
             </div>
             <div>
-                <div class="muted">Asset</div>
-                <div class="val">{{ cost.financialAccount.asset ? cost.financialAccount.asset.name ~ ' — ' ~ cost.financialAccount.asset.type ~ ' — ' ~ cost.financialAccount.asset.class : '—' }}</div>
+                <div class="text-xs text-gray-500">Asset</div>
+                <div class="font-bold text-gray-800">{{ cost.financialAccount.asset ? cost.financialAccount.asset.name ~ ' — ' ~ cost.financialAccount.asset.type ~ ' — ' ~ cost.financialAccount.asset.class : '—' }}</div>
             </div>
         </div>
+    </div>
 
-        {% if cost.localLaw %}
-            <div class="card">
-                <div class="section-title">Local Law</div>
-                <table class="table">
+    {% if cost.localLaw %}
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                <h2 class="card-title text-lg mb-2">Local Law</h2>
+                <table class="table text-sm">
                     <thead>
                     <tr>
                         <th>Short Reference</th>
@@ -164,11 +67,13 @@
                     </tbody>
                 </table>
             </div>
-        {% endif %}
+        </div>
+    {% endif %}
 
-        <div class="card">
-            <div class="section-title">Line-item register</div>
-            <table class="table">
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-lg mb-2">Line-item register</h2>
+            <table class="table text-sm">
                 <thead>
                 <tr>
                     <th>Description</th>
@@ -202,12 +107,14 @@
                 </tbody>
             </table>
         </div>
-
-        {% if cost.note %}
-            <div class="card">
-                <div class="section-title">Notes</div>
-                <div class="muted" style="white-space: pre-line;">{{ cost.note }}</div>
-            </div>
-        {% endif %}
     </div>
+
+    {% if cost.note %}
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                <h2 class="card-title text-lg mb-2">Notes</h2>
+                <div class="text-sm text-gray-500" style="white-space: pre-line;">{{ cost.note }}</div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

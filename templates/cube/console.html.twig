@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% block layout_class %}bg-scifi-texture{% endblock %}
+
 {% block title %}The Cube // Console{% endblock %}
 
 {% block pageContent %}
@@ -133,6 +135,15 @@
                                 <span class="text-cyan-400">{{ opp.data.details.destination|default('Unknown') }}</span>
                             </div>
 
+                            <!-- Status Badge -->
+                            {% if opp.status == 'CONVERTED' or opp.status == 'ACCEPTED' %}
+                                <div class="mb-2">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold font-mono uppercase tracking-wider bg-emerald-950 text-emerald-400 border border-emerald-900 shadow-[0_0_8px_rgba(16,185,129,0.2)]">
+                                        Contract Accepted
+                                    </span>
+                                </div>
+                            {% endif %}
+
                             <div class="text-[10px] text-slate-500 font-mono border-t border-slate-800 pt-2 line-clamp-1">
                                 {% set internals = ['origin', 'destination', 'dest_hex', 'dest_dist', 'difficulty', 'mission_type', 'twist', 'tier', 'briefing', 'patron', 'variables', 'start_day', 'start_year'] %}
                                 {% for key, val in opp.data.details %}
@@ -143,11 +154,17 @@
                             </div>
                             
                             <div class="flex justify-end gap-2 mt-4 pt-2">
-                                <button class="px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-rose-400 hover:bg-rose-950/30 transition-all border border-transparent hover:border-rose-500/40" 
-                                        data-action="cube#unsave"
-                                        data-cube-id-param="{{ opp.id }}">
-                                    PURGE
-                                </button>
+                                {% if opp.status != 'CONVERTED' and opp.status != 'ACCEPTED' %}
+                                    <button class="px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-rose-400 hover:bg-rose-950/30 transition-all border border-transparent hover:border-rose-500/40" 
+                                            data-action="cube#unsave"
+                                            data-cube-id-param="{{ opp.id }}">
+                                        PURGE
+                                    </button>
+                                {% else %}
+                                     <button class="px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest text-slate-700 cursor-not-allowed" disabled title="Accepted contracts cannot be purged">
+                                        LOCKED
+                                    </button>
+                                {% endif %}
                                 <a href="{{ path('app_cube_contract_show', {id: opp.id}) }}" class="px-3 py-1.5 rounded bg-amber-900/20 border border-amber-500/30 text-amber-400 hover:bg-amber-500 hover:text-black text-[10px] font-bold uppercase tracking-widest shadow-[0_0_10px_rgba(245,158,11,0.1)] hover:shadow-[0_0_15px_rgba(245,158,11,0.4)] transition-all flex items-center gap-1">
                                     {% include 'icons/cube.html.twig' with { dim: 10 } %}
                                     View Manifest

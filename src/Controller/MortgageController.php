@@ -515,6 +515,7 @@ final class MortgageController extends BaseController
             'margin-right' => '10mm',
             'footer-right' => 'Page [page] / [toPage]',
             'footer-font-size' => 8,
+            'footer-font-name' => 'Arial',
             'footer-spacing' => 8,
             'disable-smart-shrinking' => true,
             'print-media-type' => true,

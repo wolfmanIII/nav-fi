@@ -180,6 +180,11 @@ class CubeController extends AbstractController
             return $this->json(['error' => 'Opportunity not found'], 404);
         }
 
+        // Security / Logic Check: Prevent purging if converted/accepted
+        if (in_array($opportunity->getStatus(), [BrokerOpportunity::STATUS_CONVERTED, BrokerOpportunity::STATUS_ACCEPTED])) {
+            return $this->json(['error' => 'Cannot purge an accepted contract.'], 403);
+        }
+
         $data = $opportunity->getData();
         $em->remove($opportunity);
         $em->flush();
@@ -238,6 +243,17 @@ class CubeController extends AbstractController
 
         if (!$asset) {
             $this->addFlash('error', 'Invalid Asset selected.');
+            return $this->redirectToRoute('app_cube_contract_show', ['id' => $id]);
+        }
+
+        // Validation: If Patron exists (to be created) and no existing company ID is selected, Role is mandatory.
+        $oppData = $opportunity->getData();
+        $patronName = $oppData['details']['patron'] ?? null;
+        $patronCompanyId = $request->request->get('patron_company_id');
+        $patronRoleId = $request->request->get('patron_role_id');
+
+        if ($patronName && empty($patronCompanyId) && empty($patronRoleId)) {
+            $this->addFlash('error', 'To register a new Company/Patron, you must select a Role.');
             return $this->redirectToRoute('app_cube_contract_show', ['id' => $id]);
         }
 

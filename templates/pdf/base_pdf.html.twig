@@ -1,0 +1,156 @@
+{% extends 'base_plain.html.twig' %}
+
+{% block stylesheets %}
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Printer-friendly styles - Minimized ink usage & Common PDF Styles */
+        body { 
+            font-family: 'Rajdhani', 'Segoe UI', sans-serif; 
+            font-size: 11px; /* Slightly increased for Rajdhani readability */
+            background: #ffffff !important; 
+            color: #1f2937; 
+        }
+        
+        /* Force white background on wrappers to override base_plain gradients if any */
+        .min-h-screen, .bg-gradient-to-br, .isolate {
+            background: #ffffff !important;
+            min-height: auto !important;
+        }
+
+        /* Card styling - Very light background */
+        .card { 
+            border: 1px solid #9ca3af; /* Darker border for tech look */
+            border-radius: 4px; /* Sharper corners */
+            background: #f9fafb; 
+            page-break-inside: avoid; 
+            margin-bottom: 0.75rem;
+        }
+        
+        .no-break { page-break-inside: avoid; }
+        
+        .card-body { padding: 12px; }
+        
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Tabelle - sfondo bianco, bordi sottili */
+        .table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            border: 1px solid #d1d5db; 
+            background: #ffffff; 
+        }
+        
+        .table th { 
+            background: #f3f4f6; 
+            border: 1px solid #d1d5db; 
+            padding: 8px; 
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .table td { 
+            border: 1px solid #e5e7eb; 
+            padding: 8px;
+            color: #1f2937;
+        }
+        
+        /* Colori alternati delle righe per leggibilita */
+        .table tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+        
+        /* Tabelle senza bordi */
+        .table-borderless { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        
+        .table-borderless th, 
+        .table-borderless td { 
+            border: none; 
+            padding: 6px; 
+        }
+        
+        /* Tabella firme - senza bordi, sfondo bianco */
+        .signature-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            background: #ffffff;
+        }
+        
+        .signature-table th { 
+            border: none;
+            border-bottom: 1px solid #d1d5db;
+            padding: 8px;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .signature-table td { 
+            border: none;
+            padding: 24px 8px 8px 8px;
+            color: #6b7280;
+            vertical-align: top; /* Standardized to top */
+        }
+        
+        .signature-table th:first-child, 
+        .signature-table td:first-child { text-align: left; }
+        
+        .signature-table th:last-child, 
+        .signature-table td:last-child { text-align: right; }
+
+        /* Allineamento centrale SOLO per la colonna centrale nelle tabelle a 3 colonne */
+        .signature-table th:nth-child(2):nth-last-child(2),
+        .signature-table td:nth-child(2):nth-last-child(2) { text-align: center; }
+
+        /* Tabella header - sfondo bianco */
+        .header-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 0.75rem;
+            background: #ffffff;
+        }
+        
+        .header-table td { vertical-align: middle; }
+        
+        .logo { height: 64px; }
+        
+        /* Utility classes */
+        .text-right { text-align: right; }
+        .text-sm { font-size: 0.75rem; color: #6b7280; }
+        .text-lg { font-size: 0.95rem; }
+        .text-2xl { font-size: 1.15rem; }
+        .font-bold { font-weight: 700; color: #1f2937; }
+        .mb-4 { margin-bottom: 0.75rem; }
+        .mb-6 { margin-bottom: 1rem; }
+        .mt-3 { margin-top: 0.75rem; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .gap-4 { gap: 0.75rem; }
+        .gap-2 { gap: 0.5rem; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .col-span-2 { grid-column: span 2 / span 2; }
+        .col-span-3 { grid-column: span 3 / span 3; }
+
+        {% block extra_styles %}{% endblock %}
+    </style>
+{% endblock %}
+
+{% block javascripts %}{% endblock %}
+
+{% block pageContent %}
+    {% set locale = locale ?? 'en' %}
+    {% block document_content %}{% endblock %}
+{% endblock %}

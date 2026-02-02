@@ -1,136 +1,8 @@
-{% extends 'base_plain.html.twig' %}
+{% extends 'pdf/base_pdf.html.twig' %}
 
 {% block title %}Asset Sheet{% endblock %}
 
-{% block stylesheets %}
-    <style>
-        /* Printer-friendly styles - Minimized ink usage */
-        body { 
-            font-family: 'Inter', 'Segoe UI', sans-serif; 
-            font-size: 10px; 
-            color: #1f2937; 
-            background: #ffffff; 
-        }
-        
-        .page { padding: 12px; }
-        
-        /* Tabella header - sfondo bianco */
-        .header-table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin-bottom: 10px;
-            background: #ffffff;
-        }
-        
-        .header-table td { vertical-align: middle; }
-        
-        .logo { height: 64px; }
-        
-        .grid { display: grid; }
-        .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-        .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-        
-        /* Card - Very light background, NO gradients */
-        .card { 
-            background: #f9fafb; 
-            border: 1px solid #e5e7eb; 
-            border-radius: 6px; 
-            padding: 12px; 
-            margin-bottom: 10px; 
-            page-break-inside: avoid; 
-            break-inside: avoid; 
-        }
-        
-        .title { 
-            font-size: 16px; 
-            font-weight: 700; 
-            margin: 0 0 2px 0; 
-            color: #1f2937; 
-            letter-spacing: 0.02em; 
-            text-align: right; 
-        }
-        
-        .subtitle { 
-            font-size: 11px; 
-            text-transform: uppercase; 
-            letter-spacing: 0.2em; 
-            color: #6b7280; 
-            margin: 0; 
-            text-align: right; 
-        }
-        
-        .section-title { 
-            font-size: 12px; 
-            font-weight: 700; 
-            margin: 6px 0; 
-            color: #374151; 
-        }
-        
-        /* Tabelle - sfondo bianco, bordi sottili */
-        .table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            font-size: 9px;
-            background: #ffffff;
-        }
-        
-        .table th, 
-        .table td { 
-            border: 1px solid #d1d5db; 
-            padding: 6px; 
-            vertical-align: top; 
-        }
-        
-        .table th { 
-            background: #f3f4f6; 
-            color: #374151; 
-            text-align: left;
-            font-weight: 600;
-        }
-        
-        .table td {
-            color: #1f2937;
-        }
-        
-        /* Colori alternati delle righe */
-        .table tbody tr:nth-child(even) {
-            background: #f9fafb;
-        }
-        
-        .muted { color: #6b7280; font-size: 9px; }
-        .value { font-weight: 600; color: #1f2937; }
-        
-        /* Summary grid - No background */
-        .summary { 
-            display: grid; 
-            grid-template-columns: repeat(3, minmax(0, 1fr)); 
-            gap: 8px; 
-            margin-top: 8px; 
-        }
-        
-        .summary .item { 
-            background: transparent; 
-            border: none; 
-            padding: 6px; 
-        }
-        
-        .summary .label { 
-            text-transform: uppercase; 
-            letter-spacing: 0.14em; 
-            font-size: 8px; 
-            color: #6b7280; 
-        }
-        
-        .summary .val { 
-            font-weight: 700; 
-            font-size: 11px; 
-            color: #1f2937; 
-        }
-    </style>
-{% endblock %}
-{% block javascripts %}{% endblock %}
-
-{% block pageContent %}
+{% block document_content %}
     {% set details = asset.assetDetails ?? {} %}
     {% set amendments = asset.amendments ?? [] %}
     {% set techLevel = details.techLevel ?? '—' %}
@@ -169,34 +41,36 @@
         {% set rows = items|filter(i => (i.description ?? '') is not empty or (i.tons ?? null) is not null or (i.cost_mcr ?? null) is not null or (i.costMcr ?? null) is not null) %}
         {% set rows = rows|length == 0 ? items : rows %}
         {% set rows = rows|length == 0 ? [ {} ] : rows %}
-        <div class="card">
-            <div class="section-title">{{ title }}</div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Description</th>
-                        <th>Tons</th>
-                        <th>Cost (MCr)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for row in rows %}
-                    {% set desc = row.description ?? '—' %}
-                    {% set costRaw = row.cost_mcr ?? row.costMcr ?? null %}
-                    {% set tons = (row.tons ?? null) is not null
-                        ? (row.tons ?? 0)|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale ?? 'en')
-                        : '—' %}
-                    {% set cost = costRaw is not null
-                        ? costRaw|format_number({ min_fraction_digit: 3, max_fraction_digit: 3, grouping_used: true }, 'decimal', 'default', locale ?? 'en')
-                        : '—' %}
-                    <tr>
-                        <td>{{ desc ?: '—' }}</td>
-                        <td style="text-align: right;">{{ tons }}</td>
-                        <td style="text-align: right;">{{ cost }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+        <div class="card mb-4" style="page-break-inside: avoid;">
+            <div class="card-body p-4">
+                <h2 class="card-title text-lg mb-2">{{ title }}</h2>
+                <table class="table text-sm">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Tons</th>
+                            <th>Cost (MCr)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in rows %}
+                        {% set desc = row.description ?? '—' %}
+                        {% set costRaw = row.cost_mcr ?? row.costMcr ?? null %}
+                        {% set tons = (row.tons ?? null) is not null
+                            ? (row.tons ?? 0)|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale ?? 'en')
+                            : '—' %}
+                        {% set cost = costRaw is not null
+                            ? costRaw|format_number({ min_fraction_digit: 3, max_fraction_digit: 3, grouping_used: true }, 'decimal', 'default', locale ?? 'en')
+                            : '—' %}
+                        <tr>
+                            <td>{{ desc ?: '—' }}</td>
+                            <td style="text-align: right;">{{ tons }}</td>
+                            <td style="text-align: right;">{{ cost }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     {% endmacro %}
 
@@ -228,90 +102,100 @@
         {% if c is not null %}{% set totalCostMcr = totalCostMcr + c %}{% endif %}
     {% endfor %}
 
-    <div class="page">
+    <div class="mb-6">
         <table class="header-table">
             <tr>
                 <td style="text-align: left; width: 40%;">
                     <img src="{{ asset_data_uri('img/nav-fi-logo.png') }}" alt="Nav-Fi&sup3;" class="logo">
                 </td>
                 <td style="text-align: right; width: 60%;">
-                    <div class="subtitle">Asset sheet</div>
-                    <div class="title">Nav-Fi&sup3; — {{ asset.name }}</div>
-                    <div class="muted">Template: {{ template_version('pdf/asset/SHEET.html.twig') }}</div>
+                    <div class="text-xs uppercase tracking-widest text-gray-500">Asset sheet</div>
+                    <div class="text-2xl font-bold text-gray-800">Nav-Fi&sup3; — {{ asset.name }}</div>
+                    <div class="text-xs text-gray-500 mt-1">Template: {{ template_version('pdf/asset/SHEET.html.twig') }}</div>
                 </td>
             </tr>
         </table>
 
-        <div class="card" style="margin-bottom: 12px;">
-            <div class="summary">
-                <div class="item">
-                    <div class="label">Code</div>
-                    <div class="val">{{ asset.code }}</div>
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                {# Row 1: Code (Full Width) #}
+                <div class="mb-4 border-b border-gray-200 pb-2">
+                    <div class="text-xs uppercase tracking-widest text-gray-500">Code</div>
+                    <div class="font-bold text-lg text-gray-800">{{ asset.code }}</div>
                 </div>
-                <div class="item">
-                    <div class="label">Class / Type</div>
-                    <div class="val">{{ asset.class }} — {{ asset.type }}</div>
-                </div>
-                <div class="item">
-                    <div class="label">Campaign</div>
-                    <div class="val">{{ asset.campaign ? asset.campaign.title : '—' }}</div>
-                </div>
-                <div class="item">
-                    <div class="label">Price (Cr)</div>
-                    <div class="val">{{ asset.price is not null
-                        ? asset.price|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale ?? 'en')
-                        : '—' }}</div>
-                </div>
-                {% set sessionDay = asset.campaign ? asset.campaign.sessionDay : null %}
-                {% set sessionYear = asset.campaign ? asset.campaign.sessionYear : null %}
-                {% set sessionValue = (sessionDay is not null and sessionYear is not null) ? (sessionDay|imperial_date(sessionYear)) : '—' %}
-                <div class="item">
-                    <div class="label">Session</div>
-                    <div class="val">
-                        {{ sessionValue }}
+
+                {# Row 2: Grid for other details #}
+                <div class="grid grid-cols-4 gap-4">
+                    <div class="col-span-2">
+                        <div class="text-xs uppercase tracking-widest text-gray-500">Class / Type</div>
+                        <div class="font-bold text-sm text-gray-800">{{ asset.class }} — {{ asset.type }}</div>
+                    </div>
+                    <div>
+                        <div class="text-xs uppercase tracking-widest text-gray-500">Tech level</div>
+                        <div class="font-bold text-sm text-gray-800">{{ techLevel }}</div>
+                    </div>
+                    <div>
+                        <div class="text-xs uppercase tracking-widest text-gray-500">Campaign</div>
+                        <div class="font-bold text-sm text-gray-800">{{ asset.campaign ? asset.campaign.title : '—' }}</div>
+                    </div>
+                    
+                    <div>
+                        {% set sessionDay = asset.campaign ? asset.campaign.sessionDay : null %}
+                        {% set sessionYear = asset.campaign ? asset.campaign.sessionYear : null %}
+                        {% set sessionValue = (sessionDay is not null and sessionYear is not null) ? (sessionDay|imperial_date(sessionYear)) : '—' %}
+                        <div class="text-xs uppercase tracking-widest text-gray-500">Session</div>
+                        <div class="font-bold text-sm text-gray-800">
+                            {{ sessionValue }}
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-xs uppercase tracking-widest text-gray-500">Price (Cr)</div>
+                        <div class="font-bold text-sm text-gray-800">{{ asset.price is not null
+                            ? asset.price|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale ?? 'en')
+                            : '—' }}</div>
+                    </div>
+                    <div>
+                        <div class="text-xs uppercase tracking-widest text-gray-500">Total cost (MCr)</div>
+                        <div class="font-bold text-sm text-gray-800">
+                            {% if totalCostMcr %}
+                                {{ totalCostMcr|format_number({ min_fraction_digit: 3, max_fraction_digit: 3, grouping_used: true }, 'decimal', 'default', locale ?? 'en') }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-                <div class="item">
-                    <div class="label">Tech level</div>
-                    <div class="val">{{ techLevel }}</div>
-                </div>
-                <div class="item">
-                    <div class="label">Total cost (MCr)</div>
-                    <div class="val">
-                        {% if totalCostMcr %}
-                            {{ totalCostMcr|format_number({ min_fraction_digit: 3, max_fraction_digit: 3, grouping_used: true }, 'decimal', 'default', locale ?? 'en') }}
-                        {% else %}
-                            —
-                        {% endif %}
-                    </div>
-                    <div class="muted" style="font-size: 8px; margin-top: 2px;">
-                        Total Cost is auto-calculated and stored with the asset details, but it does not affect the Asset Price.
-                    </div>
+            </div>
+            <div class="p-4 pt-0">
+                <div class="text-xs text-gray-500" style="font-size: 8px;">
+                     * Total Cost is auto-calculated and stored with the asset details, but it does not affect the Asset Price.
                 </div>
             </div>
         </div>
 
-        <div class="card">
-            <div class="section-title">Core Systems & Layout</div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Component</th>
-                        <th>Description</th>
-                        <th style="text-align: right;">Tons</th>
-                        <th style="text-align: right;">Cost (MCr)</th>
-                        <th>Spec</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for entry in singleItems %}
-                        {{ _self.render_item(entry.label, entry.item, locale, entry.spec, entry.specLabel) }}
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                <h2 class="card-title text-lg mb-2">Core Systems & Layout</h2>
+                <table class="table text-sm">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Description</th>
+                            <th style="text-align: right;">Tons</th>
+                            <th style="text-align: right;">Cost (MCr)</th>
+                            <th>Spec</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in singleItems %}
+                            {{ _self.render_item(entry.label, entry.item, locale, entry.spec, entry.specLabel) }}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="grid grid-2">
+        <div class="grid grid-cols-1 gap-4">
             {{ _self.render_collection('Weapons', details.weapons ?? [], locale) }}
             {{ _self.render_collection('Craft', details.craft ?? [], locale) }}
             {{ _self.render_collection('Systems', details.systems ?? [], locale) }}
@@ -320,49 +204,51 @@
         </div>
 
         {% if amendments|length > 0 %}
-            <div class="card">
-                <div class="section-title">Amendments Log</div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Code</th>
-                            <th>Title</th>
-                            <th>Effective date</th>
-                            <th>Cost ref</th>
-                            <th>Amount(Cr)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for amendment in amendments %}
+            <div class="card mb-4">
+                <div class="card-body p-4">
+                    <h2 class="card-title text-lg mb-2">Amendments Log</h2>
+                    <table class="table text-sm">
+                        <thead>
                             <tr>
-                                <td>{{ amendment.code }}</td>
-                                <td>
-                                    <div class="value">{{ amendment.title }}</div>
-                                    {% if amendment.description %}
-                                        <div class="muted">{{ amendment.description }}</div>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {{ (amendment.effectiveDay is not null and amendment.effectiveYear is not null) ? (amendment.effectiveDay|imperial_date(amendment.effectiveYear)) : '—' }}
-                                </td>
-                                <td>
-                                    {% if amendment.cost %}
-                                        {{ amendment.cost.code }} — {{ amendment.cost.title }}
-                                    {% else %}
-                                        —
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if amendment.cost %}
-                                        {{ amendment.cost.amount|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}
-                                    {% else %}
-                                        —
-                                    {% endif %}
-                                </td>
+                                <th>Code</th>
+                                <th>Title</th>
+                                <th>Effective date</th>
+                                <th>Cost ref</th>
+                                <th>Amount(Cr)</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for amendment in amendments %}
+                                <tr>
+                                    <td>{{ amendment.code }}</td>
+                                    <td>
+                                        <div class="font-bold text-gray-800">{{ amendment.title }}</div>
+                                        {% if amendment.description %}
+                                            <div class="text-xs text-gray-500">{{ amendment.description }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ (amendment.effectiveDay is not null and amendment.effectiveYear is not null) ? (amendment.effectiveDay|imperial_date(amendment.effectiveYear)) : '—' }}
+                                    </td>
+                                    <td>
+                                        {% if amendment.cost %}
+                                            {{ amendment.cost.code }} — {{ amendment.cost.title }}
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if amendment.cost %}
+                                            {{ amendment.cost.amount|format_number({ min_fraction_digit: 2, max_fraction_digit: 2, grouping_used: true }, 'decimal', 'default', locale) }}
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         {% endif %}
     </div>

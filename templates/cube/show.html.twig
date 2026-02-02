@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% block layout_class %}bg-scifi-texture{% endblock %}
+
 {% block title %}Contract Manifest #{{ opportunity.id }}{% endblock %}
 
 {% block pageContent %}
@@ -235,9 +237,17 @@
                              <label class="label">
                                 <span class="label-text text-slate-400 text-xs uppercase font-bold">{{ dateLabel }}</span>
                             </label>
-                            <div class="flex gap-2">
-                                <input type="number" name="day" placeholder="Day" class="input input-bordered bg-slate-950 border-slate-700 text-white w-20" value="{{ opportunity.data.details.start_day|default(1) }}" required>
-                                <input type="number" name="year" placeholder="Year" class="input input-bordered bg-slate-950 border-slate-700 text-white flex-1" value="{{ opportunity.data.details.start_year|default(1105) }}" required>
+                            <div class="flex gap-2" data-controller="imperial-date">
+                                <input type="text" class="input input-bordered bg-slate-950 border-slate-700 text-white w-full cursor-pointer" 
+                                       readonly
+                                       placeholder="Select Date"
+                                       data-imperial-date-target="display"
+                                       data-action="click->imperial-date#toggle"
+                                       data-imperial-date-initial-day="{{ opportunity.data.details.start_day|default(1) }}"
+                                       data-imperial-date-initial-year="{{ opportunity.data.details.start_year|default(1105) }}">
+                                
+                                <input type="hidden" name="day" data-imperial-date-target="day" value="{{ opportunity.data.details.start_day|default(1) }}">
+                                <input type="hidden" name="year" data-imperial-date-target="year" value="{{ opportunity.data.details.start_year|default(1105) }}" data-min-year="1100" data-max-year="1200">
                             </div>
                             <div class="text-[9px] text-slate-500 mt-1 uppercase font-mono">Mission Timeline Adjustment</div>
                         </div>
@@ -249,9 +259,17 @@
                         <label class="label pt-0">
                             <span class="label-text text-slate-400 text-[10px] uppercase font-bold tracking-widest">Optional: Contract Deadline</span>
                         </label>
-                        <div class="flex gap-2">
-                            <input type="number" name="deadline_day" placeholder="Day" class="input input-bordered input-sm bg-slate-900 border-slate-800 text-white w-20">
-                            <input type="number" name="deadline_year" placeholder="Year" class="input input-bordered input-sm bg-slate-900 border-slate-800 text-white flex-1" value="{{ opportunity.data.details.start_year|default(1105) }}">
+                        <div class="flex gap-2" data-controller="imperial-date">
+                            <input type="text" class="input input-bordered input-sm bg-slate-900 border-slate-800 text-white w-full cursor-pointer" 
+                                   readonly
+                                   placeholder="Select Deadline"
+                                   data-imperial-date-target="display"
+                                   data-action="click->imperial-date#toggle"
+                                   data-imperial-date-initial-day=""
+                                   data-imperial-date-initial-year="{{ opportunity.data.details.start_year|default(1105) }}">
+
+                            <input type="hidden" name="deadline_day" data-imperial-date-target="day">
+                            <input type="hidden" name="deadline_year" data-imperial-date-target="year" value="{{ opportunity.data.details.start_year|default(1105) }}" data-min-year="1100" data-max-year="1200">
                         </div>
                         <div class="text-[9px] text-slate-600 mt-2 italic">Leave empty if no strict deadline is enforced by the patron.</div>
                     </div>

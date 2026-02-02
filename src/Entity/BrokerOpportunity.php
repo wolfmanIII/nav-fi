@@ -13,6 +13,7 @@ class BrokerOpportunity
     public const STATUS_PROPOSED = 'PROPOSED';
     public const STATUS_SAVED = 'SAVED';
     public const STATUS_CONVERTED = 'CONVERTED';
+    public const STATUS_ACCEPTED = 'ACCEPTED';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
