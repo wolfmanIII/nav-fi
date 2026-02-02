@@ -70,15 +70,16 @@ class TheCubeEngine
         $sessionYear = $campaign?->getSessionYear() ?? 1105;
 
         $sector = $session->getSector();
+        $user = $campaign?->getUser();
 
         for ($i = 0; $i < $count; $i++) {
-            $results[] = $this->generateSingle($randomizer, $originName, $originHex, $destinations, $maxDist, $i, $sessionDay, $sessionYear, $sector);
+            $results[] = $this->generateSingle($randomizer, $originName, $originHex, $destinations, $maxDist, $i, $sessionDay, $sessionYear, $sector, $user);
         }
 
         return $results;
     }
 
-    private function generateSingle(Randomizer $randomizer, string $originName, string $originHex, array $destinations, int $maxDist, int $index, int $sessionDay, int $sessionYear, string $sector): CubeOpportunityData
+    private function generateSingle(Randomizer $randomizer, string $originName, string $originHex, array $destinations, int $maxDist, int $index, int $sessionDay, int $sessionYear, string $sector, ?\App\Entity\User $user): CubeOpportunityData
     {
         // Seleziona destinazione
         $destination = null;
@@ -106,6 +107,7 @@ class TheCubeEngine
             'session_day' => $sessionDay,
             'session_year' => $sessionYear,
             'sector' => $sector,
+            'user' => $user
         ];
 
         // Genera firma deterministica (rimane basata su CRC32 per compatibilità o semplicità, 

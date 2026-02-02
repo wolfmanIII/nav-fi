@@ -47,7 +47,8 @@ class ContractGenerator implements OpportunityGeneratorInterface
 
         // 2. Generazione Narrativa tramite il nuovo Motore
         $sector = $context['sector'] ?? 'Unknown';
-        $story = $this->narrative->generateStory($sector, $randomizer);
+        $user = $context['user'] ?? null;
+        $story = $this->narrative->generateStory($sector, $randomizer, $user);
 
         $destination = $context['destination'] ?? 'Local/System';
         $distance = $context['distance'] ?? 0;
@@ -70,7 +71,9 @@ class ContractGenerator implements OpportunityGeneratorInterface
                 'tier' => $tierKey,
                 'variables' => $story->variables,
                 'start_day' => $context['session_day'],
-                'start_year' => $context['session_year']
+                'start_day' => $context['session_day'],
+                'start_year' => $context['session_year'],
+                'company_id' => $story->variables['company_id'] ?? null
             ]
         );
     }

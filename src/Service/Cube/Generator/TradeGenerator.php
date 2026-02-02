@@ -12,6 +12,7 @@ class TradeGenerator implements OpportunityGeneratorInterface
 {
     public function __construct(
         private readonly CompanyRepository $companyRepo,
+        private readonly \App\Service\Cube\NameGeneratorService $nameGenerator,
         private readonly GameRulesEngine $rules
     ) {}
 
@@ -69,15 +70,28 @@ class TradeGenerator implements OpportunityGeneratorInterface
 
         // Selezione Fornitore (Compagnia)
         // Ottimizzazione: In prod sarebbe meglio filtrare o cachare.
-        $companies = $this->companyRepo->findAll();
+        // Selezione Fornitore (Hybrid Logic)
+        $user = $context['user'] ?? null;
         $supplier = null;
-        if (!empty($companies)) {
-            $supplier = $companies[$randomizer->getInt(0, count($companies) - 1)];
+        $supplierName = 'Local Free Trader';
+
+        // 30% chance to use existing company if User is provided
+        if ($user && $randomizer->getInt(1, 100) <= 30) {
+            $existing = $this->companyRepo->findRandomForUser($user, 1);
+            if (!empty($existing)) {
+                $supplier = $existing[0];
+                $supplierName = $supplier->getName();
+            }
+        }
+
+        // 70% (or fallback) generate new name
+        if (!$supplier) {
+            $supplierName = $this->nameGenerator->generateForCompany($randomizer);
         }
 
         $summary = "Bulk Sale: $tons tons of $resource";
-        if ($supplier) {
-            $summary .= " from " . $supplier->getName();
+        if ($supplierName) {
+            $summary .= " from " . $supplierName;
         }
 
         return new CubeOpportunityData(
@@ -95,7 +109,7 @@ class TradeGenerator implements OpportunityGeneratorInterface
                 'unit_price' => $basePrice,
                 'markup_estimate' => $markup,
                 'company_id' => $supplier?->getId(),
-                'patron' => $supplier?->getName() ?? 'Local Free Trader',
+                'patron' => $supplierName,
                 'start_day' => $context['session_day'],
                 'start_year' => $context['session_year']
             ]

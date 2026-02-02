@@ -14,6 +14,7 @@ class FreightGenerator implements OpportunityGeneratorInterface
         #[Autowire('%app.cube.economy%')]
         private readonly array $economyConfig,
         private readonly CompanyRepository $companyRepo,
+        private readonly \App\Service\Cube\NameGeneratorService $nameGenerator,
         private readonly GameRulesEngine $rules
     ) {}
 
@@ -41,16 +42,28 @@ class FreightGenerator implements OpportunityGeneratorInterface
         $baseRate = $this->economyConfig['freight_pricing'][$dist] ?? 1000;
         $total = $tons * $baseRate;
 
-        // Selezione Spedizioniere
-        $companies = $this->companyRepo->findAll();
+        // Selezione Spedizioniere (Hybrid Logic)
+        $user = $context['user'] ?? null;
         $shipper = null;
-        if (!empty($companies)) {
-            $shipper = $companies[$randomizer->getInt(0, count($companies) - 1)];
+        $shipperName = 'Independent Broker';
+
+        // 30% chance to use existing company if User is provided
+        if ($user && $randomizer->getInt(1, 100) <= 30) {
+            $existing = $this->companyRepo->findRandomForUser($user, 1);
+            if (!empty($existing)) {
+                $shipper = $existing[0];
+                $shipperName = $shipper->getName();
+            }
+        }
+
+        // 70% (or fallback) generate new name
+        if (!$shipper) {
+            $shipperName = $this->nameGenerator->generateForCompany($randomizer);
         }
 
         $summary = "Freight: $tons dt to {$context['destination']}";
-        if ($shipper) {
-            $summary .= " ({$shipper->getName()})";
+        if ($shipperName) {
+            $summary .= " ($shipperName)";
         }
 
         return new CubeOpportunityData(
@@ -67,7 +80,7 @@ class FreightGenerator implements OpportunityGeneratorInterface
                 'cargo_type' => 'General Goods',
                 'dest_dist' => $dist,
                 'company_id' => $shipper?->getId(),
-                'patron' => $shipper?->getName() ?? 'Independent Broker',
+                'patron' => $shipperName,
                 'start_day' => $context['session_day'],
                 'start_year' => $context['session_year']
             ]

@@ -31,12 +31,29 @@ class NarrativeService
     /**
      * Genera una storia completa basata sull'archetipo e il patrono.
      */
-    public function generateStory(string $sector, Randomizer $randomizer): Story
+    public function generateStory(string $sector, Randomizer $randomizer, ?\App\Entity\User $user = null): Story
     {
         // 1. Seleziona Patron
         $patronInfo = $this->patronConfig[$randomizer->getInt(0, count($this->patronConfig) - 1)];
         $patronType = $patronInfo['type'] ?? 'Individual';
-        $patronName = $this->nameGenerator->generateForPatron($patronType, null, $randomizer);
+
+        // HYBRID LOGIC: 30% chance to use existing company if User is provided
+        $patronName = null;
+        $companyId = null;
+
+        if ($user && $randomizer->getInt(1, 100) <= 30) {
+            // Try to fetch existing companies
+            // We use a small cache or just fetch 1 random
+            $existing = $this->companyRepository->findRandomForUser($user, 1);
+            if (!empty($existing)) {
+                $patronName = $existing[0]->getName();
+                $companyId = $existing[0]->getId();
+            }
+        }
+
+        if (!$patronName) {
+            $patronName = $this->nameGenerator->generateForPatron($patronType, null, $randomizer);
+        }
         $allowedArchetypes = $patronInfo['archetypes'] ?? array_keys($this->archetypes);
 
         // 2. Seleziona Archetipo tra quelli permessi dal patrono
@@ -68,7 +85,7 @@ class NarrativeService
             summary: $summary,
             briefing: $briefing,
             twist: $this->getRandom('twists', $randomizer),
-            variables: $variables
+            variables: $variables + ($companyId ? ['company_id' => $companyId] : [])
         );
     }
 

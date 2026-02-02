@@ -120,4 +120,41 @@ class CompanyRepository extends ServiceEntityRepository
 
         return $qbElastic->getQuery()->getOneOrNullResult();
     }
+
+    /**
+     * Recupera una lista casuale di compagnie esistenti per l'utente.
+     * Utile per la generazione ibrida di opportunità.
+     * @return Company[]
+     */
+    public function findRandomForUser(User $user, int $limit = 5): array
+    {
+        // Nota: ORDER BY RANDOM() è database specific (Postgres=RANDOM(), MySQL=RAND(), SQLite=RANDOM())
+        // Doctrine non ha una funzione standard portabile.
+        // Poiché è un progetto Symfony/Postgres, proviamo un approccio native query o numerico.
+        // Approccio numerico (più sicuro e portabile):
+        // 1. Conta IDs
+        // 2. Prendi IDs random
+        // 3. Fetch
+        // Oppure, per semplicità visto che i dati non saranno milioni:
+        $allIds = $this->createQueryBuilder('c')
+            ->select('c.id')
+            ->where('c.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getScalarResult(); // Returns [['id'=>1], ['id'=>2]...]
+
+        if (empty($allIds)) {
+            return [];
+        }
+
+        $allIds = array_column($allIds, 'id');
+        shuffle($allIds);
+        $selectedIds = array_slice($allIds, 0, $limit);
+
+        return $this->createQueryBuilder('c')
+            ->where('c.id IN (:ids)')
+            ->setParameter('ids', $selectedIds)
+            ->getQuery()
+            ->getResult();
+    }
 }
