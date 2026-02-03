@@ -45,6 +45,74 @@
 <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative"
           data-controller="asset-details">
     <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Ship Specifications</legend>
+
+    {# VISUAL SHIP REGISTRY MAPPING #}
+    <div class="col-span-2 mb-6 border-b border-slate-800/50 pb-6">
+        <div class="relative w-full max-w-3xl mx-auto">
+            <div class="relative group">
+                {# STARSHIP SCHEMATIC IMAGE #}
+                <img src="{{ asset('img/nav-fi-starship.png') }}" 
+                     alt="Ship Schematic" 
+                     class="w-full h-auto drop-shadow-[0_0_15px_rgba(6,182,212,0.15)]">
+                
+                {# HUD GRID OVERLAY REMOVED FOR CLARITY #}
+                {# <div class="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.05)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20 pointer-events-none"></div> #}
+
+                {# INTERACTIVE ZONES - COORDINATES TO BE TUNED #}
+                
+                {# ZONE: BRIDGE (Front/Right typically, placing at 85% width) #}
+                <button type="button" 
+                        onclick="document.getElementById('section-bridge').scrollIntoView({behavior: 'smooth', block: 'center'}); document.getElementById('section-bridge').classList.add('ring-2', 'ring-cyan-400', 'ring-offset-2', 'ring-offset-slate-900'); setTimeout(() => document.getElementById('section-bridge').classList.remove('ring-2', 'ring-cyan-400', 'ring-offset-2', 'ring-offset-slate-900'), 2000);"
+                        class="absolute top-[35%] right-[5%] w-[15%] h-[20%] group/zone hover:bg-cyan-500/10 border border-transparent hover:border-cyan-400/50 rounded-lg transition-all cursor-pointer flex items-center justify-center">
+                    <div class="hidden group-hover/zone:block absolute -top-8 bg-slate-900 border border-cyan-500/50 px-2 py-1 text-[9px] font-orbitron text-cyan-400 uppercase tracking-widest whitespace-nowrap z-10 shadow-lg">
+                        Bridge // Ops
+                    </div>
+                </button>
+
+                {# ZONE: ENGINEERING (Rear/Left typically) #}
+                <button type="button" 
+                        onclick="document.getElementById('section-engineering').scrollIntoView({behavior: 'smooth', block: 'center'}); document.getElementById('section-engineering').classList.add('ring-2', 'ring-amber-400', 'ring-offset-2', 'ring-offset-slate-900'); setTimeout(() => document.getElementById('section-engineering').classList.remove('ring-2', 'ring-amber-400', 'ring-offset-2', 'ring-offset-slate-900'), 2000);"
+                        class="absolute top-[30%] left-[5%] w-[20%] h-[40%] group/zone hover:bg-amber-500/10 border border-transparent hover:border-amber-400/50 rounded-lg transition-all cursor-pointer flex items-center justify-center">
+                    <div class="hidden group-hover/zone:block absolute -top-8 bg-slate-900 border border-amber-500/50 px-2 py-1 text-[9px] font-orbitron text-amber-400 uppercase tracking-widest whitespace-nowrap z-10 shadow-lg">
+                        Engineering
+                    </div>
+                </button>
+
+                {# ZONE: CARGO (Mid-Rear) #}
+                <button type="button" 
+                        onclick="document.getElementById('section-cargo').scrollIntoView({behavior: 'smooth', block: 'center'}); document.getElementById('section-cargo').classList.add('ring-2', 'ring-emerald-400', 'ring-offset-2', 'ring-offset-slate-900'); setTimeout(() => document.getElementById('section-cargo').classList.remove('ring-2', 'ring-emerald-400', 'ring-offset-2', 'ring-offset-slate-900'), 2000);"
+                        class="absolute top-[40%] left-[30%] w-[25%] h-[30%] group/zone hover:bg-emerald-500/10 border border-transparent hover:border-emerald-400/50 rounded-lg transition-all cursor-pointer flex items-center justify-center">
+                    <div class="hidden group-hover/zone:block absolute -top-8 bg-slate-900 border border-emerald-500/50 px-2 py-1 text-[9px] font-orbitron text-emerald-400 uppercase tracking-widest whitespace-nowrap z-10 shadow-lg">
+                        Cargo & Fuel
+                    </div>
+                </button>
+
+                {# ZONE: ACCOMMODATION (Mid-Front) #}
+                <button type="button" 
+                        onclick="document.getElementById('section-cargo').scrollIntoView({behavior: 'smooth', block: 'center'});"
+                        class="absolute top-[25%] left-[55%] w-[20%] h-[25%] group/zone hover:bg-purple-500/10 border border-transparent hover:border-purple-400/50 rounded-lg transition-all cursor-pointer flex items-center justify-center">
+                    <div class="hidden group-hover/zone:block absolute -top-8 bg-slate-900 border border-purple-500/50 px-2 py-1 text-[9px] font-orbitron text-purple-400 uppercase tracking-widest whitespace-nowrap z-10 shadow-lg">
+                        Deck & Crew
+                    </div>
+                </button>
+
+                 {# ZONE: WEAPONS (Top) #}
+                <button type="button" 
+                        onclick="document.getElementById('section-weapons').scrollIntoView({behavior: 'smooth', block: 'center'}); document.getElementById('section-weapons').classList.add('ring-2', 'ring-red-400', 'ring-offset-2', 'ring-offset-slate-900'); setTimeout(() => document.getElementById('section-weapons').classList.remove('ring-2', 'ring-red-400', 'ring-offset-2', 'ring-offset-slate-900'), 2000);"
+                        class="absolute top-[10%] left-[40%] w-[30%] h-[15%] group/zone hover:bg-red-500/10 border border-transparent hover:border-red-400/50 rounded-lg transition-all cursor-pointer flex items-center justify-center">
+                    <div class="hidden group-hover/zone:block absolute -top-8 bg-slate-900 border border-red-500/50 px-2 py-1 text-[9px] font-orbitron text-red-400 uppercase tracking-widest whitespace-nowrap z-10 shadow-lg">
+                        Hardpoints
+                    </div>
+                </button>
+            </div>
+            
+            <div class="flex justify-center gap-4 mt-2">
+                 <div class="text-[9px] font-mono text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full border border-cyan-500/50 bg-cyan-500/20"></span> Interactive Schematic
+                 </div>
+            </div>
+        </div>
+    </div>
     
     <div class="col-span-2">
         <div class="alert alert-info alert-outline border-cyan-500/50 bg-cyan-950/30 mb-6">
@@ -115,7 +183,7 @@
     </div>
 
     {# Drives Section #}
-    <div class="col-span-2 md:col-span-1 border border-slate-700 bg-slate-950/40 rounded-lg p-4 group hover:border-cyan-500/30 transition-colors">
+    <div id="section-engineering" class="col-span-2 md:col-span-1 border border-slate-700 bg-slate-950/40 rounded-lg p-4 group hover:border-cyan-500/30 transition-colors">
         <div class="flex items-center gap-2 mb-3 border-b border-slate-800 pb-2">
             <span class="text-[10px] uppercase tracking-widest font-orbitron font-bold text-amber-500/70">Engineering</span>
         </div>
@@ -193,7 +261,7 @@
 
     {# Fuel Section #}
     {% if form.fuel is defined %}
-    <div class="col-span-2 border border-slate-700 bg-slate-950/40 rounded-lg p-4 group hover:border-cyan-500/30 transition-colors">
+    <div id="section-fuel" class="col-span-2 border border-slate-700 bg-slate-950/40 rounded-lg p-4 group hover:border-cyan-500/30 transition-colors">
          <div class="flex items-center gap-2 mb-3 border-b border-slate-800 pb-2">
             <span class="text-[10px] uppercase tracking-widest font-orbitron font-bold text-emerald-500/70">Fuel Systems</span>
         </div>
@@ -215,7 +283,7 @@
     {% endif %}
 
     {# Operational Section #}
-    <div class="col-span-2 md:col-span-1 border border-slate-700 bg-slate-950/40 rounded-lg p-4 group hover:border-cyan-500/30 transition-colors">
+    <div id="section-bridge" class="col-span-2 md:col-span-1 border border-slate-700 bg-slate-950/40 rounded-lg p-4 group hover:border-cyan-500/30 transition-colors">
         <div class="flex items-center gap-2 mb-3 border-b border-slate-800 pb-2">
             <span class="text-[10px] uppercase tracking-widest font-orbitron font-bold text-cyan-500/70">Operational & bridge</span>
         </div>
@@ -272,7 +340,7 @@
 
 
     {# Accommodation & Cargo #}
-    <div class="col-span-2 md:col-span-1 border border-slate-700 bg-slate-950/40 rounded-lg p-4 group hover:border-cyan-500/30 transition-colors">
+    <div id="section-cargo" class="col-span-2 md:col-span-1 border border-slate-700 bg-slate-950/40 rounded-lg p-4 group hover:border-cyan-500/30 transition-colors">
         <div class="flex items-center gap-2 mb-3 border-b border-slate-800 pb-2">
             <span class="text-[10px] uppercase tracking-widest font-orbitron font-bold text-emerald-500/70">Payload & Accommodation</span>
         </div>
@@ -301,7 +369,7 @@
     </div>
 
     {# Systems & Weapons #}
-    <div class="col-span-2 grid grid-cols-2 gap-4">
+    <div id="section-weapons" class="col-span-2 grid grid-cols-2 gap-4">
         {{ detailsMacros.render_collection(form.weapons, 'Hardpoints & Weapons', 'red') }}
         {{ detailsMacros.render_collection(form.systems, 'Systems & Equipment', 'amber') }}
     </div>
