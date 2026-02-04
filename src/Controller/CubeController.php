@@ -220,12 +220,19 @@ class CubeController extends AbstractController
             'campaign' => $campaign
         ]);
 
+        $form = $this->createForm(\App\Form\ContractAcceptanceType::class, null, [
+            'opportunity' => $opportunity,
+            'existing_patron' => $existingPatron,
+            'action' => $this->generateUrl('app_cube_contract_accept', ['id' => $id]),
+        ]);
+
         return $this->render('cube/show.html.twig', [
             'opportunity' => $opportunity,
             'assets' => $assets,
             'localLaws' => $em->getRepository(LocalLaw::class)->findAll(),
             'companyRoles' => $em->getRepository(CompanyRole::class)->findAll(),
             'existingPatron' => $existingPatron,
+            'acceptanceForm' => $form->createView(),
         ]);
     }
 
@@ -237,47 +244,67 @@ class CubeController extends AbstractController
             throw $this->createNotFoundException('Contract not found.');
         }
 
-        $assetId = $request->request->get('asset_id');
-        $asset = $em->getRepository(Asset::class)
-            ->find($assetId);
-
-        if (!$asset) {
-            $this->addFlash('error', 'Invalid Asset selected.');
-            return $this->redirectToRoute('app_cube_contract_show', ['id' => $id]);
+        // Check if patron exists as an existing Company for this user
+        $existingPatron = null;
+        $patronName = $opportunity->getData()['details']['patron'] ?? null;
+        if ($patronName) {
+            $user = $this->getUser();
+            if ($user instanceof User) {
+                $existingPatron = $this->companyManager->findByCanonical($patronName, $user);
+            }
         }
 
-        // Validation: If Patron exists (to be created) and no existing company ID is selected, Role is mandatory.
-        $oppData = $opportunity->getData();
-        $patronName = $oppData['details']['patron'] ?? null;
-        $patronCompanyId = $request->request->get('patron_company_id');
-        $patronRoleId = $request->request->get('patron_role_id');
+        $form = $this->createForm(\App\Form\ContractAcceptanceType::class, null, [
+            'opportunity' => $opportunity,
+            'existing_patron' => $existingPatron,
+        ]);
 
-        if ($patronName && empty($patronCompanyId) && empty($patronRoleId)) {
-            $this->addFlash('error', 'To register a new Company/Patron, you must select a Role.');
-            return $this->redirectToRoute('app_cube_contract_show', ['id' => $id]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $asset = $form->get('asset')->getData();
+            $localLaw = $form->get('localLaw')->getData();
+
+            // Extract Dates
+            $startDate = $form->has('startDate') ? $form->get('startDate')->getData() : null;
+            $deadlineDate = $form->has('deadlineDate') ? $form->get('deadlineDate')->getData() : null;
+
+            // Extract Patron info
+            $patronRole = $form->has('patronRole') ? $form->get('patronRole')->getData() : null;
+            $patronCompanyId = $form->has('patronCompany') ? $form->get('patronCompany')->getData() : null;
+
+            if ($patronName && empty($patronCompanyId) && empty($patronRole) && !$existingPatron) {
+                // Handled by Form Logic usually, but double check
+                $this->addFlash('error', 'To register a new Company/Patron, you must select a Role.');
+                return $this->redirectToRoute('app_cube_contract_show', ['id' => $id]);
+            }
+
+            try {
+                $overrides = [
+                    'day' => $startDate?->getDay(),
+                    'year' => $startDate?->getYear(),
+                    'deadline_day' => $deadlineDate?->getDay(),
+                    'deadline_year' => $deadlineDate?->getYear(),
+                    'local_law_id' => $localLaw?->getId(),
+                    'patron_role_id' => $patronRole?->getId(),
+                    'patron_company_id' => $patronCompanyId, // Hidden field value
+                ];
+
+                $this->brokerService->acceptOpportunity($opportunity, $asset, array_filter($overrides, fn($v) => !is_null($v)));
+                $this->addFlash('success', 'Contract Accepted! Financial records updated.');
+
+                return $this->redirectToRoute('app_cube_index', ['session_id' => $opportunity->getSession()->getId()]);
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Error accepting contract: ' . $e->getMessage());
+                // Fallthrough to redirect back
+            }
+        } else {
+            foreach ($form->getErrors(true) as $error) {
+                $this->addFlash('error', $error->getMessage());
+            }
         }
 
-        try {
-            $overrides = [
-                'day' => $request->request->get('day'),
-                'year' => $request->request->get('year'),
-                'deadline_day' => $request->request->get('deadline_day'),
-                'deadline_year' => $request->request->get('deadline_year'),
-                'local_law_id' => $request->request->get('localLaw'),
-                'patron_role_id' => $request->request->get('patron_role_id'),
-                'patron_company_id' => $request->request->get('patron_company_id'),
-            ];
-
-            $this->brokerService->acceptOpportunity($opportunity, $asset, array_filter($overrides));
-            $this->addFlash('success', 'Contract Accepted! Financial records updated.');
-
-            // Redirect to the Asset's ledger or back to console?
-            // For now, back to console seems appropriate.
-            return $this->redirectToRoute('app_cube_index', ['session_id' => $opportunity->getSession()->getId()]);
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Error accepting contract: ' . $e->getMessage());
-            return $this->redirectToRoute('app_cube_contract_show', ['id' => $id]);
-        }
+        return $this->redirectToRoute('app_cube_contract_show', ['id' => $id]);
     }
     #[Route('/session/delete/{id}', name: 'app_cube_session_delete', methods: ['POST'])]
     public function deleteSession(int $id, Request $request, EntityManagerInterface $em): Response
