@@ -1,7 +1,7 @@
 {% import _self as detailsMacros %}
 
 {% macro render_item(child) %}
-    <div class="grid grid-cols-3 gap-4 border border-slate-700 bg-slate-950/40 rounded-lg p-4 relative collection-item group hover:border-cyan-500/30 transition-colors">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 border border-slate-700 bg-slate-950/40 rounded-lg p-4 relative collection-item group hover:border-cyan-500/30 transition-colors">
         <button type="button"
                 class="absolute -right-2 -top-2 w-6 h-6 rounded-full bg-slate-800 border border-slate-700 text-slate-400 hover:text-red-400 hover:border-red-500/50 flex items-center justify-center transition-all shadow-lg z-10"
                 data-action="asset-details#removeItem">&times;</button>
@@ -47,10 +47,10 @@
     </div>
 {% endmacro %}
 
-<fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative"
+<fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative"
          data-controller="asset-details">
     <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Asset technical details</legend>
-    <div class="col-span-2">
+    <div class="col-span-1 md:col-span-2">
         <div class="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800 p-6 shadow-lg mb-4">
              <div class="absolute top-0 right-0 p-4 opacity-10">
                 {% include 'icons/ship-components.html.twig' with { dim: 128, class: 'text-cyan-500' } %}
@@ -71,7 +71,7 @@
             </div>
         </div>
     </div>
-    <div class="col-span-2">
+    <div class="col-span-1 md:col-span-2">
         <div class="alert alert-info alert-outline border-cyan-500/50 bg-cyan-500/5 flex items-start gap-2">
             <div class="pt-0.5 animate-spin-slow text-cyan-500">
                 {% include 'icons/radar.html.twig' with { dim: 16 } %}
@@ -117,7 +117,7 @@
         { child: detailsForm.cargo, label: 'Cargo' },
     ] %}
 
-    <div class="col-span-2 grid grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {% for item in single_items %}
             <div class="border border-slate-700 bg-slate-950/40 rounded-lg p-4 relative group hover:border-cyan-500/30 transition-colors">
                 <div class="flex items-center gap-1 mb-2">
@@ -176,7 +176,7 @@
         {% endfor %}
     </div>
 
-    <div class="col-span-2 grid grid-cols-1 gap-6">
+    <div class="col-span-1 md:col-span-2 grid grid-cols-1 gap-6">
         {{ detailsMacros.render_collection(detailsForm.weapons, 'Weapons') }}
         {{ detailsMacros.render_collection(detailsForm.craft, 'Craft') }}
         {{ detailsMacros.render_collection(detailsForm.systems, 'Systems') }}

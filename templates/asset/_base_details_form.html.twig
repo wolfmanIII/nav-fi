@@ -1,21 +1,21 @@
 {% import _self as detailsMacros %}
 
 {% macro render_item(child) %}
-    <div class="grid grid-cols-12 gap-2 border border-slate-800 bg-slate-950/40 rounded-lg p-2 relative group hover:border-cyan-500/30 transition-colors items-center collection-item">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-2 border border-slate-800 bg-slate-950/40 rounded-lg p-2 relative group hover:border-cyan-500/30 transition-colors items-start md:items-center collection-item">
         <button type="button"
                 class="absolute -right-2 -top-2 w-5 h-5 rounded-full bg-slate-800 border border-slate-700 text-slate-400 hover:text-red-400 hover:border-red-500/50 flex items-center justify-center transition-all shadow-lg z-10 text-xs"
                 data-action="asset-details#removeItem">&times;</button>
         
-        <div class="col-span-8 md:col-span-6">
+        <div class="col-span-1 md:col-span-8 lg:col-span-6 w-full">
             {{ form_widget(child.description, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50', placeholder: 'Description/Model' } }) }}
         </div>
-        <div class="col-span-2 md:col-span-3">
+        <div class="col-span-1 md:col-span-2 lg:col-span-3 w-full">
              <div class="flex items-center gap-1">
                  <span class="text-[9px] text-slate-600 font-mono">T:</span>
                 {{ form_widget(child.tons, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800 text-right', placeholder: '0' } }) }}
              </div>
         </div>
-        <div class="col-span-2 md:col-span-3">
+        <div class="col-span-1 md:col-span-2 lg:col-span-3 w-full">
              <div class="flex items-center gap-1">
                 <span class="text-[9px] text-slate-600 font-mono">Cr:</span>
                 {{ form_widget(child.costMcr, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800 text-right', placeholder: '0', 'data-cost-mcr': '' } }) }}
@@ -25,7 +25,7 @@
 {% endmacro %}
 
 {% macro render_collection(collection, title, color = 'slate') %}
-    <div class="col-span-2 border border-slate-800 bg-slate-900/20 rounded-lg p-3" data-asset-details-target="collection">
+    <div class="col-span-1 md:col-span-2 border border-slate-800 bg-slate-900/20 rounded-lg p-3" data-asset-details-target="collection">
         <div class="flex items-center justify-between mb-3 border-b border-slate-800 pb-2">
             <h4 class="text-[10px] uppercase tracking-widest font-orbitron font-bold text-{{ color }}-500/70">{{ title }}</h4>
             <button type="button" class="btn btn-outline btn-xs font-orbitron uppercase tracking-widest text-[9px] h-6 min-h-0 px-2 btn-{{ color }}"
@@ -42,11 +42,11 @@
     </div>
 {% endmacro %}
 
-<fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative"
+<fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative"
           data-controller="asset-details">
     <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Station Specifications</legend>
     
-    <div class="col-span-2">
+    <div class="col-span-1 md:col-span-2">
         <div class="alert alert-info alert-outline border-amber-500/50 bg-amber-950/30 mb-6">
             <div class="flex items-center gap-3">
                  <div class="text-amber-500">
@@ -65,7 +65,7 @@
     </div>
 
     {# Top Bar: Tech Level & Total Cost #}
-    <div class="col-span-2 grid grid-cols-2 gap-4 mb-2">
+    <div class="col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 mb-2">
         <div>
              {{ form_label(form.techLevel, null, { label_attr: { class: 'mb-1 text-slate-400 text-[10px] uppercase tracking-widest font-bold font-orbitron' } }) }}
              {{ form_widget(form.techLevel, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-amber-500/50' } }) }}
@@ -80,7 +80,7 @@
     </div>
 
     {# Structure Section #}
-    <div class="col-span-2 md:col-span-1 border border-slate-700 bg-slate-950/40 rounded-lg p-4 group hover:border-amber-500/30 transition-colors">
+    <div class="col-span-1 border border-slate-700 bg-slate-950/40 rounded-lg p-4 group hover:border-amber-500/30 transition-colors">
         <div class="flex items-center gap-2 mb-3 border-b border-slate-800 pb-2">
             <span class="text-[10px] uppercase tracking-widest font-orbitron font-bold text-amber-500/70">{{ form.hull.vars.label }}</span>
         </div>
@@ -89,7 +89,7 @@
                 {{ form_label(form.hull.description, 'Description', { label_attr: { class: 'mb-1 text-slate-400 text-[10px] uppercase tracking-widest font-bold font-orbitron' } }) }}
                 {{ form_widget(form.hull.description, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800' } }) }}
             </div>
-             <div class="grid grid-cols-2 gap-3">
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                  <div>
                     {{ form_label(form.hull.configuration, 'Config Class', { label_attr: { class: 'mb-1 text-slate-400 text-[10px] uppercase tracking-widest font-bold font-orbitron' } }) }}
                     {{ form_widget(form.hull.configuration, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800' } }) }}
@@ -113,26 +113,26 @@
     </div>
 
     {# Power Plant #}
-    <div class="col-span-2 md:col-span-1 border border-slate-700 bg-slate-950/40 rounded-lg p-4 group hover:border-amber-500/30 transition-colors">
+    <div class="col-span-1 border border-slate-700 bg-slate-950/40 rounded-lg p-4 group hover:border-amber-500/30 transition-colors">
          <div class="flex items-center gap-2 mb-3 border-b border-slate-800 pb-2">
             <span class="text-[10px] uppercase tracking-widest font-orbitron font-bold text-amber-500/70">Power Systems</span>
         </div>
          <div>
              <div class="text-xs font-bold text-slate-400 uppercase font-orbitron mb-1">Power Plant</div>
-             <div class="grid grid-cols-12 gap-2">
-                 <div class="col-span-3">
+             <div class="grid grid-cols-4 sm:grid-cols-12 gap-2">
+                 <div class="col-span-2 sm:col-span-3">
                      {{ form_label(form.powerPlant.rating, 'Output', { label_attr: { class: 'block mb-1 text-[9px] uppercase text-slate-500' } }) }}
                      {{ form_widget(form.powerPlant.rating, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800' } }) }}
                  </div>
-                 <div class="col-span-3">
+                 <div class="col-span-2 sm:col-span-3">
                      {{ form_label(form.powerPlant.tons, 'Tons', { label_attr: { class: 'block mb-1 text-[9px] uppercase text-slate-500' } }) }}
                      {{ form_widget(form.powerPlant.tons, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800' } }) }}
                  </div>
-                 <div class="col-span-3">
+                 <div class="col-span-4 sm:col-span-3">
                      {{ form_label(form.powerPlant.costMcr, 'MCr', { label_attr: { class: 'block mb-1 text-[9px] uppercase text-slate-500' } }) }}
                      {{ form_widget(form.powerPlant.costMcr, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800', 'data-cost-mcr': '' } }) }}
                  </div>
-                 <div class="col-span-12 mt-1">
+                 <div class="col-span-4 sm:col-span-12 mt-1">
                      {{ form_widget(form.powerPlant.description, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800', placeholder: 'Description/Model' } }) }}
                  </div>
              </div>
@@ -140,7 +140,7 @@
     </div>
 
     {# Operational Section #}
-    <div class="col-span-2 md:col-span-1 border border-slate-700 bg-slate-950/40 rounded-lg p-4 group hover:border-amber-500/30 transition-colors">
+    <div class="col-span-1 border border-slate-700 bg-slate-950/40 rounded-lg p-4 group hover:border-amber-500/30 transition-colors">
         <div class="flex items-center gap-2 mb-3 border-b border-slate-800 pb-2">
             <span class="text-[10px] uppercase tracking-widest font-orbitron font-bold text-cyan-500/70">Command & Control</span>
         </div>
@@ -148,8 +148,8 @@
             {# Bridge #}
             <div>
                  <div class="text-xs font-bold text-slate-400 uppercase font-orbitron mb-1">{{ form.bridge.vars.label }}</div>
-                 <div class="grid grid-cols-12 gap-2">
-                     <div class="col-span-8">
+                 <div class="grid grid-cols-4 sm:grid-cols-12 gap-2">
+                     <div class="col-span-4 sm:col-span-8">
                          {{ form_widget(form.bridge.description, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800', placeholder: 'Type' } }) }}
                      </div>
                      <div class="col-span-2">
@@ -163,8 +163,8 @@
             {# Computer #}
             <div>
                  <div class="text-xs font-bold text-slate-400 uppercase font-orbitron mb-1">{{ form.computer.vars.label }}</div>
-                 <div class="grid grid-cols-12 gap-2">
-                     <div class="col-span-8">
+                 <div class="grid grid-cols-4 sm:grid-cols-12 gap-2">
+                     <div class="col-span-4 sm:col-span-8">
                          {{ form_widget(form.computer.description, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800', placeholder: 'Model/Rat' } }) }}
                      </div>
                      <div class="col-span-2">
@@ -178,8 +178,8 @@
              {# Sensors #}
             <div>
                  <div class="text-xs font-bold text-slate-400 uppercase font-orbitron mb-1">Sensors</div>
-                 <div class="grid grid-cols-12 gap-2">
-                     <div class="col-span-8">
+                 <div class="grid grid-cols-4 sm:grid-cols-12 gap-2">
+                     <div class="col-span-4 sm:col-span-8">
                          {{ form_widget(form.sensors.description, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800', placeholder: 'Type/DM' } }) }}
                      </div>
                      <div class="col-span-2">
@@ -196,7 +196,7 @@
     </div>
 
     {# Accommodation & Cargo #}
-    <div class="col-span-2 md:col-span-1 border border-slate-700 bg-slate-950/40 rounded-lg p-4 group hover:border-amber-500/30 transition-colors">
+    <div class="col-span-1 border border-slate-700 bg-slate-950/40 rounded-lg p-4 group hover:border-amber-500/30 transition-colors">
         <div class="flex items-center gap-2 mb-3 border-b border-slate-800 pb-2">
             <span class="text-[10px] uppercase tracking-widest font-orbitron font-bold text-emerald-500/70">Logistics & Accommodation</span>
         </div>
@@ -205,8 +205,8 @@
              {# Cargo #}
             <div>
                  <div class="text-xs font-bold text-slate-400 uppercase font-orbitron mb-1">{{ form.cargo.vars.label }}</div>
-                 <div class="grid grid-cols-12 gap-2">
-                     <div class="col-span-8">
+                 <div class="grid grid-cols-4 sm:grid-cols-12 gap-2">
+                     <div class="col-span-4 sm:col-span-8">
                          {{ form_widget(form.cargo.description, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950/50 border-slate-800', placeholder: 'Main Storage' } }) }}
                      </div>
                      <div class="col-span-2">
@@ -225,13 +225,13 @@
     </div>
 
     {# Systems & Weapons #}
-    <div class="col-span-2 grid grid-cols-2 gap-4">
+    <div class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
         {{ detailsMacros.render_collection(form.weapons, 'Defenses & Turrets', 'red') }}
         {{ detailsMacros.render_collection(form.systems, 'Systems & Labs', 'amber') }}
     </div>
 
     {# Craft #}
-    <div class="col-span-2">
+    <div class="col-span-1 md:col-span-2">
         {{ detailsMacros.render_collection(form.craft, 'Docked Craft', 'purple') }}
     </div>
 
