@@ -2,7 +2,7 @@
 <div class="relative w-full h-full flex flex-col justify-center" data-controller="schematic">
 
     {# CONSOLE: TOP RIGHT (Pinned to Container Edge) #}
-    <div class="absolute top-0 right-0 w-80 h-80 bg-slate-950/80 border-l border-b border-slate-800 rounded-bl-3xl p-4 overflow-hidden pointer-events-none z-10 hidden md:block shadow-2xl backdrop-blur-md"
+    <div class="absolute top-0 right-0 w-80 h-60 bg-slate-950/80 border-l border-b border-slate-800 rounded-bl-3xl p-4 overflow-hidden pointer-events-none z-10 hidden md:block shadow-2xl backdrop-blur-md"
             data-controller="scrolling-code"
             data-scrolling-code-type-value="nav">
         <div class="h-full w-full flex flex-col justify-end text-xs font-rajdhani tracking-wide text-cyan-400 leading-tight" 
@@ -14,7 +14,7 @@
     </div>
 
     {# CONSOLE: BOTTOM LEFT (Pinned to Container Edge) #}
-    <div class="absolute bottom-0 left-0 w-[22rem] h-70 bg-slate-950/80 border-r border-t border-emerald-500/20 rounded-tr-3xl bg-gradient-to-r from-slate-900/95 to-transparent p-4 overflow-hidden pointer-events-none z-10 hidden md:block shadow-2xl backdrop-blur-md"
+    <div class="absolute bottom-0 left-0 w-80 h-50 bg-slate-950/80 border-r border-t border-emerald-500/20 rounded-tr-3xl bg-gradient-to-r from-slate-900/95 to-transparent p-4 overflow-hidden pointer-events-none z-10 hidden md:block shadow-2xl backdrop-blur-md"
             data-controller="scrolling-code"
             data-scrolling-code-type-value="engineering">
         <div class="h-full w-full flex flex-col justify-end text-xs font-rajdhani tracking-wide text-emerald-500 leading-tight" 
@@ -23,11 +23,11 @@
     </div>
 
     {# CENTERED IMAGE WRAPPER #}
-    <div class="relative group w-full max-w-4xl mx-auto">
+    <div class="relative group w-full h-full flex items-center justify-center">
         {# STARSHIP SCHEMATIC IMAGE #}
         <img src="{{ asset('img/nav-fi-starship.png') }}" 
              alt="Ship Schematic" 
-             class="w-full h-auto drop-shadow-[0_0_15px_rgba(6,182,212,0.15)] pointer-events-none select-none">
+             class="w-full h-full object-contain max-h-[80vh] drop-shadow-[0_0_15px_rgba(6,182,212,0.15)] pointer-events-none select-none">
 
         {# BRIDGE / OPS #}
         <button type="button" 
