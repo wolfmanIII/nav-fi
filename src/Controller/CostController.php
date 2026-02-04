@@ -41,7 +41,7 @@ final class CostController extends BaseController
             'campaign' => ['type' => 'int'],
         ]);
         $page = $listViewHelper->getPage($request);
-        $perPage = 10;
+        $perPage = 9;
 
         $costs = [];
         $total = 0;

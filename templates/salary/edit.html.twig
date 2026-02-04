@@ -30,16 +30,18 @@
 
         <div class="col-span-2 md:col-span-1">
             <div class="flex items-baseline h-5 mb-1">
-                <label class="mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Mission Filter [UNMAPPED]</label>
+                {{ form_label(form.campaign, 'Mission', { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
             </div>
             {{ form_widget(form.campaign, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
+            {{ form_errors(form.campaign) }}
         </div>
 
         <div class="col-span-2 md:col-span-1">
             <div class="flex items-baseline h-5 mb-1">
-                <label class="mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Asset Filter [UNMAPPED]</label>
+                 {{ form_label(form.asset, 'Asset', { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
             </div>
             {{ form_widget(form.asset, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
+            {{ form_errors(form.asset) }}
         </div>
 
         <div class="col-span-2">

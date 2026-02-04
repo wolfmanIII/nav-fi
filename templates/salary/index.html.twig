@@ -120,9 +120,7 @@
                         {# Card Header: Actions & REF #}
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center gap-2">
-                                <div class="px-2.5 py-1 rounded border border-cyan-500/20 bg-cyan-500/5 text-xs font-mono tracking-widest text-cyan-400/80 uppercase">
-                                    REF: SAL-{{ salary.id }}
-                                </div>
+                                <twig:IdentityBadge entity="{{ salary.crew }}" />
                                 <span class="px-2.5 py-1 rounded {{ salary.status == 'Active' ? 'bg-cyan-900/40 border-cyan-500/30 text-cyan-400' : 'bg-slate-800 border-slate-700 text-slate-400' }} text-xs font-bold tracking-tighter uppercase border">
                                     {{ salary.status }}
                                 </span>

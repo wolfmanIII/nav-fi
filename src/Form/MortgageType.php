@@ -82,10 +82,11 @@ class MortgageType extends AbstractType
                 'class' => Asset::class,
                 'choice_label' => fn(Asset $asset) =>
                 sprintf(
-                    '%s - %s - %s',
+                    '%s - %s - %s - [CODE: %s]',
                     ucfirst($asset->getCategory()),
                     $asset->getName(),
-                    number_format((float) $asset->getPrice(), 2, ',', '.') . " Cr"
+                    number_format((float) $asset->getPrice(), 2, ',', '.') . " Cr",
+                    substr($asset->getFinancialAccount()?->getCode() ?? 'N/A', 0, 8)
                 ),
                 'choice_attr' => function (Asset $a): array {
                     $start = $a->getCampaign()?->getStartingYear();
@@ -175,7 +176,7 @@ class MortgageType extends AbstractType
             ])
             ->add('bank', EntityType::class, [
                 'class' => Company::class,
-                'choice_label' => 'name',
+                'choice_label' => fn(Company $c) => sprintf('%s (CODE: %s)', $c->getName(), $c->getCode()),
                 'label' => 'New Ledger // Banking Institution',
                 'required' => false,
                 'mapped' => false,
@@ -208,7 +209,7 @@ class MortgageType extends AbstractType
                 'class' => Company::class,
                 'placeholder' => '// LENDER',
                 'required' => false, // Gestito manualmente se newLenderName è presente
-                'choice_label' => fn(Company $c) => sprintf('%s - %s', $c->getName(), $c->getCompanyRole()->getShortDescription()),
+                'choice_label' => fn(Company $c) => sprintf('%s (CODE: %s)', $c->getName(), $c->getCode()),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     return $er->createQueryBuilder('c')
                         ->innerJoin('c.companyRole', 'r')

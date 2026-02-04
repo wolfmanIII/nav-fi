@@ -96,7 +96,7 @@ class AssetType extends AbstractType
             ])
             ->add('bank', EntityType::class, [
                 'class' => Company::class,
-                'choice_label' => 'name',
+                'choice_label' => fn(Company $c) => sprintf('%s (CODE: %s)', $c->getName(), $c->getCode()),
                 'label' => 'New Account // Banking Institution',
                 'required' => false,
                 'mapped' => false,

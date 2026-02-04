@@ -127,7 +127,7 @@
                             {# Card Header: Actions & Metadata #}
                             <div class="flex items-center justify-between mb-4">
                                 <div class="px-2.5 py-1 rounded border border-teal-500/20 bg-teal-500/5 text-xs font-mono tracking-widest text-teal-400/80 uppercase">
-                                    CYCLE_LEDGER: {{ budget.code }}
+                                    CODE: {{ budget.code }}
                                 </div>
                                 <div class="flex items-center gap-1">
                                     {{ tooltip.link('Edit', '', 'icons/action-edit.html.twig', path('app_annual_budget_edit', {id: budget.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-teal-500/20 text-teal-400' }) }}

@@ -62,7 +62,7 @@ class RouteType extends AbstractType
                 'class' => Campaign::class,
                 'required' => true,
                 'placeholder' => '// MISSION',
-                'choice_label' => fn(Campaign $campaign) => $campaign->getTitle(),
+                'choice_label' => fn(Campaign $campaign) => sprintf('%s (%03d/%04d)', $campaign->getTitle(), $campaign->getSessionDay(), $campaign->getSessionYear()),
                 'data' => $route->getCampaign() ?? $route->getAsset()?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
@@ -80,7 +80,7 @@ class RouteType extends AbstractType
             ->add('asset', EntityType::class, [
                 'class' => Asset::class,
                 'placeholder' => '// ASSET',
-                'choice_label' => fn(Asset $asset) => sprintf('%s - %s(%s)', $asset->getName(), $asset->getType(), $asset->getClass()),
+                'choice_label' => fn(Asset $asset) => sprintf('%s - %s(%s) [CODE: %s]', $asset->getName(), $asset->getType(), $asset->getClass(), substr($asset->getFinancialAccount()?->getCode() ?? 'N/A', 0, 8)),
                 'choice_attr' => function (Asset $asset): array {
                     $start = $asset->getCampaign()?->getStartingYear();
                     $session = $asset->getCampaign()?->getSessionYear();

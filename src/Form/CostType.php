@@ -53,9 +53,10 @@ class CostType extends AbstractType
                 'required' => false,
                 'choice_label' => fn(Asset $asset) =>
                 sprintf(
-                    '%s - %s',
+                    '%s - %s [CODE: %s]',
                     ucfirst($asset->getCategory()),
-                    $asset->getName()
+                    $asset->getName(),
+                    substr($asset->getFinancialAccount()?->getCode() ?? 'N/A', 0, 8)
                 ),
                 'choice_attr' => function (Asset $a): array {
                     $campaignId = $a->getCampaign()?->getId();
@@ -140,11 +141,7 @@ class CostType extends AbstractType
                 'class' => FinancialAccount::class,
                 'placeholder' => '// DEBIT ACCOUNT',
                 'label' => 'Source Account (Debit)',
-                'choice_label' => function (FinancialAccount $fa) {
-                    $assetRef = $fa->getAsset() ? '[' . $fa->getAsset()->getName() . '] ' : '[GENERIC] ';
-                    $bankRef = $fa->getBankName() ?: ($fa->getBank() ? $fa->getBank()->getName() : 'Unknown institution');
-                    return sprintf('%s%s (%s)', $assetRef, $bankRef, $fa->getCredits());
-                },
+                'choice_label' => fn(FinancialAccount $fa) => $fa->getDisplayName(),
                 'query_builder' => function (FinancialAccountRepository $repo) use ($user) {
                     $qb = $repo->createQueryBuilder('fa')
                         ->leftJoin('fa.asset', 'a')
@@ -163,7 +160,7 @@ class CostType extends AbstractType
             ])
             ->add('bank', EntityType::class, [
                 'class' => Company::class,
-                'choice_label' => 'name',
+                'choice_label' => fn(Company $c) => sprintf('%s (CODE: %s)', $c->getName(), $c->getCode()),
                 'label' => 'New Ledger // Company',
                 'required' => false,
                 'mapped' => false,
@@ -198,7 +195,7 @@ class CostType extends AbstractType
                 'label' => 'Vendor (Company)',
                 'placeholder' => '// VENDOR (COMPANY)',
                 'required' => false, // Changed to false for XOR logic
-                'choice_label' => fn(Company $c) => sprintf('%s - %s', $c->getName(), $c->getCompanyRole()->getShortDescription()),
+                'choice_label' => fn(Company $c) => sprintf('%s (CODE: %s)', $c->getName(), $c->getCode()),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.name', 'ASC');
                     if ($user) {

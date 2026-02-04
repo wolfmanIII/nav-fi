@@ -21,6 +21,7 @@ use App\Service\ListViewHelper;
 use App\Service\Pdf\PdfGeneratorInterface;
 use App\Service\Trade\TradePricer;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -595,7 +596,8 @@ final class AssetController extends BaseController
         int $id,
         EntityManagerInterface $em,
         CostRepository $costRepo,
-        TradePricer $tradePricer
+        TradePricer $tradePricer,
+        FormFactoryInterface $formFactory
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof User) {
@@ -632,7 +634,7 @@ final class AssetController extends BaseController
         // Crea i form di liquidazione per ogni articolo (cargo)
         $liquidationForms = [];
         foreach ($cargoItems as $item) {
-            $form = $this->createForm(\App\Form\CargoLiquidationType::class, [
+            $form = $formFactory->createNamed('liquidation_' . $item->getId(), \App\Form\CargoLiquidationType::class, [
                 'location' => null,
                 'localLaw' => null,
             ], [
@@ -659,7 +661,8 @@ final class AssetController extends BaseController
         Request $request,
         EntityManagerInterface $em,
         TradeService $tradeService,
-        TradePricer $tradePricer
+        TradePricer $tradePricer,
+        FormFactoryInterface $formFactory
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof User) {
@@ -677,17 +680,17 @@ final class AssetController extends BaseController
         // Nessun input manuale permesso. Decide il mercato.
         $salePrice = (float) $tradePricer->calculateMarketPrice($cost);
 
-        $form = $this->createForm(\App\Form\CargoLiquidationType::class);
+        $form = $formFactory->createNamed('liquidation_' . $costId, \App\Form\CargoLiquidationType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $location = (string) ($data['location'] ?? 'Unknown');
-            
+
             $campaign = $asset->getCampaign();
             $day = $campaign ? $campaign->getSessionDay() : 1;
             $year = $campaign ? $campaign->getSessionYear() : 1105;
-            
+
             $localLaw = $data['localLaw'];
 
             try {
@@ -749,7 +752,7 @@ final class AssetController extends BaseController
             $cost->setUser($user);
             $cost->setFinancialAccount($account);
             $cost->setCostCategory($tradeCategory);
-            
+
             // Imposta data dalla sessione della campagna
             $campaign = $asset->getCampaign(); // Non nullo grazie al Voter
             $cost->setPaymentDay($campaign->getSessionDay());
@@ -762,11 +765,11 @@ final class AssetController extends BaseController
 
             $this->addFlash('success', 'Loot registered in cargo manifest.');
         } else {
-             $errors = [];
-             foreach ($form->getErrors(true) as $error) {
-                 $errors[] = $error->getMessage();
-             }
-             $this->addFlash('error', 'Error registering loot: ' . implode(', ', $errors));
+            $errors = [];
+            foreach ($form->getErrors(true) as $error) {
+                $errors[] = $error->getMessage();
+            }
+            $this->addFlash('error', 'Error registering loot: ' . implode(', ', $errors));
         }
 
         return $this->redirectToRoute('app_asset_cargo', ['id' => $id]);

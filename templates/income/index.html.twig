@@ -133,9 +133,7 @@
                         {# Card Header: Actions & REF #}
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center gap-2">
-                                <div class="px-2.5 py-1 rounded border border-cyan-500/20 bg-cyan-500/5 text-xs font-mono tracking-widest text-cyan-400/80 uppercase">
-                                    REF: {{ income.code }}
-                                </div>
+                                <twig:IdentityBadge entity="{{ income }}" />
                                 {% if income.status %}
                                     {% if is_cancelled %}
                                         <span class="px-2.5 py-1 rounded bg-rose-900/40 text-xs font-bold tracking-tighter uppercase border border-rose-500/30 text-rose-400">

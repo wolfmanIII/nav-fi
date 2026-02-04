@@ -35,7 +35,7 @@ class SalaryType extends AbstractType
                 'class' => Campaign::class,
                 'mapped' => false,
                 'required' => false,
-                'placeholder' => '-- Filter by Campaign --',
+                'placeholder' => '// MISSION',
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
                     if ($user) {
@@ -43,7 +43,7 @@ class SalaryType extends AbstractType
                     }
                     return $qb;
                 },
-                'choice_label' => 'title',
+                'choice_label' => fn(Campaign $c) => sprintf('%s (%03d/%04d)', $c->getTitle(), $c->getSessionDay(), $c->getSessionYear()),
                 'attr' => [
                     'class' => 'select select-bordered w-full',
                     'data-salary-target' => 'campaign',
@@ -54,7 +54,7 @@ class SalaryType extends AbstractType
                 'class' => Asset::class,
                 'mapped' => false,
                 'required' => false,
-                'placeholder' => '-- Filter by Asset --',
+                'placeholder' => '// ASSET',
                 'choice_attr' => function (Asset $asset) {
                     return [
                         'data-campaign' => $asset->getCampaign()?->getId() ? (string) $asset->getCampaign()->getId() : '',
@@ -69,7 +69,13 @@ class SalaryType extends AbstractType
                     }
                     return $qb;
                 },
-                'choice_label' => 'name',
+                'choice_label' => fn(Asset $asset) =>
+                sprintf(
+                    '%s - %s [CODE: %s]',
+                    ucfirst($asset->getCategory()),
+                    $asset->getName(),
+                    substr($asset->getFinancialAccount()?->getCode() ?? 'N/A', 0, 8)
+                ),
                 'attr' => [
                     'class' => 'select select-bordered w-full',
                     'data-salary-target' => 'asset',
@@ -79,7 +85,7 @@ class SalaryType extends AbstractType
             ])
             ->add('crew', EntityType::class, [
                 'class' => Crew::class,
-                'placeholder' => '-- Select Crew Member --',
+                'placeholder' => '// CREW',
                 'query_builder' => function (CrewRepository $repo) use ($user) {
                     $qb = $repo->createQueryBuilder('c')
                         ->andWhere('c.status = :active')
@@ -94,7 +100,7 @@ class SalaryType extends AbstractType
                     }
                     return $qb;
                 },
-                'choice_label' => fn(Crew $c) => sprintf('%s %s (%s)', $c->getName(), $c->getSurname(), $c->getAsset()?->getName() ?? 'Unassigned'),
+                'choice_label' => fn(Crew $c) => sprintf('%s %s [CODE: %s]', $c->getName(), $c->getSurname(), $c->getCode()),
                 'choice_attr' => function (Crew $c) {
                     return [
                         'data-asset' => $c->getAsset()?->getId() ? (string) $c->getAsset()->getId() : '',

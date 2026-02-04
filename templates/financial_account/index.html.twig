@@ -35,9 +35,7 @@
                         {# Card Header: Actions #}
                         <div class="flex items-center justify-between mb-4">
                              <div class="flex items-center gap-2">
-                                <div class="px-2 py-1 rounded border border-slate-700 bg-slate-800 text-xs font-mono tracking-widest text-slate-400 uppercase">
-                                    ID: {{ account.id }}
-                                </div>
+                                <twig:IdentityBadge entity="{{ account }}" />
                             </div>
                             <div class="flex items-center gap-1">
                                 {# Quick Actions #}
@@ -69,9 +67,7 @@
                                      {% include 'icons/wallet.html.twig' with { dim: 24 } %}
                                 </div>
                             </div>
-                            <p class="text-sm font-medium text-slate-500 font-rajdhani tracking-widest uppercase">
-                                ID: {{ account.id }} // CODE: {{ account.code|slice(0, 8) }}
-                            </p>
+
                         </div>
 
                         {# Card Detail: Balance #}

@@ -124,9 +124,7 @@
                             {# Card Header: Actions & REF #}
                             <div class="flex items-center justify-between mb-4 lg:mb-6">
                                 <div class="flex items-center gap-2">
-                                    <div class="px-2.5 py-1 rounded border border-cyan-500/20 bg-cyan-500/5 text-xs font-mono tracking-widest text-cyan-400/80 uppercase">
-                                        REF: {{ mortgage.code }}
-                                    </div>
+                                    <twig:IdentityBadge entity="{{ mortgage }}" />
                                     <span class="px-2.5 py-1 rounded bg-slate-800 text-xs font-bold tracking-tighter uppercase border border-slate-700 {{ mortgage.signed ? 'text-cyan-400 border-cyan-500/30' : 'text-amber-500 border-amber-500/30' }}">
                                         {{ mortgage.signed ? 'AUTHORIZED' : 'PENDING SIGNATURE' }}
                                     </span>

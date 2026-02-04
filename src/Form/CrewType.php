@@ -116,7 +116,7 @@ class CrewType extends AbstractType
                 'required' => false,
                 'label' => 'Mission',
                 'placeholder' => '// MISSION',
-                'choice_label' => fn(Campaign $campaign) => $campaign->getTitle(),
+                'choice_label' => fn(Campaign $campaign) => sprintf('%s (%03d/%04d)', $campaign->getTitle(), $campaign->getSessionDay(), $campaign->getSessionYear()),
                 'data' => $crew->getAsset()?->getCampaign(),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.title', 'ASC');
@@ -135,7 +135,7 @@ class CrewType extends AbstractType
                 'class' => Asset::class,
                 'required' => false,
                 'placeholder' => '// ASSET',
-                'choice_label' => fn(Asset $asset) => sprintf('%s - %s(%s)', $asset->getName(), $asset->getType(), $asset->getClass()),
+                'choice_label' => fn(Asset $asset) => sprintf('%s - %s(%s) [CODE: %s]', $asset->getName(), $asset->getType(), $asset->getClass(), substr($asset->getFinancialAccount()?->getCode() ?? 'N/A', 0, 8)),
                 'choice_attr' => function (Asset $asset): array {
                     $start = $asset->getCampaign()?->getStartingYear();
                     $session = $asset->getCampaign()?->getSessionYear();

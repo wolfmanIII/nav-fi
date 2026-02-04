@@ -132,9 +132,7 @@
                         {# Card Header: Actions & REF #}
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center gap-2">
-                                <div class="px-2.5 py-1 rounded border border-amber-500/20 bg-amber-500/5 text-xs font-mono tracking-widest text-amber-400/80 uppercase">
-                                    REF: {{ cost.code }}
-                                </div>
+                                <twig:IdentityBadge entity="{{ cost }}" />
                                 <span class="px-2.5 py-1 rounded bg-slate-800 text-xs font-bold tracking-tighter uppercase border border-slate-700 text-slate-400">
                                     OUTFLOW
                                 </span>

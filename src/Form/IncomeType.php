@@ -145,9 +145,10 @@ class IncomeType extends AbstractType
                 'required' => false,
                 'choice_label' => fn(Asset $asset) =>
                 sprintf(
-                    '%s - %s',
+                    '%s - %s [CODE: %s]',
                     ucfirst($asset->getCategory()),
-                    $asset->getName()
+                    $asset->getName(),
+                    substr($asset->getFinancialAccount()?->getCode() ?? 'N/A', 0, 8)
                 ),
                 'choice_attr' => function (Asset $a): array {
                     // Se l'account non è legato a un asset, non ha campagna (es. conto personale generico),
@@ -188,11 +189,7 @@ class IncomeType extends AbstractType
                 'placeholder' => '// CREDIT ACCOUNT', // Placeholder coerente
                 'label' => 'Link Existing Ledger (Credit)', // Dove entrano i soldi
                 'required' => false,
-                'choice_label' => function (FinancialAccount $fa) {
-                    $assetRef = $fa->getAsset() ? '[' . $fa->getAsset()->getName() . '] ' : '[GENERIC] ';
-                    $bankRef = $fa->getBankName() ?: ($fa->getBank() ? $fa->getBank()->getName() : 'Unknown institution');
-                    return sprintf('%s%s (%s)', $assetRef, $bankRef, $fa->getCredits());
-                },
+                'choice_label' => fn(FinancialAccount $fa) => $fa->getDisplayName(),
                 // Logica per mostrare se l'account appartiene all'asset selezionato è spesso fatta via query_builder o attributi dati se JS lo filtra.
                 // Mortgage usa filtro JS (data-financial-account-id su opzione Asset solitamente?) O filtro standard.
                 // Qui ci atteniamo al pattern:
@@ -213,7 +210,7 @@ class IncomeType extends AbstractType
             ])
             ->add('bank', EntityType::class, [
                 'class' => Company::class,
-                'choice_label' => 'name',
+                'choice_label' => fn(Company $c) => sprintf('%s (CODE: %s)', $c->getName(), $c->getCode()),
                 'label' => 'New Ledger // Company',
                 'required' => false,
                 'mapped' => false,
@@ -242,7 +239,7 @@ class IncomeType extends AbstractType
                 'label' => 'Payer (Company / Source)',
                 'placeholder' => '// PAYER (COMPANY)',
                 'required' => false,
-                'choice_label' => fn(Company $c) => sprintf('%s - %s', $c->getName(), $c->getCompanyRole()->getShortDescription()),
+                'choice_label' => fn(Company $c) => sprintf('%s (CODE: %s)', $c->getName(), $c->getCode()),
                 'query_builder' => function (EntityRepository $er) use ($user) {
                     $qb = $er->createQueryBuilder('c')->orderBy('c.name', 'ASC');
                     if ($user) {

@@ -72,7 +72,7 @@ class AnnualBudgetType extends AbstractType
             ->add('asset', EntityType::class, [
                 'class' => Asset::class,
                 'placeholder' => '// ASSET',
-                'choice_label' => fn(Asset $asset) => sprintf('%s (%s)', $asset->getName(), $asset->getClass()),
+                'choice_label' => fn(Asset $asset) => sprintf('%s (%s) [CODE: %s]', $asset->getName(), $asset->getClass(), substr($asset->getFinancialAccount()?->getCode() ?? 'N/A', 0, 8)),
                 'choice_attr' => function (Asset $asset): array {
                     $start = $asset->getCampaign()?->getStartingYear();
                     $session = $asset->getCampaign()?->getSessionYear();

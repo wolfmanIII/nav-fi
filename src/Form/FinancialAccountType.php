@@ -29,7 +29,7 @@ class FinancialAccountType extends AbstractType
         $builder
             ->add('bank', EntityType::class, [
                 'class' => Company::class,
-                'choice_label' => 'name',
+                'choice_label' => fn(Company $c) => sprintf('%s (CODE: %s)', $c->getName(), $c->getCode()),
                 'label' => 'Bank // Institution',
                 'required' => false,
                 'placeholder' => 'Select a Bank (or enter below)',

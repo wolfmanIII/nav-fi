@@ -256,7 +256,9 @@ class FinancialAccount
         $bank = $this->bank ? $this->bank->getName() : ($this->bankName ?: 'Unknown Institution');
         $asset = $this->asset ? $this->asset->getName() : 'Unlinked Asset';
 
-        return sprintf('%s - %s (ID: #%d / %s)', $bank, $asset, $this->id, substr((string) $this->code, 0, 8));
+        // STANDARD: Bank - Asset (CODE: XXXXXXXX)
+        // Matches user requirement for consistent CODE usage vs ID.
+        return sprintf('%s - %s (CODE: %s)', $bank, $asset, substr((string) $this->code, 0, 8));
     }
 
     public function __toString(): string
