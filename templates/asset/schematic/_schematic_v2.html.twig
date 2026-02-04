@@ -14,11 +14,14 @@
     </div>
 
     {# CONSOLE: BOTTOM LEFT (Pinned to Container Edge) #}
-    <div class="absolute bottom-0 left-0 w-80 h-50 bg-slate-950/80 border-r border-t border-emerald-500/20 rounded-tr-3xl bg-gradient-to-r from-slate-900/95 to-transparent p-4 overflow-hidden pointer-events-none z-10 hidden md:block shadow-2xl backdrop-blur-md"
+    <div class="absolute bottom-0 left-0 w-80 h-60 bg-slate-950/80 border-r border-t border-emerald-500/20 rounded-tr-3xl bg-gradient-to-r from-slate-900/95 to-transparent p-4 overflow-hidden pointer-events-none z-10 hidden md:block shadow-2xl backdrop-blur-md"
             data-controller="scrolling-code"
             data-scrolling-code-type-value="engineering">
         <div class="h-full w-full flex flex-col justify-end text-xs font-rajdhani tracking-wide text-emerald-500 leading-tight" 
                 data-scrolling-code-target="output">
+        </div>
+        <div class="absolute top-3 right-3 p-1">
+            <div class="w-2 h-2 bg-emerald-400 rounded-full animate-ping"></div>
         </div>
     </div>
 

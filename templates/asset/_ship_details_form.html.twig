@@ -9,17 +9,15 @@
     - Hidden: Modals Container (The actual Form Widgets)
 #}
 
-<div class="grid grid-cols-1 lg:grid-cols-4 gap-6 bg-slate-900/40 rounded-xl border border-slate-800 shadow-inner relative"
+<fieldset class="grid grid-cols-1 lg:grid-cols-4 gap-6 bg-slate-900/40 rounded-xl border border-slate-800 shadow-inner relative pt-8 px-6 pb-6"
      data-controller="asset-details live-summary">
     
     {# LEGEND & HEADER #}
-    <div class="col-span-1 lg:col-span-4 flex justify-between items-center mb-2">
-         <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">
-            Ship Schematic // Interactive Mode
-        </legend>
-        <div class="text-[10px] text-slate-500 uppercase font-mono">
-            Status: <span class="text-emerald-500 animate-pulse">ONLINE</span>
-        </div>
+    <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">
+        Ship Schematic // Interactive Mode
+    </legend>
+    <div class="absolute top-2 right-0 mt-[-10px] mr-4 bg-slate-900 px-2 border border-slate-800 rounded text-[10px] text-slate-500 uppercase font-mono">
+        Status: <span class="text-emerald-500 animate-pulse">ONLINE</span>
     </div>
 
     {# 1. SCHEMATIC OVERLAY (Takes up 3 columns) #}
@@ -43,4 +41,4 @@
         {{ form_widget(form.totalCost, { attr: { 'data-asset-details-target': 'totalInput' } }) }}
     </div>
 
-</div>
+</fieldset>
