@@ -123,8 +123,7 @@ final class AssetController extends BaseController
                         $user,
                         '0',
                         $bank,
-                        $bankName,
-                        $asset->getCampaign()
+                        $bankName
                     );
                 } else {
                     $account = null;
@@ -198,8 +197,7 @@ final class AssetController extends BaseController
                     $user,
                     null,
                     $bank,
-                    $bankName,
-                    $asset->getCampaign()
+                    $bankName
                 );
             } else {
                 $account = $asset->getFinancialAccount();
@@ -568,7 +566,6 @@ final class AssetController extends BaseController
         ]);
     }
 
-    #[Route('/asset/{id}/cargo', name: 'app_asset_cargo')]
     #[Route('/api/assets/by-campaign', name: 'api_assets_by_campaign', methods: ['GET'])]
     public function apiListByCampaign(Request $request, EntityManagerInterface $em): JsonResponse
     {
@@ -591,6 +588,7 @@ final class AssetController extends BaseController
         return new JsonResponse($assets);
     }
 
+    #[Route('/asset/{id}/cargo', name: 'app_asset_cargo')]
     public function cargo(
         int $id,
         EntityManagerInterface $em,
