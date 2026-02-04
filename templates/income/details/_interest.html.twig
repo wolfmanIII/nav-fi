@@ -1,4 +1,4 @@
-<fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+<fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
     <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">
         INTEREST Details
     </legend>
@@ -113,7 +113,7 @@
     {% set end_day = data.endDay ?? null %}
     {% set end_year = data.endYear ?? null %}
     {% set end_value = (end_day is not null and end_year is not null) ? (end_day|imperial_date(end_year)) : '' %}
-    <div class="col-span-2 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
         {% set start_help_id = detail_form.startDate.vars.id ~ '-help' %}
         <div data-controller="imperial-date">
             <div class="flex items-baseline justify-between h-5 mb-1">

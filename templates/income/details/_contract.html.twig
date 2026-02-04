@@ -1,4 +1,4 @@
-<fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+<fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
     <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">
         CONTRACT Details
     </legend>
@@ -50,7 +50,7 @@
         </div>
     </div>
 
-    <div class="col-span-2 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
         {% set location_help_id = detail_form.location.vars.id ~ '-help' %}
         <div>
             <div class="flex items-baseline justify-between h-5 mb-1">
@@ -117,7 +117,7 @@
     {% set deadline_day = data.deadlineDay ?? null %}
     {% set deadline_year = data.deadlineYear ?? null %}
     {% set deadline_value = (deadline_day is not null and deadline_year is not null) ? (deadline_day|imperial_date(deadline_year)) : '' %}
-    <div class="col-span-2 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
         {% set start_help_id = detail_form.startDate.vars.id ~ '-help' %}
         <div class="col-span-1" data-controller="imperial-date">
             <div class="flex items-center gap-2">
@@ -217,7 +217,7 @@
         </div>
     </div>
 
-    <div class="col-span-2 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
         {% set expenses_help_id = detail_form.expensesPolicy.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">
@@ -277,7 +277,7 @@
         </div>
     </div>
 
-    <div class="col-span-2 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
         {% set failure_help_id = detail_form.failureTerms.vars.id ~ '-help' %}
         <div>
             <div class="flex items-center gap-2">

@@ -46,7 +46,7 @@
         {{ form_widget(form._token) }}
 
         {# ASSET CONTEXT (Top) #}
-        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative" data-controller="campaign-asset">
+        <fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative" data-controller="campaign-asset">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Asset Context</legend>
 
             <div class="col-span-2 md:col-span-1">
@@ -74,7 +74,7 @@
             </div>
         </fieldset>
 
-        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative" data-form-visibility-target="container">
+        <fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative" data-form-visibility-target="container">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Primary Data</legend>
 
             <div class="col-span-2">
@@ -188,7 +188,7 @@
                 
                 <div class="p-3 rounded border border-slate-800 bg-slate-950/30" data-exclusive-visibility-target="target">
                     <p class="text-[9px] uppercase tracking-widest font-bold font-orbitron text-slate-500 mb-2">Or new vendor</p>
-                    <div class="grid grid-cols-3 gap-3">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                          <div class="col-span-2">
                              <div class="flex items-baseline h-5 mb-1">
                                 {{ form_label(form.vendorName, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
@@ -211,7 +211,7 @@
             </div>
         </fieldset>
 
-        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative" data-form-visibility-target="container">
+        <fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative" data-form-visibility-target="container">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Logistics & Classification</legend>
             <div class="col-span-2 md:col-span-1">
                 <div class="flex items-baseline h-5 mb-1">

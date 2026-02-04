@@ -152,7 +152,7 @@
                             </div>
 
                             {# Budget Matrix - Larger icons/fonts for full width #}
-                            <div class="grid grid-cols-3 gap-4 mb-2">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
                                 <div class="p-6 rounded-lg bg-slate-950/50 border border-slate-800 flex flex-col items-center group/metric transition-colors hover:border-emerald-500/20">
                                     <span class="text-xs uppercase text-emerald-500/70 font-bold mb-2 tracking-widest">Incomes</span>
                                     <span class="text-xl font-mono text-emerald-400 font-bold">{{ budget.totalIncomeAmount|format_number({ max_fraction_digit: 0 }, 'decimal', 'default', locale) }}</span>

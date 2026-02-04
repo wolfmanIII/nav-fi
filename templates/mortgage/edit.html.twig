@@ -57,7 +57,7 @@
 
         {{ form_start(form, { attr: { id: 'mortgage_form', 'data-controller': 'form-visibility financial-lock campaign-asset' } }) }}
 
-        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+        <fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Asset Deployment</legend>
 
             <div class="col-span-2 md:col-span-1">
@@ -425,7 +425,7 @@
                     <p class="text-xs text-amber-200/70 font-rajdhani tracking-widest uppercase">Target Session: <b class="text-warning text-sm">{{ sessionValue }}</b></p>
                 </header>
                 {{ form_start(start_date_form) }}
-                    <fieldset class="bg-slate-900/40 border border-slate-800 gap-4 p-4 rounded-xl shadow-inner w-full mb-6 relative">
+                    <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-4 p-4 rounded-xl shadow-inner w-full mb-6 relative">
                         <legend class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[9px] font-bold font-orbitron tracking-[0.2em] text-cyan-500/80 uppercase">Scheduling Protocol</legend>
                          {% if mortgage.signingYear is defined and mortgage.signingYear is not null %}
                             <div class="alert alert-warning py-2 px-3 mb-4 rounded border-amber-500/30 bg-amber-900/20 text-xs">
@@ -477,7 +477,7 @@
                         action: path('app_mortgage_pay', {id: mortgage.id}),
                         method: 'POST'
                     }) }}
-                    <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-4 p-4 rounded-xl shadow-inner w-full mb-6 relative">
+                    <fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-4 p-4 rounded-xl shadow-inner w-full mb-6 relative">
                         <legend class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[9px] font-bold font-orbitron tracking-[0.2em] text-cyan-500/80 uppercase">Installment Authorization</legend>
                         <div class="col-span-2" data-controller="imperial-date">
                             <div class="flex items-baseline h-5 mb-1">

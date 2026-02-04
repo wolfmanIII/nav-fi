@@ -1,4 +1,4 @@
-<fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+<fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
     <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">
         MAIL Details
     </legend>
@@ -69,7 +69,7 @@
         </div>
     </div>
 
-    <div class="col-span-2 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
         {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
         {% set dispatch_day = data.dispatchDay ?? null %}
         {% set dispatch_year = data.dispatchYear ?? null %}
@@ -252,7 +252,7 @@
         </div>
     </div>
 
-    <div class="col-span-2 grid grid-cols-2 gap-4">
+    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
         {% set pod_help_id = detail_form.proofOfDelivery.vars.id ~ '-help' %}
         <div>
             <div class="flex items-baseline justify-between h-5 mb-1">
@@ -293,7 +293,7 @@
         </div>
     </div>
 
-    <div class="col-span-2 grid grid-cols-3 gap-4">
+    <div class="col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
         {% set proof_ref_help_id = detail_form.deliveryProofRef.vars.id ~ '-help' %}
         <div>
             <div class="flex items-baseline justify-between h-5 mb-1">
