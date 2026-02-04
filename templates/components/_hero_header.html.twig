@@ -52,8 +52,8 @@
 
             {% block content %}{% endblock %}
 
-            {# Session Date Indicator (Automated for Assets) #}
-            {% set campaign = asset ? asset.campaign|default(null) : null %}
+            {# Session Date Indicator (Automated for Assets or explicit Campaign) #}
+            {% set campaign = campaign|default(asset ? asset.campaign|default(null) : null) %}
             {% if campaign %}
                 <div class="flex flex-wrap gap-2 mt-3">
                     <div class="badge badge-neutral gap-1.5 px-2.5 py-1.5 text-[10px] font-mono border border-slate-700">

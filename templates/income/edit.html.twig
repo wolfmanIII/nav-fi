@@ -15,26 +15,11 @@
             subheader: 'Asset income // Contract Registry',
             title: 'LOG INCOME',
             titleSuffix: '// Revenues',
-            description: 'Contracts, freight and charter: fund the next jump.'
+            description: 'Contracts, freight and charter: fund the next jump.',
+            campaign: income.financialAccount.asset.campaign ?? income.financialAccount.campaign ?? null
         } %}
             {% import '_tooltip.html.twig' as tooltip %}
             {% block content %}
-                {# Session Date Indicator #}
-                {% set campaign = income.financialAccount.asset.campaign ?? income.financialAccount.campaign ?? null %}
-                {% if campaign %}
-                    <div class="flex flex-wrap gap-2 mt-3">
-                        <div class="badge badge-neutral gap-1.5 px-2.5 py-1.5 text-[10px] font-mono border border-slate-700">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                            </svg>
-                            <span class="font-bold tracking-wider text-slate-400">{{ campaign.title }}:</span>
-                            <span class="text-slate-300">{{ campaign.sessionDay|imperial_date(campaign.sessionYear) }}</span>
-                        </div>
-                    </div>
-                {% endif %}
             {% endblock %}
             {% block actions %}
                 {% if income.id %}
