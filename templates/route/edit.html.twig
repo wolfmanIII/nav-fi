@@ -22,7 +22,7 @@
             {% endblock %}
         {% endembed %}
 
-        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+        <fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Navigation Plan</legend>
             {% if form_errors(form) %}
                 <div class="col-span-2">
@@ -53,7 +53,7 @@
                 {{ form_widget(form.name, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50' } }) }}
                 {{ form_errors(form.name) }}
             </div>
-            <div class="col-span-2 grid grid-cols-2 gap-4" data-controller="campaign-asset">
+            <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4" data-controller="campaign-asset">
                 <div>
                     <div class="flex items-baseline h-5 mb-1">
                         {{ form_label(form.campaign, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
@@ -71,7 +71,7 @@
             </div>
         </fieldset>
 
-        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+        <fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-amber-500/80 uppercase">Telemetry Overrides</legend>
             <div class="col-span-2">
                 <div class="alert alert-info alert-outline shadow-sm border-amber-500/30 bg-amber-500/5">
@@ -107,7 +107,7 @@
             </div>
         </fieldset>
 
-        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+        <fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Flight Schedule</legend>
             <div class="col-span-1" data-controller="imperial-date">
                 <div class="flex items-baseline h-5 mb-1">

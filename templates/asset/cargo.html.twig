@@ -83,7 +83,7 @@
                                     {% set roi = ((marketPrice - item.amount) / item.amount) * 100 %}
                                 {% endif %}
 
-                                <div class="grid grid-cols-2 gap-4 mb-6 bg-slate-950 p-4 rounded border border-slate-800">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 bg-slate-950 p-4 rounded border border-slate-800">
                                     <div class="space-y-4">
                                         <div>
                                             <div class="text-[10px] uppercase text-slate-500 font-bold tracking-widest mb-1">Initial Cost</div>
@@ -118,7 +118,7 @@
                                 </div>
                                 
                                 <form method="POST" action="{{ path('app_asset_cargo_sell', {id: asset.id, costId: item.id}) }}">
-                                    <div class="grid grid-cols-2 gap-4 mb-6">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                                         <div class="form-control">
                                             <label class="label"><span class="label-text text-slate-400 text-xs uppercase font-bold">Location</span></label>
                                             {# Pre-fill with Target Destination (the intended market) #}
@@ -138,7 +138,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="grid grid-cols-2 gap-4 mb-6">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                                         <div class="form-control">
                                             <label class="label"><span class="label-text text-slate-400 text-xs uppercase font-bold">Date</span></label>
                                              <div class="flex gap-1">
