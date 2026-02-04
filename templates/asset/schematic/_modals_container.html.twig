@@ -1,0 +1,351 @@
+{# templates/asset/schematic/_modals_container.html.twig #}
+{% import _self as modals %}
+
+{% macro render_collection_modal(collection, title, color = 'slate') %}
+    <div class="space-y-4" data-asset-details-target="collection">
+        <div class="flex items-center justify-between border-b border-slate-700 pb-2 mb-4">
+            <h4 class="text-sm font-orbitron uppercase text-{{ color }}-400">{{ title }}</h4>
+            <button type="button" class="btn btn-xs btn-outline btn-{{ color }}"
+                    data-action="asset-details#addItem">+ Add Item</button>
+        </div>
+        <div class="space-y-3" data-asset-details-target="list">
+             {% for child in collection %}
+                {{ _self.render_item(child) }}
+            {% endfor %}
+        </div>
+        <template data-asset-details-target="prototype">
+            {{ _self.render_item(collection.vars.prototype) }}
+        </template>
+    </div>
+{% endmacro %}
+
+{% macro render_item(child) %}
+    {# Generic Item Renderer for Collections #}
+    <div class="collection-item grid grid-cols-12 gap-2 bg-slate-900/50 p-2 rounded border border-slate-800 relative group">
+         <button type="button"
+                class="absolute -right-2 -top-2 w-5 h-5 rounded-full bg-slate-800 border border-slate-700 text-slate-400 hover:text-red-400 flex items-center justify-center transition-all shadow-lg z-10 text-xs"
+                data-action="asset-details#removeItem">&times;</button>
+        
+        <div class="col-span-8">
+            {{ form_widget(child.description, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950 border-slate-700', placeholder: 'Description' } }) }}
+        </div>
+        <div class="col-span-2">
+             {{ form_widget(child.tons, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950 border-slate-700 text-right', placeholder: 'Tons' } }) }}
+        </div>
+        <div class="col-span-2">
+             {{ form_widget(child.costMcr, { attr: { class: 'input input-bordered input-xs w-full bg-slate-950 border-slate-700 text-right', placeholder: 'MCr', 'data-cost-mcr': '' } }) }}
+        </div>
+    </div>
+{% endmacro %}
+
+
+{# MODAL: BRIDGE #}
+<dialog id="modal-bridge" class="modal">
+  <div class="modal-box w-11/12 max-w-5xl bg-slate-950 border border-cyan-500/20 shadow-[0_0_50px_rgba(6,182,212,0.1)]">
+    <h3 class="font-orbitron font-bold text-lg text-cyan-400 mb-4 border-b border-cyan-500/30 pb-2">Bridge & Operations</h3>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <h4 class="text-xs uppercase text-slate-500 font-bold mb-2">Bridge Configuration</h4>
+            <div class="form-control mb-2">
+                {{ form_label(form.bridge.description, null, { label_attr: { class: 'label-text text-xs uppercase' } }) }}
+                {{ form_widget(form.bridge.description, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100' } }) }}
+            </div>
+             <div class="grid grid-cols-2 gap-2">
+                <div class="form-control">
+                     {{ form_label(form.bridge.tons, null, { label_attr: { class: 'label-text text-xs uppercase' } }) }}
+                    {{ form_widget(form.bridge.tons, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100' } }) }}
+                </div>
+                <div class="form-control">
+                     {{ form_label(form.bridge.costMcr, null, { label_attr: { class: 'label-text text-xs uppercase' } }) }}
+                    {{ form_widget(form.bridge.costMcr, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100', 'data-cost-mcr': '' } }) }}
+                </div>
+             </div>
+        </div>
+
+        <div>
+             <h4 class="text-xs uppercase text-slate-500 font-bold mb-2">Computer Core</h4>
+             <div class="form-control mb-2">
+                {{ form_label(form.computer.description, null, { label_attr: { class: 'label-text text-xs uppercase' } }) }}
+                {{ form_widget(form.computer.description, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100' } }) }}
+            </div>
+             <div class="grid grid-cols-2 gap-2">
+                <div class="form-control">
+                     {{ form_label(form.computer.tons, null, { label_attr: { class: 'label-text text-xs uppercase' } }) }}
+                    {{ form_widget(form.computer.tons, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100' } }) }}
+                </div>
+                <div class="form-control">
+                     {{ form_label(form.computer.costMcr, null, { label_attr: { class: 'label-text text-xs uppercase' } }) }}
+                    {{ form_widget(form.computer.costMcr, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100', 'data-cost-mcr': '' } }) }}
+                </div>
+             </div>
+        </div>
+        
+        <div class="col-span-2">
+            <h4 class="text-xs uppercase text-slate-500 font-bold mb-2">Sensor Suite</h4>
+             <div class="grid grid-cols-1 md:grid-cols-12 gap-2">
+                <div class="col-span-8">
+                     {{ form_widget(form.sensors.description, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100', placeholder: 'Sensor Type' } }) }}
+                </div>
+                <div class="col-span-2">
+                     {{ form_widget(form.sensors.tons, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100', placeholder: 'Tons' } }) }}
+                </div>
+                <div class="col-span-2">
+                     {{ form_widget(form.sensors.costMcr, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100', placeholder: 'MCr', 'data-cost-mcr': '' } }) }}
+                </div>
+             </div>
+        </div>
+        
+        <div class="col-span-2 bg-slate-900/30 p-4 rounded border border-slate-800">
+             {{ _self.render_collection_modal(form.software, 'Software Library', 'cyan') }}
+        </div>
+    </div>
+
+    <div class="modal-action border-t border-slate-800 pt-4 mt-6">
+        <button type="button" class="btn btn-outline btn-sm btn-accent font-orbitron" onclick="this.closest('dialog').close()">Confirm & Close</button>
+    </div>
+  </div>
+    <div class="modal-backdrop">
+        <button type="button" onclick="this.closest('dialog').close()">close</button>
+    </div>
+</dialog>
+
+{# MODAL: ENGINEERING #}
+<dialog id="modal-engineering" class="modal">
+  <div class="modal-box w-11/12 max-w-5xl bg-slate-950 border border-amber-500/20 shadow-[0_0_50px_rgba(245,158,11,0.1)]">
+    <h3 class="font-orbitron font-bold text-lg text-amber-400 mb-4 border-b border-amber-500/30 pb-2">Engineering & Drives</h3>
+    
+    <div class="space-y-6">
+        {# J-Drive #}
+        {% if form.jDrive is defined %}
+        <div class="border border-slate-800 p-4 rounded bg-slate-900/40">
+            <div class="text-xs font-bold text-amber-500 uppercase font-orbitron mb-2">Jump Drive</div>
+            <div class="grid grid-cols-12 gap-2">
+                 <div class="col-span-2">
+                     {{ form_widget(form.jDrive.rating, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-amber-100', placeholder: 'Rating' } }) }}
+                 </div>
+                 <div class="col-span-2">
+                     {{ form_widget(form.jDrive.tons, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-amber-100', placeholder: 'Tons' } }) }}
+                 </div>
+                 <div class="col-span-2">
+                     {{ form_widget(form.jDrive.costMcr, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-amber-100', placeholder: 'MCr', 'data-cost-mcr': '' } }) }}
+                 </div>
+                 <div class="col-span-6">
+                     {{ form_widget(form.jDrive.description, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-amber-100', placeholder: 'Description/Model' } }) }}
+                 </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# M-Drive #}
+        {% if form.mDrive is defined %}
+        <div class="border border-slate-800 p-4 rounded bg-slate-900/40">
+            <div class="text-xs font-bold text-cyan-500 uppercase font-orbitron mb-2">Maneuver Drive</div>
+            <div class="grid grid-cols-12 gap-2">
+                 <div class="col-span-2">
+                     {{ form_widget(form.mDrive.rating, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100', placeholder: 'Rating' } }) }}
+                 </div>
+                 <div class="col-span-2">
+                     {{ form_widget(form.mDrive.tons, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100', placeholder: 'Tons' } }) }}
+                 </div>
+                 <div class="col-span-2">
+                     {{ form_widget(form.mDrive.costMcr, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100', placeholder: 'MCr', 'data-cost-mcr': '' } }) }}
+                 </div>
+                 <div class="col-span-6">
+                     {{ form_widget(form.mDrive.description, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100', placeholder: 'Description/Model' } }) }}
+                 </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        {# Power Plant #}
+        <div class="border border-slate-800 p-4 rounded bg-slate-900/40">
+            <div class="text-xs font-bold text-purple-500 uppercase font-orbitron mb-2">Power Plant</div>
+            <div class="grid grid-cols-12 gap-2">
+                 <div class="col-span-2">
+                     {{ form_widget(form.powerPlant.rating, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-purple-100', placeholder: 'Rating' } }) }}
+                 </div>
+                 <div class="col-span-2">
+                     {{ form_widget(form.powerPlant.tons, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-purple-100', placeholder: 'Tons' } }) }}
+                 </div>
+                 <div class="col-span-2">
+                     {{ form_widget(form.powerPlant.costMcr, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-purple-100', placeholder: 'MCr', 'data-cost-mcr': '' } }) }}
+                 </div>
+                 <div class="col-span-6">
+                     {{ form_widget(form.powerPlant.description, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-purple-100', placeholder: 'Description/Model' } }) }}
+                 </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal-action border-t border-slate-800 pt-4 mt-6">
+        <button type="button" class="btn btn-outline btn-sm btn-accent font-orbitron" onclick="this.closest('dialog').close()">Confirm & Close</button>
+    </div>
+  </div>
+    <div class="modal-backdrop">
+        <button type="button" onclick="this.closest('dialog').close()">close</button>
+    </div>
+</dialog>
+
+
+{# MODAL: CARGO & FUEL #}
+<dialog id="modal-cargo" class="modal">
+  <div class="modal-box w-11/12 max-w-4xl bg-slate-950 border border-emerald-500/20 shadow-[0_0_50px_rgba(16,185,129,0.1)]">
+    <h3 class="font-orbitron font-bold text-lg text-emerald-400 mb-4 border-b border-emerald-500/30 pb-2">Logistics: Cargo & Fuel</h3>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+         {# Cargo #}
+        <div>
+            <h4 class="text-xs uppercase text-slate-500 font-bold mb-2">Cargo Hold</h4>
+            <div class="form-control mb-2">
+                {{ form_label(form.cargo.description, null, { label_attr: { class: 'label-text text-xs uppercase' } }) }}
+                {{ form_widget(form.cargo.description, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-emerald-100' } }) }}
+            </div>
+             <div class="form-control">
+                  {{ form_label(form.cargo.tons, null, { label_attr: { class: 'label-text text-xs uppercase' } }) }}
+                 {{ form_widget(form.cargo.tons, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-emerald-100' } }) }}
+             </div>
+        </div>
+
+        {# Fuel #}
+        <div>
+             <h4 class="text-xs uppercase text-slate-500 font-bold mb-2">Fuel Tanks</h4>
+            <div class="form-control mb-2">
+                {{ form_label(form.fuel.description, null, { label_attr: { class: 'label-text text-xs uppercase' } }) }}
+                {{ form_widget(form.fuel.description, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-emerald-100' } }) }}
+            </div>
+             <div class="grid grid-cols-2 gap-2">
+                <div class="form-control">
+                     {{ form_label(form.fuel.tons, null, { label_attr: { class: 'label-text text-xs uppercase' } }) }}
+                    {{ form_widget(form.fuel.tons, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-emerald-100' } }) }}
+                </div>
+                <div class="form-control">
+                     {{ form_label(form.fuel.costMcr, null, { label_attr: { class: 'label-text text-xs uppercase' } }) }}
+                    {{ form_widget(form.fuel.costMcr, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-emerald-100', 'data-cost-mcr': '' } }) }}
+                </div>
+             </div>
+        </div>
+    </div>
+
+    <div class="modal-action border-t border-slate-800 pt-4 mt-6">
+        <button type="button" class="btn btn-outline btn-sm btn-accent font-orbitron" onclick="this.closest('dialog').close()">Confirm & Close</button>
+    </div>
+  </div>
+     <div class="modal-backdrop">
+        <button type="button" onclick="this.closest('dialog').close()">close</button>
+    </div>
+</dialog>
+
+{# MODAL: ACCOMMODATION #}
+<dialog id="modal-accommodation" class="modal">
+  <div class="modal-box w-11/12 max-w-4xl bg-slate-950 border border-purple-500/20 shadow-[0_0_50px_rgba(168,85,247,0.1)]">
+    <h3 class="font-orbitron font-bold text-lg text-purple-400 mb-4 border-b border-purple-500/30 pb-2">Deck Plan: Accommodation</h3>
+    
+    <div class="space-y-6">
+         <div class="bg-slate-900/30 p-4 rounded border border-slate-800">
+             {{ _self.render_collection_modal(form.staterooms, 'Staterooms & Berths', 'purple') }}
+         </div>
+         <div class="bg-slate-900/30 p-4 rounded border border-slate-800">
+             {{ _self.render_collection_modal(form.commonAreas, 'Common Areas', 'purple') }}
+         </div>
+    </div>
+
+    <div class="modal-action border-t border-slate-800 pt-4 mt-6">
+        <button type="button" class="btn btn-outline btn-sm btn-accent font-orbitron" onclick="this.closest('dialog').close()">Confirm & Close</button>
+    </div>
+  </div>
+    <div class="modal-backdrop">
+        <button type="button" onclick="this.closest('dialog').close()">close</button>
+    </div>
+</dialog>
+
+{# MODAL: WEAPONS #}
+<dialog id="modal-weapons" class="modal">
+  <div class="modal-box w-11/12 max-w-4xl bg-slate-900 border border-red-500/20 shadow-[0_0_50px_rgba(239,68,68,0.1)]">
+    <h3 class="font-orbitron font-bold text-lg text-red-500 mb-4 border-b border-red-500/30 pb-2">Tactical: Hardpoints & Weapons</h3>
+    
+    <div class="bg-slate-950/50 p-4 rounded border border-slate-800">
+         {{ _self.render_collection_modal(form.weapons, 'Offensive Systems', 'red') }}
+    </div>
+
+    <div class="modal-action border-t border-slate-800 pt-4 mt-6">
+        <button type="button" class="btn btn-outline btn-sm btn-accent font-orbitron" onclick="this.closest('dialog').close()">Confirm & Close</button>
+    </div>
+  </div>
+    <div class="modal-backdrop">
+        <button type="button" onclick="this.closest('dialog').close()">close</button>
+    </div>
+</dialog>
+
+{# MODAL: SYSTEMS (Systems + Craft) #}
+<dialog id="modal-systems" class="modal">
+  <div class="modal-box w-11/12 max-w-4xl bg-slate-950 border border-yellow-500/20 shadow-[0_0_50px_rgba(234,179,8,0.1)]">
+    <h3 class="font-orbitron font-bold text-lg text-yellow-500 mb-4 border-b border-yellow-500/30 pb-2">Support Systems & Craft</h3>
+    
+    <div class="space-y-6">
+         <div class="bg-slate-900/30 p-4 rounded border border-slate-800">
+             {{ _self.render_collection_modal(form.systems, 'Systems & Utility', 'yellow') }}
+         </div>
+         
+         <div class="bg-slate-900/30 p-4 rounded border border-slate-800">
+             {{ _self.render_collection_modal(form.craft, 'Small Craft & Vehicles', 'yellow') }}
+         </div>
+    </div>
+
+    <div class="modal-action border-t border-slate-800 pt-4 mt-6">
+        <button type="button" class="btn btn-outline btn-sm btn-accent font-orbitron" onclick="this.closest('dialog').close()">Confirm & Close</button>
+    </div>
+  </div>
+    <div class="modal-backdrop">
+        <button type="button" onclick="this.closest('dialog').close()">close</button>
+    </div>
+</dialog>
+
+{# MODAL: HULL REGISTRY #}
+<dialog id="modal-hull" class="modal">
+  <div class="modal-box bg-slate-950 border border-cyan-500/20 shadow-[0_0_50px_rgba(6,182,212,0.1)]">
+    <h3 class="font-orbitron font-bold text-lg text-cyan-400 mb-4 border-b border-cyan-500/30 pb-2">Ship Registry & Hull</h3>
+    
+    <div class="space-y-4">
+        <div class="form-control">
+            {{ form_label(form.hull.description, null, { label_attr: { class: 'label-text text-xs uppercase' } }) }}
+            {{ form_widget(form.hull.description, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100' } }) }}
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="form-control">
+                {{ form_label(form.hull.configuration, null, { label_attr: { class: 'label-text text-xs uppercase' } }) }}
+                {{ form_widget(form.hull.configuration, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100' } }) }}
+            </div>
+             <div class="form-control">
+                {{ form_label(form.hull.tons, null, { label_attr: { class: 'label-text text-xs uppercase' } }) }}
+                {{ form_widget(form.hull.tons, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100' } }) }}
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+             <div class="form-control">
+                {{ form_label(form.hull.points, null, { label_attr: { class: 'label-text text-xs uppercase' } }) }}
+                {{ form_widget(form.hull.points, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100' } }) }}
+            </div>
+             <div class="form-control">
+                {{ form_label(form.hull.costMcr, null, { label_attr: { class: 'label-text text-xs uppercase' } }) }}
+                {{ form_widget(form.hull.costMcr, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-700 text-cyan-100', 'data-cost-mcr': '' } }) }}
+            </div>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="form-control">
+             {{ form_label(form.techLevel, null, { label_attr: { class: 'label-text text-xs uppercase text-amber-500' } }) }}
+            {{ form_widget(form.techLevel, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-amber-900/50 text-amber-500' } }) }}
+        </div>
+    </div>
+
+    <div class="modal-action border-t border-slate-800 pt-4 mt-6">
+        <button type="button" class="btn btn-outline btn-sm btn-accent font-orbitron" onclick="this.closest('dialog').close()">Confirm & Close</button>
+    </div>
+  </div>
+    <div class="modal-backdrop">
+        <button type="button" onclick="this.closest('dialog').close()">close</button>
+    </div>
+</dialog>

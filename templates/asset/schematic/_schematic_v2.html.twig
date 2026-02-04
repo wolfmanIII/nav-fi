@@ -1,0 +1,110 @@
+{# templates/asset/schematic/_schematic_v2.html.twig - Updated 22:20 #}
+<div class="relative w-full h-full flex flex-col justify-center" data-controller="schematic">
+
+    {# CONSOLE: TOP RIGHT (Pinned to Container Edge) #}
+    <div class="absolute top-0 right-0 w-80 h-80 bg-slate-950/80 border-l border-b border-slate-800 rounded-bl-3xl p-4 overflow-hidden pointer-events-none z-10 hidden md:block shadow-2xl backdrop-blur-md"
+            data-controller="scrolling-code"
+            data-scrolling-code-type-value="nav">
+        <div class="h-full w-full flex flex-col justify-end text-xs font-rajdhani tracking-wide text-cyan-400 leading-tight" 
+                data-scrolling-code-target="output">
+        </div>
+        <div class="absolute top-3 right-3 p-1">
+            <div class="w-2 h-2 bg-cyan-400 rounded-full animate-ping"></div>
+        </div>
+    </div>
+
+    {# CONSOLE: BOTTOM LEFT (Pinned to Container Edge) #}
+    <div class="absolute bottom-0 left-0 w-[22rem] h-70 bg-slate-950/80 border-r border-t border-emerald-500/20 rounded-tr-3xl bg-gradient-to-r from-slate-900/95 to-transparent p-4 overflow-hidden pointer-events-none z-10 hidden md:block shadow-2xl backdrop-blur-md"
+            data-controller="scrolling-code"
+            data-scrolling-code-type-value="engineering">
+        <div class="h-full w-full flex flex-col justify-end text-xs font-rajdhani tracking-wide text-emerald-500 leading-tight" 
+                data-scrolling-code-target="output">
+        </div>
+    </div>
+
+    {# CENTERED IMAGE WRAPPER #}
+    <div class="relative group w-full max-w-4xl mx-auto">
+        {# STARSHIP SCHEMATIC IMAGE #}
+        <img src="{{ asset('img/nav-fi-starship.png') }}" 
+             alt="Ship Schematic" 
+             class="w-full h-auto drop-shadow-[0_0_15px_rgba(6,182,212,0.15)] pointer-events-none select-none">
+
+        {# BRIDGE / OPS #}
+        <button type="button" 
+                data-action="schematic#openModal" 
+                data-modal-id="modal-bridge"
+                class="absolute top-[60%] right-[12%] group/zone border border-cyan-500/50 bg-slate-950/80 backdrop-blur-sm px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-2 pl-2 pr-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] text-cyan-400 hover:bg-cyan-500/10 hover:scale-105 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] active:scale-95"
+                title="Bridge & Computer">
+            <span class="w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] bg-cyan-500"></span>
+            <span class="font-orbitron text-[10px] uppercase font-bold tracking-wider">Bridge</span>
+        </button>
+
+        {# ENGINEERING #}
+        <button type="button" 
+                data-action="schematic#openModal" 
+                data-modal-id="modal-engineering"
+                class="absolute top-[17%] left-[4%] group/zone border border-amber-500/50 bg-slate-950/80 backdrop-blur-sm px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-2 pl-2 pr-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] text-amber-400 hover:bg-amber-500/10 hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.2)] active:scale-95"
+                title="Engineering (Drives & Power)">
+            <span class="w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] bg-amber-500"></span>
+            <span class="font-orbitron text-[10px] uppercase font-bold tracking-wider">Engineering</span>
+        </button>
+
+        {# CARGO & FUEL #}
+        <button type="button" 
+                data-action="schematic#openModal" 
+                data-modal-id="modal-cargo"
+                class="absolute top-[65%] left-[28%] group/zone border border-emerald-500/50 bg-slate-950/80 backdrop-blur-sm px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-2 pl-2 pr-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] text-emerald-400 hover:bg-emerald-500/10 hover:scale-105 hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] active:scale-95"
+                title="Cargo & Fuel">
+            <span class="w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] bg-emerald-500"></span>
+            <span class="font-orbitron text-[10px] uppercase font-bold tracking-wider">Logistics</span>
+        </button>
+
+        {# ACCOMMODATION #}
+        <button type="button" 
+                data-action="schematic#openModal" 
+                data-modal-id="modal-accommodation"
+                class="absolute top-[18%] left-[43%] group/zone border border-purple-500/50 bg-slate-950/80 backdrop-blur-sm px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-2 pl-2 pr-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] text-purple-400 hover:bg-purple-500/10 hover:scale-105 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] active:scale-95"
+                title="Crew & Staterooms">
+            <span class="w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] bg-purple-500"></span>
+            <span class="font-orbitron text-[10px] uppercase font-bold tracking-wider">Deck Plan</span>
+        </button>
+
+        {# WEAPONS #}
+        <button type="button" 
+                data-action="schematic#openModal" 
+                data-modal-id="modal-weapons"
+                class="absolute top-[83%] right-[25%] group/zone border border-red-500/50 bg-slate-950/80 backdrop-blur-sm px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-2 pl-2 pr-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] text-red-400 hover:bg-red-500/10 hover:scale-105 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)] active:scale-95"
+                title="Hardpoints & Weapons">
+            <span class="w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] bg-red-500"></span>
+            <span class="font-orbitron text-[10px] uppercase font-bold tracking-wider">Tactical</span>
+        </button>
+
+        {# HULL #}
+         <button type="button" 
+                data-action="schematic#openModal" 
+                data-modal-id="modal-hull"
+                class="absolute top-[5%] right-[46%] group/zone border border-cyan-500/50 bg-slate-950/80 backdrop-blur-sm px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-2 pl-2 pr-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] text-cyan-400 hover:bg-cyan-500/10 hover:scale-105 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] active:scale-95"
+                title="Hull Specifications">
+            <span class="w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] bg-cyan-500"></span>
+            <span class="font-orbitron text-[10px] uppercase font-bold tracking-wider">Hull</span>
+        </button>
+        
+        {# SYSTEMS #}
+         <button type="button" 
+                data-action="schematic#openModal" 
+                data-modal-id="modal-systems"
+                class="absolute bottom-[54%] right-[25%] group/zone border border-yellow-500/50 bg-slate-950/80 backdrop-blur-sm px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-2 pl-2 pr-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] text-yellow-500 hover:bg-yellow-500/10 hover:scale-105 hover:shadow-[0_0_20px_rgba(234,179,8,0.2)] active:scale-95"
+                title="Systems & Craft">
+             <span class="w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] bg-yellow-500"></span>
+            <span class="font-orbitron text-[10px] uppercase font-bold tracking-wider">Systems</span>
+        </button>
+
+    </div>
+    
+    <div class="flex justify-end gap-4 mt-8 mr-2 pointer-events-none">
+         <div class="text-[10px] font-mono text-slate-500 uppercase tracking-widest flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-600"></span> 
+            Interactive Command Nodes
+         </div>
+    </div>
+</div>

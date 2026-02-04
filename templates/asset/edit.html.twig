@@ -12,7 +12,7 @@
 
     <div class="flex flex-col items-stretch gap-4">
 
-        {{ form_start(form) }}
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
         {% set hero_color = 'cyan' %}
         {% set hero_icon = 'icons/far-trader.html.twig' %}
@@ -193,7 +193,7 @@
             {% endif %}
         </div>
 
-        <div class="flex items-center justify-end gap-3 mb-10">
+        <div class="flex items-center justify-end gap-3 mb-10 mt-6">
             {{ form_row(form._token) }}
             <a href="{{ path('app_asset_index', {category: asset.category}) }}" class="btn btn-ghost font-orbitron uppercase text-[10px] tracking-widest text-slate-500 hover:text-slate-300 font-bold">Abort Changes</a>
             <button type="submit"

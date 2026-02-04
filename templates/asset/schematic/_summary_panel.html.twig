@@ -1,0 +1,82 @@
+{# templates/asset/schematic/_summary_panel.html.twig #}
+<div class="border border-slate-700 bg-slate-950/60 rounded-lg p-4 h-full flex flex-col gap-4">
+    <h3 class="text-xs font-orbitron uppercase text-cyan-500 font-bold border-b border-slate-800 pb-2 mb-2">
+        Tactical Readout
+    </h3>
+
+    {# PRIMARY STATS #}
+    <div class="grid grid-cols-2 gap-4">
+        <div class="stat-block">
+            <span class="label">Hull Tons</span>
+            <span class="value text-cyan-300" data-live-summary-target="hullTons">{{ form.hull.tons.vars.value|default('0') }} dT</span>
+        </div>
+        <div class="stat-block">
+            <span class="label">Config</span>
+            <span class="value" data-live-summary-target="hullConfig">{{ form.hull.configuration.vars.value|default('-') }}</span>
+        </div>
+        <div class="stat-block">
+            <span class="label">Struct. Pts</span>
+            <span class="value text-emerald-400" data-live-summary-target="structPoints">{{ form.hull.points.vars.value|default('0') }}</span>
+        </div>
+        <div class="stat-block">
+            <span class="label">Tech Level</span>
+            <span class="value text-amber-500" data-live-summary-target="techLevel">{{ form.techLevel.vars.value|default('0') }}</span>
+        </div>
+    </div>
+
+    <div class="divider border-b border-slate-800 my-2"></div>
+
+    {# DRIVES #}
+    <div class="grid grid-cols-3 gap-2 text-center">
+        <div class="drive-block border border-slate-800 p-2 rounded bg-slate-900/50">
+            <div class="label text-[9px] text-slate-500 mb-1">JUMP</div>
+            <div class="value font-bold text-amber-400 text-lg" data-live-summary-target="jDriveRating">{{ form.jDrive.rating.vars.value|default('0') }}</div>
+        </div>
+        <div class="drive-block border border-slate-800 p-2 rounded bg-slate-900/50">
+            <div class="label text-[9px] text-slate-500 mb-1">MANEUVER</div>
+            <div class="value font-bold text-cyan-400 text-lg" data-live-summary-target="mDriveRating">{{ form.mDrive.rating.vars.value|default('0') }}</div>
+        </div>
+        <div class="drive-block border border-slate-800 p-2 rounded bg-slate-900/50">
+            <div class="label text-[9px] text-slate-500 mb-1">POWER</div>
+            <div class="value font-bold text-purple-400 text-lg" data-live-summary-target="powerPlantRating">{{ form.powerPlant.rating.vars.value|default('0') }}</div>
+        </div>
+    </div>
+
+    <div class="divider border-b border-slate-800 my-2"></div>
+
+    {# LOGISTICS #}
+    <div class="grid grid-cols-1 gap-2">
+         <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-500 uppercase">Fuel</span>
+            <span class="font-mono text-emerald-400" data-live-summary-target="fuelTons">{{ form.fuel.tons.vars.value|default('0') }} tons</span>
+         </div>
+         <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-500 uppercase">Cargo</span>
+            <span class="font-mono text-emerald-400" data-live-summary-target="cargoTons">{{ form.cargo.tons.vars.value|default('0') }} tons</span>
+         </div>
+         <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-500 uppercase">Staterooms</span>
+            <span class="font-mono text-purple-400" data-live-summary-target="stateroomsCount">{{ form.staterooms|length }}</span>
+         </div>
+         <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-500 uppercase">Weapons</span>
+            <span class="font-mono text-red-400" data-live-summary-target="weaponsCount">{{ form.weapons|length }}</span>
+         </div>
+    </div>
+
+    <div class="mt-auto pt-4 border-t border-slate-800">
+        <div class="text-xs uppercase text-slate-500 mb-1">Total Cost (MCr)</div>
+        <div class="text-2xl font-orbitron font-bold text-cyan-400" data-live-summary-target="totalCost">{{ form.totalCost.vars.value|default('0') }}</div>
+        <div class="text-[9px] text-slate-600">Auto-calculated from components</div>
+    </div>
+
+</div>
+
+<style>
+    .stat-block .label {
+        @apply block text-[9px] font-orbitron uppercase text-slate-500 mb-0.5;
+    }
+    .stat-block .value {
+        @apply block font-mono text-sm font-semibold text-slate-200;
+    }
+</style>
