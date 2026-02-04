@@ -6,7 +6,7 @@
     <div class="flex flex-col items-stretch gap-4">
         {{ form_start(form) }}
 
-        <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+        <fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Asset Amendment</legend>
 
             <div class="col-span-2">
@@ -113,7 +113,7 @@
                                                             <div class="text-[0.65rem] uppercase tracking-[0.25em] text-cyan-300/70">Title</div>
                                                             <div class="text-cyan-100 font-semibold">{{ amendment.cost.title }}</div>
                                                         </div>
-                                                        <div class="grid grid-cols-2 gap-3">
+                                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                             <div class="rounded-lg border border-cyan-500/20 bg-slate-900/40 p-3">
                                                                 <div class="text-[0.65rem] uppercase tracking-[0.25em] text-cyan-300/70">Amount</div>
                                                                 <div class="text-cyan-100 font-semibold">
@@ -131,7 +131,7 @@
                                                             <div class="text-[0.65rem] uppercase tracking-[0.25em] text-cyan-300/70">Company</div>
                                                             <div class="text-cyan-100 font-semibold">{{ amendment.cost.company ? amendment.cost.company.name : '—' }}</div>
                                                         </div>
-                                                        <div class="grid grid-cols-2 gap-3">
+                                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                             <div class="rounded-lg border border-cyan-500/20 bg-slate-900/40 p-3">
                                                                 <div class="text-[0.65rem] uppercase tracking-[0.25em] text-cyan-300/70">Category</div>
                                                                 <div class="text-cyan-100 font-semibold">
