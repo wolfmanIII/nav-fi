@@ -24,7 +24,7 @@
     {{ form_start(form) }}
     {{ form_widget(form._token) }}
 
-    <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+    <fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
         {# Legends must be Cyan for financial uniformity #}
         <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Agreement Data</legend>
 
@@ -67,7 +67,7 @@
         </div>
     </fieldset>
 
-    <fieldset class="grid grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-8 relative">
+    <fieldset class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-8 relative">
         <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Chronicle & Cycle</legend>
 
         <div class="col-span-2" data-controller="imperial-date" data-action="imperial-date:change->salary#recalculateProRata">
