@@ -30,11 +30,15 @@
     <div class="grid grid-cols-3 gap-2 text-center">
         <div class="drive-block border border-slate-800 p-2 rounded bg-slate-900/50">
             <div class="label text-[9px] text-slate-500 mb-1">JUMP</div>
-            <div class="value font-bold text-amber-400 text-lg" data-live-summary-target="jDriveRating">{{ form.jDrive.rating.vars.value|default('0') }}</div>
+            <div class="value font-bold text-amber-400 text-lg" data-live-summary-target="jDriveRating">
+                {{ form.jDrive is defined ? form.jDrive.rating.vars.value|default('0') : '-' }}
+            </div>
         </div>
         <div class="drive-block border border-slate-800 p-2 rounded bg-slate-900/50">
             <div class="label text-[9px] text-slate-500 mb-1">MANEUVER</div>
-            <div class="value font-bold text-cyan-400 text-lg" data-live-summary-target="mDriveRating">{{ form.mDrive.rating.vars.value|default('0') }}</div>
+            <div class="value font-bold text-cyan-400 text-lg" data-live-summary-target="mDriveRating">
+                {{ form.mDrive is defined ? form.mDrive.rating.vars.value|default('0') : '-' }}
+            </div>
         </div>
         <div class="drive-block border border-slate-800 p-2 rounded bg-slate-900/50">
             <div class="label text-[9px] text-slate-500 mb-1">POWER</div>

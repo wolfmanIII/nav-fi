@@ -23,6 +23,7 @@ class BaseDetailsType extends AbstractType
             ->add('computer', GenericComponentType::class, ['label' => 'Computer'])
             ->add('sensors', GenericComponentType::class, ['label' => 'Sensors'])
             ->add('cargo', GenericComponentType::class, ['label' => 'Cargo'])
+            ->add('fuel', GenericComponentType::class, ['label' => 'Fuel'])
 
             ->add('staterooms', \Symfony\Component\Form\Extension\Core\Type\CollectionType::class, [
                 'entry_type' => \App\Form\AssetDetailItemType::class,

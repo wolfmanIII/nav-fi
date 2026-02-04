@@ -1,0 +1,131 @@
+{# templates/asset/schematic/_schematic_base.html.twig #}
+{# 
+    INTERACTIVE SCHEMATIC OVERLAY (BASE STATION)
+    Renders the station image with hotspots for component configuration.
+    Style matches _schematic_ship.html.twig (Pill buttons).
+#}
+<div class="relative w-full h-full flex flex-col justify-center" data-controller="schematic">
+
+    {# CONSOLE: TOP RIGHT (Pinned to Container Edge) #}
+    <div class="absolute top-0 right-0 w-80 h-50 bg-slate-950/80 border-l border-b border-slate-800 rounded-bl-3xl p-4 overflow-hidden pointer-events-none z-10 hidden md:block shadow-2xl backdrop-blur-md"
+            data-controller="scrolling-code"
+            data-scrolling-code-type-value="nav">
+        <div class="h-full w-full flex flex-col justify-end text-xs font-rajdhani tracking-wide text-cyan-400 leading-tight" 
+                data-scrolling-code-target="output">
+        </div>
+        <div class="absolute top-3 right-3 p-1">
+            <div class="w-2 h-2 bg-cyan-400 rounded-full animate-ping"></div>
+        </div>
+    </div>
+
+    {# CONSOLE: BOTTOM LEFT (Pinned to Container Edge) #}
+    <div class="absolute bottom-0 left-0 w-80 h-50 bg-slate-950/80 border-r border-t border-emerald-500/20 rounded-tr-3xl bg-gradient-to-r from-slate-900/95 to-transparent p-4 overflow-hidden pointer-events-none z-10 hidden md:block shadow-2xl backdrop-blur-md"
+            data-controller="scrolling-code"
+            data-scrolling-code-type-value="engineering">
+        <div class="h-full w-full flex flex-col justify-end text-xs font-rajdhani tracking-wide text-emerald-500 leading-tight" 
+                data-scrolling-code-target="output">
+             {# Filled by Stimulus #}
+        </div>
+        <div class="absolute top-3 right-3 p-1">
+            <div class="w-2 h-2 bg-amber-400 rounded-full animate-ping"></div>
+        </div>
+    </div>
+
+    {# CENTERED IMAGE WRAPPER #}
+    <div class="relative group w-full h-full flex items-center justify-center">
+        
+        {# THE STATION IMAGE #}
+        <img src="{{ asset('img/nav-fi-base-station.png') }}" 
+             alt="Station Schematic" 
+             class="w-full h-full object-contain max-h-[80vh] drop-shadow-[0_0_15px_rgba(6,182,212,0.15)] pointer-events-none select-none">
+
+        {# 1. HULL (Central Hub) #}
+        <button type="button" 
+                data-action="schematic#openModal" 
+                data-modal-id="modal-hull"
+                class="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 group/zone border border-cyan-500/50 bg-slate-950/80 backdrop-blur-sm px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-2 pl-2 pr-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] text-cyan-400 hover:bg-cyan-500/10 hover:scale-105 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] active:scale-95"
+                title="Station Hull">
+            <span class="w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] bg-cyan-500"></span>
+            <span class="font-orbitron text-[10px] uppercase font-bold tracking-wider">Hull</span>
+        </button>
+
+        {# 2. OPS / BRIDGE (Top/Command Deck) #}
+        <button type="button" 
+                data-action="schematic#openModal" 
+                data-modal-id="modal-bridge"
+                class="absolute top-[28%] left-[50%] transform -translate-x-1/2 group/zone border border-cyan-500/50 bg-slate-950/80 backdrop-blur-sm px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-2 pl-2 pr-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] text-cyan-400 hover:bg-cyan-500/10 hover:scale-105 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] active:scale-95"
+                title="Ops Center">
+            <span class="w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] bg-cyan-500"></span>
+            <span class="font-orbitron text-[10px] uppercase font-bold tracking-wider">Ops</span>
+        </button>
+
+        {# 3. REACTOR (Bottom/Core) #}
+        <button type="button" 
+                data-action="schematic#openModal" 
+                data-modal-id="modal-engineering"
+                class="absolute bottom-[28%] left-[50%] transform -translate-x-1/2 group/zone border border-amber-500/50 bg-slate-950/80 backdrop-blur-sm px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-2 pl-2 pr-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] text-amber-400 hover:bg-amber-500/10 hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.2)] active:scale-95"
+                title="Reactor Core">
+            <span class="w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] bg-amber-500"></span>
+            <span class="font-orbitron text-[10px] uppercase font-bold tracking-wider">Reactor</span>
+        </button>
+
+        {# 4. SENSORS (Top Spire) #}
+        <button type="button" 
+                data-action="schematic#openModal" 
+                data-modal-id="modal-bridge"
+                class="absolute top-[10%] left-[50%] transform -translate-x-1/2 group/zone border border-cyan-500/50 bg-slate-950/80 backdrop-blur-sm px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-2 pl-2 pr-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] text-cyan-400 hover:bg-cyan-500/10 hover:scale-105 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] active:scale-95"
+                title="Sensors Array">
+            <span class="w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] bg-cyan-500"></span>
+            <span class="font-orbitron text-[10px] uppercase font-bold tracking-wider">Sensors</span>
+        </button>
+
+        {# 5. CARGO (Right Side) #}
+        <button type="button" 
+                data-action="schematic#openModal" 
+                data-modal-id="modal-cargo"
+                class="absolute top-[45%] right-[25%] group/zone border border-emerald-500/50 bg-slate-950/80 backdrop-blur-sm px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-2 pl-2 pr-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] text-emerald-400 hover:bg-emerald-500/10 hover:scale-105 hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] active:scale-95"
+                title="Docking Ring & Cargo">
+            <span class="w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] bg-emerald-500"></span>
+            <span class="font-orbitron text-[10px] uppercase font-bold tracking-wider">Logistics</span>
+        </button>
+
+         {# 6. ACCOMMODATION (Left Side) #}
+        <button type="button" 
+                data-action="schematic#openModal" 
+                data-modal-id="modal-accommodation"
+                class="absolute top-[45%] left-[25%] group/zone border border-purple-500/50 bg-slate-950/80 backdrop-blur-sm px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-2 pl-2 pr-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] text-purple-400 hover:bg-purple-500/10 hover:scale-105 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] active:scale-95"
+                title="Habitation Ring">
+            <span class="w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] bg-purple-500"></span>
+            <span class="font-orbitron text-[10px] uppercase font-bold tracking-wider">Habitation</span>
+        </button>
+
+        {# 7. WEAPONS (Bottom Right) #}
+        <button type="button" 
+                data-action="schematic#openModal" 
+                data-modal-id="modal-weapons"
+                class="absolute bottom-[20%] right-[30%] group/zone border border-red-500/50 bg-slate-950/80 backdrop-blur-sm px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-2 pl-2 pr-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] text-red-400 hover:bg-red-500/10 hover:scale-105 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)] active:scale-95"
+                title="Defenses">
+            <span class="w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] bg-red-500"></span>
+            <span class="font-orbitron text-[10px] uppercase font-bold tracking-wider">Defense</span>
+        </button>
+
+        {# 8. SYSTEMS (Bottom Left) #}
+        <button type="button" 
+                data-action="schematic#openModal" 
+                data-modal-id="modal-systems"
+                class="absolute bottom-[20%] left-[30%] group/zone border border-yellow-500/50 bg-slate-950/80 backdrop-blur-sm px-3 py-1.5 rounded-md transition-all cursor-pointer flex items-center gap-2 pl-2 pr-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] text-yellow-500 hover:bg-yellow-500/10 hover:scale-105 hover:shadow-[0_0_20px_rgba(234,179,8,0.2)] active:scale-95"
+                title="Systems Support">
+             <span class="w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] bg-yellow-500"></span>
+            <span class="font-orbitron text-[10px] uppercase font-bold tracking-wider">Systems</span>
+        </button>
+
+    </div>
+
+    {# DECORATIVE BOTTOM TEXT #}
+     <div class="flex justify-end gap-4 mt-8 mr-2 pointer-events-none">
+         <div class="text-[10px] font-mono text-slate-500 uppercase tracking-widest flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-600"></span> 
+            Station Control Nodes
+         </div>
+    </div>
+</div>

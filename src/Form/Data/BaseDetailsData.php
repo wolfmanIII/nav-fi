@@ -24,6 +24,9 @@ class BaseDetailsData
     #[Assert\Valid]
     public GenericComponentData $cargo;
 
+    #[Assert\Valid]
+    public GenericComponentData $fuel;
+
     /** @var \App\Dto\AssetDetailItem[] */
     public array $staterooms = [];
 
@@ -53,6 +56,7 @@ class BaseDetailsData
         $this->computer = new GenericComponentData();
         $this->sensors = new GenericComponentData();
         $this->cargo = new GenericComponentData();
+        $this->fuel = new GenericComponentData();
     }
 
     public static function fromArray(array $data): self
@@ -65,6 +69,7 @@ class BaseDetailsData
         $dto->computer = GenericComponentData::fromArray($data['computer'] ?? []);
         $dto->sensors = GenericComponentData::fromArray($data['sensors'] ?? []);
         $dto->cargo = GenericComponentData::fromArray($data['cargo'] ?? []);
+        $dto->fuel = GenericComponentData::fromArray($data['fuel'] ?? []);
 
         // Helper per le collezioni
         $hydrateCollection = fn(array $items) => array_map(
@@ -99,6 +104,7 @@ class BaseDetailsData
             'computer' => $this->computer->toArray(),
             'sensors' => $this->sensors->toArray(),
             'cargo' => $this->cargo->toArray(),
+            'fuel' => $this->fuel->toArray(),
             'staterooms' => $serializeCollection($this->staterooms),
             'commonAreas' => $serializeCollection($this->commonAreas),
             'weapons' => $serializeCollection($this->weapons),
