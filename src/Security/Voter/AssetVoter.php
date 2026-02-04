@@ -18,6 +18,7 @@ final class AssetVoter extends Voter
     public const DELETE = 'ASSET_DELETE';
     public const CREW_REMOVE = 'ASSET_CREW_REMOVE';
     public const CAMPAIGN_REMOVE = 'ASSET_CAMPAIGN_REMOVE';
+    public const ADD_LOOT = 'ASSET_ADD_LOOT';
 
     public function __construct(
         private AnnualBudgetRepository $annualBudgetRepository,
@@ -36,6 +37,7 @@ final class AssetVoter extends Voter
             self::DELETE,
             self::CREW_REMOVE,
             self::CAMPAIGN_REMOVE,
+            self::ADD_LOOT,
         ], true);
     }
 
@@ -54,6 +56,7 @@ final class AssetVoter extends Voter
             self::DELETE      => $this->canDelete($subject, $user),
             self::CREW_REMOVE => $this->canCrewRemove($subject, $user),
             self::CAMPAIGN_REMOVE => $this->canCampaignRemove($subject, $user),
+            self::ADD_LOOT    => $this->canAddLoot($subject, $user),
             default           => false,
         };
     }
@@ -140,6 +143,16 @@ final class AssetVoter extends Voter
         }
 
         return true;
+    }
+
+    private function canAddLoot(Asset $asset, ?UserInterface $user = null): bool
+    {
+        if (!$this->isOwner($asset, $user)) {
+            return false;
+        }
+
+        // Il bottino (Loot) può essere aggiunto solo se l'asset fa parte di una Campagna (contesto di missione)
+        return $asset->getCampaign() !== null;
     }
 
     private function isOwner(Asset $asset, UserInterface $user): bool

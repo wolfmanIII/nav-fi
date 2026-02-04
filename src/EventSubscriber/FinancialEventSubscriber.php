@@ -228,7 +228,7 @@ class FinancialEventSubscriber
         if ($day === null || $year === null) return;
 
         $amount = $cost->getAmount();
-        if ($amount === null) return;
+        if ($amount === null || bccomp($amount, '0.00', 2) <= 0) return;
 
         $tx = $this->ledgerService->withdraw(
             $asset,

@@ -6,10 +6,12 @@ use App\Dto\AssetDetailsData;
 use App\Dto\CrewSelection;
 use App\Entity\Asset;
 use App\Entity\Campaign;
+use App\Entity\CostCategory;
 use App\Entity\Crew;
 use App\Entity\LocalLaw;
 use App\Form\AssetRoleAssignmentType;
 use App\Form\AssetType;
+use App\Form\CargoLootType;
 use App\Form\CrewSelectType;
 use App\Repository\CostRepository;
 use App\Security\Voter\AssetVoter;
@@ -355,7 +357,7 @@ final class AssetController extends BaseController
 
         $perPage = 10;
         $crewResult = $em->getRepository(Crew::class)
-            ->findUnassignedForAsset($user, $crewFilters, $crewPage, $perPage, $needCaptain); // TODO: Rinominare questo metodo in CrewRepo
+            ->findUnassignedForAsset($user, $crewFilters, $crewPage, $perPage, $needCaptain);
 
         $rows = [];
         foreach ($crewResult['items'] as $crew) {
@@ -373,7 +375,7 @@ final class AssetController extends BaseController
 
             foreach ($selections as $selection) {
                 if ($selection->isSelected()) {
-                    // TODO: Aggiornare CrewAssignmentService per usare Asset
+
                     $crewAssignmentService->assignToAsset($asset, $selection->getCrew());
                 }
             }
@@ -515,7 +517,7 @@ final class AssetController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $crewAssignmentService->removeFromAsset($asset, $crew); // TODO: Rinominare metodo
+        $crewAssignmentService->removeFromAsset($asset, $crew);
         $em->persist($asset);
         $em->persist($crew);
         $em->flush();
@@ -543,11 +545,11 @@ final class AssetController extends BaseController
         $perPage = 20;
 
         $transactionRepo = $em->getRepository(Transaction::class);
-        // Use FinancialAccount
+        // Usa FinancialAccount
         $account = $asset->getFinancialAccount();
         if (!$account) {
-            // Handle edge case: create on fly or show empty? 
-            // Assets should always have account. If not, show empty.
+            // Gestisci caso limite: crea al volo o mostra vuoto? 
+            // Gli asset dovrebbero avere sempre un account. Se no, mostra vuoto.
             $result = ['items' => [], 'total' => 0];
         } else {
             $result = $transactionRepo->findForAccount($account, $page, $perPage);
@@ -618,11 +620,34 @@ final class AssetController extends BaseController
             $marketValues[$item->getId()] = $tradePricer->calculateMarketPrice($item);
         }
 
+        // Crea il form Loot per il modale (solo se consentito)
+        $lootFormView = null;
+        if ($this->isGranted(AssetVoter::ADD_LOOT, $asset)) {
+            $lootForm = $this->createForm(\App\Form\CargoLootType::class, null, [
+                'action' => $this->generateUrl('app_asset_cargo_add_loot', ['id' => $id]),
+            ]);
+            $lootFormView = $lootForm->createView();
+        }
+
+        // Crea i form di liquidazione per ogni articolo (cargo)
+        $liquidationForms = [];
+        foreach ($cargoItems as $item) {
+            $form = $this->createForm(\App\Form\CargoLiquidationType::class, [
+                'location' => null,
+                'localLaw' => null,
+            ], [
+                'action' => $this->generateUrl('app_asset_cargo_sell', ['id' => $id, 'costId' => $item->getId()]),
+            ]);
+            $liquidationForms[$item->getId()] = $form->createView();
+        }
+
         return $this->renderTurbo('asset/cargo.html.twig', [
             'asset' => $asset,
             'cargoItems' => $cargoItems,
             'marketValues' => $marketValues,
             'localLaws' => $localLaws,
+            'lootForm' => $lootFormView,
+            'liquidationForms' => $liquidationForms,
             'controller_name' => self::CONTROLLER_NAME,
         ]);
     }
@@ -648,25 +673,100 @@ final class AssetController extends BaseController
             throw new NotFoundHttpException();
         }
 
-        // RECALCULATE PRICE SERVER-SIDE (Deterministic)
-        // No manual input allowed. The market decides.
+        // RICALCOLA IL PREZZO LATO SERVER (Deterministico)
+        // Nessun input manuale permesso. Decide il mercato.
         $salePrice = (float) $tradePricer->calculateMarketPrice($cost);
 
-        $location = (string) $request->request->get('location', 'Unknown');
-        $day = (int) $request->request->get('day', 1);
-        $year = (int) $request->request->get('year', 1105);
+        $form = $this->createForm(\App\Form\CargoLiquidationType::class);
+        $form->handleRequest($request);
 
-        $localLawId = $request->request->get('localLaw');
-        $localLaw = null;
-        if ($localLawId) {
-            $localLaw = $em->getRepository(LocalLaw::class)->find($localLawId);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $location = (string) ($data['location'] ?? 'Unknown');
+            
+            $campaign = $asset->getCampaign();
+            $day = $campaign ? $campaign->getSessionDay() : 1;
+            $year = $campaign ? $campaign->getSessionYear() : 1105;
+            
+            $localLaw = $data['localLaw'];
+
+            try {
+                $tradeService->liquidateCargo($cost, $salePrice, $location, $day, $year, $localLaw);
+                $this->addFlash('success', 'Cargo sold for ' . number_format($salePrice) . ' Cr.');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Liquidation failed: ' . $e->getMessage());
+            }
+        } else {
+            // In caso di errore, reindirizza semplicemente indietro con un flash di errore. 
+            // Perdiamo lo stato del form ma essendo un modale, per ora l'esperienza utente è più semplice.
+            $errors = [];
+            foreach ($form->getErrors(true) as $error) {
+                $errors[] = $error->getMessage();
+            }
+            $this->addFlash('error', 'Form Check Failed: ' . implode(', ', $errors));
         }
 
-        try {
-            $tradeService->liquidateCargo($cost, $salePrice, $location, $day, $year, $localLaw);
-            $this->addFlash('success', 'Cargo sold for ' . number_format($salePrice) . ' Cr.');
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Liquidation failed: ' . $e->getMessage());
+        return $this->redirectToRoute('app_asset_cargo', ['id' => $id]);
+    }
+
+    #[Route('/asset/{id}/cargo/add-loot', name: 'app_asset_cargo_add_loot', methods: ['POST'])]
+    public function addLoot(
+        int $id,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $asset = $em->getRepository(Asset::class)->findOneForUser($id, $user);
+        if (!$asset) {
+            throw new NotFoundHttpException();
+        }
+
+        $account = $asset->getFinancialAccount();
+        if (!$account) {
+            $this->addFlash('error', 'Asset has no financial account linked.');
+            return $this->redirectToRoute('app_asset_cargo', ['id' => $id]);
+        }
+
+        $this->denyAccessUnlessGranted(AssetVoter::ADD_LOOT, $asset);
+
+        $cost = new Cost();
+        $form = $this->createForm(\App\Form\CargoLootType::class, $cost);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // 2. Risolvi CostCategory 'TRADE'
+            $tradeCategory = $em->getRepository(CostCategory::class)->findOneBy(['code' => 'TRADE']);
+            if (!$tradeCategory) {
+                $this->addFlash('error', 'System Error: TRADE category not found.');
+                return $this->redirectToRoute('app_asset_cargo', ['id' => $id]);
+            }
+
+            // Imposta campi dipendenti dal contesto non gestiti dal Form Type
+            $cost->setUser($user);
+            $cost->setFinancialAccount($account);
+            $cost->setCostCategory($tradeCategory);
+            
+            // Imposta data dalla sessione della campagna
+            $campaign = $asset->getCampaign(); // Non nullo grazie al Voter
+            $cost->setPaymentDay($campaign->getSessionDay());
+            $cost->setPaymentYear($campaign->getSessionYear());
+
+            // Quantità e Dettagli sono gestiti dai listener di CargoLootType
+
+            $em->persist($cost);
+            $em->flush();
+
+            $this->addFlash('success', 'Loot registered in cargo manifest.');
+        } else {
+             $errors = [];
+             foreach ($form->getErrors(true) as $error) {
+                 $errors[] = $error->getMessage();
+             }
+             $this->addFlash('error', 'Error registering loot: ' . implode(', ', $errors));
         }
 
         return $this->redirectToRoute('app_asset_cargo', ['id' => $id]);

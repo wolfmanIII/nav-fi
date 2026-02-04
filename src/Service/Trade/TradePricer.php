@@ -20,6 +20,19 @@ class TradePricer
     {
         $costAmount = abs((float)$cost->getAmount());
 
+        // Supporto per oggetti Loot/Costo Zero:
+        // Se il costo è 0 (loot), cerchiamo un 'base_value' nei dettagli da usare come principale.
+        // Questo permette alla logica di prezzo di lavorare sul valore stimato invece che sul prezzo di acquisto.
+        if ($costAmount < 0.01) {
+            $details = $cost->getDetailItems();
+            foreach ($details as $d) {
+                if (is_array($d) && isset($d['base_value'])) {
+                    $costAmount = (float)$d['base_value'];
+                    break;
+                }
+            }
+        }
+
         // Seed deterministico basato sull'ID univoco (UUID) della spesa.
         // Utilizziamo crc32 per ottenere un intero stabile dall'UUID.
         // In questo modo, lo stesso Item avrà sempre lo stesso "destino" di mercato.
