@@ -52,7 +52,7 @@ class CargoLiquidationType extends AbstractType
                 'label_attr' => ['class' => $defaultLabelClass],
                 'placeholder' => '// SELECT BUYER (Default: Market)',
                 'attr' => [
-                    'class' => 'w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 text-white',
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 text-white',
                     'data-controller' => 'tom-select',
                     'data-tom-select-placeholder-value' => '// SELECT BUYER (Default: Market)',
                 ],
