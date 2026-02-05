@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\LocalLaw;
+use App\Entity\Company;
+use App\Repository\CompanyRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -38,6 +40,24 @@ class CargoLiquidationType extends AbstractType
                     'class' => 'select select-bordered select-sm w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 text-white',
                 ],
                 'required' => true,
+            ])
+            ->add('company', EntityType::class, [
+                'class' => Company::class,
+                'query_builder' => function (CompanyRepository $er) {
+                    return $er->createQueryBuilder('c')
+                        ->join('c.companyRole', 'r')
+                        ->where('r.code = :role')
+                        ->setParameter('role', 'TRADER')
+                        ->orderBy('c.name', 'ASC');
+                },
+                'choice_label' => 'name',
+                'label' => 'Buyer Company (Optional)',
+                'label_attr' => ['class' => $defaultLabelClass],
+                'placeholder' => '// SELECT BUYER (Default: Market)',
+                'attr' => [
+                    'class' => 'select select-bordered select-sm w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 text-white',
+                ],
+                'required' => false,
             ])
         ;
     }

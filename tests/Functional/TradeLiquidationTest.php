@@ -93,7 +93,13 @@ class TradeLiquidationTest extends KernelTestCase
         // 5. Verify Income details
         $this->assertInstanceOf(Income::class, $income);
         $this->assertEquals('15000', $income->getAmount());
+        $this->assertEquals('15000', $income->getAmount());
         $this->assertEquals($cost->getId(), $income->getPurchaseCost()->getId());
+        
+        // Verify Naming Convention: "Regina Trade Exchange"
+        $company = $income->getCompany();
+        $this->assertNotNull($company);
+        $this->assertEquals('Regina Trade Exchange', $company->getName());
 
         // 6. Verify "Unsold" list is now empty (or filtered out)
         // We need to clear EM to ensure query is fresh? findUnsold uses query builder, so it hits DB.
@@ -101,5 +107,59 @@ class TradeLiquidationTest extends KernelTestCase
         // Let's rely on the fact that we just persisted the Income which links the Cost.
         $unsoldAfter = $this->costRepository->findUnsoldTradeCargoForAccount($fa);
         $this->assertEmpty($unsoldAfter, 'Cargo should no longer appear as unsold after liquidation.');
+    }
+    public function testLiquidationWithSpecificCompany()
+    {
+        // 1. Setup Data
+        $user = new \App\Entity\User();
+        $user->setEmail('specific@liquidation.test');
+        $user->setPassword('hash');
+        $this->em->persist($user);
+
+        $campaign = new Campaign();
+        $campaign->setTitle('Specific Campaign');
+        $this->em->persist($campaign);
+
+        $asset = new Asset();
+        $asset->setName('Specific Ship');
+        $asset->setCampaign($campaign);
+        $asset->setUser($user);
+        $this->em->persist($asset);
+
+        $fa = new \App\Entity\FinancialAccount();
+        $fa->setAsset($asset);
+        $fa->setUser($user);
+        $this->em->persist($fa);
+
+        // Create a specific Buyer Company
+        $role = $this->em->getRepository(\App\Entity\CompanyRole::class)->findOneBy(['code' => 'TRADER']);
+        
+        $buyer = new \App\Entity\Company();
+        $buyer->setName('Oberlindes Lines');
+        $buyer->setCompanyRole($role); // Uses existing TRADER role
+        $buyer->setUser($user);
+        $buyer->setContact('Specific Contact');
+        $buyer->setSignLabel('Sign');
+        $this->em->persist($buyer);
+
+        $this->em->flush();
+
+        $cost = new Cost();
+        $cost->setUser($user);
+        $cost->setFinancialAccount($fa);
+        $cost->setTitle('Purchase Cargo');
+        $cost->setAmount('1000');
+        $cost->setPaymentDay(100);
+        $cost->setPaymentYear(1105);
+        $cost->setCostCategory($this->em->getRepository(CostCategory::class)->findOneBy(['code' => 'TRADE']));
+        $this->em->persist($cost);
+        $this->em->flush();
+
+        // 2. Liquidate with specific buyer
+        $income = $this->tradeService->liquidateCargo($cost, 2000.0, 'Regina', 105, 1105, null, $buyer);
+
+        // 3. Verify Income is linked to Oberlindes
+        $this->assertEquals($buyer->getId(), $income->getCompany()->getId());
+        $this->assertEquals('Oberlindes Lines', $income->getCompany()->getName());
     }
 }

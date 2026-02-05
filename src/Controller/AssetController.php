@@ -692,9 +692,10 @@ final class AssetController extends BaseController
             $year = $campaign ? $campaign->getSessionYear() : 1105;
 
             $localLaw = $data['localLaw'];
+            $buyerCompany = $data['company'] ?? null;
 
             try {
-                $tradeService->liquidateCargo($cost, $salePrice, $location, $day, $year, $localLaw);
+                $tradeService->liquidateCargo($cost, $salePrice, $location, $day, $year, $localLaw, $buyerCompany);
                 $this->addFlash('success', 'Cargo sold for ' . number_format($salePrice) . ' Cr.');
             } catch (\Exception $e) {
                 $this->addFlash('error', 'Liquidation failed: ' . $e->getMessage());
