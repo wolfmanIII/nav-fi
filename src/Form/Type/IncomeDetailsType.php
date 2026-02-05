@@ -122,7 +122,7 @@ class IncomeDetailsType extends AbstractType
             if ($fieldName === 'grade') {
                 $this->addIfEnabled($builder, $options, 'grade', ChoiceType::class, [
                     'required' => false,
-                    'placeholder' => '-- Select grade --',
+                    'placeholder' => '// GRADE',
                     'choices' => [
                         'Prime (top quality)' => 'Prime (top quality)',
                         'Premium' => 'Premium',
