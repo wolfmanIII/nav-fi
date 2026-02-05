@@ -59,11 +59,11 @@ class TradeService
         // Simuliamo un mercato locale o un commerciante basato sulla location.
         $roleValues = ['TRADER']; // Usiamo il ruolo TRADER
         $role = $this->companyManager->getRoleByCode('TRADER');
-        
         if ($role) {
             $buyerName = $location && $location !== 'Unknown' ? "Market at $location" : "Local Traders";
             // Crea o trova un'azienda generica che rappresenta il mercato in questa posizione
             $buyerCompany = $this->companyManager->findOrCreateAuto($buyerName, $cost->getUser(), $role);
+
             $income->setCompany($buyerCompany);
         } else {
             // Fallback se il ruolo non viene trovato (non dovrebbe succedere con il seed)
