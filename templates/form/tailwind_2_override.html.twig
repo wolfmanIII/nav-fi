@@ -6,6 +6,6 @@
 {%- endblock form_label -%}
 
 {%- block form_help -%}
-    {%- set help_attr = help_attr|merge({ class: help_attr.class|default('mt-1 text-slate-400') }) -%}
+    {%- set help_attr = help_attr|merge({ class: help_attr.class|default('text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider') }) -%}
     {{- parent() -}}
 {%- endblock form_help -%}

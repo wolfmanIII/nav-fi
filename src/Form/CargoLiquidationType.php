@@ -48,13 +48,14 @@ class CargoLiquidationType extends AbstractType
                         ->orderBy('c.name', 'ASC');
                 },
                 'choice_label' => 'name',
-                'label' => 'Buyer Company (Optional)',
+                'label' => 'Buyer Company',
                 'label_attr' => ['class' => $defaultLabelClass],
-                'placeholder' => '// SELECT BUYER (Default: Market)',
+                'help' => 'Leave empty to sell to local Trade Exchange.',
+                'placeholder' => '// SELECT BUYER',
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 text-white',
                     'data-controller' => 'tom-select',
-                    'data-tom-select-placeholder-value' => '// SELECT BUYER (Default: Market)',
+                    'data-tom-select-placeholder-value' => '// SELECT BUYER',
                 ],
                 'required' => false,
             ])
