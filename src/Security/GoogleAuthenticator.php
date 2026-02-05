@@ -73,9 +73,14 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
         );
     }
 
+    use \Symfony\Component\Security\Http\Util\TargetPathTrait;
+
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        // Cambia questa con la tua route home
+        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
+            return new RedirectResponse($targetPath);
+        }
+
         return new RedirectResponse($this->router->generate('app_home'));
     }
 

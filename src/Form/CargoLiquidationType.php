@@ -45,9 +45,6 @@ class CargoLiquidationType extends AbstractType
                 'class' => Company::class,
                 'query_builder' => function (CompanyRepository $er) {
                     return $er->createQueryBuilder('c')
-                        ->join('c.companyRole', 'r')
-                        ->where('r.code = :role')
-                        ->setParameter('role', 'TRADER')
                         ->orderBy('c.name', 'ASC');
                 },
                 'choice_label' => 'name',
@@ -55,7 +52,9 @@ class CargoLiquidationType extends AbstractType
                 'label_attr' => ['class' => $defaultLabelClass],
                 'placeholder' => '// SELECT BUYER (Default: Market)',
                 'attr' => [
-                    'class' => 'select select-bordered select-sm w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 text-white',
+                    'class' => 'w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 text-white',
+                    'data-controller' => 'tom-select',
+                    'data-tom-select-placeholder-value' => '// SELECT BUYER (Default: Market)',
                 ],
                 'required' => false,
             ])
