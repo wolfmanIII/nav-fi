@@ -108,7 +108,7 @@ class IncomeDetailsSubscriber implements EventSubscriberInterface
             $form->add('purchaseCost', EntityType::class, [
                 'class' => Cost::class,
                 'required' => false,
-                'placeholder' => '-- Select Purchase Cost (for Liquidation) --',
+                'placeholder' => '// Purchase Cost (for Liquidation)',
                 'choice_label' => fn(Cost $c) => sprintf('%s - %s (Cr %s)', $c->getTitle(), $c->getFinancialAccount()?->getAsset()?->getName() ?? 'Unlinked', $c->getAmount()),
                 'query_builder' => function (CostRepository $repo) use ($user, $asset) {
                     $qb = $repo->createQueryBuilder('c')
