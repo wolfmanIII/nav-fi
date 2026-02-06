@@ -3,192 +3,89 @@
         PRIZE Details
     </legend>
 
-    <div class="col-span-2">
-        <div class="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800 p-6 shadow-lg">
-             <div class="absolute top-0 right-0 p-4 opacity-10">
-                {% include 'icons/income.html.twig' with { dim: 128, class: 'text-cyan-500' } %}
-            </div>
-            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-                <div>
-                     <div class="flex items-center gap-2 text-cyan-500/80 mb-1">
-                        {% include 'icons/income.html.twig' with { dim: 16 } %}
-                        <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">Income details</p>
-                    </div>
-                    <h3 class="text-2xl font-bold text-white tracking-tight flex items-center gap-3 font-orbitron">
-                        Prize/seizure
-                    </h3>
-                    <p class="text-xs text-slate-500 font-mono uppercase tracking-wider mt-1">
-                        Legal basis, prize value/description, disposition and award/split terms.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-span-2 alert alert-info alert-outline shadow-sm flex items-start gap-2">
-        <span class="pt-0.5 animate-spin-slow">{% include 'icons/radar.html.twig' %}</span>
-        <p class="text-sm">Prize/seizure record: legal basis, prize description/value, disposition, payment/share split and award trigger.</p>
-    </div>
-
-    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-        {% set basis_help_id = detail_form.legalBasis.vars.id ~ '-help' %}
+    {# CORE DATA #}
+    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
+            <div class="flex items-baseline h-5 mb-1">
                 {{ form_label(detail_form.legalBasis, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ basis_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
-            {{ form_widget(detail_form.legalBasis) }}
+            {{ form_widget(detail_form.legalBasis, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Authority/Charter Clause.</div>
             {{ form_errors(detail_form.legalBasis) }}
-            <input type="checkbox" id="{{ basis_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Legal basis</h3>
-                    <p class="py-2 text-sm">Authority, charter clause, or prize code authorizing the seizure.</p>
-                    <div class="modal-action">
-                        <label for="{{ basis_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
         </div>
-        {% set case_help_id = detail_form.caseRef.vars.id ~ '-help' %}
+
         <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
+            <div class="flex items-baseline h-5 mb-1">
                 {{ form_label(detail_form.caseRef, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ case_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
-            {{ form_widget(detail_form.caseRef) }}
+            {{ form_widget(detail_form.caseRef, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Docket ID.</div>
             {{ form_errors(detail_form.caseRef) }}
-            <input type="checkbox" id="{{ case_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Case reference</h3>
-                    <p class="py-2 text-sm">Docket or seizure file ID assigned by the authority.</p>
-                    <div class="modal-action">
-                        <label for="{{ case_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
         </div>
-    </div>
 
-    <div class="col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
-        {% set prize_help_id = detail_form.prizeDescription.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
+        <div class="col-span-1 md:col-span-2">
+             <div class="flex items-baseline h-5 mb-1">
                 {{ form_label(detail_form.prizeDescription, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ prize_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
-            {{ form_widget(detail_form.prizeDescription) }}
+            {{ form_widget(detail_form.prizeDescription, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Asset/Cargo summary.</div>
             {{ form_errors(detail_form.prizeDescription) }}
-            <input type="checkbox" id="{{ prize_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Prize description</h3>
-                    <p class="py-2 text-sm">Describe the seized asset(s), cargo, hull or rights awarded.</p>
-                    <div class="modal-action">
-                        <label for="{{ prize_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
         </div>
-        {% set value_help_id = detail_form.estimatedValue.vars.id ~ '-help' %}
+
         <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
+             <div class="flex items-baseline h-5 mb-1">
                 {{ form_label(detail_form.estimatedValue, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ value_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
-            {{ form_widget(detail_form.estimatedValue) }}
+            {{ form_widget(detail_form.estimatedValue, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Appraised total.</div>
             {{ form_errors(detail_form.estimatedValue) }}
-            <input type="checkbox" id="{{ value_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Estimated value</h3>
-                    <p class="py-2 text-sm">Appraised value for settlement or auction purposes.</p>
-                    <div class="modal-action">
-                        <label for="{{ value_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
         </div>
-        {% set disposition_help_id = detail_form.disposition.vars.id ~ '-help' %}
+
         <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
+             <div class="flex items-baseline h-5 mb-1">
                 {{ form_label(detail_form.disposition, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ disposition_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
-            {{ form_widget(detail_form.disposition) }}
+            {{ form_widget(detail_form.disposition, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Fate (e.g. Auctioned, Retained).</div>
             {{ form_errors(detail_form.disposition) }}
-            <input type="checkbox" id="{{ disposition_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Disposition</h3>
-                    <p class="py-2 text-sm">Auctioned, retained, transferred or otherwise disposed asset.</p>
-                    <div class="modal-action">
-                        <label for="{{ disposition_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
-    {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
-    <div class="col-span-2">
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.paymentTerms, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ pay_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.paymentTerms) }}
-        {{ form_errors(detail_form.paymentTerms) }}
-        <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Payment terms</h3>
-                <p class="py-2 text-sm">Prize award settlement: when and how proceeds are paid or distributed.</p>
-                <div class="modal-action">
-                    <label for="{{ pay_help_id }}" class="btn btn-primary">Close</label>
+    {# EXTENDED DATA #}
+    <details class="group collapse collapse-arrow col-span-2 mt-2 border border-slate-800 bg-slate-950/20 rounded-lg">
+         <summary class="collapse-title text-[10px] font-bold font-orbitron tracking-widest text-slate-400 uppercase cursor-pointer hover:bg-slate-900/50 transition-colors">
+            Terms, Splits & Triggers
+        </summary>
+        
+        <div class="collapse-content pt-4 border-t border-slate-800/50">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.paymentTerms, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(detail_form.paymentTerms, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Distribution schedule.</div>
+                    {{ form_errors(detail_form.paymentTerms) }}
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-        {% set split_help_id = detail_form.shareSplit.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.shareSplit, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ split_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-            </div>
-            {{ form_widget(detail_form.shareSplit) }}
-            {{ form_errors(detail_form.shareSplit) }}
-            <input type="checkbox" id="{{ split_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Share split</h3>
-                    <p class="py-2 text-sm">Crew/claimant allocation or percentage split of the prize.</p>
-                    <div class="modal-action">
-                        <label for="{{ split_help_id }}" class="btn btn-primary">Close</label>
+                <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.shareSplit, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                     </div>
+                    {{ form_widget(detail_form.shareSplit, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Crew allocation %.</div>
+                    {{ form_errors(detail_form.shareSplit) }}
+                </div>
+
+                <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.awardTrigger, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(detail_form.awardTrigger, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Adjudication/Release condition.</div>
+                    {{ form_errors(detail_form.awardTrigger) }}
                 </div>
             </div>
         </div>
-        {% set trigger_help_id = detail_form.awardTrigger.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.awardTrigger, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ trigger_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-            </div>
-            {{ form_widget(detail_form.awardTrigger) }}
-            {{ form_errors(detail_form.awardTrigger) }}
-            <input type="checkbox" id="{{ trigger_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Award trigger</h3>
-                    <p class="py-2 text-sm">Final adjudication or escrow release condition.</p>
-                    <div class="modal-action">
-                        <label for="{{ trigger_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </details>
 </fieldset>

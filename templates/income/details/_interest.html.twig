@@ -3,269 +3,149 @@
         INTEREST Details
     </legend>
 
-    <div class="col-span-2">
-        <div class="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800 p-6 shadow-lg">
-             <div class="absolute top-0 right-0 p-4 opacity-10">
-                {% include 'icons/income.html.twig' with { dim: 128, class: 'text-cyan-500' } %}
+    {# CORE DATA #}
+    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.accountRef, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
             </div>
-            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+            {{ form_widget(detail_form.accountRef, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Ledger/Instrument ID.</div>
+            {{ form_errors(detail_form.accountRef) }}
+        </div>
+
+        <div>
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.instrument, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
+            {{ form_widget(detail_form.instrument, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Type (e.g. Bond, Escrow).</div>
+            {{ form_errors(detail_form.instrument) }}
+        </div>
+
+        <div>
+             <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.principal, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
+            {{ form_widget(detail_form.principal, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Base amount.</div>
+            {{ form_errors(detail_form.principal) }}
+        </div>
+
+        <div>
+             <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.interestRate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
+            {{ form_widget(detail_form.interestRate, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">APR / Cycle Rate.</div>
+            {{ form_errors(detail_form.interestRate) }}
+        </div>
+
+        <div>
+             <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.interestEarned, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
+            {{ form_widget(detail_form.interestEarned, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Gross accrual.</div>
+            {{ form_errors(detail_form.interestEarned) }}
+        </div>
+
+        <div>
+             <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.netPaid, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
+            {{ form_widget(detail_form.netPaid, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Net received.</div>
+            {{ form_errors(detail_form.netPaid) }}
+        </div>
+    </div>
+
+    {# EXTENDED DATA #}
+    <details class="group collapse collapse-arrow col-span-2 mt-2 border border-slate-800 bg-slate-950/20 rounded-lg">
+         <summary class="collapse-title text-[10px] font-bold font-orbitron tracking-widest text-slate-400 uppercase cursor-pointer hover:bg-slate-900/50 transition-colors">
+            Period, Calculation & Terms
+        </summary>
+        
+        <div class="collapse-content pt-4 border-t border-slate-800/50">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                {# Dates #}
+                {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
+                {% set start_day = data.startDay ?? null %}
+                {% set start_year = data.startYear ?? null %}
+                {% set start_value = (start_day is not null and start_year is not null) ? (start_day|imperial_date(start_year)) : '' %}
+                
+                <div class="col-span-1" data-controller="imperial-date">
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.startDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(detail_form.startDate.display, {
+                        attr: {
+                            'class': 'input input-bordered w-full bg-slate-950/50 border-slate-700',
+                            'data-imperial-date-prev-icon': '«',
+                            'data-imperial-date-next-icon': '»',
+                            'data-imperial-date-initial-day': start_day ?? '',
+                            'data-imperial-date-initial-year': start_year ?? '',
+                            'value': start_value,
+                        }
+                    }) }}
+                    {{ form_widget(detail_form.startDate.year) }}
+                    {{ form_widget(detail_form.startDate.day) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Accrual start.</div>
+                    {{ form_errors(detail_form.startDate.display) }}
+                </div>
+
+                {% set end_day = data.endDay ?? null %}
+                {% set end_year = data.endYear ?? null %}
+                {% set end_value = (end_day is not null and end_year is not null) ? (end_day|imperial_date(end_year)) : '' %}
+                
+                <div class="col-span-1" data-controller="imperial-date">
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.endDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(detail_form.endDate.display, {
+                        attr: {
+                            'class': 'input input-bordered w-full bg-slate-950/50 border-slate-700',
+                            'data-imperial-date-prev-icon': '«',
+                            'data-imperial-date-next-icon': '»',
+                            'data-imperial-date-initial-day': end_day ?? '',
+                            'data-imperial-date-initial-year': end_year ?? '',
+                            'value': end_value,
+                        }
+                    }) }}
+                    {{ form_widget(detail_form.endDate.year) }}
+                    {{ form_widget(detail_form.endDate.day) }}
+                     <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Accrual end.</div>
+                     {{ form_errors(detail_form.endDate.display) }}
+                </div>
+
                 <div>
-                     <div class="flex items-center gap-2 text-cyan-500/80 mb-1">
-                        {% include 'icons/income.html.twig' with { dim: 16 } %}
-                        <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">Income details</p>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.calcMethod, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                     </div>
-                    <h3 class="text-2xl font-bold text-white tracking-tight flex items-center gap-3 font-orbitron">
-                        Interest accrual
-                    </h3>
-                    <p class="text-xs text-slate-500 font-mono uppercase tracking-wider mt-1">
-                        Account/instrument, principal, rate, accrual window and settlement terms.
-                    </p>
+                    {{ form_widget(detail_form.calcMethod, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Method (Simple/Compound).</div>
+                    {{ form_errors(detail_form.calcMethod) }}
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-span-2 alert alert-info alert-outline shadow-sm flex items-start gap-2">
-        <span class="pt-0.5 animate-spin-slow">{% include 'icons/radar.html.twig' %}</span>
-        <p class="text-sm">Interest/investment receipt: account/instrument, principal and rate, accrual period, calculation method and payout terms.</p>
-    </div>
+                <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.paymentTerms, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(detail_form.paymentTerms, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Payment schedule/rules.</div>
+                    {{ form_errors(detail_form.paymentTerms) }}
+                </div>
 
-    {% set account_help_id = detail_form.accountRef.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.accountRef, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ account_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.accountRef) }}
-        {{ form_errors(detail_form.accountRef) }}
-        <input type="checkbox" id="{{ account_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Account reference</h3>
-                <p class="py-2 text-sm">Ledger or instrument reference for the interest-bearing account.</p>
-                <div class="modal-action">
-                    <label for="{{ account_help_id }}" class="btn btn-primary">Close</label>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% set instrument_help_id = detail_form.instrument.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.instrument, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ instrument_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.instrument) }}
-        {{ form_errors(detail_form.instrument) }}
-        <input type="checkbox" id="{{ instrument_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Instrument</h3>
-                <p class="py-2 text-sm">Bond, escrow, savings vault or other interest-bearing instrument.</p>
-                <div class="modal-action">
-                    <label for="{{ instrument_help_id }}" class="btn btn-primary">Close</label>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% set principal_help_id = detail_form.principal.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.principal, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ principal_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.principal) }}
-        {{ form_errors(detail_form.principal) }}
-        <input type="checkbox" id="{{ principal_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Principal</h3>
-                <p class="py-2 text-sm">Base amount on which interest is calculated.</p>
-                <div class="modal-action">
-                    <label for="{{ principal_help_id }}" class="btn btn-primary">Close</label>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% set rate_help_id = detail_form.interestRate.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.interestRate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ rate_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.interestRate) }}
-        {{ form_errors(detail_form.interestRate) }}
-        <input type="checkbox" id="{{ rate_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Interest rate</h3>
-                <p class="py-2 text-sm">Contracted rate for this accrual period (APR or quoted cycle rate).</p>
-                <div class="modal-action">
-                    <label for="{{ rate_help_id }}" class="btn btn-primary">Close</label>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
-    {% set start_day = data.startDay ?? null %}
-    {% set start_year = data.startYear ?? null %}
-    {% set start_value = (start_day is not null and start_year is not null) ? (start_day|imperial_date(start_year)) : '' %}
-    {% set end_day = data.endDay ?? null %}
-    {% set end_year = data.endYear ?? null %}
-    {% set end_value = (end_day is not null and end_year is not null) ? (end_day|imperial_date(end_year)) : '' %}
-    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-        {% set start_help_id = detail_form.startDate.vars.id ~ '-help' %}
-        <div data-controller="imperial-date">
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.startDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ start_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-            </div>
-            {{ form_widget(detail_form.startDate.display, {
-                attr: {
-                    'data-imperial-date-prev-icon': '«',
-                    'data-imperial-date-next-icon': '»',
-                    'data-imperial-date-initial-day': start_day ?? '',
-                    'data-imperial-date-initial-year': start_year ?? '',
-                    'value': start_value,
-                }
-            }) }}
-            {{ form_widget(detail_form.startDate.year) }}
-            {{ form_widget(detail_form.startDate.day) }}
-            {{ form_errors(detail_form.startDate.display) }}
-            <input type="checkbox" id="{{ start_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Accrual start</h3>
-                    <p class="py-2 text-sm">Opening day/year for this interest window.</p>
-                    <div class="modal-action">
-                        <label for="{{ start_help_id }}" class="btn btn-primary">Close</label>
+                <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.disputeWindow, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                     </div>
+                    {{ form_widget(detail_form.disputeWindow, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Time to contest.</div>
+                    {{ form_errors(detail_form.disputeWindow) }}
                 </div>
             </div>
         </div>
-        {% set end_help_id = detail_form.endDate.vars.id ~ '-help' %}
-        <div data-controller="imperial-date">
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.endDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ end_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-            </div>
-            {{ form_widget(detail_form.endDate.display, {
-                attr: {
-                    'data-imperial-date-prev-icon': '«',
-                    'data-imperial-date-next-icon': '»',
-                    'data-imperial-date-initial-day': end_day ?? '',
-                    'data-imperial-date-initial-year': end_year ?? '',
-                    'value': end_value,
-                }
-            }) }}
-            {{ form_widget(detail_form.endDate.year) }}
-            {{ form_widget(detail_form.endDate.day) }}
-            {{ form_errors(detail_form.endDate.display) }}
-            <input type="checkbox" id="{{ end_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Accrual end</h3>
-                    <p class="py-2 text-sm">Closing day/year used to seal the interest period.</p>
-                    <div class="modal-action">
-                        <label for="{{ end_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% set calc_help_id = detail_form.calcMethod.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.calcMethod, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ calc_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.calcMethod) }}
-        {{ form_errors(detail_form.calcMethod) }}
-        <input type="checkbox" id="{{ calc_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Calculation method</h3>
-                <p class="py-2 text-sm">Simple, compound, or custom formula used by the issuer.</p>
-                <div class="modal-action">
-                    <label for="{{ calc_help_id }}" class="btn btn-primary">Close</label>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% set earned_help_id = detail_form.interestEarned.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.interestEarned, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ earned_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.interestEarned) }}
-        {{ form_errors(detail_form.interestEarned) }}
-        <input type="checkbox" id="{{ earned_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Interest earned</h3>
-                <p class="py-2 text-sm">Gross interest credited for the period before fees or taxes.</p>
-                <div class="modal-action">
-                    <label for="{{ earned_help_id }}" class="btn btn-primary">Close</label>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% set net_help_id = detail_form.netPaid.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.netPaid, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ net_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.netPaid) }}
-        {{ form_errors(detail_form.netPaid) }}
-        <input type="checkbox" id="{{ net_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Net paid</h3>
-                <p class="py-2 text-sm">Net amount received after fees, taxes or escrow holds.</p>
-                <div class="modal-action">
-                    <label for="{{ net_help_id }}" class="btn btn-primary">Close</label>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
-    <div class="col-span-2">
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.paymentTerms, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ pay_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.paymentTerms) }}
-        {{ form_errors(detail_form.paymentTerms) }}
-        <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Payment terms</h3>
-                <p class="py-2 text-sm">Clarify when interest is paid (schedule, compounding frequency, settlement rules).</p>
-                <div class="modal-action">
-                    <label for="{{ pay_help_id }}" class="btn btn-primary">Close</label>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% set dispute_help_id = detail_form.disputeWindow.vars.id ~ '-help' %}
-    <div class="col-span-2">
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.disputeWindow, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ dispute_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.disputeWindow) }}
-        {{ form_errors(detail_form.disputeWindow) }}
-        <input type="checkbox" id="{{ dispute_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Dispute window</h3>
-                <p class="py-2 text-sm">How long you have to contest posted interest or statements.</p>
-                <div class="modal-action">
-                    <label for="{{ dispute_help_id }}" class="btn btn-primary">Close</label>
-                </div>
-            </div>
-        </div>
-    </div>
+    </details>
 </fieldset>

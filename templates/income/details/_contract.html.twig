@@ -3,129 +3,57 @@
         CONTRACT Details
     </legend>
 
-    <div class="col-span-2">
-        <div class="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800 p-6 shadow-lg">
-             <div class="absolute top-0 right-0 p-4 opacity-10">
-                {% include 'icons/income.html.twig' with { dim: 128, class: 'text-cyan-500' } %}
-            </div>
-            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-                <div>
-                     <div class="flex items-center gap-2 text-cyan-500/80 mb-1">
-                        {% include 'icons/income.html.twig' with { dim: 16 } %}
-                        <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">Income details</p>
-                    </div>
-                    <h3 class="text-2xl font-bold text-white tracking-tight flex items-center gap-3 font-orbitron">
-                        Contract engagement
-                    </h3>
-                    <p class="text-xs text-slate-500 font-mono uppercase tracking-wider mt-1">
-                        Patron, scope, schedule window and pay/bonus/expenses clauses.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-span-2 alert alert-info alert-outline shadow-sm flex items-start gap-2">
-        <span class="pt-0.5 animate-spin-slow">{% include 'icons/radar.html.twig' %}</span>
-        <p class="text-sm">Mission / job engagement: patron, scope/objective, schedule window, pay/bonus/expenses and restrictions/confidentiality.</p>
-    </div>
-
-    {% set job_help_id = detail_form.jobType.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.jobType, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ job_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.jobType) }}
-        {{ form_errors(detail_form.jobType) }}
-        <input type="checkbox" id="{{ job_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box">
-                <h3 class="font-bold">Job type</h3>
-                <p class="py-2 text-sm">Contract classification for the engagement (escort, survey, recovery, bounty, etc.).</p>
-                <div class="modal-action">
-                    <label for="{{ job_help_id }}" class="btn btn-primary">Close</label>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
-        {% set location_help_id = detail_form.location.vars.id ~ '-help' %}
+    {# CORE DATA #}
+    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.jobType, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
+            {{ form_widget(detail_form.jobType, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Classification (e.g. Escort, Survey).</div>
+            {{ form_errors(detail_form.jobType) }}
+        </div>
+
+        <div>
+            <div class="flex items-baseline h-5 mb-1">
                 {{ form_label(detail_form.location, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ location_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
-            {{ form_widget(detail_form.location) }}
+            {{ form_widget(detail_form.location, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Operational theater/Jurisdiction.</div>
             {{ form_errors(detail_form.location) }}
-            <input type="checkbox" id="{{ location_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Location</h3>
-                    <p class="py-2 text-sm">Primary theater of operation or jurisdiction where the contract applies.</p>
-                    <div class="modal-action">
-                        <label for="{{ location_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
         </div>
-        {% set objective_help_id = detail_form.objective.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.objective, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ objective_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-            </div>
-            {{ form_widget(detail_form.objective) }}
-            {{ form_errors(detail_form.objective) }}
-            <input type="checkbox" id="{{ objective_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Objective</h3>
-                    <p class="py-2 text-sm">Mission goal and deliverable criteria required by the patron.</p>
-                    <div class="modal-action">
-                        <label for="{{ objective_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% set success_help_id = detail_form.successCondition.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.successCondition, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ success_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-            </div>
-            {{ form_widget(detail_form.successCondition) }}
-            {{ form_errors(detail_form.successCondition) }}
-            <input type="checkbox" id="{{ success_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Success condition</h3>
-                    <p class="py-2 text-sm">Define the acceptance condition that triggers completion.</p>
-                    <div class="modal-action">
-                        <label for="{{ success_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
-    {% set start_day = data.startDay ?? null %}
-    {% set start_year = data.startYear ?? null %}
-    {% set start_value = (start_day is not null and start_year is not null) ? (start_day|imperial_date(start_year)) : '' %}
-    {% set deadline_day = data.deadlineDay ?? null %}
-    {% set deadline_year = data.deadlineYear ?? null %}
-    {% set deadline_value = (deadline_day is not null and deadline_year is not null) ? (deadline_day|imperial_date(deadline_year)) : '' %}
-    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-        {% set start_help_id = detail_form.startDate.vars.id ~ '-help' %}
+        <div>
+             <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.objective, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
+            {{ form_widget(detail_form.objective, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Mission goal.</div>
+            {{ form_errors(detail_form.objective) }}
+        </div>
+
+        <div>
+             <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.successCondition, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
+            {{ form_widget(detail_form.successCondition, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Completion criteria.</div>
+            {{ form_errors(detail_form.successCondition) }}
+        </div>
+
+        {# Dates #}
+        {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
+        {% set start_day = data.startDay ?? null %}
+        {% set start_year = data.startYear ?? null %}
+        {% set start_value = (start_day is not null and start_year is not null) ? (start_day|imperial_date(start_year)) : '' %}
+        
         <div class="col-span-1" data-controller="imperial-date">
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.startDate) }}
-                <label for="{{ start_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.startDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
             </div>
             {{ form_widget(detail_form.startDate.display, {
                 attr: {
+                    'class': 'input input-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-imperial-date-prev-icon': '«',
                     'data-imperial-date-next-icon': '»',
                     'data-imperial-date-initial-day': start_day ?? '',
@@ -135,26 +63,21 @@
             }) }}
             {{ form_widget(detail_form.startDate.year) }}
             {{ form_widget(detail_form.startDate.day) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Top of window.</div>
             {{ form_errors(detail_form.startDate.display) }}
-            <input type="checkbox" id="{{ start_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Start date</h3>
-                    <p class="py-2 text-sm">Contract activation window in imperial day/year.</p>
-                    <div class="modal-action">
-                        <label for="{{ start_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
         </div>
-        {% set deadline_help_id = detail_form.deadlineDate.vars.id ~ '-help' %}
+
+        {% set deadline_day = data.deadlineDay ?? null %}
+        {% set deadline_year = data.deadlineYear ?? null %}
+        {% set deadline_value = (deadline_day is not null and deadline_year is not null) ? (deadline_day|imperial_date(deadline_year)) : '' %}
+        
         <div class="col-span-1" data-controller="imperial-date">
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.deadlineDate) }}
-                <label for="{{ deadline_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.deadlineDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
             </div>
             {{ form_widget(detail_form.deadlineDate.display, {
                 attr: {
+                    'class': 'input input-bordered w-full bg-slate-950/50 border-slate-700',
                     'data-imperial-date-prev-icon': '«',
                     'data-imperial-date-next-icon': '»',
                     'data-imperial-date-initial-day': deadline_day ?? '',
@@ -164,158 +87,82 @@
             }) }}
             {{ form_widget(detail_form.deadlineDate.year) }}
             {{ form_widget(detail_form.deadlineDate.day) }}
-            {{ form_errors(detail_form.deadlineDate.display) }}
-            <input type="checkbox" id="{{ deadline_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Deadline</h3>
-                    <p class="py-2 text-sm">Cutoff for completion or reporting as defined by the patron.</p>
-                    <div class="modal-action">
-                        <label for="{{ deadline_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
+             <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Hard cutoff.</div>
+             {{ form_errors(detail_form.deadlineDate.display) }}
+        </div>
+
+        <div>
+             <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.bonus, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
             </div>
+            {{ form_widget(detail_form.bonus, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+             <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Performance/Speed kicker.</div>
+            {{ form_errors(detail_form.bonus) }}
         </div>
-    </div>
-    
-    {% set bonus_help_id = detail_form.bonus.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-center gap-2">
-            {{ form_label(detail_form.bonus) }}
-            <label for="{{ bonus_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
-        </div>
-        {{ form_widget(detail_form.bonus) }}
-        {{ form_errors(detail_form.bonus) }}
-        <input type="checkbox" id="{{ bonus_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box">
-                <h3 class="font-bold">Bonus</h3>
-                <p class="py-2 text-sm">Performance or speed bonus triggered by mission conditions.</p>
-                <div class="modal-action">
-                    <label for="{{ bonus_help_id }}" class="btn btn-primary">Close</label>
-                </div>
+
+        <div>
+             <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.deposit, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
             </div>
-        </div>
-    </div>
-    {% set deposit_help_id = detail_form.deposit.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-center gap-2">
-            {{ form_label(detail_form.deposit) }}
-            <label for="{{ deposit_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
-        </div>
-        {{ form_widget(detail_form.deposit) }}
-        {{ form_errors(detail_form.deposit) }}
-        <input type="checkbox" id="{{ deposit_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box">
-                <h3 class="font-bold">Deposit</h3>
-                <p class="py-2 text-sm">Advance retention to secure the contract slot.</p>
-                <div class="modal-action">
-                    <label for="{{ deposit_help_id }}" class="btn btn-primary">Close</label>
-                </div>
-            </div>
+            {{ form_widget(detail_form.deposit, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+             <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Upfront retainer.</div>
+            {{ form_errors(detail_form.deposit) }}
         </div>
     </div>
 
-    <div class="col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
-        {% set expenses_help_id = detail_form.expensesPolicy.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.expensesPolicy) }}
-                <label for="{{ expenses_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
-            </div>
-            {{ form_widget(detail_form.expensesPolicy) }}
-            {{ form_errors(detail_form.expensesPolicy) }}
-            <input type="checkbox" id="{{ expenses_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Expenses policy</h3>
-                    <p class="py-2 text-sm">Define reimbursable costs, caps, and audit requirements.</p>
-                    <div class="modal-action">
-                        <label for="{{ expenses_help_id }}" class="btn btn-primary">Close</label>
+    {# EXTENDED DATA #}
+    <details class="group collapse collapse-arrow col-span-2 mt-2 border border-slate-800 bg-slate-950/20 rounded-lg">
+         <summary class="collapse-title text-[10px] font-bold font-orbitron tracking-widest text-slate-400 uppercase cursor-pointer hover:bg-slate-900/50 transition-colors">
+            Terms, Expenses & Failures
+        </summary>
+        
+        <div class="collapse-content pt-4 border-t border-slate-800/50">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.expensesPolicy, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                     </div>
+                    {{ form_widget(detail_form.expensesPolicy, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Reimbursement rules.</div>
+                    {{ form_errors(detail_form.expensesPolicy) }}
                 </div>
-            </div>
-        </div>
-        {% set restrictions_help_id = detail_form.restrictions.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.restrictions) }}
-                <label for="{{ restrictions_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
-            </div>
-            {{ form_widget(detail_form.restrictions) }}
-            {{ form_errors(detail_form.restrictions) }}
-            <input type="checkbox" id="{{ restrictions_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Restrictions</h3>
-                    <p class="py-2 text-sm">Operational limits, no-fly zones, or prohibited methods.</p>
-                    <div class="modal-action">
-                        <label for="{{ restrictions_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% set confidentiality_help_id = detail_form.confidentialityLevel.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.confidentialityLevel) }}
-                <label for="{{ confidentiality_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
-            </div>
-            {{ form_widget(detail_form.confidentialityLevel) }}
-            {{ form_errors(detail_form.confidentialityLevel) }}
-            <input type="checkbox" id="{{ confidentiality_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Confidentiality level</h3>
-                    <p class="py-2 text-sm">Disclosure tier for mission data and client identity.</p>
-                    <div class="modal-action">
-                        <label for="{{ confidentiality_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-        {% set failure_help_id = detail_form.failureTerms.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.failureTerms) }}
-                <label for="{{ failure_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
-            </div>
-            {{ form_widget(detail_form.failureTerms) }}
-            {{ form_errors(detail_form.failureTerms) }}
-            <input type="checkbox" id="{{ failure_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Failure terms</h3>
-                    <p class="py-2 text-sm">Penalties, forfeitures, or remediation required on non‑performance.</p>
-                    <div class="modal-action">
-                        <label for="{{ failure_help_id }}" class="btn btn-primary">Close</label>
+                <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.restrictions, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                     </div>
+                    {{ form_widget(detail_form.restrictions, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Operational limits/RoE.</div>
+                    {{ form_errors(detail_form.restrictions) }}
                 </div>
-            </div>
-        </div>
-        {% set cancel_help_id = detail_form.cancellationTerms.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-center gap-2">
-                {{ form_label(detail_form.cancellationTerms) }}
-                <label for="{{ cancel_help_id }}" class="badge badge-outline badge-info cursor-pointer badge-xs">?</label>
-            </div>
-            {{ form_widget(detail_form.cancellationTerms) }}
-            {{ form_errors(detail_form.cancellationTerms) }}
-            <input type="checkbox" id="{{ cancel_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Cancellation terms</h3>
-                    <p class="py-2 text-sm">Withdrawals, off-ramps, and the cost of early termination.</p>
-                    <div class="modal-action">
-                        <label for="{{ cancel_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
+                <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.confidentialityLevel, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(detail_form.confidentialityLevel, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">NDA / Clearance tier.</div>
+                    {{ form_errors(detail_form.confidentialityLevel) }}
+                </div>
+
+                <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.failureTerms, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(detail_form.failureTerms, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Penalties for failure.</div>
+                    {{ form_errors(detail_form.failureTerms) }}
+                </div>
+
+                <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.cancellationTerms, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(detail_form.cancellationTerms, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Withdrawal clauses.</div>
+                    {{ form_errors(detail_form.cancellationTerms) }}
+                </div>
+            </div>
+        </div>
+    </details>
 </fieldset>

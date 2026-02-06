@@ -3,247 +3,116 @@
         SALVAGE Details
     </legend>
 
-    <div class="col-span-2">
-        <div class="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800 p-6 shadow-lg">
-             <div class="absolute top-0 right-0 p-4 opacity-10">
-                {% include 'icons/income.html.twig' with { dim: 128, class: 'text-cyan-500' } %}
+    {# CORE DATA #}
+    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.caseRef, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
             </div>
-            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+            {{ form_widget(detail_form.caseRef, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Claim file ID.</div>
+            {{ form_errors(detail_form.caseRef) }}
+        </div>
+
+        <div>
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.source, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
+            {{ form_widget(detail_form.source, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Origin (e.g. Derelict, Distress).</div>
+            {{ form_errors(detail_form.source) }}
+        </div>
+
+        <div>
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.siteLocation, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
+            {{ form_widget(detail_form.siteLocation, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Coordinates/System.</div>
+            {{ form_errors(detail_form.siteLocation) }}
+        </div>
+
+        <div>
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.qtyValue, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
+            {{ form_widget(detail_form.qtyValue, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+            <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Tonnage / Est. Value.</div>
+            {{ form_errors(detail_form.qtyValue) }}
+        </div>
+    </div>
+
+    {# EXTENDED DATA #}
+    <details class="group collapse collapse-arrow col-span-2 mt-2 border border-slate-800 bg-slate-950/20 rounded-lg">
+         <summary class="collapse-title text-[10px] font-bold font-orbitron tracking-widest text-slate-400 uppercase cursor-pointer hover:bg-slate-900/50 transition-colors">
+            Items, Hazards & Terms
+        </summary>
+        
+        <div class="collapse-content pt-4 border-t border-slate-800/50">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                     <div class="flex items-center gap-2 text-cyan-500/80 mb-1">
-                        {% include 'icons/income.html.twig' with { dim: 16 } %}
-                        <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">Income details</p>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.paymentTerms, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                     </div>
-                    <h3 class="text-2xl font-bold text-white tracking-tight flex items-center gap-3 font-orbitron">
-                        Salvage claim
-                    </h3>
-                    <p class="text-xs text-slate-500 font-mono uppercase tracking-wider mt-1">
-                        Site/source, recovered items, hazards and award/split/dispute terms.
-                    </p>
+                    {{ form_widget(detail_form.paymentTerms, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Settlement details.</div>
+                    {{ form_errors(detail_form.paymentTerms) }}
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-span-2 alert alert-info alert-outline shadow-sm flex items-start gap-2">
-        <span class="pt-0.5 animate-spin-slow">{% include 'icons/radar.html.twig' %}</span>
-        <p class="text-sm">Salvage/recovery claim: site/source, recovery window, recovered items and hazards, award/split terms and dispute process.</p>
-    </div>
+                 <div class="col-span-1 md:col-span-2">
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.recoveredItemsSummary, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(detail_form.recoveredItemsSummary, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Manifest of recovery.</div>
+                    {{ form_errors(detail_form.recoveredItemsSummary) }}
+                </div>
 
-    {% set case_help_id = detail_form.caseRef.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.caseRef, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ case_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.caseRef) }}
-        {{ form_errors(detail_form.caseRef) }}
-        <input type="checkbox" id="{{ case_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Case reference</h3>
-                <p class="py-2 text-sm">Claim file ID or salvage docket reference.</p>
-                <div class="modal-action">
-                    <label for="{{ case_help_id }}" class="btn btn-primary">Close</label>
+                <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.hazards, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(detail_form.hazards, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Environmental/Hostile threats.</div>
+                    {{ form_errors(detail_form.hazards) }}
                 </div>
-            </div>
-        </div>
-    </div>
-    {% set source_help_id = detail_form.source.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.source, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ source_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.source) }}
-        {{ form_errors(detail_form.source) }}
-        <input type="checkbox" id="{{ source_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Source</h3>
-                <p class="py-2 text-sm">Derelict, distress beacon, wreck registry, or authority assignment.</p>
-                <div class="modal-action">
-                    <label for="{{ source_help_id }}" class="btn btn-primary">Close</label>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% set site_help_id = detail_form.siteLocation.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.siteLocation, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ site_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.siteLocation) }}
-        {{ form_errors(detail_form.siteLocation) }}
-        <input type="checkbox" id="{{ site_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Site location</h3>
-                <p class="py-2 text-sm">Coordinates, orbit or system location where recovery occurred.</p>
-                <div class="modal-action">
-                    <label for="{{ site_help_id }}" class="btn btn-primary">Close</label>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% set qty_help_id = detail_form.qtyValue.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.qtyValue, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ qty_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.qtyValue) }}
-        {{ form_errors(detail_form.qtyValue) }}
-        <input type="checkbox" id="{{ qty_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Qty / value</h3>
-                <p class="py-2 text-sm">Recovered tonnage or assessed value at recovery time.</p>
-                <div class="modal-action">
-                    <label for="{{ qty_help_id }}" class="btn btn-primary">Close</label>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-span-2">
-        {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.paymentTerms, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ pay_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.paymentTerms) }}
-        {{ form_errors(detail_form.paymentTerms) }}
-        <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Payment terms</h3>
-                <p class="py-2 text-sm">How the salvage award is paid: triggers, splits, escrow, timing.</p>
-                <div class="modal-action">
-                    <label for="{{ pay_help_id }}" class="btn btn-primary">Close</label>
+                <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.splitTerms, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(detail_form.splitTerms, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Share percentages.</div>
+                    {{ form_errors(detail_form.splitTerms) }}
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
-        {% set recovered_help_id = detail_form.recoveredItemsSummary.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.recoveredItemsSummary, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ recovered_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-            </div>
-            {{ form_widget(detail_form.recoveredItemsSummary) }}
-            {{ form_errors(detail_form.recoveredItemsSummary) }}
-            <input type="checkbox" id="{{ recovered_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Recovered items</h3>
-                    <p class="py-2 text-sm">Summary list of recovered hulls, cargo or components.</p>
-                    <div class="modal-action">
-                        <label for="{{ recovered_help_id }}" class="btn btn-primary">Close</label>
+                <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.rightsBasis, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                     </div>
+                    {{ form_widget(detail_form.rightsBasis, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Legal claim basis.</div>
+                    {{ form_errors(detail_form.rightsBasis) }}
+                </div>
+
+                <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.awardTrigger, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(detail_form.awardTrigger, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Release condition.</div>
+                    {{ form_errors(detail_form.awardTrigger) }}
+                </div>
+
+                 <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.disputeProcess, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(detail_form.disputeProcess, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Adjudication channel.</div>
+                    {{ form_errors(detail_form.disputeProcess) }}
                 </div>
             </div>
         </div>
-        {% set hazards_help_id = detail_form.hazards.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.hazards, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ hazards_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-            </div>
-            {{ form_widget(detail_form.hazards) }}
-            {{ form_errors(detail_form.hazards) }}
-            <input type="checkbox" id="{{ hazards_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Hazards</h3>
-                    <p class="py-2 text-sm">Known threats encountered: debris fields, radiation, hostiles.</p>
-                    <div class="modal-action">
-                        <label for="{{ hazards_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% set split_help_id = detail_form.splitTerms.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.splitTerms, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ split_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-            </div>
-            {{ form_widget(detail_form.splitTerms) }}
-            {{ form_errors(detail_form.splitTerms) }}
-            <input type="checkbox" id="{{ split_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Split terms</h3>
-                    <p class="py-2 text-sm">Crew/claimant split or salvage share percentages.</p>
-                    <div class="modal-action">
-                        <label for="{{ split_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
-        </div> 
-    </div>
-    
-    <div class="col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
-        {% set rights_help_id = detail_form.rightsBasis.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.rightsBasis, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ rights_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-            </div>
-            {{ form_widget(detail_form.rightsBasis) }}
-            {{ form_errors(detail_form.rightsBasis) }}
-            <input type="checkbox" id="{{ rights_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Rights basis</h3>
-                    <p class="py-2 text-sm">Statute or charter defining salvage rights and authority.</p>
-                    <div class="modal-action">
-                        <label for="{{ rights_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% set trigger_help_id = detail_form.awardTrigger.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.awardTrigger, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ trigger_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-            </div>
-            {{ form_widget(detail_form.awardTrigger) }}
-            {{ form_errors(detail_form.awardTrigger) }}
-            <input type="checkbox" id="{{ trigger_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Award trigger</h3>
-                    <p class="py-2 text-sm">Final adjudication, escrow release or authority clearance.</p>
-                    <div class="modal-action">
-                        <label for="{{ trigger_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% set dispute_help_id = detail_form.disputeProcess.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.disputeProcess, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ dispute_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-            </div>
-            {{ form_widget(detail_form.disputeProcess) }}
-            {{ form_errors(detail_form.disputeProcess) }}
-            <input type="checkbox" id="{{ dispute_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Dispute process</h3>
-                    <p class="py-2 text-sm">Appeal channel or adjudication board for contested claims.</p>
-                    <div class="modal-action">
-                        <label for="{{ dispute_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </details>
 </fieldset>

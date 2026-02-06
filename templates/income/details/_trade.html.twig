@@ -3,427 +3,222 @@
         TRADE Details
     </legend>
 
-    <div class="col-span-2">
-        <div class="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800 p-6 shadow-lg">
-             <div class="absolute top-0 right-0 p-4 opacity-10">
-                {% include 'icons/income.html.twig' with { dim: 128, class: 'text-cyan-500' } %}
-            </div>
-            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-                <div>
-                     <div class="flex items-center gap-2 text-cyan-500/80 mb-1">
-                        {% include 'icons/income.html.twig' with { dim: 16 } %}
-                        <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">Income details</p>
-                    </div>
-                    <h3 class="text-2xl font-bold text-white tracking-tight flex items-center gap-3 font-orbitron">
-                        Trade consignment
-                    </h3>
-                    <p class="text-xs text-slate-500 font-mono uppercase tracking-wider mt-1">
-                        Goods, grades, quantities, price and delivery/payment clauses.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-span-2 alert alert-info alert-outline shadow-sm flex items-start gap-2">
-        <span class="pt-0.5 animate-spin-slow">{% include 'icons/radar.html.twig' %}</span>
-        <p class="text-sm">Buy/sell deal sheet: goods description, quantity/grade, price and payment terms, delivery/transfer conditions and warranty/returns.</p>
-    </div>
-
-    {% set location_help_id = detail_form.location.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.location, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ location_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.location) }}
-        {{ form_errors(detail_form.location) }}
-        <input type="checkbox" id="{{ location_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Location</h3>
-                <p class="py-2 text-sm">Exchange location or primary market where the deal is executed.</p>
-                <div class="modal-action">
-                    <label for="{{ location_help_id }}" class="btn btn-primary">Close</label>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% set transfer_point_help_id = detail_form.transferPoint.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.transferPoint, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ transfer_point_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.transferPoint) }}
-        {{ form_errors(detail_form.transferPoint) }}
-        <input type="checkbox" id="{{ transfer_point_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Transfer point</h3>
-                <p class="py-2 text-sm">Physical handoff site or storage node for the goods.</p>
-                <div class="modal-action">
-                    <label for="{{ transfer_point_help_id }}" class="btn btn-primary">Close</label>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% set transfer_condition_help_id = detail_form.transferCondition.vars.id ~ '-help' %}
-    <div>
-        <div class="flex items-baseline justify-between h-5 mb-1">
-            {{ form_label(detail_form.transferCondition, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            <label for="{{ transfer_condition_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-        </div>
-        {{ form_widget(detail_form.transferCondition) }}
-        {{ form_errors(detail_form.transferCondition) }}
-        <input type="checkbox" id="{{ transfer_condition_help_id }}" class="modal-toggle hidden" />
-        <div class="modal" role="dialog">
-            <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                <h3 class="font-bold">Transfer condition</h3>
-                <p class="py-2 text-sm">Condition that triggers ownership transfer (payment, inspection, delivery).</p>
-                <div class="modal-action">
-                    <label for="{{ transfer_condition_help_id }}" class="btn btn-primary">Close</label>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
-        {% set qty_help_id = detail_form.qty.vars.id ~ '-help' %}
+    {# CORE DATA #}
+    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.qty, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ qty_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(detail_form.location, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
             </div>
-            {{ form_widget(detail_form.qty) }}
-            {{ form_errors(detail_form.qty) }}
-            <input type="checkbox" id="{{ qty_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Quantity</h3>
-                    <p class="py-2 text-sm">Total units or dT recorded for the lot.</p>
-                    <div class="modal-action">
-                        <label for="{{ qty_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
+            {{ form_widget(detail_form.location, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+             <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Exchange location or market.</div>
+            {{ form_errors(detail_form.location) }}
         </div>
-        {% set grade_help_id = detail_form.grade.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.grade, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ grade_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-            </div>
-            {{ form_widget(detail_form.grade) }}
-            {{ form_errors(detail_form.grade) }}
-            <input type="checkbox" id="{{ grade_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Grade</h3>
-                    <p class="py-2 text-sm">Quality grade or inspection tier.</p>
-                    <div class="modal-action">
-                        <label for="{{ grade_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% set unit_help_id = detail_form.unitPrice.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.unitPrice, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ unit_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-            </div>
-            {{ form_widget(detail_form.unitPrice) }}
-            {{ form_errors(detail_form.unitPrice) }}
-            <input type="checkbox" id="{{ unit_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Unit price</h3>
-                    <p class="py-2 text-sm">Price per unit or dT for the lot.</p>
-                    <div class="modal-action">
-                        <label for="{{ unit_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-        {% set goods_help_id = detail_form.goodsDescription.vars.id ~ '-help' %}
         <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
+           <div class="flex items-baseline h-5 mb-1">
                 {{ form_label(detail_form.goodsDescription, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ goods_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
-            {{ form_widget(detail_form.goodsDescription) }}
+            {{ form_widget(detail_form.goodsDescription, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+             <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Manifest description of lot.</div>
             {{ form_errors(detail_form.goodsDescription) }}
-            <input type="checkbox" id="{{ goods_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Goods description</h3>
-                    <p class="py-2 text-sm">Manifest description of the traded lot.</p>
-                    <div class="modal-action">
-                        <label for="{{ goods_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 col-span-2 md:col-span-2">
+             <div class="col-span-1">
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(detail_form.qty, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                 </div>
+                {{ form_widget(detail_form.qty, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Units/dT.</div>
+                {{ form_errors(detail_form.qty) }}
+            </div>
+            
+            <div class="col-span-1">
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(detail_form.unitPrice, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(detail_form.unitPrice, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                 <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Price/Unit.</div>
+                {{ form_errors(detail_form.unitPrice) }}
+            </div>
+
+            <div class="col-span-1">
+                 <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(detail_form.grade, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                </div>
+                {{ form_widget(detail_form.grade, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                 <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Quality tier.</div>
+                {{ form_errors(detail_form.grade) }}
             </div>
         </div>
-        {% set batch_help_id = detail_form.batchIds.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
+
+         <div class="col-span-2">
+            <div class="flex items-baseline h-5 mb-1">
                 {{ form_label(detail_form.batchIds, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ batch_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
             </div>
-            {{ form_widget(detail_form.batchIds) }}
+            {{ form_widget(detail_form.batchIds, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+             <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Container or Lot IDs.</div>
             {{ form_errors(detail_form.batchIds) }}
-            <input type="checkbox" id="{{ batch_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Batch IDs</h3>
-                    <p class="py-2 text-sm">Container, lot, or batch identifiers for the shipment.</p>
-                    <div class="modal-action">
-                        <label for="{{ batch_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
-    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="col-span-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-            {% set pay_help_id = detail_form.paymentTerms.vars.id ~ '-help' %}
-            <div>
-                <div class="flex items-baseline justify-between h-5 mb-1">
-                    {{ form_label(detail_form.paymentTerms, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                    <label for="{{ pay_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-                </div>
-                {{ form_widget(detail_form.paymentTerms) }}
-                {{ form_errors(detail_form.paymentTerms) }}
-                <input type="checkbox" id="{{ pay_help_id }}" class="modal-toggle hidden" />
-                <div class="modal" role="dialog">
-                    <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                        <h3 class="font-bold">Payment terms</h3>
-                        <p class="py-2 text-sm">Define deposits, balance on delivery/inspection, escrow, or LC conditions for the trade.</p>
-                        <div class="modal-action">
-                            <label for="{{ pay_help_id }}" class="btn btn-primary">Close</label>
-                        </div>
+    {# EXTENDED DATA #}
+    <details class="group collapse collapse-arrow col-span-2 mt-2 border border-slate-800 bg-slate-950/20 rounded-lg">
+         <summary class="collapse-title text-[10px] font-bold font-orbitron tracking-widest text-slate-400 uppercase cursor-pointer hover:bg-slate-900/50 transition-colors">
+            Logistics, Terms & Proofs
+        </summary>
+        
+        <div class="collapse-content pt-4 border-t border-slate-800/50">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div>
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.transferPoint, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                     </div>
+                    {{ form_widget(detail_form.transferPoint, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Handoff site.</div>
+                    {{ form_errors(detail_form.transferPoint) }}
                 </div>
-            </div>    
-            {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
-            {% set delivery_day = data.deliveryDay ?? null %}
-            {% set delivery_year = data.deliveryYear ?? null %}
-            {% set delivery_value = (delivery_day is not null and delivery_year is not null) ? (delivery_day|imperial_date(delivery_year)) : '' %}
-            {% set delivery_help_id = detail_form.deliveryDate.vars.id ~ '-help' %}
-            <div data-controller="imperial-date">
-                <div class="flex items-baseline justify-between h-5 mb-1">
-                    {{ form_label(detail_form.deliveryDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                    <label for="{{ delivery_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-                </div>
-                {{ form_widget(detail_form.deliveryDate.display, {
-                    attr: {
-                        'data-imperial-date-prev-icon': '«',
-                        'data-imperial-date-next-icon': '»',
-                        'data-imperial-date-initial-day': delivery_day ?? '',
-                        'data-imperial-date-initial-year': delivery_year ?? '',
-                        'value': delivery_value,
-                    }
-                }) }}
-                {{ form_widget(detail_form.deliveryDate.year) }}
-                {{ form_widget(detail_form.deliveryDate.day) }}
-                {{ form_errors(detail_form.deliveryDate.display) }}
-                <input type="checkbox" id="{{ delivery_help_id }}" class="modal-toggle hidden" />
-                <div class="modal" role="dialog">
-                    <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                        <h3 class="font-bold">Delivery date</h3>
-                        <p class="py-2 text-sm">Declared delivery or inspection window.</p>
-                        <div class="modal-action">
-                            <label for="{{ delivery_help_id }}" class="btn btn-primary">Close</label>
-                        </div>
+                
+                <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.transferCondition, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                     </div>
+                    {{ form_widget(detail_form.transferCondition, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Trigger condition (e.g. FOB).</div>
+                    {{ form_errors(detail_form.transferCondition) }}
                 </div>
-            </div>
-        </div>
-        <div class="col-span-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-            {% set asis_help_id = detail_form.asIsOrWarranty.vars.id ~ '-help' %}
-            <div>
-                <div class="flex items-baseline justify-between h-5 mb-1">
-                    {{ form_label(detail_form.asIsOrWarranty, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                    <label for="{{ asis_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-                </div>
-                {{ form_widget(detail_form.asIsOrWarranty) }}
-                {{ form_errors(detail_form.asIsOrWarranty) }}
-                <input type="checkbox" id="{{ asis_help_id }}" class="modal-toggle hidden" />
-                <div class="modal" role="dialog">
-                    <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                        <h3 class="font-bold">As-is / Warranty</h3>
-                        <p class="py-2 text-sm">Specify sale condition (as-is or warranty-backed).</p>
-                        <div class="modal-action">
-                            <label for="{{ asis_help_id }}" class="btn btn-primary">Close</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
+                <div>
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.deliveryMethod, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(detail_form.deliveryMethod, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                     <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Transport mode.</div>
+                    {{ form_errors(detail_form.deliveryMethod) }}
+                </div>
 
-    <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="col-span-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-            {% set method_help_id = detail_form.deliveryMethod.vars.id ~ '-help' %}
-            <div>
-                <div class="flex items-baseline justify-between h-5 mb-1">
-                    {{ form_label(detail_form.deliveryMethod, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                    <label for="{{ method_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-                </div>
-                {{ form_widget(detail_form.deliveryMethod) }}
-                {{ form_errors(detail_form.deliveryMethod) }}
-                <input type="checkbox" id="{{ method_help_id }}" class="modal-toggle hidden" />
-                <div class="modal" role="dialog">
-                    <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                        <h3 class="font-bold">Delivery method</h3>
-                        <p class="py-2 text-sm">Method of delivery or transfer (vessel-to-vessel, depot, bonded).</p>
-                        <div class="modal-action">
-                            <label for="{{ method_help_id }}" class="btn btn-primary">Close</label>
-                        </div>
+                 {% set data = detail_form.vars.data is defined ? detail_form.vars.data : null %}
+                 {% set delivery_day = data.deliveryDay ?? null %}
+                 {% set delivery_year = data.deliveryYear ?? null %}
+                 {% set delivery_value = (delivery_day is not null and delivery_year is not null) ? (delivery_day|imperial_date(delivery_year)) : '' %}
+                 
+                <div data-controller="imperial-date">
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.deliveryDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                     </div>
+                    {{ form_widget(detail_form.deliveryDate.display, {
+                        attr: {
+                            'class': 'input input-bordered w-full bg-slate-950/50 border-slate-700',
+                            'data-imperial-date-prev-icon': '«',
+                            'data-imperial-date-next-icon': '»',
+                            'data-imperial-date-initial-day': delivery_day ?? '',
+                            'data-imperial-date-initial-year': delivery_year ?? '',
+                            'value': delivery_value,
+                        }
+                    }) }}
+                    {{ form_widget(detail_form.deliveryDate.year) }}
+                    {{ form_widget(detail_form.deliveryDate.day) }}
+                    <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Scheduled delivery.</div>
+                    {{ form_errors(detail_form.deliveryDate.display) }}
                 </div>
-            </div>
-            {% set warranty_help_id = detail_form.warrantyText.vars.id ~ '-help' %}
-            <div>
-                <div class="flex items-baseline justify-between h-5 mb-1">
-                    {{ form_label(detail_form.warrantyText, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                    <label for="{{ warranty_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-                </div>
-                {{ form_widget(detail_form.warrantyText) }}
-                {{ form_errors(detail_form.warrantyText) }}
-                <input type="checkbox" id="{{ warranty_help_id }}" class="modal-toggle hidden" />
-                <div class="modal" role="dialog">
-                    <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                        <h3 class="font-bold">Warranty</h3>
-                        <p class="py-2 text-sm">Warranty clauses or exclusions for the goods.</p>
-                        <div class="modal-action">
-                            <label for="{{ warranty_help_id }}" class="btn btn-primary">Close</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-span-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-            {% set claim_help_id = detail_form.claimWindow.vars.id ~ '-help' %}
-            <div>
-                <div class="flex items-baseline justify-between h-5 mb-1">
-                    {{ form_label(detail_form.claimWindow, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                    <label for="{{ claim_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-                </div>
-                {{ form_widget(detail_form.claimWindow) }}
-                {{ form_errors(detail_form.claimWindow) }}
-                <input type="checkbox" id="{{ claim_help_id }}" class="modal-toggle hidden" />
-                <div class="modal" role="dialog">
-                    <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                        <h3 class="font-bold">Claim window</h3>
-                        <p class="py-2 text-sm">Time allowed to lodge a dispute or inspection claim.</p>
-                        <div class="modal-action">
-                            <label for="{{ claim_help_id }}" class="btn btn-primary">Close</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% set return_help_id = detail_form.returnPolicy.vars.id ~ '-help' %}
-            <div>
-                <div class="flex items-baseline justify-between h-5 mb-1">
-                    {{ form_label(detail_form.returnPolicy, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                    <label for="{{ return_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-                </div>
-                {{ form_widget(detail_form.returnPolicy) }}
-                {{ form_errors(detail_form.returnPolicy) }}
-                <input type="checkbox" id="{{ return_help_id }}" class="modal-toggle hidden" />
-                <div class="modal" role="dialog">
-                    <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                        <h3 class="font-bold">Return policy</h3>
-                        <p class="py-2 text-sm">Return or cancellation terms for the trade.</p>
-                        <div class="modal-action">
-                            <label for="{{ return_help_id }}" class="btn btn-primary">Close</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
-        {% set proof_ref_help_id = detail_form.deliveryProofRef.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.deliveryProofRef, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ proof_ref_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-            </div>
-            {{ form_widget(detail_form.deliveryProofRef) }}
-            {{ form_errors(detail_form.deliveryProofRef) }}
-            <input type="checkbox" id="{{ proof_ref_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Delivery proof ref</h3>
-                    <p class="py-2 text-sm">Receipt or port protocol ID confirming delivery.</p>
-                    <div class="modal-action">
-                        <label for="{{ proof_ref_help_id }}" class="btn btn-primary">Close</label>
+                <div>
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.paymentTerms, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(detail_form.paymentTerms, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                     <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Settlement milestones.</div>
+                    {{ form_errors(detail_form.paymentTerms) }}
+                </div>
+
+                 <div>
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.asIsOrWarranty, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                     {{ form_widget(detail_form.asIsOrWarranty, { attr: { class: 'select select-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                     <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Sale condition.</div>
+                    {{ form_errors(detail_form.asIsOrWarranty) }}
+                </div>
+
+                <div>
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(detail_form.warrantyText, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(detail_form.warrantyText, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                     <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Clauses (if applicable).</div>
+                    {{ form_errors(detail_form.warrantyText) }}
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 col-span-1">
+                     <div>
+                        <div class="flex items-baseline h-5 mb-1">
+                            {{ form_label(detail_form.claimWindow, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                        </div>
+                        {{ form_widget(detail_form.claimWindow, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                        <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Dispute validity.</div>
+                        {{ form_errors(detail_form.claimWindow) }}
+                    </div>
+                    <div>
+                         <div class="flex items-baseline h-5 mb-1">
+                            {{ form_label(detail_form.returnPolicy, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                        </div>
+                        {{ form_widget(detail_form.returnPolicy, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                         <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Return terms.</div>
+                        {{ form_errors(detail_form.returnPolicy) }}
+                    </div>
+                </div>
+
+                {# Proof of Delivery #}
+                <div class="md:col-span-2 border-t border-slate-800 pt-4 mt-2">
+                    <h5 class="text-[9px] font-bold font-orbitron tracking-widest text-slate-500 uppercase mb-4">Delivery Confirmation</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <div class="flex items-baseline h-5 mb-1">
+                                {{ form_label(detail_form.deliveryProofRef, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                            </div>
+                            {{ form_widget(detail_form.deliveryProofRef, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                             <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Receipt/ID.</div>
+                            {{ form_errors(detail_form.deliveryProofRef) }}
+                        </div>
+
+                        {% set proof_day = data.deliveryProofDay ?? null %}
+                        {% set proof_year = data.deliveryProofYear ?? null %}
+                        {% set proof_value = (proof_day is not null and proof_year is not null) ? (proof_day|imperial_date(proof_year)) : '' %}
+                        
+                        <div data-controller="imperial-date">
+                            <div class="flex items-baseline h-5 mb-1">
+                                {{ form_label(detail_form.deliveryProofDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                            </div>
+                            {{ form_widget(detail_form.deliveryProofDate.display, {
+                                attr: {
+                                    'class': 'input input-bordered w-full bg-slate-950/50 border-slate-700',
+                                    'data-imperial-date-prev-icon': '«',
+                                    'data-imperial-date-next-icon': '»',
+                                    'data-imperial-date-initial-day': proof_day ?? '',
+                                    'data-imperial-date-initial-year': proof_year ?? '',
+                                    'value': proof_value,
+                                }
+                            }) }}
+                            {{ form_widget(detail_form.deliveryProofDate.year) }}
+                            {{ form_widget(detail_form.deliveryProofDate.day) }}
+                             <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Timestamp.</div>
+                            {{ form_errors(detail_form.deliveryProofDate.display) }}
+                        </div>
+
+                        <div>
+                            <div class="flex items-baseline h-5 mb-1">
+                                {{ form_label(detail_form.deliveryProofReceivedBy, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                            </div>
+                            {{ form_widget(detail_form.deliveryProofReceivedBy, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
+                             <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Recipient.</div>
+                            {{ form_errors(detail_form.deliveryProofReceivedBy) }}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        {% set proof_day = data.deliveryProofDay ?? null %}
-        {% set proof_year = data.deliveryProofYear ?? null %}
-        {% set proof_value = (proof_day is not null and proof_year is not null) ? (proof_day|imperial_date(proof_year)) : '' %}
-        {% set proof_date_help_id = detail_form.deliveryProofDate.vars.id ~ '-help' %}
-        <div data-controller="imperial-date">
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.deliveryProofDate, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ proof_date_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-            </div>
-            {{ form_widget(detail_form.deliveryProofDate.display, {
-                attr: {
-                    'data-imperial-date-prev-icon': '«',
-                    'data-imperial-date-next-icon': '»',
-                    'data-imperial-date-initial-day': proof_day ?? '',
-                    'data-imperial-date-initial-year': proof_year ?? '',
-                    'value': proof_value,
-                }
-            }) }}
-            {{ form_widget(detail_form.deliveryProofDate.year) }}
-            {{ form_widget(detail_form.deliveryProofDate.day) }}
-            {{ form_errors(detail_form.deliveryProofDate.display) }}
-            <input type="checkbox" id="{{ proof_date_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Delivery proof date</h3>
-                    <p class="py-2 text-sm">Confirmation timestamp for delivery acceptance.</p>
-                    <div class="modal-action">
-                        <label for="{{ proof_date_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% set proof_received_help_id = detail_form.deliveryProofReceivedBy.vars.id ~ '-help' %}
-        <div>
-            <div class="flex items-baseline justify-between h-5 mb-1">
-                {{ form_label(detail_form.deliveryProofReceivedBy, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-                <label for="{{ proof_received_help_id }}" class="text-[9px] cursor-pointer text-cyan-500/50 hover:text-cyan-400 transition-colors uppercase font-bold tracking-widest"><b>[info]</b></label>
-            </div>
-            {{ form_widget(detail_form.deliveryProofReceivedBy) }}
-            {{ form_errors(detail_form.deliveryProofReceivedBy) }}
-            <input type="checkbox" id="{{ proof_received_help_id }}" class="modal-toggle hidden" />
-            <div class="modal" role="dialog">
-                <div class="modal-box bg-slate-900 border border-slate-700 shadow-2xl">
-                    <h3 class="font-bold">Received by</h3>
-                    <p class="py-2 text-sm">Officer or authority who confirmed receipt.</p>
-                    <div class="modal-action">
-                        <label for="{{ proof_received_help_id }}" class="btn btn-primary">Close</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
+    </details>
+
     {% if purchase_cost_form is defined and purchase_cost_form is not null %}
     <div class="col-span-2 p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 mt-4">
         <div class="flex items-center gap-3 mb-3">
@@ -441,4 +236,5 @@
         {{ form_errors(purchase_cost_form) }}
     </div>
     {% endif %}
+
 </fieldset>

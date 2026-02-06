@@ -55,6 +55,11 @@ class IncomeDetailsType extends AbstractType
         'terms' => TextareaType::class,
         'requirements' => TextareaType::class,
         'summary' => TextareaType::class,
+        'notes' => TextareaType::class,
+        'policy' => TextareaType::class,
+        'terms' => TextareaType::class,
+        'requirements' => TextareaType::class,
+        // 'summary' duplicato rimosso
         'description' => TextareaType::class,
         'objective' => TextareaType::class,
         'workSummary' => TextareaType::class,
@@ -62,7 +67,7 @@ class IncomeDetailsType extends AbstractType
         'risks' => TextareaType::class,
         'hazards' => TextareaType::class,
         'recoveredItemsSummary' => TextareaType::class,
-        'legalBasis' => TextareaType::class,
+        // legalBasis moved to TextType for datalist support
         'warrantyText' => TextareaType::class,
         'claimWindow' => TextareaType::class,
         'returnPolicy' => TextareaType::class,
@@ -73,7 +78,7 @@ class IncomeDetailsType extends AbstractType
         'proofRequirements' => TextareaType::class,
         'cancellationTerms' => TextareaType::class,
         'failureTerms' => TextareaType::class,
-        'paymentTerms' => TextareaType::class,
+        // paymentTerms moved to TextType for datalist support
         'expensesPolicy' => TextareaType::class,
         'restrictions' => TextareaType::class,
         'confidentialityLevel' => TextareaType::class,
@@ -91,6 +96,65 @@ class IncomeDetailsType extends AbstractType
         'dispatchDate' => ['day' => 'dispatchDay', 'year' => 'dispatchYear'],
         'incidentDate' => ['day' => 'incidentDay', 'year' => 'incidentYear'],
         'deadlineDate' => ['day' => 'deadlineDay', 'year' => 'deadlineYear'],
+    ];
+
+    private const ENUM_FIELDS = [
+        'calcMethod' => [
+            'choices' => [
+                'Simple' => 'Simple',
+                'Compound' => 'Compound',
+            ],
+        ],
+        'mailType' => [
+            'choices' => [
+                'X-Boat' => 'X-Boat',
+                'Private Courier' => 'Private Courier',
+                'Standard' => 'Standard',
+                'Freight Packet' => 'Freight Packet',
+            ],
+        ],
+        'securityLevel' => [
+            'choices' => [
+                'Unclassified' => 'Unclassified',
+                'Restricted' => 'Restricted',
+                'Confidential' => 'Confidential',
+                'Secret' => 'Secret',
+                'Top Secret' => 'Top Secret',
+            ],
+        ],
+        'classOrBerth' => [
+            'choices' => [
+                'High Passage' => 'High Passage',
+                'Middle Passage' => 'Middle Passage',
+                'Basic Passage' => 'Basic Passage',
+                'Low Passage' => 'Low Passage',
+                'Working Passage' => 'Working Passage',
+            ],
+        ],
+        'lossType' => [
+            'choices' => [
+                'Total Hull Loss' => 'Total Hull Loss',
+                'Partial Damage' => 'Partial Damage',
+                'Third Party Liability' => 'Third Party Liability',
+                'Cargo Loss' => 'Cargo Loss',
+            ],
+        ],
+        'serviceLevel' => [
+            'choices' => [
+                'Routine' => 'Routine',
+                'Priority' => 'Priority',
+                'Critical' => 'Critical',
+            ],
+        ],
+    ];
+
+    private const SUGGESTION_FIELDS = [
+        'paymentTerms' => 'list-payment-terms',
+        'legalBasis' => 'list-legal-basis',
+        'jobType' => 'list-job-type',
+        'serviceType' => 'list-service-type',
+        'deliveryMethod' => 'list-delivery-method',
+        'proofOfDelivery' => 'list-proof-of-delivery',
     ];
 
     public function __construct(private readonly DayYearLimits $limits) {}
@@ -140,6 +204,18 @@ class IncomeDetailsType extends AbstractType
                 continue;
             }
 
+            // ENUMS (Nuova richiesta)
+            if (isset(self::ENUM_FIELDS[$fieldName])) {
+                $config = self::ENUM_FIELDS[$fieldName];
+                $this->addIfEnabled($builder, $options, $fieldName, ChoiceType::class, [
+                    'required' => false,
+                    'placeholder' => '// Select ' . ucfirst($fieldName),
+                    'choices' => $config['choices'],
+                    'attr' => ['class' => 'select m-1 w-full'],
+                ]);
+                continue;
+            }
+
             // Gestione speciale per cargoQty (può contenere unità come "tons")
             if ($fieldName === 'cargoQty') {
                 $this->addIfEnabled($builder, $options, 'cargoQty', TextType::class, [
@@ -151,9 +227,22 @@ class IncomeDetailsType extends AbstractType
 
             // Fallback su tipo dedotto dal nome o TextType
             $type = $this->deriveType($fieldName);
+
+            // Override: I campi con suggerimenti (Datalist) devono essere TextType (input), non Textarea
+            if (isset(self::SUGGESTION_FIELDS[$fieldName])) {
+                $type = TextType::class;
+            }
+
+            $attr = ['class' => ($type === TextareaType::class ? 'textarea' : 'input') . ' m-1 w-full'];
+
+            // SMART SUGGESTIONS
+            if (isset(self::SUGGESTION_FIELDS[$fieldName])) {
+                $attr['list'] = self::SUGGESTION_FIELDS[$fieldName];
+            }
+
             $this->addIfEnabled($builder, $options, $fieldName, $type, [
                 'required' => false,
-                'attr' => ['class' => ($type === TextareaType::class ? 'textarea' : 'input') . ' m-1 w-full'],
+                'attr' => $attr,
             ]);
         }
 
