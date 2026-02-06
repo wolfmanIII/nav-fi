@@ -35,6 +35,7 @@ class CargoLiquidationType extends AbstractType
                 },
                 'label' => 'Local Law',
                 'label_attr' => ['class' => $defaultLabelClass],
+                'help' => 'Jurisdiction governing this sale.',
                 'placeholder' => '// LOCAL LAW',
                 'attr' => [
                     'class' => 'select select-bordered select-sm w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 text-white',
