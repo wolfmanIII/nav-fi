@@ -214,9 +214,18 @@ class OpportunityConverter
         $category = $this->getIncomeCategory('PASSENGERS');
         $income = $this->createBaseIncome($opp, $asset, $category, $overrides);
 
+        $classMap = [
+            'high' => 'High Passage',
+            'middle' => 'Middle Passage',
+            'basic' => 'Basic Passage',
+            'low' => 'Low Passage'
+        ];
+        $rawClass = $opp->details['class'] ?? 'basic';
+        $class = $classMap[$rawClass] ?? 'Basic Passage';
+
         $income->setDetails([
             'qty' => $opp->details['pax'] ?? 0,
-            'classOrBerth' => $opp->details['class'] ?? 'Standard',
+            'classOrBerth' => $class,
             'destination' => $opp->details['destination'] ?? 'Unknown',
             'origin' => $opp->details['origin'] ?? 'Unknown',
             'departureDay' => $income->getSigningDay(),
@@ -236,7 +245,7 @@ class OpportunityConverter
             'totalMass' => (string)($opp->details['tons'] ?? 0),
             'destination' => $opp->details['destination'] ?? 'Unknown',
             'origin' => $opp->details['origin'] ?? 'Unknown',
-            'mailType' => 'Official Priority',
+            'mailType' => 'Standard', // Adapted from 'Official Priority' to match Enum
             'dispatchDay' => $income->getSigningDay(),
             'dispatchYear' => $income->getSigningYear(),
         ]);

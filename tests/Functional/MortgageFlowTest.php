@@ -56,7 +56,7 @@ class MortgageFlowTest extends WebTestCase
 
         $role = new CompanyRole();
         $role->setDescription('MegaCorp');
-        $role->setCode('MC');
+        $role->setCode('BANK');
         $this->em->persist($role);
 
         $company = new Company();

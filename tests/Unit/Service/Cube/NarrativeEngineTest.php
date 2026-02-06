@@ -38,20 +38,23 @@ class NarrativeEngineTest extends TestCase
         ];
 
         $companyRepo = $this->createMock(\App\Repository\CompanyRepository::class);
-        $this->narrative = new NarrativeService($economyConfig, $companyRepo);
+        $nameGenerator = $this->createMock(\App\Service\Cube\NameGeneratorService::class);
+        $this->narrative = new NarrativeService($economyConfig, $companyRepo, $nameGenerator);
     }
 
     public function testStoryGenerationIsDeterministic(): void
     {
         $seed = 12345;
+        $engine1 = new \Random\Engine\Mt19937($seed);
+        $randomizer1 = new \Random\Randomizer($engine1);
 
         // Prima generazione
-        mt_srand($seed);
-        $story1 = $this->narrative->generateStory('Core');
+        $story1 = $this->narrative->generateStory('Core', $randomizer1);
 
-        // Seconda generazione con lo stesso seed
-        mt_srand($seed);
-        $story2 = $this->narrative->generateStory('Core');
+        // Seconda generazione con lo stesso seed (nuova istanza engine)
+        $engine2 = new \Random\Engine\Mt19937($seed);
+        $randomizer2 = new \Random\Randomizer($engine2);
+        $story2 = $this->narrative->generateStory('Core', $randomizer2);
 
         $this->assertEquals($story1->summary, $story2->summary);
         $this->assertEquals($story1->patronName, $story2->patronName);

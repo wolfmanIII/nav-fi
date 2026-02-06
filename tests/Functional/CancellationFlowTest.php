@@ -78,6 +78,23 @@ final class CancellationFlowTest extends WebTestCase
         $category->setDescription('Contract');
         $this->em->persist($category);
 
+        $localLaw = new \App\Entity\LocalLaw();
+        $localLaw->setCode('IMP_FULL');
+        $localLaw->setDescription('Imperial Law Full');
+        $this->em->persist($localLaw);
+
+        $role = new \App\Entity\CompanyRole();
+        $role->setCode('PAYER');
+        $role->setDescription('Payer');
+        $this->em->persist($role);
+
+        $payer = new \App\Entity\Company();
+        $payer->setName('MegaCorp');
+        $payer->setCode('MEGA');
+        $payer->setUser($user);
+        $payer->setCompanyRole($role);
+        $this->em->persist($payer);
+
         $this->em->flush();
 
         // 2. Crea Income attivo
@@ -93,6 +110,9 @@ final class CancellationFlowTest extends WebTestCase
             'income[paymentDate][year]' => 1105,
             'income[financialAccount]' => $fa->getId(),
             'income[incomeCategory]' => $category->getId(),
+            'income[company]' => $payer->getId(),
+            'income[localLaw]' => $localLaw->getId(),
+            'income[signingLocation]' => 'Starport A', // Aggiunto per soddisfare required=true
         ]);
         $this->client->submit($form);
         self::assertResponseRedirects('/income/index');

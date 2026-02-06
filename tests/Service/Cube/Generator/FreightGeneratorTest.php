@@ -21,7 +21,8 @@ class FreightGeneratorTest extends TestCase
         $rules = $this->createMock(\App\Service\GameRulesEngine::class);
         $rules->method('get')->willReturnCallback(fn($key, $default) => $default);
 
-        $generator = new FreightGenerator($config, $repo, $rules);
+        $nameGenerator = $this->createMock(\App\Service\Cube\NameGeneratorService::class);
+        $generator = new FreightGenerator($config, $repo, $nameGenerator, $rules);
         $this->assertTrue($generator->supports('FREIGHT'));
         $this->assertEquals('FREIGHT', $generator->getType());
 

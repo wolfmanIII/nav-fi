@@ -40,6 +40,14 @@ class TradeLiquidationTest extends KernelTestCase
             $cat->setDescription('Trade Sale');
             $this->em->persist($cat);
         }
+
+        if (!$this->em->getRepository(\App\Entity\CompanyRole::class)->findOneBy(['code' => 'TRADER'])) {
+            $role = new \App\Entity\CompanyRole();
+            $role->setCode('TRADER');
+            $role->setDescription('Trader');
+            $this->em->persist($role);
+        }
+
         $this->em->flush();
     }
 
@@ -95,7 +103,7 @@ class TradeLiquidationTest extends KernelTestCase
         $this->assertEquals('15000', $income->getAmount());
         $this->assertEquals('15000', $income->getAmount());
         $this->assertEquals($cost->getId(), $income->getPurchaseCost()->getId());
-        
+
         // Verify Naming Convention: "Regina Trade Exchange"
         $company = $income->getCompany();
         $this->assertNotNull($company);
@@ -133,7 +141,7 @@ class TradeLiquidationTest extends KernelTestCase
 
         // Create a specific Buyer Company
         $role = $this->em->getRepository(\App\Entity\CompanyRole::class)->findOneBy(['code' => 'TRADER']);
-        
+
         $buyer = new \App\Entity\Company();
         $buyer->setName('Oberlindes Lines');
         $buyer->setCompanyRole($role); // Uses existing TRADER role

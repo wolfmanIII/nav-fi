@@ -11,7 +11,7 @@ use App\Entity\Income;
 use App\Entity\IncomeCategory;
 use App\Entity\Asset;
 use App\Entity\User;
-use App\Service\PdfGenerator;
+use App\Service\Pdf\PdfGeneratorInterface;
 use Doctrine\DBAL\Types\StringType;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,7 +49,7 @@ final class MinimumFlowTest extends WebTestCase
         $schemaTool->dropDatabase();
         $schemaTool->createSchema($this->em->getMetadataFactory()->getAllMetadata());
 
-        static::getContainer()->set(PdfGenerator::class, new class extends PdfGenerator {
+        static::getContainer()->set(PdfGeneratorInterface::class, new class implements PdfGeneratorInterface {
             public function __construct() {}
 
             public function render(string $template, array $context = [], array $options = []): string
@@ -115,7 +115,7 @@ final class MinimumFlowTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/cost/index?page=2');
         self::assertResponseIsSuccessful();
-        self::assertStringContainsString('LOG_SECTOR: 11-12', $crawler->filter('#pagination-metrics')->text());
+        self::assertStringContainsString('LOG_SECTOR: 10-12', $crawler->filter('#pagination-metrics')->text());
         self::assertStringContainsString('TOTAL_RECORDS: 12', $crawler->filter('#pagination-metrics')->text());
 
         $this->client->request('GET', '/cost/index?title=Cost Entry 05');

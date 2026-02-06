@@ -67,7 +67,6 @@ class ComprehensiveWorkflowTest extends KernelTestCase
         $this->financialAccount = new \App\Entity\FinancialAccount();
         $this->financialAccount->setAsset($this->asset);
         $this->financialAccount->setUser($this->user);
-        $this->financialAccount->setCampaign($this->campaign);
         $this->financialAccount->setCredits(500000);
         $this->em->persist($this->financialAccount);
 
@@ -191,7 +190,7 @@ class ComprehensiveWorkflowTest extends KernelTestCase
         $details = $income->getDetails();
         $this->assertIsArray($details);
         $this->assertEquals(11, $details['dispatchDay']);
-        $this->assertEquals('Official Priority', $details['mailType']);
+        $this->assertEquals('Standard', $details['mailType']);
     }
 
     public function testContractConversionWithDeadline(): void

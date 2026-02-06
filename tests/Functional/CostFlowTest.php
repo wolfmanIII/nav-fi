@@ -78,6 +78,23 @@ final class CostFlowTest extends WebTestCase
         $category->setDescription('Fuel and Supplies');
         $this->em->persist($category);
 
+        $localLaw = new \App\Entity\LocalLaw();
+        $localLaw->setCode('IMP_FULL');
+        $localLaw->setDescription('Imperial Law Full');
+        $this->em->persist($localLaw);
+
+        $role = new \App\Entity\CompanyRole();
+        $role->setCode('FUEL_SUPPLIER');
+        $role->setDescription('Fuel Supplier');
+        $this->em->persist($role);
+
+        $vendor = new \App\Entity\Company();
+        $vendor->setName('H-Fuel Inc.');
+        $vendor->setCode('HFUEL');
+        $vendor->setUser($user);
+        $vendor->setCompanyRole($role);
+        $this->em->persist($vendor);
+
         $this->em->flush();
 
         // 2. Crea costo via UI (POST manuale per gestire la collezione dinamica)
@@ -102,8 +119,9 @@ final class CostFlowTest extends WebTestCase
                 ],
                 '_token' => $token,
                 'note' => '',
-                'company' => '', // Presumo non richiesto o gestito dalla validazione
-                'localLaw' => '', // Presumo non richiesto
+                'note' => '',
+                'company' => $vendor->getId(),
+                'localLaw' => $localLaw->getId(),
             ]
         ]);
         self::assertResponseRedirects('/cost/index');

@@ -21,17 +21,18 @@ class BaseDetailsDataTest extends TestCase
         $this->assertEquals(5000, $dto->hull->tons);
         $this->assertEquals(200, $dto->powerPlant->rating);
         $this->assertEquals('Command CenterAlpha', $dto->bridge->description);
-        
+
         // Assert properties that shouldn't exist
         $this->assertFalse(property_exists($dto, 'jDrive'));
         $this->assertFalse(property_exists($dto, 'mDrive'));
-        $this->assertFalse(property_exists($dto, 'fuel'));
+        // Fuel is now a standard component
+        $this->assertTrue(property_exists($dto, 'fuel'));
 
         $output = $dto->toArray();
 
         $this->assertEquals(5000, $output['hull']['tons']);
         $this->assertArrayNotHasKey('jDrive', $output);
         $this->assertArrayNotHasKey('mDrive', $output);
-        $this->assertArrayNotHasKey('fuel', $output);
+        $this->assertArrayHasKey('fuel', $output);
     }
 }
