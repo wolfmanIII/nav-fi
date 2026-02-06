@@ -43,9 +43,20 @@
                     <div class="card bg-slate-950 border border-slate-800 shadow-xl overflow-hidden group hover:border-amber-500/30 transition-all">
                         <div class="p-6 relative z-10">
                             <div class="flex justify-between items-start mb-4">
-                                <span class="badge badge-outline border-slate-700 text-slate-400 font-mono text-[10px] uppercase tracking-widest">
-                                    {{ item.paymentDay|imperial_date(item.paymentYear) }}
-                                </span>
+                                <div class="flex gap-2">
+                                    <span class="badge badge-outline border-slate-700 text-slate-400 font-mono text-[10px] uppercase tracking-widest">
+                                        {{ item.paymentDay|imperial_date(item.paymentYear) }}
+                                    </span>
+                                    {% set totalQty = 0 %}
+                                    {% for detail in item.detailItems %}
+                                        {% set totalQty = totalQty + detail.quantity|default(0) %}
+                                    {% endfor %}
+                                    {% if totalQty > 0 %}
+                                        <span class="badge badge-outline border-cyan-500/30 text-cyan-400 font-mono text-[10px] uppercase tracking-widest">
+                                            {{ totalQty }} Units
+                                        </span>
+                                    {% endif %}
+                                </div>
                                 <span class="text-xs font-bold text-amber-500 font-mono">
                                     {% if item.amount == 0 %}
                                         LOOT
@@ -152,9 +163,7 @@
                                             </div>
                                             {{ form_widget(liquidationForm.localLaw) }}
                                             {{ form_errors(liquidationForm.localLaw) }}
-                                             <label class="label">
-                                                <span class="label-text-alt text-slate-600">Jurisdiction governing this sale.</span>
-                                            </label>
+                                            {{ form_help(liquidationForm.localLaw) }}
                                         </div>
                                     </div>
 
