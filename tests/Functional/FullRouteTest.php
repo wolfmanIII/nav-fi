@@ -32,7 +32,6 @@ class FullRouteTest extends KernelTestCase
 
     public function testFullTradeRoute(): void
     {
-        echo "\n   NAV-FI TRADING ROUTE VERIFICATION PROTOCOL   \n";
 
         // 1. SETUP
         $user = new User();
