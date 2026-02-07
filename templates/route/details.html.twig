@@ -5,10 +5,14 @@
 {% block pageContent %}
 
     <div class="flex flex-col items-stretch gap-6" 
-         data-controller="route-map" 
+         data-controller="route-map route-waypoint-modal" 
          data-route-map-base-url-value="https://travellermap.com"
          data-route-map-current-hex-value="{{ currentHex }}"
-         data-route-map-current-sector-value="{{ currentSector }}">
+         data-route-map-current-sector-value="{{ currentSector }}"
+         data-route-waypoint-modal-add-url-value="{{ path('app_route_waypoint_add', {id: route.id}) }}"
+         data-route-waypoint-modal-delete-url-value="{{ path('app_route_waypoint_delete', {id: route.id, waypointId: '__ID__'}) }}"
+         data-route-waypoint-modal-lookup-url-value="{{ path('app_route_waypoint_lookup') }}"
+         data-route-waypoint-modal-route-id-value="{{ route.id }}">
         <div class="relative rounded-2xl bg-slate-950 border border-slate-800 shadow-lg mb-6">
             <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
                 <div class="absolute top-0 right-0 p-4 opacity-10">
@@ -129,7 +133,76 @@
                 </iframe>
             </div>
 
-            <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/40 shadow-inner h-full">
+            <div class="rounded-xl border border-slate-800 bg-slate-950/40 shadow-inner h-full flex flex-col">
+                {# Header con pulsante Add #}
+                <div class="flex items-center justify-between p-4 border-b border-slate-800">
+                    <span class="font-orbitron text-[10px] uppercase tracking-[0.3em] text-slate-400">Waypoints</span>
+                    <div class="tooltip tooltip-left" data-tip="Add Waypoint">
+                        <button type="button"
+                                class="btn btn-primary btn-sm font-orbitron"
+                                data-action="route-waypoint-modal#openModal">
+                            {% include 'icons/waypoint.html.twig' with {dim: 16} %}
+                        </button>
+                    </div>
+                </div>
+
+                {# Modale #}
+                <dialog class="modal" data-route-waypoint-modal-target="modal">
+                    <div class="modal-box bg-slate-900 border border-slate-700">
+                        <h3 class="font-orbitron text-lg font-bold text-cyan-400 uppercase tracking-widest mb-6">Add Waypoint</h3>
+                        <form data-action="submit->route-waypoint-modal#submit">
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">Hex</label>
+                                    <input type="text" 
+                                           class="input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50 uppercase" 
+                                           placeholder="e.g. 1905" 
+                                           maxlength="4"
+                                           data-route-waypoint-modal-target="inputHex"
+                                           data-action="blur->route-waypoint-modal#lookup">
+                                </div>
+                                <div>
+                                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">Sector</label>
+                                    <input type="text" 
+                                           class="input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50" 
+                                           placeholder="e.g. Spinward Marches"
+                                           data-route-waypoint-modal-target="inputSector"
+                                           data-action="blur->route-waypoint-modal#lookup">
+                                </div>
+                                <div>
+                                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">World <span class="text-slate-500 normal-case">(auto)</span></label>
+                                    <input type="text" 
+                                           class="input input-bordered input-sm w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono cursor-not-allowed" 
+                                           readonly
+                                           data-route-waypoint-modal-target="inputWorld">
+                                </div>
+                                <div>
+                                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">UWP <span class="text-slate-500 normal-case">(auto)</span></label>
+                                    <input type="text" 
+                                           class="input input-bordered input-sm w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono cursor-not-allowed" 
+                                           readonly
+                                           data-route-waypoint-modal-target="inputUwp">
+                                </div>
+                            </div>
+                            <div class="mb-6">
+                                <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">Notes</label>
+                                <textarea class="textarea textarea-bordered textarea-sm w-full bg-slate-950/50 border-slate-800 h-20 focus:border-cyan-500/50 font-rajdhani"
+                                          placeholder="Optional notes..."
+                                          data-route-waypoint-modal-target="inputNotes"></textarea>
+                            </div>
+                            <div class="modal-action">
+                                <button type="button" class="btn btn-ghost" data-action="route-waypoint-modal#closeModal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Add Waypoint</button>
+                            </div>
+                        </form>
+                    </div>
+                    <form method="dialog" class="modal-backdrop">
+                        <button>close</button>
+                    </form>
+                </dialog>
+
+                {# Tabella #}
+                <div class="overflow-x-auto flex-grow">
                 <table class="table table-sm w-full border-separate border-spacing-0">
                     <thead>
                     <tr class="border-b border-slate-800">
@@ -140,9 +213,10 @@
                         <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">World</th>
                         <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">UWP</th>
                         <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50 text-right">Jump</th>
+                        <th class="bg-slate-900/50 w-12"></th>
                     </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-800/50">
+                    <tbody class="divide-y divide-slate-800/50" data-route-waypoint-modal-target="tableBody">
                     {% if route.waypoints|length > 0 %}
                         {% for waypoint in route.waypoints %}
                             <tr class="hover:bg-emerald-500/5 transition-colors text-slate-300">
@@ -167,18 +241,26 @@
                                 <td class="font-mono text-xs p-2 font-bold">{{ waypoint.world ?? '—' }}</td>
                                 <td class="font-mono text-xs p-2">{{ waypoint.uwp ?? '—' }}</td>
                                 <td class="font-mono text-xs p-2 text-right text-emerald-300">{{ waypoint.jumpDistance ?? '—' }}</td>
+                                <td class="text-center p-2">
+                                    <button type="button"
+                                            class="btn btn-ghost btn-xs text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                                            data-action="route-waypoint-modal#deleteWaypoint"
+                                            data-waypoint-id="{{ waypoint.id }}">
+                                        ✕
+                                    </button>
+                                </td>
                             </tr>
                         {% endfor %}
                     {% else %}
-                        <tr>
-                            <td colspan="6" class="text-center text-slate-500 font-rajdhani uppercase tracking-widest text-xs py-8">
+                        <tr class="empty-row" data-route-waypoint-modal-target="emptyRow">
+                            <td colspan="8" class="text-center text-slate-500 font-rajdhani uppercase tracking-widest text-xs py-8">
                                 // No waypoints mapped
                             </td>
                         </tr>
                     {% endif %}
                     </tbody>
                 </table>
-            </div>
+                </div>
         </div>
     </div>
 

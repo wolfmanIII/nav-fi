@@ -231,4 +231,89 @@ final class RouteController extends BaseController
 
         return $this->redirectToRoute('app_route_index');
     }
+
+    #[RouteAttr('/route/{id}/waypoint', name: 'app_route_waypoint_add', methods: ['POST'])]
+    public function addWaypoint(int $id, Request $request, EntityManagerInterface $em, TravellerMapSectorLookup $lookup): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $route = $em->getRepository(Route::class)->findOneForUser($id, $user);
+        if (!$route) {
+            return new JsonResponse(['error' => 'Route not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $hex = strtoupper(trim($data['hex'] ?? ''));
+        $sector = trim($data['sector'] ?? '');
+        $notes = trim($data['notes'] ?? '');
+
+        if ($hex === '' || $sector === '') {
+            return new JsonResponse(['error' => 'Hex and Sector are required'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Lookup world data
+        $worldData = $lookup->lookupWorld($sector, $hex);
+        $world = $worldData['world'] ?? null;
+        $uwp = $worldData['uwp'] ?? null;
+
+        // Calcola posizione
+        $maxPosition = 0;
+        foreach ($route->getWaypoints() as $wp) {
+            if ($wp->getPosition() > $maxPosition) {
+                $maxPosition = $wp->getPosition();
+            }
+        }
+
+        $waypoint = new RouteWaypoint();
+        $waypoint->setHex($hex);
+        $waypoint->setSector($sector);
+        $waypoint->setWorld($world);
+        $waypoint->setUwp($uwp);
+        $waypoint->setNotes($notes);
+        $waypoint->setPosition($maxPosition + 1);
+        $waypoint->setRoute($route);
+
+        $em->persist($waypoint);
+        $em->flush();
+
+        return new JsonResponse([
+            'success' => true,
+            'waypoint' => [
+                'id' => $waypoint->getId(),
+                'position' => $waypoint->getPosition(),
+                'hex' => $waypoint->getHex(),
+                'sector' => $waypoint->getSector(),
+                'world' => $waypoint->getWorld(),
+                'uwp' => $waypoint->getUwp(),
+                'notes' => $waypoint->getNotes(),
+            ],
+        ]);
+    }
+
+    #[RouteAttr('/route/{id}/waypoint/{waypointId}', name: 'app_route_waypoint_delete', methods: ['DELETE'])]
+    public function removeWaypoint(int $id, int $waypointId, EntityManagerInterface $em): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $route = $em->getRepository(Route::class)->findOneForUser($id, $user);
+        if (!$route) {
+            return new JsonResponse(['error' => 'Route not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $waypoint = $em->getRepository(RouteWaypoint::class)->find($waypointId);
+        if (!$waypoint || $waypoint->getRoute()?->getId() !== $route->getId()) {
+            return new JsonResponse(['error' => 'Waypoint not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $em->remove($waypoint);
+        $em->flush();
+
+        return new JsonResponse(['success' => true]);
+    }
 }
