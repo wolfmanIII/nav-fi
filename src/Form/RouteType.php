@@ -112,21 +112,25 @@ class RouteType extends AbstractType
             ->add('destHex', HiddenType::class, [
                 'required' => false,
             ])
-            ->add('startDate', ImperialDateType::class, [
+            ->add('startDate', TextType::class, [
                 'mapped' => false,
                 'required' => false,
-                'label' => 'Start date',
-                'data' => $startDate,
-                'min_year' => $minYear,
-                'max_year' => $this->limits->getYearMax(),
+                'label' => 'Start Date',
+                'data' => $route->getStartDateImperial(),
+                'disabled' => true,
+                'attr' => [
+                    'class' => 'input input-bordered w-full bg-slate-950/50 border-slate-700 font-mono text-cyan-400 cursor-not-allowed',
+                ],
             ])
-            ->add('destDate', ImperialDateType::class, [
+            ->add('destDate', TextType::class, [
                 'mapped' => false,
                 'required' => false,
-                'label' => 'Destination date',
-                'data' => $destDate,
-                'min_year' => $minYear,
-                'max_year' => $this->limits->getYearMax(),
+                'label' => 'Destination Date',
+                'data' => $route->getDestDateImperial(),
+                'disabled' => true,
+                'attr' => [
+                    'class' => 'input input-bordered w-full bg-slate-950/50 border-slate-700 font-mono text-cyan-400 cursor-not-allowed',
+                ],
             ])
             ->add('jumpRating', IntegerType::class, [
                 'required' => false,

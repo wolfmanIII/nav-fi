@@ -1,5 +1,8 @@
+name: gotenberg-services
+
 services:
   gotenberg:
+    container_name: gotenberg
     image: gotenberg/gotenberg:8
     restart: unless-stopped
     ports:

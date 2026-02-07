@@ -330,4 +330,20 @@ class Route
 
         return $waypointCount < 2 ? 0 : $jumpRating * ($waypointCount - 1);
     }
+
+    public function getStartDateImperial(): ?string
+    {
+        if ($this->startDay === null || $this->startYear === null) {
+            return null;
+        }
+        return $this->startDay . '/' . $this->startYear;
+    }
+
+    public function getDestDateImperial(): ?string
+    {
+        if ($this->destDay === null || $this->destYear === null) {
+            return null;
+        }
+        return $this->destDay . '/' . $this->destYear;
+    }
 }
