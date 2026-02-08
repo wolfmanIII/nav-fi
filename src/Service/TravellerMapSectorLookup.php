@@ -10,14 +10,32 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class TravellerMapSectorLookup
 {
-    private const BASE_URL = 'https://travellermap.com';
-
     public function __construct(
         private readonly HttpClientInterface $client,
         private readonly LoggerInterface $logger,
-        #[Autowire('%app.cube.sector_storage_path%')]
+        #[Autowire('%app.travellermap.base_url%')]
+        private readonly string $baseUrl,
+        #[Autowire('%app.travellermap.sector_storage_path%')]
         private readonly string $storagePath
     ) {}
+
+    /**
+     * Costruisce l'URL per TravellerMap in base a sector e hex.
+     */
+    public function buildMapUrl(?string $sector = null, ?string $hex = null): string
+    {
+        $url = $this->baseUrl . '/';
+
+        if ($hex && $sector) {
+            return $url . 'go/' . rawurlencode($sector) . '/' . rawurlencode($hex);
+        }
+
+        if ($hex) {
+            return $url . '?marker_hex=' . rawurlencode($hex);
+        }
+
+        return $url;
+    }
 
     public function lookupWorld(string $sector, string $hex): ?array
     {
@@ -36,6 +54,7 @@ class TravellerMapSectorLookup
                         'world' => $system['name'],
                         'uwp' => $system['uwp'],
                         'trade_codes' => $system['trade_codes'],
+                        'zone' => $system['zone'] ?? null,
                         'pop_multiplier' => $system['pop_multiplier'] ?? 0,
                         'belts' => $system['belts'] ?? 0,
                         'gas_giants' => $system['gas_giants'] ?? 0,
@@ -97,6 +116,7 @@ class TravellerMapSectorLookup
                 $nameIndex = array_search('NAME', $headerParts);
                 $uwpIndex = array_search('UWP', $headerParts);
                 $remarksIndex = array_search('REMARKS', $headerParts);
+                $zoneIndex = array_search('ZONE', $headerParts);
                 $pbgIndex = array_search('PBG', $headerParts);
 
                 if ($hexIndex !== false && $nameIndex !== false && $uwpIndex !== false) {
@@ -106,6 +126,9 @@ class TravellerMapSectorLookup
                     // Remarks è opzionale o potrebbe chiamarsi diversamente (Comments?) ma di solito Remarks
                     if ($remarksIndex !== false) {
                         $colMap['remarks'] = $remarksIndex;
+                    }
+                    if ($zoneIndex !== false) {
+                        $colMap['zone'] = $zoneIndex;
                     }
                     if ($pbgIndex !== false) {
                         $colMap['pbg'] = $pbgIndex;
@@ -131,6 +154,7 @@ class TravellerMapSectorLookup
             $name = trim($parts[$colMap['name']] ?? '');
             $uwp = trim($parts[$colMap['uwp']] ?? '');
             $remarks = isset($colMap['remarks']) ? trim($parts[$colMap['remarks']] ?? '') : '';
+            $zone = isset($colMap['zone']) ? strtoupper(trim($parts[$colMap['zone']] ?? '')) : null;
             $pbg = isset($colMap['pbg']) ? trim($parts[$colMap['pbg']] ?? '') : '';
 
             // Valida Hex (stretto 4 cifre)
@@ -142,24 +166,28 @@ class TravellerMapSectorLookup
             if (strlen($uwp) < 7) { // X000000-0 è 9 car solitamente, ma forse alcuni ne permettono meno? standard è 9. Diciamo 7 per sicurezza.
                 continue;
             }
-            
+
             // Parse PBG (Pop Multiplier, Belts, Gas Giants)
             // Es: 123 -> 1 PopMult, 2 Belts, 3 Gas Giants
             $popMultiplier = 0;
             $belts = 0;
             $gasGiants = 0;
-            
+
             if (strlen($pbg) >= 3 && is_numeric($pbg)) {
                 $popMultiplier = (int) substr($pbg, 0, 1);
                 $belts = (int) substr($pbg, 1, 1);
                 $gasGiants = (int) substr($pbg, 2, 1);
             }
 
+            // Normalizza zone: A=Amber, R=Red, altrimenti null (Green)
+            $normalizedZone = ($zone === 'A' || $zone === 'R') ? $zone : null;
+
             $systems[] = [
                 'hex' => $hex,
                 'name' => $name,
                 'uwp' => $uwp,
                 'trade_codes' => $this->parseTradeCodes($remarks),
+                'zone' => $normalizedZone,
                 'pbg' => $pbg,
                 'pop_multiplier' => $popMultiplier,
                 'belts' => $belts,
@@ -187,7 +215,7 @@ class TravellerMapSectorLookup
         }
 
         // Download
-        $url = sprintf('%s/data/%s/tab', self::BASE_URL, rawurlencode($sectorName));
+        $url = sprintf('%s/data/%s/tab', $this->baseUrl, rawurlencode($sectorName));
         $this->logger->info("Downloading sector data from TravellerMap", ['url' => $url]);
 
         try {

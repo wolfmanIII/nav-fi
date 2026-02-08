@@ -7,7 +7,9 @@ use App\Entity\Route;
 use App\Entity\RouteWaypoint;
 use App\Entity\Asset;
 use App\Form\RouteType;
+use App\Form\RouteWaypointType;
 use App\Service\ListViewHelper;
+use App\Service\RouteWaypointService;
 use App\Service\TravellerMapSectorLookup;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -144,8 +146,12 @@ final class RouteController extends BaseController
     }
 
     #[RouteAttr('/route/details/{id}', name: 'app_route_details', methods: ['GET'])]
-    public function details(int $id, Request $request, EntityManagerInterface $em): Response
-    {
+    public function details(
+        int $id,
+        Request $request,
+        EntityManagerInterface $em,
+        TravellerMapSectorLookup $travellerMap
+    ): Response {
         $user = $this->getUser();
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
@@ -156,34 +162,35 @@ final class RouteController extends BaseController
             throw new NotFoundHttpException();
         }
 
-        $startHex = $route->getStartHex();
-        $sector = null;
+        // Determina hex/sector da mostrare sulla mappa
         $queryHex = trim((string) $request->query->get('marker_hex'));
         $querySector = trim((string) $request->query->get('marker_sector'));
+
         if ($queryHex !== '') {
-            $startHex = $queryHex;
+            $hex = $queryHex;
             $sector = $querySector !== '' ? $querySector : null;
         } elseif ($route->getWaypoints()->count() > 0) {
             $firstWaypoint = $route->getWaypoints()->first() ?: null;
-            $startHex = $startHex ?: $firstWaypoint?->getHex();
+            $hex = $route->getStartHex() ?: $firstWaypoint?->getHex();
             $sector = $firstWaypoint?->getSector();
         } else {
+            $hex = $route->getStartHex();
             $sector = null;
         }
-        $mapUrl = 'https://travellermap.com/';
-        if ($startHex && $sector) {
-            $mapUrl .= 'go/' . rawurlencode($sector) . '/' . rawurlencode($startHex);
-        } elseif ($startHex) {
-            $mapUrl .= '?marker_hex=' . rawurlencode($startHex);
-        }
+
+        $mapUrl = $travellerMap->buildMapUrl($sector, $hex);
+
+        // Form per modale aggiunta waypoint
+        $waypointForm = $this->createForm(RouteWaypointType::class, new RouteWaypoint());
 
         return $this->render('route/details.html.twig', [
             'controller_name' => self::CONTROLLER_NAME,
             'route' => $route,
             'mapUrl' => $mapUrl,
-            'currentHex' => $startHex,
+            'currentHex' => $hex,
             'currentSector' => $sector,
             'asset' => $route->getAsset(),
+            'waypointForm' => $waypointForm->createView(),
         ]);
     }
 
@@ -233,51 +240,40 @@ final class RouteController extends BaseController
     }
 
     #[RouteAttr('/route/{id}/waypoint', name: 'app_route_waypoint_add', methods: ['POST'])]
-    public function addWaypoint(int $id, Request $request, EntityManagerInterface $em, TravellerMapSectorLookup $lookup): JsonResponse
-    {
+    public function addWaypoint(
+        int $id,
+        Request $request,
+        EntityManagerInterface $em,
+        RouteWaypointService $waypointService,
+        TravellerMapSectorLookup $sectorLookup
+    ): JsonResponse {
         $user = $this->getUser();
         if (!$user instanceof User) {
             return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
         }
 
-        $route = $em->getRepository(Route::class)->findOneForUser($id, $user);
+        $route = $em->getRepository(Route::class)->findOneForUserWithWaypoints($id, $user);
         if (!$route) {
             return new JsonResponse(['error' => 'Route not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $data = json_decode($request->getContent(), true);
-        $hex = strtoupper(trim($data['hex'] ?? ''));
-        $sector = trim($data['sector'] ?? '');
-        $notes = trim($data['notes'] ?? '');
-
-        if ($hex === '' || $sector === '') {
-            return new JsonResponse(['error' => 'Hex and Sector are required'], Response::HTTP_BAD_REQUEST);
-        }
-
-        // Lookup world data
-        $worldData = $lookup->lookupWorld($sector, $hex);
-        $world = $worldData['world'] ?? null;
-        $uwp = $worldData['uwp'] ?? null;
-
-        // Calcola posizione
-        $maxPosition = 0;
-        foreach ($route->getWaypoints() as $wp) {
-            if ($wp->getPosition() > $maxPosition) {
-                $maxPosition = $wp->getPosition();
-            }
-        }
-
         $waypoint = new RouteWaypoint();
-        $waypoint->setHex($hex);
-        $waypoint->setSector($sector);
-        $waypoint->setWorld($world);
-        $waypoint->setUwp($uwp);
-        $waypoint->setNotes($notes);
-        $waypoint->setPosition($maxPosition + 1);
-        $waypoint->setRoute($route);
+        $form = $this->createForm(RouteWaypointType::class, $waypoint);
+        $form->submit($request->request->all()['route_waypoint'] ?? []);
 
-        $em->persist($waypoint);
+        if (!$form->isValid()) {
+            return new JsonResponse(['error' => 'Invalid form data'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $waypointService->addWaypoint($route, $waypoint);
         $em->flush();
+
+        // Ottieni zona per JS
+        $zone = null;
+        if ($waypoint->getSector() && $waypoint->getHex()) {
+            $worldData = $sectorLookup->lookupWorld($waypoint->getSector(), $waypoint->getHex());
+            $zone = $worldData['zone'] ?? null;
+        }
 
         return new JsonResponse([
             'success' => true,
@@ -289,19 +285,26 @@ final class RouteController extends BaseController
                 'world' => $waypoint->getWorld(),
                 'uwp' => $waypoint->getUwp(),
                 'notes' => $waypoint->getNotes(),
+                'jumpDistance' => $waypoint->getJumpDistance(),
+                'zone' => $zone,
             ],
+            'routeFuelEstimate' => $route->getFuelEstimate(),
         ]);
     }
 
     #[RouteAttr('/route/{id}/waypoint/{waypointId}', name: 'app_route_waypoint_delete', methods: ['DELETE'])]
-    public function removeWaypoint(int $id, int $waypointId, EntityManagerInterface $em): JsonResponse
-    {
+    public function removeWaypoint(
+        int $id,
+        int $waypointId,
+        EntityManagerInterface $em,
+        RouteWaypointService $waypointService
+    ): JsonResponse {
         $user = $this->getUser();
         if (!$user instanceof User) {
             return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
         }
 
-        $route = $em->getRepository(Route::class)->findOneForUser($id, $user);
+        $route = $em->getRepository(Route::class)->findOneForUserWithWaypoints($id, $user);
         if (!$route) {
             return new JsonResponse(['error' => 'Route not found'], Response::HTTP_NOT_FOUND);
         }
@@ -311,9 +314,12 @@ final class RouteController extends BaseController
             return new JsonResponse(['error' => 'Waypoint not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $em->remove($waypoint);
+        $waypointService->removeWaypoint($route, $waypoint);
         $em->flush();
 
-        return new JsonResponse(['success' => true]);
+        return new JsonResponse([
+            'success' => true,
+            'routeFuelEstimate' => $route->getFuelEstimate(),
+        ]);
     }
 }

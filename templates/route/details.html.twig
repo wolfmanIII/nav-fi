@@ -60,7 +60,7 @@
                 <div class="text-lg text-cyan-100">{{ route.campaign ? route.campaign.title : '—' }}</div>
             </div>
             <div class="rounded-xl border border-base-300 bg-base-200 p-4">
-                <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Jump / Total Route Fuel</div>
+                <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Jump Rating / Total Route Fuel</div>
                 <div class="text-lg text-cyan-100">
                     {{ route.jumpRating ?? '—' }} / {{ route_total_fuel(route) ?? '—' }}
                 </div>
@@ -150,51 +150,73 @@
                 <dialog class="modal" data-route-waypoint-modal-target="modal">
                     <div class="modal-box bg-slate-900 border border-slate-700">
                         <h3 class="font-orbitron text-lg font-bold text-cyan-400 uppercase tracking-widest mb-6">Add Waypoint</h3>
-                        <form data-action="submit->route-waypoint-modal#submit">
+                        {{ form_start(waypointForm, {
+                            'attr': {
+                                'data-action': 'submit->route-waypoint-modal#submit',
+                                'data-route-waypoint-modal-target': 'form'
+                            }
+                        }) }}
                             <div class="grid grid-cols-2 gap-4 mb-4">
                                 <div>
                                     <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">Hex</label>
-                                    <input type="text" 
-                                           class="input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50 uppercase" 
-                                           placeholder="e.g. 1905" 
-                                           maxlength="4"
-                                           data-route-waypoint-modal-target="inputHex"
-                                           data-action="blur->route-waypoint-modal#lookup">
+                                    {{ form_widget(waypointForm.hex, {
+                                        'attr': {
+                                            'class': 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50 uppercase',
+                                            'placeholder': 'e.g. 1905',
+                                            'data-route-waypoint-modal-target': 'inputHex',
+                                            'data-action': 'blur->route-waypoint-modal#lookup'
+                                        }
+                                    }) }}
                                 </div>
                                 <div>
                                     <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">Sector</label>
-                                    <input type="text" 
-                                           class="input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50" 
-                                           placeholder="e.g. Spinward Marches"
-                                           data-route-waypoint-modal-target="inputSector"
-                                           data-action="blur->route-waypoint-modal#lookup">
+                                    {{ form_widget(waypointForm.sector, {
+                                        'attr': {
+                                            'class': 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50',
+                                            'placeholder': 'e.g. Spinward Marches',
+                                            'data-route-waypoint-modal-target': 'inputSector',
+                                            'data-action': 'blur->route-waypoint-modal#lookup'
+                                        }
+                                    }) }}
                                 </div>
                                 <div>
                                     <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">World <span class="text-slate-500 normal-case">(auto)</span></label>
-                                    <input type="text" 
-                                           class="input input-bordered input-sm w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono cursor-not-allowed" 
-                                           readonly
-                                           data-route-waypoint-modal-target="inputWorld">
+                                    {{ form_widget(waypointForm.world, {
+                                        'attr': {
+                                            'class': 'input input-bordered input-sm w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono cursor-not-allowed',
+                                            'readonly': true,
+                                            'data-route-waypoint-modal-target': 'inputWorld'
+                                        }
+                                    }) }}
                                 </div>
                                 <div>
                                     <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">UWP <span class="text-slate-500 normal-case">(auto)</span></label>
-                                    <input type="text" 
-                                           class="input input-bordered input-sm w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono cursor-not-allowed" 
-                                           readonly
-                                           data-route-waypoint-modal-target="inputUwp">
+                                    {{ form_widget(waypointForm.uwp, {
+                                        'attr': {
+                                            'class': 'input input-bordered input-sm w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono cursor-not-allowed',
+                                            'readonly': true,
+                                            'data-route-waypoint-modal-target': 'inputUwp'
+                                        }
+                                    }) }}
                                 </div>
                             </div>
                             <div class="mb-6">
                                 <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">Notes</label>
-                                <textarea class="textarea textarea-bordered textarea-sm w-full bg-slate-950/50 border-slate-800 h-20 focus:border-cyan-500/50 font-rajdhani"
-                                          placeholder="Optional notes..."
-                                          data-route-waypoint-modal-target="inputNotes"></textarea>
+                                {{ form_widget(waypointForm.notes, {
+                                    'attr': {
+                                        'class': 'textarea textarea-bordered textarea-sm w-full bg-slate-950/50 border-slate-800 h-20 focus:border-cyan-500/50 font-rajdhani',
+                                        'placeholder': 'Optional notes...',
+                                        'data-route-waypoint-modal-target': 'inputNotes'
+                                    }
+                                }) }}
                             </div>
+                            {{ form_widget(waypointForm.position) }}
+                            {{ form_widget(waypointForm.jumpDistance) }}
                             <div class="modal-action">
                                 <button type="button" class="btn btn-ghost" data-action="route-waypoint-modal#closeModal">Cancel</button>
                                 <button type="submit" class="btn btn-primary">Add Waypoint</button>
                             </div>
-                        </form>
+                        {{ form_end(waypointForm) }}
                     </div>
                     <form method="dialog" class="modal-backdrop">
                         <button>close</button>
@@ -238,7 +260,8 @@
                                 <td class="font-mono text-xs p-2 text-slate-500">{{ waypoint.position }}</td>
                                 <td class="font-mono text-xs p-2 border-r border-slate-800/50 font-bold text-emerald-400">{{ waypoint.hex }}</td>
                                 <td class="font-mono text-xs p-2">{{ waypoint.sector ?? '—' }}</td>
-                                <td class="font-mono text-xs p-2 font-bold">{{ waypoint.world ?? '—' }}</td>
+                                {% set zone = world_zone(waypoint.sector, waypoint.hex) %}
+                                <td class="font-mono text-xs p-2 font-bold {{ zone == 'R' ? 'text-red-400' : (zone == 'A' ? 'text-amber-400' : '') }}">{{ waypoint.world ?? '—' }}</td>
                                 <td class="font-mono text-xs p-2">{{ waypoint.uwp ?? '—' }}</td>
                                 <td class="font-mono text-xs p-2 text-right text-emerald-300">{{ waypoint.jumpDistance ?? '—' }}</td>
                                 <td class="text-center p-2">

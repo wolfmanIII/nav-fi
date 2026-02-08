@@ -7,6 +7,7 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static targets = [
         'modal',
+        'form',
         'inputHex',
         'inputSector',
         'inputWorld',
@@ -75,7 +76,6 @@ export default class extends Controller {
 
         const hex = this.inputHexTarget.value.trim().toUpperCase();
         const sector = this.inputSectorTarget.value.trim();
-        const notes = this.inputNotesTarget.value.trim();
 
         if (!hex || !sector) {
             alert('Hex e Sector sono obbligatori');
@@ -83,10 +83,11 @@ export default class extends Controller {
         }
 
         try {
+            const formData = new FormData(this.formTarget);
+
             const response = await fetch(this.addUrlValue, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ hex, sector, notes })
+                body: formData
             });
 
             const data = await response.json();
@@ -134,21 +135,40 @@ export default class extends Controller {
     addRowToTable(wp) {
         const row = document.createElement('tr');
         row.className = 'hover:bg-emerald-500/5 transition-colors text-slate-300';
+
+        // Determina classe colore per zona
+        let zoneClass = '';
+        if (wp.zone === 'R') zoneClass = 'text-red-400';
+        else if (wp.zone === 'A') zoneClass = 'text-amber-400';
+
         row.innerHTML = `
             <td class="text-center p-2">
+                ${wp.hex ? `
+                    <button type="button"
+                            class="btn btn-ghost btn-xs text-[10px] uppercase font-bold tracking-widest text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 flex items-center gap-1.5"
+                            data-action="route-map#jump"
+                            data-route-map-target="button"
+                            data-hex="${wp.hex}"
+                            data-sector="${wp.sector || ''}">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                        MAP
+                    </button>
+                ` : '<span class="opacity-30">—</span>'}
+            </td>
+            <td class="font-mono text-xs p-2 text-slate-500">${wp.position}</td>
+            <td class="font-mono text-xs p-2 border-r border-slate-800/50 font-bold text-emerald-400">${wp.hex}</td>
+            <td class="font-mono text-xs p-2">${wp.sector || '—'}</td>
+            <td class="font-mono text-xs p-2 font-bold ${zoneClass}">${wp.world || '—'}</td>
+            <td class="font-mono text-xs p-2">${wp.uwp || '—'}</td>
+            <td class="font-mono text-xs p-2 text-right text-emerald-300">${wp.jumpDistance || '—'}</td>
+            <td class="text-center p-2">
                 <button type="button"
-                        class="btn btn-ghost btn-xs text-[10px] uppercase font-bold tracking-widest text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                        class="btn btn-ghost btn-xs text-red-400 hover:text-red-300 hover:bg-red-500/10"
                         data-action="route-waypoint-modal#deleteWaypoint"
                         data-waypoint-id="${wp.id}">
                     ✕
                 </button>
             </td>
-            <td class="font-mono text-xs p-2 text-slate-500">${wp.position}</td>
-            <td class="font-mono text-xs p-2 border-r border-slate-800/50 font-bold text-emerald-400">${wp.hex}</td>
-            <td class="font-mono text-xs p-2">${wp.sector || '—'}</td>
-            <td class="font-mono text-xs p-2 font-bold">${wp.world || '—'}</td>
-            <td class="font-mono text-xs p-2">${wp.uwp || '—'}</td>
-            <td class="font-mono text-xs p-2 text-right text-emerald-300">${wp.jumpDistance || '—'}</td>
         `;
         this.tableBodyTarget.appendChild(row);
     }

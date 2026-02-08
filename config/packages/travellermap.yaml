@@ -1,0 +1,6 @@
+parameters:
+  # URL base di TravellerMap
+  app.travellermap.base_url: "https://travellermap.com"
+
+  # Percorso dove i dati del settore TravellerMap (.tab) verranno salvati
+  app.travellermap.sector_storage_path: "%kernel.project_dir%/var/data/sectors"

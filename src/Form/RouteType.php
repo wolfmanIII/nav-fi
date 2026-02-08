@@ -6,35 +6,21 @@ use App\Entity\Campaign;
 use App\Entity\Route;
 use App\Entity\Asset;
 use App\Form\Config\DayYearLimits;
-use App\Form\RouteWaypointType;
-use App\Form\Type\ImperialDateType;
-use App\Model\ImperialDate;
-use App\Service\ImperialDateHelper;
-use App\Service\RouteMathHelper;
-use App\Service\TravellerMapSectorLookup;
 use App\Repository\AssetRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Count;
 
 class RouteType extends AbstractType
 {
     public function __construct(
-        private readonly RouteMathHelper $routeMathHelper,
-        private readonly DayYearLimits $limits,
-        private readonly ImperialDateHelper $imperialDateHelper,
-        private readonly TravellerMapSectorLookup $sectorLookup
+        private readonly DayYearLimits $limits
     ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -42,12 +28,6 @@ class RouteType extends AbstractType
         $user = $options['user'];
         /** @var Route $route */
         $route = $builder->getData();
-
-        $campaignStartYear = $route->getCampaign()?->getStartingYear()
-            ?? $route->getAsset()?->getCampaign()?->getStartingYear();
-        $minYear = $campaignStartYear ?? $this->limits->getYearMin();
-        $startDate = new ImperialDate($route->getStartYear(), $route->getStartDay());
-        $destDate = new ImperialDate($route->getDestYear(), $route->getDestDay());
 
         $builder
             ->add('name', TextType::class, [
@@ -145,138 +125,7 @@ class RouteType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 3],
             ])
-            ->add('waypoints', CollectionType::class, [
-                'entry_type' => RouteWaypointType::class,
-                'entry_options' => ['label' => false],
-                'allow_add' => true,
-                'allow_delete' => true,
-                'by_reference' => false,
-                'required' => false,
-                'label' => false,
-                'prototype' => true,
-                'constraints' => [
-                    new Count(
-                        min: 1,
-                        minMessage: 'Add at least one waypoint to define a route.',
-                    ),
-                ],
-            ])
         ;
-
-        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
-            /** @var Route $route */
-            $route = $event->getData();
-            $form = $event->getForm();
-
-            /** @var ImperialDate|null $start */
-            $start = $form->get('startDate')->getData();
-            /** @var ImperialDate|null $dest */
-            $dest = $form->get('destDate')->getData();
-            if ($start instanceof ImperialDate) {
-                $route->setStartDay($start->getDay());
-                $route->setStartYear($start->getYear());
-            } else {
-                $route->setStartDay(null);
-                $route->setStartYear(null);
-            }
-            if ($dest instanceof ImperialDate) {
-                $route->setDestDay($dest->getDay());
-                $route->setDestYear($dest->getYear());
-            } else {
-                $route->setDestDay(null);
-                $route->setDestYear(null);
-            }
-
-            $startKey = $this->imperialDateHelper->toKey($route->getStartDay(), $route->getStartYear());
-            $destKey = $this->imperialDateHelper->toKey($route->getDestDay(), $route->getDestYear());
-            if ($startKey !== null && $destKey !== null && $startKey > $destKey) {
-                $form->get('startDate')->addError(new FormError('Start date must be before destination date.'));
-            }
-
-            $waypoints = $route->getWaypoints();
-            $firstWaypoint = $waypoints->first() ?: null;
-            $lastWaypoint = $waypoints->last() ?: null;
-            $route->setStartHex($firstWaypoint?->getHex() ?: null);
-            $route->setDestHex($lastWaypoint?->getHex() ?: null);
-
-            $hexes = [];
-            $index = 0;
-            foreach ($waypoints as $waypoint) {
-                $waypoint->setPosition(++$index);
-                $hexes[] = (string) $waypoint->getHex();
-            }
-
-            $distances = $this->routeMathHelper->segmentDistances($hexes);
-
-            // Riempimento automatico jump rating dall'asset se non specificato
-            if ($route->getJumpRating() === null) {
-                $assetRating = $this->routeMathHelper->getAssetJumpRating($route->getAsset());
-                if ($assetRating !== null) {
-                    $route->setJumpRating($assetRating);
-                }
-            }
-
-            $jumpRating = $route->getJumpRating(); // Ora usa strettamente ciò che è sulla rotta (o ciò che abbiamo appena riempito)
-
-            $hullTons = $this->routeMathHelper->getAssetHullTonnage($route->getAsset());
-            $fuelCapacity = $this->routeMathHelper->getAssetFuelCapacity($route->getAsset());
-
-            foreach ($waypoints as $idx => $waypoint) {
-                $distance = $distances[$idx] ?? null;
-                $waypoint->setJumpDistance($distance);
-
-                if ($distance === null && $idx > 0) {
-                    $form->get('waypoints')->addError(new FormError('All waypoint hexes must be in 4-digit format.'));
-                    continue;
-                }
-
-                // 1. Controllo Jump Rating
-                if ($jumpRating !== null && $distance !== null && $distance > $jumpRating) {
-                    $form->get('waypoints')->addError(new FormError(
-                        sprintf('Jump %d exceeds rating %d on segment #%d.', $distance, $jumpRating, $idx + 1)
-                    ));
-                }
-
-                // 2. Controllo Capacità Carburante (Ogni singolo salto deve stare nei serbatoi)
-                if ($hullTons !== null && $fuelCapacity !== null && $distance !== null) {
-                    $requiredForJump = 0.1 * $hullTons * $distance;
-                    if ($requiredForJump > $fuelCapacity) {
-                        $form->get('waypoints')->addError(new FormError(
-                            sprintf('Segment #%d requires %.2f tons of fuel, exceeding asset tank capacity (%.2f tons).', $idx + 1, $requiredForJump, $fuelCapacity)
-                        ));
-                    }
-                }
-
-                $sector = trim((string) $waypoint->getSector());
-                $hex = trim((string) $waypoint->getHex());
-                if ($sector !== '' && $hex !== '') {
-                    $lookup = $this->sectorLookup->lookupWorld($sector, $hex);
-                    if ($lookup) {
-                        $waypoint->setWorld($lookup['world'] ?? $waypoint->getWorld());
-                        $waypoint->setUwp($lookup['uwp'] ?? $waypoint->getUwp());
-                    }
-                }
-            }
-
-            // Calcola sempre il carburante richiesto basandosi sui waypoint correnti
-            $calculatedRequiredFuel = $this->routeMathHelper->estimateJumpFuel($route, $distances);
-
-            if ($route->getFuelEstimate() !== null && $calculatedRequiredFuel !== null) {
-                // Controlla se il carburante stimato è sufficiente per il requisito calcolato
-                if ((float) $route->getFuelEstimate() < (float) $calculatedRequiredFuel) {
-                    $form->get('fuelEstimate')->addError(new FormError(
-                        sprintf(
-                            'Fuel estimate (%s tons) is insufficient. Minimum required: %s tons.',
-                            $route->getFuelEstimate(),
-                            $calculatedRequiredFuel
-                        )
-                    ));
-                }
-            } elseif ($route->getFuelEstimate() === null && $calculatedRequiredFuel !== null) {
-                // Riempimento automatico se vuoto
-                $route->setFuelEstimate($calculatedRequiredFuel);
-            }
-        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -1,7 +1,4 @@
 parameters:
-    # Percorso dove i dati del settore TravellerMap (.tab) verranno salvati
-    app.cube.sector_storage_path: "%kernel.project_dir%/var/data/sectors"
-
     # Costanti Economiche (Traveller Core Update 2022)
     app.cube.economy:
         # --- FREIGHT (Merci) ---
