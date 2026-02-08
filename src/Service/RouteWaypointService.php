@@ -14,8 +14,96 @@ final class RouteWaypointService
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly TravellerMapSectorLookup $sectorLookup,
-        private readonly RouteMathHelper $routeMath
+        private readonly RouteMathHelper $routeMath,
+        private readonly RouteOptimizationService $optimizer
     ) {}
+
+    /**
+     * Verifica se la rotta ha salti che superano il jump rating.
+     */
+    public function hasInvalidJumps(Route $route): bool
+    {
+        $jumpRating = $route->getJumpRating() ?? 1;
+
+        foreach ($route->getWaypoints() as $waypoint) {
+            $distance = $waypoint->getJumpDistance();
+            if ($distance !== null && $distance > $jumpRating) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Ricalcola la rotta usando pathfinding A* e TSP.
+     * Riordina i waypoint e aggiunge quelli intermedi necessari.
+     */
+    public function recalculateRoute(Route $route): void
+    {
+        $waypoints = $route->getWaypoints()->toArray();
+        if (count($waypoints) < 2) {
+            return;
+        }
+
+        // Estrai settore dal primo waypoint
+        $sector = $waypoints[0]->getSector();
+        if (!$sector) {
+            return;
+        }
+
+        // Estrai hex di partenza e destinazioni
+        $startHex = $waypoints[0]->getHex();
+        $destinations = [];
+        foreach (array_slice($waypoints, 1) as $wp) {
+            $destinations[] = $wp->getHex();
+        }
+
+        $jumpRating = $route->getJumpRating() ?? 1;
+
+        // Calcola path ottimizzato
+        $result = $this->optimizer->optimizeMultiStopRoute($sector, $startHex, $destinations, $jumpRating);
+        $optimizedPath = $result['path'];
+
+        // Rimuovi vecchi waypoint
+        foreach ($waypoints as $wp) {
+            $route->getWaypoints()->removeElement($wp);
+            $this->em->remove($wp);
+        }
+
+        // Crea nuovi waypoint dal path ottimizzato
+        $position = 1;
+        $previousHex = null;
+        foreach ($optimizedPath as $hex) {
+            $waypoint = new RouteWaypoint();
+            $waypoint->setHex($hex);
+            $waypoint->setSector($sector);
+            $waypoint->setPosition($position++);
+            $waypoint->setRoute($route);
+
+            $this->enrichWaypointFromTravellerMap($waypoint);
+
+            // Calcola distanza dal precedente
+            if ($previousHex !== null) {
+                $distance = $this->routeMath->distance($previousHex, $hex);
+                $waypoint->setJumpDistance($distance);
+            }
+
+            $this->em->persist($waypoint);
+            $previousHex = $hex;
+        }
+
+        // Aggiorna route endpoints
+        $route->setStartHex($optimizedPath[0] ?? null);
+        $route->setDestHex($optimizedPath[array_key_last($optimizedPath)] ?? null);
+
+        // Ricalcola fuel estimate
+        $distances = $this->routeMath->segmentDistances($optimizedPath);
+        $calculatedFuel = $this->routeMath->estimateJumpFuel($route, $distances);
+        if ($calculatedFuel !== null) {
+            $route->setFuelEstimate($calculatedFuel);
+        }
+    }
 
     /**
      * Aggiunge un waypoint alla rotta e ricalcola distanze/fuel.

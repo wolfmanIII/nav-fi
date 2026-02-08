@@ -230,11 +230,13 @@ class RouteOptimizationService
         // TODO: Ottimizzare se i settori diventano enormi.
 
         foreach ($systemMap as $hex => $data) {
-            if ($hex === $centerHex) continue;
+            // PHP converte chiavi stringa numeriche in int - forza a stringa
+            $hexStr = (string) $hex;
+            if ($hexStr === $centerHex) continue;
 
-            $dist = $this->mathHelper->distance($centerHex, $hex);
+            $dist = $this->mathHelper->distance($centerHex, $hexStr);
             if ($dist !== null && $dist <= $jumpRating) {
-                $neighbors[] = $hex;
+                $neighbors[] = $hexStr;
             }
         }
         return $neighbors;

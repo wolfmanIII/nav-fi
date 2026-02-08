@@ -150,7 +150,8 @@ final class RouteController extends BaseController
         int $id,
         Request $request,
         EntityManagerInterface $em,
-        TravellerMapSectorLookup $travellerMap
+        TravellerMapSectorLookup $travellerMap,
+        RouteWaypointService $waypointService
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof User) {
@@ -191,6 +192,7 @@ final class RouteController extends BaseController
             'currentSector' => $sector,
             'asset' => $route->getAsset(),
             'waypointForm' => $waypointForm->createView(),
+            'hasInvalidJumps' => $waypointService->hasInvalidJumps($route),
         ]);
     }
 
@@ -321,5 +323,31 @@ final class RouteController extends BaseController
             'success' => true,
             'routeFuelEstimate' => $route->getFuelEstimate(),
         ]);
+    }
+
+    #[RouteAttr('/route/{id}/recalculate', name: 'app_route_recalculate', methods: ['POST'])]
+    public function recalculateRoute(
+        int $id,
+        EntityManagerInterface $em,
+        RouteWaypointService $waypointService
+    ): JsonResponse {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $route = $em->getRepository(Route::class)->findOneForUserWithWaypoints($id, $user);
+        if (!$route) {
+            return new JsonResponse(['error' => 'Route not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $waypointService->recalculateRoute($route);
+            $em->flush();
+
+            return new JsonResponse(['success' => true]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
     }
 }

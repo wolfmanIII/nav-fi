@@ -21,7 +21,8 @@ export default class extends Controller {
         addUrl: String,
         deleteUrl: String,
         lookupUrl: String,
-        routeId: Number
+        routeId: Number,
+        recalculateUrl: String
     };
 
     // Apre la modale
@@ -185,6 +186,35 @@ export default class extends Controller {
         const rows = this.tableBodyTarget.querySelectorAll('tr:not(.empty-row)');
         if (rows.length === 0 && this.hasEmptyRowTarget) {
             this.emptyRowTarget.classList.remove('hidden');
+        }
+    }
+
+    // Ricalcola la rotta usando pathfinding
+    async recalculate(event) {
+        event.preventDefault();
+
+        if (!confirm('Ricalcolare la rotta? I waypoint verranno riordinati e ne verranno aggiunti di nuovi se necessario.')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(this.recalculateUrlValue, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert(data.error || 'Errore nel ricalcolo');
+            }
+        } catch (e) {
+            console.error('Recalculate failed:', e);
+            alert('Errore di rete');
         }
     }
 }

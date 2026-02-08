@@ -45,9 +45,8 @@ class RouteWaypointType extends AbstractType
                     'readonly' => true,
                 ],
             ])
-            ->add('jumpDistance', TextType::class, [
+            ->add('jumpDistance', HiddenType::class, [
                 'required' => false,
-                'attr' => ['class' => 'input m-1 w-full', 'readonly' => true],
             ])
             ->add('notes', TextareaType::class, [
                 'required' => false,

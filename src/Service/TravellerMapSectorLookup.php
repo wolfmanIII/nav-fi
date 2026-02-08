@@ -101,8 +101,8 @@ class TravellerMapSectorLookup
                 continue;
             }
 
-            // Dividi per tabulazioni
-            $parts = preg_split('/\t+/', $line);
+            // Dividi per tabulazioni (explode preserva colonne vuote)
+            $parts = explode("\t", $line);
 
             // Controlla Riga Intestazione
             // Se la riga contiene "Hex" e "Name", la trattiamo come intestazione e rimappiamo le colonne
