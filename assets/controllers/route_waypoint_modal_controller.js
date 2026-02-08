@@ -15,7 +15,8 @@ export default class extends Controller {
         'inputNotes',
         'tableBody',
         'emptyRow',
-        'invalidJumpAlert'
+        'invalidJumpAlert',
+        'loadingOverlay'
     ];
 
     static values = {
@@ -150,12 +151,12 @@ export default class extends Controller {
     // Aggiunge riga alla tabella
     addRowToTable(wp) {
         const row = document.createElement('tr');
-        row.className = 'hover:bg-emerald-500/5 transition-colors text-slate-300';
+        row.className = 'hover:bg-emerald-500/5 transition-colors text-slate-300 border-b border-slate-800/50';
 
-        // Determina classe colore per zona
-        let zoneClass = '';
-        if (wp.zone === 'R') zoneClass = 'text-red-400';
-        else if (wp.zone === 'A') zoneClass = 'text-amber-400';
+        // Determina classe badge per zona
+        let badgeClass = 'badge-ghost text-slate-300';
+        if (wp.zone === 'R') badgeClass = 'badge-error text-white';
+        else if (wp.zone === 'A') badgeClass = 'badge-warning text-black';
 
         row.innerHTML = `
             <td class="text-center p-2">
@@ -171,18 +172,22 @@ export default class extends Controller {
                     </button>
                 ` : '<span class="opacity-30">—</span>'}
             </td>
-            <td class="font-mono text-xs p-2 text-slate-500">${wp.position}</td>
+            <td class="font-mono text-xs p-2 text-slate-500 text-center">${wp.position}</td>
             <td class="font-mono text-xs p-2 border-r border-slate-800/50 font-bold text-emerald-400">${wp.hex}</td>
             <td class="font-mono text-xs p-2">${wp.sector || '—'}</td>
-            <td class="font-mono text-xs p-2 font-bold ${zoneClass}">${wp.world || '—'}</td>
+            <td class="p-2">
+                <span class="badge badge-sm font-mono font-bold ${badgeClass}">
+                    ${wp.world || '—'}
+                </span>
+            </td>
             <td class="font-mono text-xs p-2">${wp.uwp || '—'}</td>
             <td class="font-mono text-xs p-2 text-right text-emerald-300">${wp.jumpDistance || '—'}</td>
             <td class="text-center p-2">
                 <button type="button"
-                        class="btn btn-ghost btn-xs text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                        class="btn btn-ghost btn-xs text-red-500 hover:text-red-400 hover:bg-red-500/10"
                         data-action="route-waypoint-modal#deleteWaypoint"
                         data-waypoint-id="${wp.id}">
-                    ✕
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M8 6l1-3h6l1 3"></path></svg>
                 </button>
             </td>
         `;
@@ -212,6 +217,11 @@ export default class extends Controller {
             return;
         }
 
+        // Show loading overlay
+        if (this.hasLoadingOverlayTarget) {
+            this.loadingOverlayTarget.classList.remove('hidden');
+        }
+
         try {
             const response = await fetch(this.recalculateUrlValue, {
                 method: 'POST',
@@ -226,10 +236,18 @@ export default class extends Controller {
                 window.location.reload();
             } else {
                 alert(data.error || 'Errore nel ricalcolo');
+                // Hide overlay on error
+                if (this.hasLoadingOverlayTarget) {
+                    this.loadingOverlayTarget.classList.add('hidden');
+                }
             }
         } catch (e) {
             console.error('Recalculate failed:', e);
             alert('Errore di rete');
+            // Hide overlay on error
+            if (this.hasLoadingOverlayTarget) {
+                this.loadingOverlayTarget.classList.add('hidden');
+            }
         }
     }
 }
