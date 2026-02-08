@@ -113,7 +113,7 @@ final class RouteWaypointService
         $this->enrichWaypointFromTravellerMap($waypoint);
         $this->assignPosition($route, $waypoint);
 
-        $waypoint->setRoute($route);
+        $route->addWaypoint($waypoint);
         $this->em->persist($waypoint);
 
         $this->recalculateDistances($route, $waypoint);
@@ -164,20 +164,22 @@ final class RouteWaypointService
 
     private function recalculateDistances(Route $route, RouteWaypoint $newWaypoint): void
     {
-        $hexes = [];
-        foreach ($route->getWaypoints() as $wp) {
-            $hexes[] = (string) $wp->getHex();
-        }
-        $hexes[] = (string) $newWaypoint->getHex();
+        $waypoints = $route->getWaypoints()->toArray();
 
+        // Se newWaypoint non è già nella lista, aggiungilo
+        if (!in_array($newWaypoint, $waypoints, true)) {
+            $waypoints[] = $newWaypoint;
+        }
+
+        // Ordina per posizione per garantire la sequenza corretta
+        usort($waypoints, fn($a, $b) => $a->getPosition() <=> $b->getPosition());
+
+        $hexes = array_map(fn($wp) => (string) $wp->getHex(), $waypoints);
         $distances = $this->routeMath->segmentDistances($hexes);
 
-        $idx = 0;
-        foreach ($route->getWaypoints() as $wp) {
+        foreach ($waypoints as $idx => $wp) {
             $wp->setJumpDistance($distances[$idx] ?? null);
-            $idx++;
         }
-        $newWaypoint->setJumpDistance($distances[$idx] ?? null);
     }
 
     private function recalculateDistancesAfterRemoval(Route $route): void

@@ -291,6 +291,7 @@ final class RouteController extends BaseController
                 'zone' => $zone,
             ],
             'routeFuelEstimate' => $route->getFuelEstimate(),
+            'hasInvalidJumps' => $waypointService->hasInvalidJumps($route),
         ]);
     }
 
@@ -322,6 +323,7 @@ final class RouteController extends BaseController
         return new JsonResponse([
             'success' => true,
             'routeFuelEstimate' => $route->getFuelEstimate(),
+            'hasInvalidJumps' => $waypointService->hasInvalidJumps($route),
         ]);
     }
 

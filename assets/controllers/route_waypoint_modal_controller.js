@@ -14,7 +14,8 @@ export default class extends Controller {
         'inputUwp',
         'inputNotes',
         'tableBody',
-        'emptyRow'
+        'emptyRow',
+        'invalidJumpAlert'
     ];
 
     static values = {
@@ -24,6 +25,7 @@ export default class extends Controller {
         routeId: Number,
         recalculateUrl: String
     };
+
 
     // Apre la modale
     openModal() {
@@ -97,6 +99,7 @@ export default class extends Controller {
                 this.addRowToTable(data.waypoint);
                 this.closeModal();
                 this.hideEmptyRow();
+                this.toggleInvalidJumpAlert(data.hasInvalidJumps);
             } else {
                 alert(data.error || 'Errore nel salvataggio');
             }
@@ -123,12 +126,24 @@ export default class extends Controller {
             if (data.success) {
                 row.remove();
                 this.checkEmptyTable();
+                this.toggleInvalidJumpAlert(data.hasInvalidJumps);
             } else {
                 alert(data.error || 'Errore nella rimozione');
             }
         } catch (e) {
             console.error('Delete failed:', e);
             alert('Errore di rete');
+        }
+    }
+
+    // Mostra/Nasconde alert salti invalidi
+    toggleInvalidJumpAlert(show) {
+        if (this.hasInvalidJumpAlertTarget) {
+            if (show) {
+                this.invalidJumpAlertTarget.classList.remove('hidden');
+            } else {
+                this.invalidJumpAlertTarget.classList.add('hidden');
+            }
         }
     }
 
