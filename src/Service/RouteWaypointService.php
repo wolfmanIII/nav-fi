@@ -23,7 +23,7 @@ final class RouteWaypointService
      */
     public function hasInvalidJumps(Route $route): bool
     {
-        $jumpRating = $route->getJumpRating() ?? 1;
+        $jumpRating = $this->routeMath->resolveJumpRating($route) ?? 1;
 
         foreach ($route->getWaypoints() as $waypoint) {
             $distance = $waypoint->getJumpDistance();
@@ -59,7 +59,7 @@ final class RouteWaypointService
             $destinations[] = $wp->getHex();
         }
 
-        $jumpRating = $route->getJumpRating() ?? 1;
+        $jumpRating = $this->routeMath->resolveJumpRating($route) ?? 1;
 
         // Calcola path ottimizzato
         $result = $this->optimizer->optimizeMultiStopRoute($sector, $startHex, $destinations, $jumpRating);

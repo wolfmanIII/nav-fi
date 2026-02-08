@@ -86,6 +86,11 @@ final class RouteController extends BaseController
             }
         }
 
+        // Ensure at least one waypoint exists for the Starting Position form
+        if ($route->getWaypoints()->isEmpty()) {
+            $route->addWaypoint(new RouteWaypoint());
+        }
+
         $form = $this->createForm(RouteType::class, $route, ['user' => $user]);
         $form->handleRequest($request);
 
@@ -123,10 +128,25 @@ final class RouteController extends BaseController
             throw new NotFoundHttpException();
         }
 
+        // Support dynamic form updates via Turbo Frames
+        $assetId = $request->query->get('asset');
+        if ($assetId) {
+            $asset = $em->getRepository(Asset::class)->find($assetId);
+            if ($asset) {
+                $route->setAsset($asset);
+            }
+        }
+
+        // Ensure at least one waypoint exists for the Starting Position form
+        if ($route->getWaypoints()->isEmpty()) {
+            $route->addWaypoint(new RouteWaypoint());
+        }
+
         $form = $this->createForm(RouteType::class, $route, ['user' => $user]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($route); // Verify persistence if asset changed
             $em->flush();
 
             return $this->redirectToRoute('app_route_index');

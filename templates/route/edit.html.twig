@@ -5,7 +5,7 @@
 {% block pageContent %}
 
     <div class="flex flex-col items-stretch gap-4">
-        {{ form_start(form) }}
+        {{ form_start(form, { attr: { 'data-controller': 'form-visibility' } }) }}
 
         {% embed 'components/_hero_header.html.twig' with {
             icon: 'icons/routes.html.twig',
@@ -16,9 +16,22 @@
             description: 'Establish sectors, hex-coords and jump-logic: the map is NOT the territory.'
         } %}
             {% block actions %}
+                {% import '_tooltip.html.twig' as tooltip %}
                 <a href="{{ path('app_route_index') }}" class="btn btn-outline btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase">
                     {% include 'icons/back.html.twig' %}
                 </a>
+                {% if route.id %}
+                    {{ tooltip.link(
+                        'Manage Waypoints & Details',
+                        'Waypoints',
+                        'icons/waypoint.html.twig',
+                        path('app_route_details', {id: route.id}),
+                        {
+                            position: 'tooltip-bottom',
+                            linkClass: 'btn btn-outline btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase text-cyan-500 hover:text-cyan-400 border-cyan-500/50 hover:border-cyan-400'
+                        }
+                    ) }}
+                {% endif %}
             {% endblock %}
         {% endembed %}
 
@@ -71,6 +84,52 @@
             </div>
         </fieldset>
 
+        <div data-form-visibility-target="container" class="space-y-6">
+
+        <turbo-frame id="route-ship-data">
+        {% if form.shipHull is defined or form.shipJump is defined or form.shipFuel is defined %}
+        <fieldset class="grid grid-cols-1 md:grid-cols-3 bg-red-900/10 border border-red-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
+            <legend class="px-3 py-1 rounded bg-red-900/50 border border-red-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-red-400 uppercase">Missing Ship Data</legend>
+            <div class="col-span-full mb-2 text-xs text-red-300">
+                The selected ship is missing critical navigation data. Please provide it below to continue. This will update the ship's specifications.
+            </div>
+            
+            {% if form.shipHull is defined %}
+            <div class="col-span-1">
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.shipHull, 'Ship Hull (dTons)', { label_attr: { class: 'mb-0 text-red-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-70' } }) }}
+                </div>
+                {{ form_widget(form.shipHull) }}
+                {{ form_errors(form.shipHull) }}
+                <div class="text-[10px] text-red-400/70 mt-1">{{ form_help(form.shipHull) }}</div>
+            </div>
+            {% endif %}
+            
+            {% if form.shipJump is defined %}
+            <div class="col-span-1">
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.shipJump, 'Ship Jump Rating', { label_attr: { class: 'mb-0 text-red-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-70' } }) }}
+                </div>
+                {{ form_widget(form.shipJump) }}
+                {{ form_errors(form.shipJump) }}
+                <div class="text-[10px] text-red-400/70 mt-1">{{ form_help(form.shipJump) }}</div>
+            </div>
+            {% endif %}
+
+            {% if form.shipFuel is defined %}
+            <div class="col-span-1">
+                <div class="flex items-baseline h-5 mb-1">
+                    {{ form_label(form.shipFuel, 'Ship Fuel Tank (tons)', { label_attr: { class: 'mb-0 text-red-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-70' } }) }}
+                </div>
+                {{ form_widget(form.shipFuel) }}
+                {{ form_errors(form.shipFuel) }}
+                <div class="text-[10px] text-red-400/70 mt-1">{{ form_help(form.shipFuel) }}</div>
+            </div>
+            {% endif %}
+        </fieldset>
+        {% endif %}
+        </turbo-frame>
+
         <fieldset class="grid grid-cols-1 md:grid-cols-3 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Flight Schedule</legend>
             <div class="col-span-1">
@@ -85,6 +144,7 @@
                 </div>
                 {{ form_widget(form.destDate) }}
             </div>
+
             <div class="col-span-1">
                 <div class="flex items-baseline h-5 mb-1">
                     <label class="mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Total Distance</label>
@@ -98,7 +158,8 @@
                   data-route-waypoints-lookup-url-value="{{ path('app_route_waypoint_lookup') }}">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Starting Position</legend>
             
-            {% set wp = form.waypoints[0] is defined ? form.waypoints[0] : form.waypoints.vars.prototype %}
+            {# Sempre e solo un waypoint (StartPosition) #}
+            {% set wp = form.waypoints[0] %}
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -146,9 +207,11 @@
                 <div class="flex items-baseline h-5 mb-1">
                     {{ form_label(form.notes, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                 </div>
-                {{ form_widget(form.notes, { attr: { class: 'textarea textarea-bordered w-full bg-slate-950/50 border-slate-700 h-32 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Enter detailed tactical notes here...' } }) }}
+                {{ form_widget(form.notes, { attr: { class: 'textarea textarea-bordered textarea-sm w-full bg-slate-950/50 border-slate-700 h-20 focus:border-cyan-500/50 font-rajdhani', 'placeholder': 'Optional notes...' } }) }}
                 {{ form_errors(form.notes) }}
             </div>
+            
+            {% do form.waypoints.setRendered() %}
         </fieldset>
 
         <div class="flex items-center justify-end gap-3 mb-10">
@@ -159,6 +222,8 @@
                 Confirm Route // Commit to Log
             </button>
         </div>
+
+        </div> 
 
         {{ form_end(form) }}
     </div>
