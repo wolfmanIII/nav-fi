@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RouteRepository::class)]
 #[ORM\Index(name: 'idx_route_asset', columns: ['asset_id'])]
@@ -74,6 +75,7 @@ class Route
      */
     #[ORM\OneToMany(targetEntity: RouteWaypoint::class, mappedBy: 'route', cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[ORM\OrderBy(['position' => 'ASC'])]
+    #[Assert\Valid]
     private Collection $waypoints;
 
     public function __construct()

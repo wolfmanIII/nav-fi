@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\RouteWaypointRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RouteWaypointRepository::class)]
 #[ORM\Index(name: 'idx_route_waypoint_route', columns: ['route_id'])]
@@ -23,6 +24,7 @@ class RouteWaypoint
     private ?int $position = null;
 
     #[ORM\Column(length: 4)]
+    #[Assert\NotBlank]
     private ?string $hex = null;
 
     #[ORM\Column(length: 64, nullable: true)]
@@ -74,7 +76,7 @@ class RouteWaypoint
         return $this->hex;
     }
 
-    public function setHex(string $hex): static
+    public function setHex(?string $hex): static
     {
         $this->hex = $hex;
 
