@@ -1,6 +1,11 @@
-<form method="post" action="{{ path('app_financial_account_delete', {'id': financial_account.id}) }}" onsubmit="return confirm('Confirm deletion? This ledger cannot be recovered.');">
+<form method="post" action="{{ path('app_financial_account_delete', {'id': financial_account.id}) }}">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ financial_account.id) }}">
-    <button class="btn btn-outline btn-error btn-sm font-orbitron text-[10px] tracking-widest">
+    <button class="btn btn-outline btn-error btn-sm font-orbitron text-[10px] tracking-widest"
+            data-turbo-confirm="Are you sure you want to close this financial ledger? All transaction history will be archived."
+            data-confirm-title="Close Ledger?"
+            data-confirm-type="danger"
+            data-confirm-text="Close Account"
+            data-confirm-cancel="Keep Open">
         {% include 'icons/action-trash.html.twig' with { dim: 14 } %} Delete
     </button>
 </form>

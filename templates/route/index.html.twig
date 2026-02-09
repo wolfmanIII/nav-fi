@@ -74,7 +74,19 @@
                             <div class="flex items-center gap-1">
                                 {{ tooltip.link('Inspect route', '', 'icons/search.html.twig', path('app_route_details', { id: route.id }), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400' }) }}
                                 {{ tooltip.link('Edit route', '', 'icons/action-edit.html.twig', path('app_route_edit', { id: route.id }), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400' }) }}
-                                {{ tooltip.link('Delete route', '', 'icons/action-trash.html.twig', path('app_route_delete', { id: route.id }), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' }) }}
+                                {{ tooltip.link('Delete route', '', 'icons/action-trash.html.twig', path('app_route_delete', { id: route.id }), { 
+                                    position: 'tooltip-left', 
+                                    dim: 16, 
+                                    linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400',
+                                    attrs: {
+                                        'data-turbo-method': 'post',
+                                        'data-turbo-confirm': 'Are you sure you want to purge this route from the nav computer? This action cannot be undone.',
+                                        'data-confirm-title': 'Purge Route?',
+                                        'data-confirm-type': 'danger',
+                                        'data-confirm-text': 'Purge Log',
+                                        'data-confirm-cancel': 'Abort'
+                                    }
+                                }) }}
                             </div>
                         </div>
 

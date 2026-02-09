@@ -4,12 +4,12 @@ export default class extends Controller {
     static targets = ['dialog', 'title', 'message', 'confirmButton', 'cancelButton'];
 
     connect() {
-        // Expose globally for easy access from other controllers
+        // Espone globalmente per un facile accesso da altri controller
         window.NavFiConfirmation = this;
     }
 
     /**
-     * Shows the confirmation modal.
+     * Mostra il modale di conferma.
      * @param {Object} options
      * @param {string} options.title
      * @param {string} options.message
@@ -24,7 +24,7 @@ export default class extends Controller {
         this.confirmButtonTarget.textContent = confirmText;
         this.cancelButtonTarget.textContent = cancelText;
 
-        // Reset button styles
+        // Ripristina stili pulsante
         this.confirmButtonTarget.className = 'btn btn-sm font-orbitron tracking-widest';
 
         if (type === 'danger') {

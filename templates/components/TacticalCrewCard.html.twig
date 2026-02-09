@@ -27,7 +27,15 @@
             {% set can_delete = is_granted(CAN_DELETE, member) %}
             {{ tooltip.link('Release crew member', '', 'icons/action-trash.html.twig', path('app_crew_delete', {id: member.id}), {
                 dim: 16,
-                linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none')
+                linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none'),
+                attrs: {
+                    'data-turbo-method': 'post',
+                    'data-turbo-confirm': 'Are you sure you want to discharge this crew member?',
+                    'data-confirm-title': 'Discharge Crew?',
+                    'data-confirm-type': 'warning',
+                    'data-confirm-text': 'Discharge',
+                    'data-confirm-cancel': 'Cancel'
+                }
             }) }}
         </div>
     </div>

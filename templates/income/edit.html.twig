@@ -339,7 +339,12 @@
             {% if income.id and can_edit %}
                 <a href="{{ path('app_income_delete', {id: income.id}) }}" 
                    class="btn btn-ghost text-rose-500 hover:text-rose-400 hover:bg-rose-900/20 font-orbitron uppercase text-[10px] tracking-widest font-bold mr-auto"
-                   onclick="return confirm('WARNING: This will permanently erase this financial record. Are you sure?');">
+                   data-turbo-method="post"
+                   data-turbo-confirm="WARNING: This will permanently erase this financial record. Are you sure?"
+                   data-confirm-title="Erase Record?"
+                   data-confirm-type="danger"
+                   data-confirm-text="Erase"
+                   data-confirm-cancel="Abort">
                     Delete Record
                 </a>
             {% endif %}

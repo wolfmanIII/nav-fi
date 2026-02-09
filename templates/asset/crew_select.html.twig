@@ -156,7 +156,14 @@
                                     position: 'tooltip-left',
                                     dim: 14,
                                     linkClass: 'btn btn-ghost btn-xs text-red-500/60 hover:text-red-400 hover:bg-red-500/10 px-2 group/btn' ~ (can_remove_crew ? '' : ' opacity-30 pointer-events-none'),
-                                    attrs: can_remove_crew ? {} : {'aria-disabled': 'true'}
+                                    attrs: can_remove_crew ? {
+                                        'data-turbo-method': 'post',
+                                        'data-turbo-confirm': 'Are you sure you want to remove this crew member? This change will be logged in the asset history.',
+                                        'data-confirm-title': 'Remove Crew?',
+                                        'data-confirm-type': 'warning',
+                                        'data-confirm-text': 'Discharge',
+                                        'data-confirm-cancel': 'Cancel'
+                                    } : {'aria-disabled': 'true'}
                                 }) }}
                         </div>
                     </div>

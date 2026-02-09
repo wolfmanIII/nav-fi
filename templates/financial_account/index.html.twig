@@ -44,9 +44,14 @@
                                 {{ tooltip.link('Annual Projections', '', 'icons/annual-budget.html.twig', path('app_annual_budget_index', { asset: account.asset ? account.asset.id : null }), { position: 'tooltip-top', dim: 14, linkClass: 'p-1.5 rounded bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 transition-all' }) }}
                                 <div class="w-px h-4 bg-slate-800 mx-1"></div>
                                 {{ tooltip.link('Edit details', '', 'icons/action-edit.html.twig', path('app_financial_account_edit', {id: account.id}), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-400' }) }}
-                                <form method="post" action="{{ path('app_financial_account_delete', {'id': account.id}) }}" onsubmit="return confirm('Confirm deletion? This ledger cannot be recovered.');" class="inline-block" title="Delete account">
+                                <form method="post" action="{{ path('app_financial_account_delete', {'id': account.id}) }}" class="inline-block" title="Delete account">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ account.id) }}">
-                                    <button type="submit" class="p-2 rounded-lg hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-colors">
+                                    <button type="submit" class="p-2 rounded-lg hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-colors"
+                                            data-turbo-confirm="Are you sure you want to close this financial ledger? All transaction history will be archived."
+                                            data-confirm-title="Close Ledger?"
+                                            data-confirm-type="danger"
+                                            data-confirm-text="Close Account"
+                                            data-confirm-cancel="Keep Open">
                                         {% include 'icons/action-trash.html.twig' with { dim: 16 } %}
                                     </button>
                                 </form>

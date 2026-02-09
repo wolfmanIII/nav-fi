@@ -1,4 +1,5 @@
 import './stimulus_bootstrap.js';
+import './turbo_overrides.js';
 /*
  * Benvenuto nel file JavaScript principale della tua app!
  *
