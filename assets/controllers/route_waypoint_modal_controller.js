@@ -82,7 +82,7 @@ export default class extends Controller {
         const sector = this.inputSectorTarget.value.trim();
 
         if (!hex || !sector) {
-            alert('Hex e Sector sono obbligatori');
+            window.NavFiToast.notify('Hex and Sector are required', 'warning');
             return;
         }
 
@@ -101,12 +101,13 @@ export default class extends Controller {
                 this.closeModal();
                 this.hideEmptyRow();
                 this.toggleInvalidJumpAlert(data.hasInvalidJumps);
+                window.NavFiToast.notify('Waypoint added successfully', 'success');
             } else {
-                alert(data.error || 'Errore nel salvataggio');
+                window.NavFiToast.notify(data.error || 'Error saving waypoint', 'error');
             }
         } catch (e) {
             console.error('Submit failed:', e);
-            alert('Errore di rete');
+            window.NavFiToast.notify('Network error', 'error');
         }
     }
 
@@ -115,9 +116,14 @@ export default class extends Controller {
         const waypointId = event.currentTarget.dataset.waypointId;
         const row = event.currentTarget.closest('tr');
 
-        if (!confirm('Rimuovere questo waypoint?')) {
-            return;
-        }
+        const confirmed = await window.NavFiConfirmation.confirm({
+            title: 'Remove Waypoint',
+            message: 'Are you sure you want to remove this waypoint from the route?',
+            confirmText: 'Remove',
+            type: 'danger'
+        });
+
+        if (!confirmed) return;
 
         try {
             const url = this.deleteUrlValue.replace('__ID__', waypointId);
@@ -128,12 +134,30 @@ export default class extends Controller {
                 row.remove();
                 this.checkEmptyTable();
                 this.toggleInvalidJumpAlert(data.hasInvalidJumps);
+
+                // Update remaining waypoints (position & distance)
+                if (data.updatedWaypoints) {
+                    data.updatedWaypoints.forEach(wp => {
+                        const btn = this.tableBodyTarget.querySelector(`button[data-waypoint-id="${wp.id}"]`);
+                        if (btn) {
+                            const wpRow = btn.closest('tr');
+                            if (wpRow) {
+                                // Update Position (Column 1)
+                                wpRow.cells[1].textContent = wp.position;
+                                // Update Distance (Column 6)
+                                wpRow.cells[6].textContent = wp.jumpDistance !== null ? wp.jumpDistance : '—';
+                            }
+                        }
+                    });
+                }
+
+                window.NavFiToast.notify('Waypoint removed', 'success');
             } else {
-                alert(data.error || 'Errore nella rimozione');
+                window.NavFiToast.notify(data.error || 'Error removing waypoint', 'error');
             }
         } catch (e) {
             console.error('Delete failed:', e);
-            alert('Errore di rete');
+            window.NavFiToast.notify('Network error', 'error');
         }
     }
 
@@ -213,9 +237,14 @@ export default class extends Controller {
     async recalculate(event) {
         event.preventDefault();
 
-        if (!confirm('Ricalcolare la rotta? I waypoint verranno riordinati e ne verranno aggiunti di nuovi se necessario.')) {
-            return;
-        }
+        const confirmed = await window.NavFiConfirmation.confirm({
+            title: 'Recalculate Route',
+            message: 'This will optimize the route path. Existing waypoints may be reordered or added. Continue?',
+            confirmText: 'Recalculate',
+            type: 'warning'
+        });
+
+        if (!confirmed) return;
 
         // Show loading overlay
         if (this.hasLoadingOverlayTarget) {
@@ -235,7 +264,7 @@ export default class extends Controller {
             if (data.success) {
                 window.location.reload();
             } else {
-                alert(data.error || 'Errore nel ricalcolo');
+                window.NavFiToast.notify(data.error || 'Recalculation error', 'error');
                 // Hide overlay on error
                 if (this.hasLoadingOverlayTarget) {
                     this.loadingOverlayTarget.classList.add('hidden');
@@ -243,7 +272,7 @@ export default class extends Controller {
             }
         } catch (e) {
             console.error('Recalculate failed:', e);
-            alert('Errore di rete');
+            window.NavFiToast.notify('Network error', 'error');
             // Hide overlay on error
             if (this.hasLoadingOverlayTarget) {
                 this.loadingOverlayTarget.classList.add('hidden');

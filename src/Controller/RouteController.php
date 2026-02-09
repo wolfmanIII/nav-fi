@@ -340,8 +340,19 @@ final class RouteController extends BaseController
         $waypointService->removeWaypoint($route, $waypoint);
         $em->flush();
 
+        // Serialize updated waypoints (id + jumpDistance)
+        $updatedWaypoints = [];
+        foreach ($route->getWaypoints() as $wp) {
+            $updatedWaypoints[] = [
+                'id' => $wp->getId(),
+                'jumpDistance' => $wp->getJumpDistance(),
+                'position' => $wp->getPosition(), // Also update position if needed
+            ];
+        }
+
         return new JsonResponse([
             'success' => true,
+            'updatedWaypoints' => $updatedWaypoints,
             'routeFuelEstimate' => $route->getFuelEstimate(),
             'hasInvalidJumps' => $waypointService->hasInvalidJumps($route),
         ]);

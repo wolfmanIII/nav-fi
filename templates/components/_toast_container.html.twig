@@ -1,0 +1,12 @@
+<div data-controller="toast" class="fixed bottom-4 right-4 z-50 flex flex-col items-end w-full max-w-sm pointer-events-none">
+    <div data-toast-target="container" class="pointer-events-auto w-full"></div>
+    
+    <template data-toast-target="template">
+        <div role="alert">
+            <div data-toast-icon>
+                 {% include 'icons/radar.html.twig' with { dim: 24 } %}
+            </div>
+            <div data-toast-content class="font-rajdhani uppercase tracking-wide font-semibold text-sm pt-0.5"></div>
+        </div>
+    </template>
+</div>
