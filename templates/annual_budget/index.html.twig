@@ -131,7 +131,18 @@
                                 </div>
                                 <div class="flex items-center gap-1">
                                     {{ tooltip.link('Edit', '', 'icons/action-edit.html.twig', path('app_annual_budget_edit', {id: budget.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-teal-500/20 text-teal-400' }) }}
-                                    {{ tooltip.link('Delete', '', 'icons/action-trash.html.twig', path('app_annual_budget_delete', {id: budget.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' }) }}
+                                    {{ tooltip.link('Delete', '', 'icons/action-trash.html.twig', path('app_annual_budget_delete', {id: budget.id}), {
+                                        dim: 16,
+                                        linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400',
+                                        attrs: {
+                                            'data-turbo-method': 'post',
+                                            'data-turbo-confirm': 'Are you sure you want to delete this annual budget record? All projections for this year will be permanentely removed.',
+                                            'data-confirm-title': 'Delete Budget?',
+                                            'data-confirm-type': 'danger',
+                                            'data-confirm-text': 'Delete',
+                                            'data-confirm-cancel': 'Cancel'
+                                        }
+                                    }) }}
                                 </div>
                             </div>
 

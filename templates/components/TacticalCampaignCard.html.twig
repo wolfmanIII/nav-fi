@@ -13,7 +13,15 @@
             {{ tooltip.link('Retire mission', '', 'icons/action-trash.html.twig', path('app_campaign_delete', {id: campaign.id}), {
                 position: 'tooltip-left',
                 dim: 16,
-                linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none')
+                linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none'),
+                attrs: {
+                    'data-turbo-method': 'post',
+                    'data-turbo-confirm': 'Are you sure you want to retire this mission? All associated deployment data will be archived.',
+                    'data-confirm-title': 'Retire Mission?',
+                    'data-confirm-type': 'danger',
+                    'data-confirm-text': 'Retire',
+                    'data-confirm-cancel': 'Belay Order'
+                }
             }) }}
         </div>
     </div>

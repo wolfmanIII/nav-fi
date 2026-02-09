@@ -14,7 +14,15 @@
             {% set can_delete = is_granted('COMPANY_DELETE', company) %}
             {{ tooltip.link('Retire counterparty', '', 'icons/action-trash.html.twig', path('app_company_delete', {id: company.id}), {
                 dim: 16,
-                linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none')
+                linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none'),
+                attrs: {
+                    'data-turbo-method': 'post',
+                    'data-turbo-confirm': 'Are you sure you want to retire this counterparty? Active contracts and financial relations will be flagged.',
+                    'data-confirm-title': 'Retire Counterparty?',
+                    'data-confirm-type': 'danger',
+                    'data-confirm-text': 'Retire',
+                    'data-confirm-cancel': 'Keep Active'
+                }
             }) }}
         </div>
     </div>

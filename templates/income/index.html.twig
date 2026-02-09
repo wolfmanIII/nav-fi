@@ -148,7 +148,18 @@
                             </div>
                             <div class="flex items-center gap-1">
                                 {{ tooltip.link('Edit', '', 'icons/action-edit.html.twig', path('app_income_edit', {id: income.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-cyan-500/20 text-cyan-400' }) }}
-                                {{ tooltip.link('Delete', '', 'icons/action-trash.html.twig', path('app_income_delete', {id: income.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' }) }}
+                                {{ tooltip.link('Delete', '', 'icons/action-trash.html.twig', path('app_income_delete', {id: income.id}), {
+                                    dim: 16,
+                                    linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400',
+                                    attrs: {
+                                        'data-turbo-method': 'post',
+                                        'data-turbo-confirm': 'Are you sure you want to delete this income record?',
+                                        'data-confirm-title': 'Delete Income?',
+                                        'data-confirm-type': 'danger',
+                                        'data-confirm-text': 'Delete',
+                                        'data-confirm-cancel': 'Cancel'
+                                    }
+                                }) }}
                             </div>
                         </div>
 

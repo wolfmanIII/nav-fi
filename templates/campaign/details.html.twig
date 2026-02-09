@@ -150,7 +150,13 @@
                                 <a href="{{ path('app_campaign_asset_remove', {id: asset.id}) }}"
                                    role="button"
                                    class="btn btn-outline btn-error btn-xs{{ can_remove ? '' : ' opacity-50 pointer-events-none' }}"
-                                   {% if not can_remove %}aria-disabled="true"{% endif %}>
+                                   {% if not can_remove %}aria-disabled="true"{% endif %}
+                                   data-turbo-method="post"
+                                   data-turbo-confirm="Are you sure you want to remove this asset from the mission? All mission-specific data for this ship will be unlinked."
+                                   data-confirm-title="Remove Asset?"
+                                   data-confirm-type="danger"
+                                   data-confirm-text="Remove"
+                                   data-confirm-cancel="Keep">
                                     {% include 'icons/action-trash.html.twig' with { dim: 14 } %}
                                 </a>
                             </div>

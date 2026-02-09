@@ -139,7 +139,18 @@
                             </div>
                             <div class="flex items-center gap-1">
                                 {{ tooltip.link('Edit', '', 'icons/action-edit.html.twig', path('app_cost_edit', {id: cost.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-amber-500/20 text-amber-400' }) }}
-                                {{ tooltip.link('Delete', '', 'icons/action-trash.html.twig', path('app_cost_delete', {id: cost.id}), { dim: 16, linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' }) }}
+                                {{ tooltip.link('Delete', '', 'icons/action-trash.html.twig', path('app_cost_delete', {id: cost.id}), {
+                                    dim: 16,
+                                    linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400',
+                                    attrs: {
+                                        'data-turbo-method': 'post',
+                                        'data-turbo-confirm': 'Are you sure you want to delete this cost record?',
+                                        'data-confirm-title': 'Delete Cost?',
+                                        'data-confirm-type': 'danger',
+                                        'data-confirm-text': 'Delete',
+                                        'data-confirm-cancel': 'Cancel'
+                                    }
+                                }) }}
                             </div>
                         </div>
 

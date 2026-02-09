@@ -140,7 +140,15 @@
                                     {% set can_delete = is_granted(CAN_DELETE, mortgage) %}
                                     {{ tooltip.link('Delete', '', 'icons/action-trash.html.twig', path('app_mortgage_delete', {id: mortgage.id}), {
                                         dim: 16,
-                                        linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none')
+                                        linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400' ~ (can_delete ? '' : ' opacity-50 pointer-events-none'),
+                                        attrs: {
+                                            'data-turbo-method': 'post',
+                                            'data-turbo-confirm': 'Are you sure you want to delete this mortgage financing? All associated installment history will be lost.',
+                                            'data-confirm-title': 'Delete Mortgage?',
+                                            'data-confirm-type': 'danger',
+                                            'data-confirm-text': 'Delete',
+                                            'data-confirm-cancel': 'Cancel'
+                                        }
                                     }) }}
                                 </div>
                             </div>
