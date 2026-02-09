@@ -70,19 +70,43 @@
         {% endembed %}
 
         {% if asset.mortgageSigned %}
-            <div class="alert alert-info alert-outline border-cyan-500/50 bg-cyan-950/30 mb-6">
-                <div class="animate-spin-slow text-cyan-500">
-                    {% include 'icons/radar.html.twig' with { dim: 24 } %}
+            <div class="flex flex-col gap-2 mb-6">
+                <div class="alert alert-info alert-outline border-cyan-500/50 bg-cyan-950/30">
+                    <div class="animate-spin-slow text-cyan-500">
+                        {% include 'icons/radar.html.twig' with { dim: 24 } %}
+                    </div>
+                    <div>
+                    <div class="text-[10px] font-rajdhani uppercase tracking-widest font-bold text-cyan-500 mb-1">
+                            Imperial Bank Protocol // Active Lien
+                    </div>
+                    <div class="text-sm text-cyan-100 font-light">
+                            MORTGAGE LOCK DETECTED. Hull specifications are bound to asset collateral.
+                            <span class="opacity-70">Direct overrides are authorized but will be flagged for audit. Use AMENDMENTS for authorized upgrades.</span>
+                    </div>
+                    </div>
                 </div>
-                <div>
-                   <div class="text-[10px] font-rajdhani uppercase tracking-widest font-bold text-cyan-500 mb-1">
-                        Imperial Bank Protocol // Active Lien
-                   </div>
-                   <div class="text-sm text-cyan-100 font-light">
-                        MORTGAGE LOCK DETECTED. Hull specifications are bound to asset collateral.
-                        <span class="opacity-70">Direct overrides are authorized but will be flagged for audit. Use AMENDMENTS for authorized upgrades.</span>
-                   </div>
-                </div>
+
+                {% if not asset.hasCaptain or not asset.hasCrew %}
+                    <div class="alert alert-error alert-outline border-rose-500/50 bg-rose-950/30 shadow-[0_0_15px_rgba(244,63,94,0.1)]">
+                        <div class="text-rose-500 animate-pulse">
+                            {% include 'icons/radar.html.twig' with { dim: 24 } %}
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-rajdhani uppercase tracking-widest font-bold text-rose-500 mb-1">
+                                Critical Personnel Divergence // Legal Warning
+                            </div>
+                            <div class="text-sm text-rose-100 font-light">
+                                {% if not asset.hasCaptain %}
+                                    <span class="font-bold text-rose-400">NO ACTIVE CAPTAIN ASSIGNED.</span>
+                                {% endif %}
+                                {% if not asset.hasCrew %}
+                                    <span class="font-bold text-rose-400">CRITICAL CREW SHORTAGE.</span>
+                                {% endif %}
+                                <span class="opacity-70">Signed mortgages require a bonded guarantor. Firing the command staff during an active lien may trigger bank foreclosure protocols.</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         {% endif %}
 

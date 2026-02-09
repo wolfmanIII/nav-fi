@@ -360,4 +360,9 @@ class Asset
     {
         return $this->getMortgage()?->isSigned() === true;
     }
+
+    public function hasCrew(): bool
+    {
+        return $this->crews->count() > 0;
+    }
 }
