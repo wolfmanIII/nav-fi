@@ -145,7 +145,7 @@ final class AssetController extends BaseController
                 $this->addFlash('success', 'Asset protocol committed successfully.');
             }
 
-            return $this->redirectToRoute('app_asset_index', ['category' => $asset->getCategory()]);
+            return $this->redirectToRoute('app_asset_edit', ['id' => $asset->getId()]);
         }
 
         return $this->renderTurbo('asset/edit.html.twig', [
@@ -227,7 +227,7 @@ final class AssetController extends BaseController
                 $this->addFlash('info', 'Asset updated successfully.');
             }
 
-            return $this->redirectToRoute('app_asset_index', ['category' => $asset->getCategory()]);
+            return $this->redirectToRoute('app_asset_edit', ['id' => $asset->getId()]);
         }
 
         return $this->renderTurbo('asset/edit.html.twig', [
