@@ -8,8 +8,10 @@ use App\Entity\Asset;
 use App\Form\Config\DayYearLimits;
 use App\Repository\AssetRepository;
 use Doctrine\ORM\EntityRepository;
+use App\Service\TravellerMapDataService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -26,7 +28,8 @@ class RouteType extends AbstractType
 {
     public function __construct(
         private readonly DayYearLimits $limits,
-        private readonly AssetRepository $assetRepository
+        private readonly AssetRepository $assetRepository,
+        private readonly TravellerMapDataService $dataService
     ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -44,6 +47,7 @@ class RouteType extends AbstractType
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 3],
             ])
             ->add('campaign', EntityType::class, [
+                // ... (lines 47-65)
                 'label' => 'Mission',
                 'class' => Campaign::class,
                 'required' => true,
@@ -64,6 +68,7 @@ class RouteType extends AbstractType
                 ],
             ])
             ->add('asset', EntityType::class, [
+                // ... (lines 67-95)
                 'class' => Asset::class,
                 'placeholder' => '// ASSET',
                 'choice_label' => fn(Asset $asset) => sprintf('%s - %s(%s) [CODE: %s]', $asset->getName(), $asset->getType(), $asset->getClass(), substr($asset->getFinancialAccount()?->getCode() ?? 'N/A', 0, 8)),
@@ -93,8 +98,39 @@ class RouteType extends AbstractType
                     'data-action' => 'change->year-limit#onAssetChange change->form-visibility#toggle change->route-ship-data#change',
                 ],
             ])
-            ->add('startHex', HiddenType::class, [
+            ->add('startSector', ChoiceType::class, [
                 'required' => false,
+                'label' => 'Start Sector (OTU)',
+                'placeholder' => '// SELECT SECTOR',
+                'choices' => $this->dataService->getOtuSectors(),
+                'attr' => [
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                    'data-controller' => 'tom-select',
+                    'data-tom-select-options-value' => json_encode([
+                        'maxOptions' => 2000,
+                        'placeholder' => 'Search Sector...',
+                    ]),
+                    'data-action' => 'change->dependent-select#change',
+                    'data-dependent-select-target' => 'source',
+                ],
+            ])
+            ->add('startWorld', ChoiceType::class, [
+                'required' => false,
+                'label' => 'Start World',
+                'placeholder' => '// SELECT WORLD',
+                'property_path' => 'startHex',
+                'choices' => $route->getStartSector() ? $this->dataService->getWorldsForSector($route->getStartSector()) : [],
+                'choice_label' => fn($choice, $key, $value) => $key,
+                'choice_value' => fn($choice) => $choice,
+                'disabled' => $route->getStartSector() === null,
+                'attr' => [
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                    'data-controller' => 'tom-select',
+                    'data-dependent-select-target' => 'destination',
+                    'data-tom-select-options-value' => json_encode([
+                        'placeholder' => 'Search World...',
+                    ]),
+                ],
             ])
             ->add('destHex', HiddenType::class, [
                 'required' => false,
@@ -121,14 +157,7 @@ class RouteType extends AbstractType
             ])
             ->add('notes', TextareaType::class, [
                 'required' => false,
-                'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 3],
-            ])
-            ->add('waypoints', CollectionType::class, [
-                'entry_type' => RouteWaypointType::class,
-                'entry_options' => ['label' => false],
-                'allow_add' => false,
-                'allow_delete' => false,
-                'by_reference' => false,
+                'attr' => ['class' => 'textarea textarea-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 font-rajdhani', 'rows' => 3],
             ])
         ;
 

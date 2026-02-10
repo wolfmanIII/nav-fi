@@ -69,7 +69,7 @@ final class RouteController extends BaseController
     }
 
     #[RouteAttr('/route/new', name: 'app_route_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    public function new(Request $request, EntityManagerInterface $em, RouteWaypointService $waypointService): Response
     {
         $user = $this->getUser();
         if (!$user instanceof User) {
@@ -86,24 +86,15 @@ final class RouteController extends BaseController
             }
         }
 
-        // Ensure at least one waypoint exists for the Starting Position form
-        if ($route->getWaypoints()->isEmpty()) {
-            $route->addWaypoint(new RouteWaypoint());
-        }
-
         $form = $this->createForm(RouteType::class, $route, ['user' => $user]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $waypointService->syncFirstWaypoint($route);
             $em->persist($route);
             $em->flush();
 
             return $this->redirectToRoute('app_route_index');
-        }
-
-        if ($form->isSubmitted() && !$form->isValid() && $route->getWaypoints()->count() === 0) {
-            $route->addWaypoint(new RouteWaypoint());
-            $form = $this->createForm(RouteType::class, $route, ['user' => $user]);
         }
 
         return $this->renderTurbo('route/edit.html.twig', [
@@ -116,7 +107,7 @@ final class RouteController extends BaseController
     }
 
     #[RouteAttr('/route/edit/{id}', name: 'app_route_edit', methods: ['GET', 'POST'])]
-    public function edit(int $id, Request $request, EntityManagerInterface $em): Response
+    public function edit(int $id, Request $request, EntityManagerInterface $em, RouteWaypointService $waypointService): Response
     {
         $user = $this->getUser();
         if (!$user instanceof User) {
@@ -137,24 +128,15 @@ final class RouteController extends BaseController
             }
         }
 
-        // Ensure at least one waypoint exists for the Starting Position form
-        if ($route->getWaypoints()->isEmpty()) {
-            $route->addWaypoint(new RouteWaypoint());
-        }
-
         $form = $this->createForm(RouteType::class, $route, ['user' => $user]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $waypointService->syncFirstWaypoint($route);
             $em->persist($route); // Verify persistence if asset changed
             $em->flush();
 
             return $this->redirectToRoute('app_route_index');
-        }
-
-        if ($form->isSubmitted() && !$form->isValid() && $route->getWaypoints()->count() === 0) {
-            $this->addFlash('error', 'Add at least one waypoint to define a route.');
-            return $this->redirectToRoute('app_route_edit', ['id' => $route->getId()]);
         }
 
         return $this->renderTurbo('route/edit.html.twig', [

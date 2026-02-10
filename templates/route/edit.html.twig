@@ -154,43 +154,38 @@
         </fieldset>
 
         <fieldset class="grid grid-cols-1 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative"
-                  data-controller="route-waypoints"
-                  data-route-waypoints-lookup-url-value="{{ path('app_route_waypoint_lookup') }}">
+                  data-controller="dependent-select" 
+                  data-dependent-select-url-value="{{ path('api_sector_worlds') }}">
             <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Starting Position</legend>
-            
-            {# Sempre e solo un waypoint (StartPosition) #}
-            {% set wp = form.waypoints[0] %}
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">Hex</label>
-                    {{ form_widget(wp.hex, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50 uppercase', maxlength: 4, placeholder: 'e.g. 1905', 'data-route-waypoints-target': 'inputHex', 'data-action': 'blur->route-waypoints#lookup' } }) }}
-                    {{ form_errors(wp.hex) }}
+                     <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(form.startSector, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(form.startSector) }}
+                    {{ form_errors(form.startSector) }}
                 </div>
                 <div>
-                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">Sector</label>
-                    {{ form_widget(wp.sector, { attr: { class: 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50', placeholder: 'e.g. Spinward Marches', 'data-route-waypoints-target': 'inputSector', 'data-action': 'blur->route-waypoints#lookup' } }) }}
-                    {{ form_errors(wp.sector) }}
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(form.startWorld, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(form.startWorld) }}
+                    {{ form_errors(form.startWorld) }}
                 </div>
                 <div>
-                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">World <span class="text-slate-500 normal-case">(auto-filled)</span></label>
-                    {{ form_widget(wp.world, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono cursor-not-allowed', placeholder: 'Auto-filled', readonly: true, 'data-route-waypoints-target': 'inputWorld' } }) }}
-                    {{ form_errors(wp.world) }}
+                    <div class="flex items-baseline h-5 mb-1">
+                        <label class="mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Current World Info <span class="text-slate-500 normal-case">(auto-filled)</span></label>
+                    </div>
+                    <input type="text" class="input input-bordered w-full bg-slate-950/50 border-slate-700 text-cyan-400 font-mono cursor-not-allowed" value="{{ route.startWorld ?: '—' }}" readonly disabled>
                 </div>
                 <div>
-                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">UWP <span class="text-slate-500 normal-case">(auto-filled)</span></label>
-                    {{ form_widget(wp.uwp, { attr: { class: 'input input-bordered input-sm w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono cursor-not-allowed', placeholder: 'Auto-filled on save', readonly: true, 'data-route-waypoints-target': 'inputUwp' } }) }}
+                    <div class="flex items-baseline h-5 mb-1">
+                        <label class="mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Start UWP <span class="text-slate-500 normal-case">(auto-filled)</span></label>
+                    </div>
+                    {% set firstWp = route.waypoints.first %}
+                    <input type="text" class="input input-bordered w-full bg-slate-950/50 border-slate-700 text-cyan-400 font-mono cursor-not-allowed" value="{{ firstWp ? (firstWp.uwp ?: '—') : '—' }}" readonly disabled>
                 </div>
-                <div class="md:col-span-2">
-                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">Notes</label>
-                    {{ form_widget(wp.notes, { attr: { class: 'textarea textarea-bordered textarea-sm w-full bg-slate-950/50 border-slate-800 h-16 focus:border-cyan-500/50 font-rajdhani', placeholder: 'Node specific notes...' } }) }}
-                </div>
-            </div>
-            
-            {# Hidden fields #}
-            <div class="hidden">
-                {{ form_widget(wp.jumpDistance) }}
-                {{ form_widget(wp.position) }}
             </div>
         </fieldset>
 
@@ -211,7 +206,6 @@
                 {{ form_errors(form.notes) }}
             </div>
             
-            {% do form.waypoints.setRendered() %}
         </fieldset>
 
         <div class="flex items-center justify-end gap-3 mb-10">

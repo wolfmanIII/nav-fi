@@ -185,6 +185,16 @@
         background-color: var(--b2) !important;
         border-color: transparent !important;
         color: var(--bc) !important;
+        opacity: 1 !important;
+        /* Forza opacità piena per default */
+    }
+
+    /* Gestione opacità quando disabilitato */
+    .ts-wrapper.disabled .ts-control {
+        opacity: 0.5 !important;
+        background-color: var(--b2) !important;
+        /* Mantieni il colore del tema */
+        cursor: not-allowed !important;
     }
 
     .ts-wrapper .ts-control>input {
@@ -202,6 +212,7 @@
         box-shadow: none !important;
         outline: none !important;
     }
+
 
     .ts-wrapper .ts-control::before,
     .ts-wrapper .ts-control::after {

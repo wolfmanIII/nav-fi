@@ -19,6 +19,49 @@ final class RouteWaypointService
     ) {}
 
     /**
+     * Sincronizza il primo waypoint della rotta con i parametri di partenza della Route.
+     */
+    public function syncFirstWaypoint(Route $route): void
+    {
+        $startSector = $route->getStartSector();
+        $startHex = $route->getStartHex();
+
+        if (!$startSector || !$startHex) {
+            return;
+        }
+
+        $waypoints = $route->getWaypoints();
+        $firstWaypoint = null;
+
+        foreach ($waypoints as $wp) {
+            if ($wp->getPosition() === 1) {
+                $firstWaypoint = $wp;
+                break;
+            }
+        }
+
+        if (!$firstWaypoint) {
+            $firstWaypoint = new RouteWaypoint();
+            $firstWaypoint->setPosition(1);
+            $firstWaypoint->setRoute($route);
+            $route->addWaypoint($firstWaypoint);
+            $this->em->persist($firstWaypoint);
+        }
+
+        $firstWaypoint->setSector($startSector);
+        $firstWaypoint->setHex($startHex);
+        $firstWaypoint->setJumpDistance(0);
+
+        $this->enrichWaypointFromTravellerMap($firstWaypoint);
+
+        // Se ci sono altri waypoint, ricalcola le distanze dal primo
+        if ($waypoints->count() > 1) {
+            $this->recalculateDistances($route, $firstWaypoint);
+            $this->recalculateFuelEstimate($route);
+        }
+    }
+
+    /**
      * Verifica se la rotta ha salti che superano il jump rating.
      */
     public function hasInvalidJumps(Route $route): bool

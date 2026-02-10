@@ -67,6 +67,9 @@ class Route
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $fuelEstimate = null;
 
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $startSector = null;
+
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $payload = null;
 
@@ -266,6 +269,18 @@ class Route
     public function setFuelEstimate(?string $fuelEstimate): static
     {
         $this->fuelEstimate = $fuelEstimate;
+
+        return $this;
+    }
+
+    public function getStartSector(): ?string
+    {
+        return $this->startSector;
+    }
+
+    public function setStartSector(?string $startSector): static
+    {
+        $this->startSector = $startSector;
 
         return $this;
     }
