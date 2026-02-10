@@ -174,6 +174,26 @@ class RouteType extends AbstractType
             $data = $event->getData();
             $form = $event->getForm();
 
+            if (!empty($data['startSector'])) {
+                $form->add('startWorld', ChoiceType::class, [
+                    'required' => false,
+                    'label' => 'Start World',
+                    'placeholder' => '// SELECT WORLD',
+                    'property_path' => 'startHex',
+                    'choices' => $this->dataService->getWorldsForSector($data['startSector']),
+                    'choice_label' => fn($choice, $key, $value) => $key,
+                    'choice_value' => fn($choice) => $choice,
+                    'attr' => [
+                        'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                        'data-controller' => 'tom-select',
+                        'data-dependent-select-target' => 'destination',
+                        'data-tom-select-options-value' => json_encode([
+                            'placeholder' => 'Search World...',
+                        ]),
+                    ],
+                ]);
+            }
+
             // If asset is not selected in the form data, we can't do anything
             if (empty($data['asset'])) {
                 return;

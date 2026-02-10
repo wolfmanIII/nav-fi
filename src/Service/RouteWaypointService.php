@@ -245,6 +245,7 @@ final class RouteWaypointService
     {
         $firstWp = $route->getWaypoints()->first() ?: null;
         $route->setStartHex($firstWp?->getHex() ?? $newWaypoint->getHex());
+        $route->setStartSector($firstWp?->getSector() ?? $newWaypoint->getSector());
         $route->setDestHex($newWaypoint->getHex());
     }
 
@@ -254,6 +255,7 @@ final class RouteWaypointService
         $lastWp = $route->getWaypoints()->last() ?: null;
 
         $route->setStartHex($firstWp?->getHex());
+        $route->setStartSector($firstWp?->getSector());
         $route->setDestHex($lastWp?->getHex());
     }
 
