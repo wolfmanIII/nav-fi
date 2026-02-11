@@ -197,6 +197,23 @@ class RouteMathHelper
     /**
      * @return array{int, int, int}
      */
+    public function getGlobalCubeCoordinates(string $hex, ?array $sectorCoords = null): array
+    {
+        $local = $this->parseHex($hex) ?? [0, 0];
+        $x = $local[0];
+        $y = $local[1];
+
+        if ($sectorCoords !== null) {
+            $x += ($sectorCoords['x'] * 32);
+            $y += ($sectorCoords['y'] * 40);
+        }
+
+        return $this->offsetToCube($x, $y);
+    }
+
+    /**
+     * @return array{int, int, int}
+     */
     private function offsetToCube(int $col, int $row): array
     {
         $x = $col;

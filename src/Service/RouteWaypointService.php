@@ -14,6 +14,7 @@ final class RouteWaypointService
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly TravellerMapSectorLookup $sectorLookup,
+        private readonly TravellerMapDataService $dataService,
         private readonly RouteMathHelper $routeMath,
         private readonly RouteOptimizationService $optimizer
     ) {}
@@ -89,23 +90,26 @@ final class RouteWaypointService
             return;
         }
 
-        // Estrai settore dal primo waypoint
-        $sector = $waypoints[0]->getSector();
-        if (!$sector) {
-            return;
-        }
+        // Estrai punto di partenza
+        $startWp = $waypoints[0];
+        $startPoint = [
+            'sector' => $startWp->getSector(),
+            'hex' => $startWp->getHex()
+        ];
 
-        // Estrai hex di partenza e destinazioni
-        $startHex = $waypoints[0]->getHex();
+        // Estrai destinazioni
         $destinations = [];
         foreach (array_slice($waypoints, 1) as $wp) {
-            $destinations[] = $wp->getHex();
+            $destinations[] = [
+                'sector' => $wp->getSector(),
+                'hex' => $wp->getHex()
+            ];
         }
 
         $jumpRating = $this->routeMath->resolveJumpRating($route) ?? 1;
 
         // Calcola path ottimizzato
-        $result = $this->optimizer->optimizeMultiStopRoute($sector, $startHex, $destinations, $jumpRating);
+        $result = $this->optimizer->optimizeMultiStopRoute($startPoint, $destinations, $jumpRating);
         $optimizedPath = $result['path'];
 
         // Rimuovi vecchi waypoint
@@ -116,33 +120,40 @@ final class RouteWaypointService
 
         // Crea nuovi waypoint dal path ottimizzato
         $position = 1;
-        $previousHex = null;
-        foreach ($optimizedPath as $hex) {
+        $previousWp = null;
+        foreach ($optimizedPath as $point) {
             $waypoint = new RouteWaypoint();
-            $waypoint->setHex($hex);
-            $waypoint->setSector($sector);
+            $waypoint->setHex($point['hex']);
+            $waypoint->setSector($point['sector']);
             $waypoint->setPosition($position++);
             $waypoint->setRoute($route);
 
             $this->enrichWaypointFromTravellerMap($waypoint);
 
-            // Calcola distanza dal precedente
-            if ($previousHex !== null) {
-                $distance = $this->routeMath->distance($previousHex, $hex);
-                $waypoint->setJumpDistance($distance);
+            // Calcola distanza dal precedente usando le coordinate dei settori
+            if ($previousWp !== null) {
+                $dist = $this->routeMath->distance(
+                    $previousWp->getHex(),
+                    $waypoint->getHex(),
+                    $this->dataService->getSectorCoordinates($previousWp->getSector()),
+                    $this->dataService->getSectorCoordinates($waypoint->getSector())
+                );
+                $waypoint->setJumpDistance($dist);
             }
 
             $this->em->persist($waypoint);
-            $previousHex = $hex;
+            $previousWp = $waypoint;
         }
 
         // Aggiorna route endpoints
-        $route->setStartHex($optimizedPath[0] ?? null);
-        $route->setDestHex($optimizedPath[array_key_last($optimizedPath)] ?? null);
+        $lastWp = $optimizedPath[array_key_last($optimizedPath)];
+        $route->setStartHex($optimizedPath[0]['hex']);
+        $route->setStartSector($optimizedPath[0]['sector']);
+        $route->setDestHex($lastWp['hex']);
 
         // Ricalcola fuel estimate
-        $distances = $this->routeMath->segmentDistances($optimizedPath);
-        $calculatedFuel = $this->routeMath->estimateJumpFuel($route, $distances);
+        $totalDistances = $this->getRouteSegmentDistances($route);
+        $calculatedFuel = $this->routeMath->estimateJumpFuel($route, $totalDistances);
         if ($calculatedFuel !== null) {
             $route->setFuelEstimate($calculatedFuel);
         }
@@ -208,37 +219,28 @@ final class RouteWaypointService
     private function recalculateDistances(Route $route, RouteWaypoint $newWaypoint): void
     {
         $waypoints = $route->getWaypoints()->toArray();
-
-        // Se newWaypoint non è già nella lista, aggiungilo
-        if (!in_array($newWaypoint, $waypoints, true)) {
-            $waypoints[] = $newWaypoint;
-        }
-
-        // Ordina per posizione per garantire la sequenza corretta
         usort($waypoints, fn($a, $b) => $a->getPosition() <=> $b->getPosition());
 
-        $hexes = array_map(fn($wp) => (string) $wp->getHex(), $waypoints);
-        $distances = $this->routeMath->segmentDistances($hexes);
-
-        foreach ($waypoints as $idx => $wp) {
-            $wp->setJumpDistance($distances[$idx] ?? null);
+        $previous = null;
+        foreach ($waypoints as $wp) {
+            if ($previous === null) {
+                $wp->setJumpDistance(null);
+            } else {
+                $dist = $this->routeMath->distance(
+                    $previous->getHex(),
+                    $wp->getHex(),
+                    $this->dataService->getSectorCoordinates($previous->getSector()),
+                    $this->dataService->getSectorCoordinates($wp->getSector())
+                );
+                $wp->setJumpDistance($dist);
+            }
+            $previous = $wp;
         }
     }
 
     private function recalculateDistancesAfterRemoval(Route $route): void
     {
-        $hexes = [];
-        foreach ($route->getWaypoints() as $wp) {
-            $hexes[] = (string) $wp->getHex();
-        }
-
-        $distances = $this->routeMath->segmentDistances($hexes);
-
-        $idx = 0;
-        foreach ($route->getWaypoints() as $wp) {
-            $wp->setJumpDistance($distances[$idx] ?? null);
-            $idx++;
-        }
+        $this->recalculateDistances($route, new RouteWaypoint()); // Trigger full re-calc
     }
 
     private function updateRouteEndpoints(Route $route, RouteWaypoint $newWaypoint): void
@@ -269,16 +271,38 @@ final class RouteWaypointService
 
     private function recalculateFuelEstimate(Route $route): void
     {
-        $hexes = [];
-        foreach ($route->getWaypoints() as $wp) {
-            $hexes[] = (string) $wp->getHex();
-        }
-
-        $distances = $this->routeMath->segmentDistances($hexes);
+        $distances = $this->getRouteSegmentDistances($route);
         $calculatedFuel = $this->routeMath->estimateJumpFuel($route, $distances);
 
         if ($calculatedFuel !== null) {
             $route->setFuelEstimate($calculatedFuel);
         }
+    }
+
+    /**
+     * @return array<int, int|null>
+     */
+    private function getRouteSegmentDistances(Route $route): array
+    {
+        $distances = [];
+        $waypoints = $route->getWaypoints()->toArray();
+        usort($waypoints, fn($a, $b) => $a->getPosition() <=> $b->getPosition());
+
+        $previous = null;
+        foreach ($waypoints as $wp) {
+            if ($previous === null) {
+                $distances[] = null;
+            } else {
+                $distances[] = $this->routeMath->distance(
+                    $previous->getHex(),
+                    $wp->getHex(),
+                    $this->dataService->getSectorCoordinates($previous->getSector()),
+                    $this->dataService->getSectorCoordinates($wp->getSector())
+                );
+            }
+            $previous = $wp;
+        }
+
+        return $distances;
     }
 }
