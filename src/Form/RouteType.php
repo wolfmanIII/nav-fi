@@ -132,9 +132,6 @@ class RouteType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('destHex', HiddenType::class, [
-                'required' => false,
-            ])
             ->add('startDate', TextType::class, [
                 'mapped' => false,
                 'required' => false,
