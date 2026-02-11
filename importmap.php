@@ -28,21 +28,8 @@ return [
     'highlight.js' => [
         'version' => '11.11.1',
     ],
-    'tom-select' => [
-        'version' => '2.4.4',
-    ],
-    '@orchidjs/sifter' => [
-        'version' => '1.1.0',
-    ],
-    '@orchidjs/unicode-variants' => [
-        'version' => '1.1.2',
-    ],
     'highlight.js/styles/github-dark.css' => [
         'version' => '11.11.1',
-        'type' => 'css',
-    ],
-    'tom-select/dist/css/tom-select.css' => [
-        'version' => '2.4.4',
         'type' => 'css',
     ],
 ];

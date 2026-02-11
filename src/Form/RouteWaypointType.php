@@ -35,54 +35,29 @@ class RouteWaypointType extends AbstractType
                 'choices' => $this->dataService->getOtuSectors(),
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
-                    'data-controller' => 'tom-select',
-                    'data-tom-select-options-value' => json_encode([
-                        'maxOptions' => 2000,
-                        'placeholder' => 'Search Sector...',
-                    ]),
+                    'data-controller' => 'searchable-select',
+                    'data-searchable-select-placeholder-value' => 'Search Sector...',
                     'data-action' => 'change->dependent-select#change',
                     'data-dependent-select-target' => 'source',
                 ],
             ])
-            ->add('world', ChoiceType::class, [
+            ->add('worldChoice', ChoiceType::class, [
+                'mapped' => false,
                 'required' => false,
                 'label' => 'World Selection',
                 'placeholder' => '// SELECT WORLD',
-                'property_path' => 'hex',
                 'choices' => [],
                 'disabled' => true,
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
-                    'data-controller' => 'tom-select',
+                    'data-controller' => 'searchable-select',
                     'data-dependent-select-target' => 'destination',
-                    'data-tom-select-options-value' => json_encode([
-                        'placeholder' => 'Search World...',
-                    ]),
+                    'data-searchable-select-placeholder-value' => 'Search World...',
                 ],
             ])
-            ->add('worldName', TextType::class, [
-                'mapped' => false,
-                'required' => false,
-                'label' => 'World Name',
-                'attr' => [
-                    'class' => 'input input-bordered w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono cursor-not-allowed',
-                    'readonly' => true,
-                ],
-            ])
-            ->add('hex', TextType::class, [
-                'attr' => [
-                    'class' => 'input input-bordered w-full uppercase bg-slate-950/50 border-slate-700 font-mono text-cyan-400',
-                    'maxlength' => 4,
-                    'placeholder' => '0000',
-                ],
-            ])
-            ->add('uwp', TextType::class, [
-                'required' => false,
-                'attr' => [
-                    'class' => 'input input-bordered w-full bg-slate-950/50 border-slate-700 font-mono text-cyan-400',
-                    'readonly' => true,
-                ],
-            ])
+            ->add('world', HiddenType::class)
+            ->add('hex', HiddenType::class)
+            ->add('uwp', HiddenType::class)
             ->add('jumpDistance', HiddenType::class, [
                 'required' => false,
             ])
@@ -98,21 +73,19 @@ class RouteWaypointType extends AbstractType
             $form = $event->getForm();
 
             if ($waypoint && $waypoint->getSector()) {
-                $form->add('world', ChoiceType::class, [
+                $form->add('worldChoice', ChoiceType::class, [
+                    'mapped' => false,
                     'required' => false,
                     'label' => 'World',
                     'placeholder' => '// SELECT WORLD',
-                    'property_path' => 'hex',
                     'choices' => $this->dataService->getWorldsForSector($waypoint->getSector()),
                     'choice_label' => fn($choice, $key, $value) => $key,
                     'choice_value' => fn($choice) => $choice,
                     'attr' => [
                         'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
-                        'data-controller' => 'tom-select',
+                        'data-controller' => 'searchable-select',
                         'data-dependent-select-target' => 'destination',
-                        'data-tom-select-options-value' => json_encode([
-                            'placeholder' => 'Search World...',
-                        ]),
+                        'data-searchable-select-placeholder-value' => 'Search World...',
                     ],
                 ]);
             }
@@ -123,21 +96,19 @@ class RouteWaypointType extends AbstractType
             $form = $event->getForm();
 
             if (!empty($data['sector'])) {
-                $form->add('world', ChoiceType::class, [
+                $form->add('worldChoice', ChoiceType::class, [
+                    'mapped' => false,
                     'required' => false,
                     'label' => 'World',
                     'placeholder' => '// SELECT WORLD',
-                    'property_path' => 'hex',
                     'choices' => $this->dataService->getWorldsForSector($data['sector']),
                     'choice_label' => fn($choice, $key, $value) => $key,
                     'choice_value' => fn($choice) => $choice,
                     'attr' => [
                         'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
-                        'data-controller' => 'tom-select',
+                        'data-controller' => 'searchable-select',
                         'data-dependent-select-target' => 'destination',
-                        'data-tom-select-options-value' => json_encode([
-                            'placeholder' => 'Search World...',
-                        ]),
+                        'data-searchable-select-placeholder-value' => 'Search World...',
                     ],
                 ]);
             }

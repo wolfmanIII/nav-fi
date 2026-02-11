@@ -44,18 +44,24 @@ export default class extends Controller {
     clearForm() {
         this.inputHexTarget.value = '';
         this.inputSectorTarget.value = '';
-        if (this.hasInputWorldChoiceTarget) this.inputWorldChoiceTarget.value = '';
-        if (this.hasInputWorldTarget) this.inputWorldTarget.value = '';
+        if (this.hasInputWorldChoiceTarget) {
+            this.inputWorldChoiceTarget.value = '';
+            // Dispatch change to reset searchable-select if needed
+            this.inputWorldChoiceTarget.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        this.inputWorldTarget.value = '';
         this.inputUwpTarget.value = '';
         this.inputNotesTarget.value = '';
     }
 
-    // Lookup world su blur di hex/sector
+    // Lookup world su blur o cambiamento selezione
     async lookup() {
         const hex = this.inputHexTarget.value.trim().toUpperCase();
         const sector = this.inputSectorTarget.value.trim();
 
         if (!hex || !sector) {
+            this.inputWorldTarget.value = '';
+            this.inputUwpTarget.value = '';
             return;
         }
 
@@ -65,10 +71,10 @@ export default class extends Controller {
             const data = await response.json();
 
             if (data.found) {
-                if (this.hasInputWorldTarget) this.inputWorldTarget.value = data.world || '';
+                this.inputWorldTarget.value = data.world || '';
                 this.inputUwpTarget.value = data.uwp || '';
             } else {
-                if (this.hasInputWorldTarget) this.inputWorldTarget.value = '';
+                this.inputWorldTarget.value = '';
                 this.inputUwpTarget.value = '';
             }
         } catch (e) {
@@ -84,6 +90,10 @@ export default class extends Controller {
         if (hex) {
             this.inputHexTarget.value = hex;
             this.lookup();
+        } else {
+            this.inputHexTarget.value = '';
+            this.inputWorldTarget.value = '';
+            this.inputUwpTarget.value = '';
         }
     }
 
@@ -210,13 +220,13 @@ export default class extends Controller {
                 ` : '<span class="opacity-30">—</span>'}
             </td>
             <td class="font-mono text-xs p-2 text-slate-500 text-center">${wp.position}</td>
-            <td class="font-mono text-xs p-2 border-r border-slate-800/50 font-bold text-emerald-400">${wp.hex}</td>
             <td class="font-mono text-xs p-2">${wp.sector || '—'}</td>
             <td class="p-2">
                 <span class="badge badge-sm font-mono font-bold ${badgeClass}">
                     ${wp.world || '—'}
                 </span>
             </td>
+            <td class="font-mono text-xs p-2 border-r border-slate-800/50 font-bold text-emerald-400">${wp.hex}</td>
             <td class="font-mono text-xs p-2">${wp.uwp || '—'}</td>
             <td class="font-mono text-xs p-2 text-right text-emerald-300">${wp.jumpDistance || '—'}</td>
             <td class="text-center p-2">

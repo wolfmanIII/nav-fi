@@ -74,6 +74,29 @@ class TravellerMapDataService
     }
 
     /**
+     * Restituisce le coordinate X e Y di un settore cercandolo nei metadati per nome.
+     * @return array{x: int, y: int}|null
+     */
+    public function getSectorCoordinates(string $sectorName): ?array
+    {
+        $data = $this->getSectorsMetadata();
+        $sectors = $data['Sectors'] ?? [];
+
+        foreach ($sectors as $sector) {
+            foreach ($sector['Names'] ?? [] as $nameObj) {
+                if (strcasecmp($nameObj['Text'] ?? '', $sectorName) === 0) {
+                    return [
+                        'x' => (int) ($sector['X'] ?? 0),
+                        'y' => (int) ($sector['Y'] ?? 0),
+                    ];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Restituisce solo i settori che contengono il tag "OTU".
      * Restituisce un array associativo [Nome Settore => Nome Settore] per l'uso nei form.
      */

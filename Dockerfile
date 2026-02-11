@@ -93,7 +93,7 @@ ARG GOOGLE_CLIENT_SECRET=placeholder_client_secret
 ENV APP_SECRET=$APP_SECRET
 ENV DATABASE_URL=$DATABASE_URL
 
-# Scarica asset vendor (highlight.js, tom-select, etc. in assets/vendor)
+# Scarica asset vendor (highlight.js, etc. in assets/vendor)
 RUN php bin/console importmap:install
 
 # Compila CSS Tailwind (richiede symfonycasts/tailwind-bundle)

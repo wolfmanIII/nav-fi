@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "../vendor/tom-select/tom-select.css";
 @import "../vendor/highlight.js/styles/github-dark.css";
 @plugin "@tailwindcss/typography";
 
@@ -178,101 +177,6 @@
         /* red-100 */
         border: 1px solid rgba(248, 113, 113, 0.35) !important;
         /* red-400/35 */
-    }
-
-    .ts-wrapper .ts-control {
-        @apply input bg-base-200 border-base-300 text-base-content;
-        background-color: var(--b2) !important;
-        border-color: transparent !important;
-        color: var(--bc) !important;
-        opacity: 1 !important;
-        /* Forza opacità piena per default */
-    }
-
-    /* Gestione opacità quando disabilitato */
-    .ts-wrapper.disabled .ts-control {
-        opacity: 0.5 !important;
-        background-color: var(--b2) !important;
-        /* Mantieni il colore del tema */
-        cursor: not-allowed !important;
-    }
-
-    .ts-wrapper .ts-control>input {
-        @apply text-base-content;
-        color: var(--bc) !important;
-    }
-
-    .ts-wrapper.single .ts-control {
-        box-shadow: none !important;
-        outline: none !important;
-    }
-
-    .ts-wrapper.focus .ts-control {
-        border-color: transparent !important;
-        box-shadow: none !important;
-        outline: none !important;
-    }
-
-
-    .ts-wrapper .ts-control::before,
-    .ts-wrapper .ts-control::after {
-        box-shadow: none !important;
-    }
-
-    .ts-wrapper.single .ts-control .item {
-        border-right: 0 !important;
-    }
-
-    .ts-wrapper.single .ts-control input {
-        border-left: 0 !important;
-        border-right: 0 !important;
-        box-shadow: none !important;
-    }
-
-    /* Fix Dropdown z-index & Style */
-    .ts-dropdown,
-    .ts-wrapper .ts-dropdown {
-        @apply bg-base-100 border border-base-300 shadow-lg;
-        background-color: var(--b2) !important;
-        border-color: transparent !important;
-        /* Must be higher than DaisyUI Modals (999) and work in Top Layer */
-        z-index: 2147483647 !important;
-        background-color: #020617 !important;
-        /* solid slate-950 */
-    }
-
-    .ts-dropdown .ts-dropdown-content,
-    .ts-wrapper .ts-dropdown .ts-dropdown-content {
-        background-color: #020617 !important;
-    }
-
-    .ts-dropdown .dropdown-input,
-    .ts-wrapper .ts-dropdown .dropdown-input {
-        @apply input bg-base-200 border-base-300 text-base-content;
-        background-color: var(--b2) !important;
-        border-color: var(--b3) !important;
-        color: var(--bc) !important;
-        box-shadow: none !important;
-    }
-
-    .ts-wrapper .ts-dropdown .option {
-        @apply text-base-content;
-        background-color: transparent !important;
-        color: var(--bc) !important;
-    }
-
-    .ts-wrapper .ts-dropdown .option.active,
-    .ts-wrapper .ts-dropdown .option:hover {
-        @apply bg-base-200 text-base-content;
-        background-color: var(--b2) !important;
-        color: var(--bc) !important;
-    }
-
-    .ts-wrapper.multi .ts-control>div {
-        @apply bg-base-200 border border-base-300 text-base-content;
-        background-color: var(--b2) !important;
-        border-color: var(--b3) !important;
-        color: var(--bc) !important;
     }
 
     .route-waypoint-highlight {

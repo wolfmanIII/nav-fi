@@ -7,13 +7,10 @@ export default class extends Controller {
     };
 
     connect() {
-        // Se la destinazione è un TomSelect, inizializzazione specifica potrebbe essere necessaria
-        // ma di solito TomSelect intercetta i cambiamenti dell'elemento select originale.
     }
 
     async change(event) {
         const sector = event.target.value;
-        const select = this.destinationTarget;
 
         if (!sector) {
             this.clearDestination();
@@ -21,11 +18,6 @@ export default class extends Controller {
         }
 
         try {
-            // Se TomSelect è presente, mostriamo uno stato di caricamento magari?
-            if (select.tomselect) {
-                select.tomselect.lock();
-            }
-
             const response = await fetch(`${this.urlValue}?sector=${encodeURIComponent(sector)}`);
             if (!response.ok) throw new Error('Network response was not ok');
 
@@ -34,10 +26,6 @@ export default class extends Controller {
         } catch (error) {
             console.error('Failed to fetch worlds:', error);
             this.clearDestination();
-        } finally {
-            if (select.tomselect) {
-                select.tomselect.unlock();
-            }
         }
     }
 
@@ -57,25 +45,10 @@ export default class extends Controller {
         // Abilita la select
         select.disabled = false;
 
-        // Se è un TomSelect, dobbiamo notificarlo e abilitarlo
-        if (select.tomselect) {
-            select.tomselect.enable();
-            select.tomselect.clearOptions();
-            select.tomselect.addOptions(worlds.map(w => ({ text: w.label, value: w.value })));
-            if (currentVal) {
-                select.tomselect.setValue(currentVal);
-            }
-            select.tomselect.refreshOptions(false);
-        }
-
-        // Se abbiamo il controller Stimulus dedicato, usiamolo per l'estetica
-        const tsController = this.application.getControllerForElementAndIdentifier(select, 'tom-select');
-        if (tsController) {
-            tsController.enable();
-        }
-
         if (currentVal) {
             select.value = currentVal;
+            // Trigger change event to sync with other controllers
+            select.dispatchEvent(new Event('change', { bubbles: true }));
         }
     }
 
@@ -83,16 +56,6 @@ export default class extends Controller {
         const select = this.destinationTarget;
         select.innerHTML = '<option value="">// SELECT WORLD</option>';
         select.disabled = true;
-
-        if (select.tomselect) {
-            select.tomselect.clearOptions();
-            select.tomselect.disable();
-            select.tomselect.refreshOptions(false);
-        }
-
-        const tsController = this.application.getControllerForElementAndIdentifier(select, 'tom-select');
-        if (tsController) {
-            tsController.disable();
-        }
+        select.dispatchEvent(new Event('change', { bubbles: true }));
     }
 }

@@ -160,7 +160,7 @@
                             }
                         }) }}
                             <div class="grid grid-cols-2 gap-4 mb-4">
-                                <div class="col-span-2 md:col-span-1">
+                                <div class="col-span-1 md:col-span-1">
                                     <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">Sector (OTU)</label>
                                     {{ form_widget(waypointForm.sector, {
                                         'attr': {
@@ -169,43 +169,12 @@
                                         }
                                     }) }}
                                 </div>
-                                <div class="col-span-2 md:col-span-1">
+                                <div class="col-span-1">
                                     <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">World Selection</label>
-                                    {{ form_widget(waypointForm.world, {
+                                    {{ form_widget(waypointForm.worldChoice, {
                                         'attr': {
                                             'data-route-waypoint-modal-target': 'inputWorldChoice',
                                             'data-action': 'change->route-waypoint-modal#onWorldChoiceChange'
-                                        }
-                                    }) }}
-                                </div>
-                                <div>
-                                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">Hex</label>
-                                    {{ form_widget(waypointForm.hex, {
-                                        'attr': {
-                                            'class': 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50 uppercase font-mono text-cyan-400',
-                                            'placeholder': 'e.g. 1905',
-                                            'data-route-waypoint-modal-target': 'inputHex',
-                                            'data-action': 'blur->route-waypoint-modal#lookup'
-                                        }
-                                    }) }}
-                                </div>
-                                <div>
-                                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">World Name <span class="text-slate-500 normal-case">(auto)</span></label>
-                                    {{ form_widget(waypointForm.worldName, {
-                                        'attr': {
-                                            'class': 'input input-bordered input-sm w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono cursor-not-allowed',
-                                            'readonly': true,
-                                            'data-route-waypoint-modal-target': 'inputWorld'
-                                        }
-                                    }) }}
-                                </div>
-                                <div class="col-span-2 md:col-span-1">
-                                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">UWP <span class="text-slate-500 normal-case">(auto)</span></label>
-                                    {{ form_widget(waypointForm.uwp, {
-                                        'attr': {
-                                            'class': 'input input-bordered input-sm w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono cursor-not-allowed',
-                                            'readonly': true,
-                                            'data-route-waypoint-modal-target': 'inputUwp'
                                         }
                                     }) }}
                                 </div>
@@ -220,6 +189,9 @@
                                     }
                                 }) }}
                             </div>
+                            {{ form_widget(waypointForm.world, { 'attr': { 'data-route-waypoint-modal-target': 'inputWorld' } }) }}
+                            {{ form_widget(waypointForm.hex, { 'attr': { 'data-route-waypoint-modal-target': 'inputHex' } }) }}
+                            {{ form_widget(waypointForm.uwp, { 'attr': { 'data-route-waypoint-modal-target': 'inputUwp' } }) }}
                             {{ form_widget(waypointForm.position) }}
                             {{ form_widget(waypointForm.jumpDistance) }}
                             <div class="modal-action">
@@ -233,9 +205,7 @@
                     </form>
                 </dialog>
 
-                {# Avviso salti invalidi #}
-                {# Avviso salti invalidi #}
-                {# Avviso salti invalidi #}
+                {# Warning for invalid jumps #}
                 <div class="alert bg-red-950/30 border border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.1)] mb-6 flex items-center justify-between {{ hasInvalidJumps ? '' : 'hidden' }}"
                      data-route-waypoint-modal-target="invalidJumpAlert">
                     <div class="flex items-center gap-4">
@@ -346,6 +316,7 @@
                     </tbody>
                 </table>
                 </div>
+            </div>
         </div>
     </div>
 

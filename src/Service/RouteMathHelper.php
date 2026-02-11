@@ -20,12 +20,25 @@ class RouteMathHelper
         return [$col, $row];
     }
 
-    public function distance(string $fromHex, string $toHex): ?int
+    public function distance(string $fromHex, string $toHex, ?array $fromSectorCoords = null, ?array $toSectorCoords = null): ?int
     {
         $from = $this->parseHex($fromHex);
         $to = $this->parseHex($toHex);
         if ($from === null || $to === null) {
             return null;
+        }
+
+        // Se abbiamo le coordinate dei settori, usiamo il sistema globale di TravellerMap
+        // Un settore è 32x40 esagoni.
+        if ($fromSectorCoords !== null && $toSectorCoords !== null) {
+            $x1 = ($fromSectorCoords['x'] * 32) + $from[0];
+            $y1 = ($fromSectorCoords['y'] * 40) + $from[1];
+
+            $x2 = ($toSectorCoords['x'] * 32) + $to[0];
+            $y2 = ($toSectorCoords['y'] * 40) + $to[1];
+
+            $from = [$x1, $y1];
+            $to = [$x2, $y2];
         }
 
         [$x1, $y1, $z1] = $this->offsetToCube($from[0], $from[1]);

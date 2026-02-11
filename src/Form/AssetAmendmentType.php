@@ -73,8 +73,8 @@ class AssetAmendmentType extends AbstractType
                 },
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
-                    'data-controller' => 'tom-select',
-                    'data-tom-select-placeholder-value' => 'Search cost reference…',
+                    'data-controller' => 'searchable-select',
+                    'data-searchable-select-placeholder-value' => 'Search cost reference…',
                 ],
             ])
             ->add('patchDetails', AssetDetailsType::class, [

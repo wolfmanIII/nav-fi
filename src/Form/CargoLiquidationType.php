@@ -55,8 +55,8 @@ class CargoLiquidationType extends AbstractType
                 'placeholder' => '// SELECT BUYER',
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700 focus:border-cyan-500/50 text-white',
-                    'data-controller' => 'tom-select',
-                    'data-tom-select-placeholder-value' => '// SELECT BUYER',
+                    'data-controller' => 'searchable-select',
+                    'data-searchable-select-placeholder-value' => '// SELECT BUYER',
                 ],
                 'required' => false,
             ])

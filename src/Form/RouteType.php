@@ -105,11 +105,8 @@ class RouteType extends AbstractType
                 'choices' => $this->dataService->getOtuSectors(),
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
-                    'data-controller' => 'tom-select',
-                    'data-tom-select-options-value' => json_encode([
-                        'maxOptions' => 2000,
-                        'placeholder' => 'Search Sector...',
-                    ]),
+                    'data-controller' => 'searchable-select',
+                    'data-searchable-select-placeholder-value' => 'Search Sector...',
                     'data-action' => 'change->dependent-select#change',
                     'data-dependent-select-target' => 'source',
                 ],
@@ -125,11 +122,9 @@ class RouteType extends AbstractType
                 'disabled' => $route->getStartSector() === null,
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
-                    'data-controller' => 'tom-select',
+                    'data-controller' => 'searchable-select',
                     'data-dependent-select-target' => 'destination',
-                    'data-tom-select-options-value' => json_encode([
-                        'placeholder' => 'Search World...',
-                    ]),
+                    'data-searchable-select-placeholder-value' => 'Search World...',
                 ],
             ])
             ->add('startDate', TextType::class, [
@@ -182,11 +177,9 @@ class RouteType extends AbstractType
                     'choice_value' => fn($choice) => $choice,
                     'attr' => [
                         'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
-                        'data-controller' => 'tom-select',
+                        'data-controller' => 'searchable-select',
                         'data-dependent-select-target' => 'destination',
-                        'data-tom-select-options-value' => json_encode([
-                            'placeholder' => 'Search World...',
-                        ]),
+                        'data-searchable-select-placeholder-value' => 'Search World...',
                     ],
                 ]);
             }

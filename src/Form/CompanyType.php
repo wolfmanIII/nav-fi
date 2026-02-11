@@ -34,8 +34,8 @@ class CompanyType extends AbstractType
                 'choice_label' => fn (CompanyRole $role) => $role->getShortDescription() ?? $role->getCode(),
                 'attr' => [
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
-                    'data-controller' => 'tom-select',
-                    'data-tom-select-placeholder-value' => 'Search Company role reference…',
+                    'data-controller' => 'searchable-select',
+                    'data-searchable-select-placeholder-value' => 'Search Company role reference…',
                 ],
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('cr')->orderBy('cr.code', 'ASC');
