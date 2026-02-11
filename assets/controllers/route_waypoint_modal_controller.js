@@ -11,6 +11,7 @@ export default class extends Controller {
         'inputHex',
         'inputSector',
         'inputWorld',
+        'inputWorldChoice',
         'inputUwp',
         'inputNotes',
         'tableBody',
@@ -43,7 +44,8 @@ export default class extends Controller {
     clearForm() {
         this.inputHexTarget.value = '';
         this.inputSectorTarget.value = '';
-        this.inputWorldTarget.value = '';
+        if (this.hasInputWorldChoiceTarget) this.inputWorldChoiceTarget.value = '';
+        if (this.hasInputWorldTarget) this.inputWorldTarget.value = '';
         this.inputUwpTarget.value = '';
         this.inputNotesTarget.value = '';
     }
@@ -63,14 +65,25 @@ export default class extends Controller {
             const data = await response.json();
 
             if (data.found) {
-                this.inputWorldTarget.value = data.world || '';
+                if (this.hasInputWorldTarget) this.inputWorldTarget.value = data.world || '';
                 this.inputUwpTarget.value = data.uwp || '';
             } else {
-                this.inputWorldTarget.value = '';
+                if (this.hasInputWorldTarget) this.inputWorldTarget.value = '';
                 this.inputUwpTarget.value = '';
             }
         } catch (e) {
             console.error('Lookup failed:', e);
+        }
+    }
+
+    /**
+     * Sincronizza l'hex quando viene scelto un mondo dal dropdown
+     */
+    onWorldChoiceChange(event) {
+        const hex = event.target.value;
+        if (hex) {
+            this.inputHexTarget.value = hex;
+            this.lookup();
         }
     }
 

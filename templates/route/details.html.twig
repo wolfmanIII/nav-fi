@@ -154,15 +154,35 @@
                         {{ form_start(waypointForm, {
                             'attr': {
                                 'data-action': 'submit->route-waypoint-modal#submit',
-                                'data-route-waypoint-modal-target': 'form'
+                                'data-route-waypoint-modal-target': 'form',
+                                'data-controller': 'dependent-select',
+                                'data-dependent-select-url-value': path('api_sector_worlds')
                             }
                         }) }}
                             <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div class="col-span-2 md:col-span-1">
+                                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">Sector (OTU)</label>
+                                    {{ form_widget(waypointForm.sector, {
+                                        'attr': {
+                                            'data-route-waypoint-modal-target': 'inputSector',
+                                            'data-action': 'change->dependent-select#change'
+                                        }
+                                    }) }}
+                                </div>
+                                <div class="col-span-2 md:col-span-1">
+                                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">World Selection</label>
+                                    {{ form_widget(waypointForm.world, {
+                                        'attr': {
+                                            'data-route-waypoint-modal-target': 'inputWorldChoice',
+                                            'data-action': 'change->route-waypoint-modal#onWorldChoiceChange'
+                                        }
+                                    }) }}
+                                </div>
                                 <div>
                                     <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">Hex</label>
                                     {{ form_widget(waypointForm.hex, {
                                         'attr': {
-                                            'class': 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50 uppercase',
+                                            'class': 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50 uppercase font-mono text-cyan-400',
                                             'placeholder': 'e.g. 1905',
                                             'data-route-waypoint-modal-target': 'inputHex',
                                             'data-action': 'blur->route-waypoint-modal#lookup'
@@ -170,19 +190,8 @@
                                     }) }}
                                 </div>
                                 <div>
-                                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">Sector</label>
-                                    {{ form_widget(waypointForm.sector, {
-                                        'attr': {
-                                            'class': 'input input-bordered input-sm w-full bg-slate-950/50 border-slate-800 focus:border-cyan-500/50',
-                                            'placeholder': 'e.g. Spinward Marches',
-                                            'data-route-waypoint-modal-target': 'inputSector',
-                                            'data-action': 'blur->route-waypoint-modal#lookup'
-                                        }
-                                    }) }}
-                                </div>
-                                <div>
-                                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">World <span class="text-slate-500 normal-case">(auto)</span></label>
-                                    {{ form_widget(waypointForm.world, {
+                                    <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">World Name <span class="text-slate-500 normal-case">(auto)</span></label>
+                                    {{ form_widget(waypointForm.worldName, {
                                         'attr': {
                                             'class': 'input input-bordered input-sm w-full bg-slate-900 border-slate-800 text-cyan-400 font-mono cursor-not-allowed',
                                             'readonly': true,
@@ -190,7 +199,7 @@
                                         }
                                     }) }}
                                 </div>
-                                <div>
+                                <div class="col-span-2 md:col-span-1">
                                     <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">UWP <span class="text-slate-500 normal-case">(auto)</span></label>
                                     {{ form_widget(waypointForm.uwp, {
                                         'attr': {
