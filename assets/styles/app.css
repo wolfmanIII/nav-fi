@@ -376,6 +376,32 @@
         background-attachment: fixed;
     }
 
+    /* Radar Loader */
+    .radar-loader {
+        @apply hidden w-5 h-5 relative mx-auto;
+        border: 2px solid rgba(6, 182, 212, 0.2);
+        border-radius: 50%;
+    }
+
+    .radar-loader::after {
+        content: "";
+        @apply absolute -inset-[2px];
+        border-radius: 50%;
+        background: conic-gradient(from 0deg, transparent 0%, #06b6d4 25%, transparent 100%);
+        mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 2px));
+        -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 2px));
+        @apply animate-spin-slow;
+    }
+
+    .radar-loader-label {
+        @apply hidden font-orbitron text-[8px] uppercase tracking-[0.2em] text-cyan-500/60 text-center mt-1;
+    }
+
+    .is-loading .radar-loader,
+    .is-loading .radar-loader-label {
+        @apply block;
+    }
+
     /* Scanlines effect (Optional enhancement) */
     .bg-scifi-texture::before {
         content: "";

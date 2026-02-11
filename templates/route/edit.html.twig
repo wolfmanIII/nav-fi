@@ -160,19 +160,25 @@
                 {{ form_errors(form.name) }}
             </div>
 
-            <div class="col-span-1">
-                <div class="flex items-baseline h-5 mb-1">
-                    {{ form_label(form.startSector, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            <div class="col-span-2 grid grid-cols-5 md:grid-cols-5 gap-4 items-end mb-4">
+                <div class="col-span-2">
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(form.startSector, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(form.startSector) }}
+                    {{ form_errors(form.startSector) }}
                 </div>
-                {{ form_widget(form.startSector) }}
-                {{ form_errors(form.startSector) }}
-            </div>
-            <div class="col-span-1">
-                <div class="flex items-baseline h-5 mb-1">
-                    {{ form_label(form.startWorld, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                <div class="col-span-2">
+                    <div class="flex items-baseline h-5 mb-1">
+                        {{ form_label(form.startWorld, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+                    </div>
+                    {{ form_widget(form.startWorld) }}
+                    {{ form_errors(form.startWorld) }}
                 </div>
-                {{ form_widget(form.startWorld) }}
-                {{ form_errors(form.startWorld) }}
+                <div class="col-span-1 flex flex-col items-center justify-center pb-2">
+                     <div class="radar-loader"></div>
+                     <div class="radar-loader-label">SYNC</div>
+                </div>
             </div>
 
             <div class="col-span-2">

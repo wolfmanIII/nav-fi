@@ -159,8 +159,8 @@
                                 'data-dependent-select-url-value': path('api_sector_worlds')
                             }
                         }) }}
-                            <div class="grid grid-cols-2 gap-4 mb-4">
-                                <div class="col-span-1 md:col-span-1">
+                            <div class="grid grid-cols-5 md:grid-cols-5 gap-4 mb-4 items-end">
+                                <div class="col-span-2 md:col-span-2">
                                     <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">Sector (OTU)</label>
                                     {{ form_widget(waypointForm.sector, {
                                         'attr': {
@@ -169,7 +169,7 @@
                                         }
                                     }) }}
                                 </div>
-                                <div class="col-span-1">
+                                <div class="col-span-2 md:col-span-2">
                                     <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">World Selection</label>
                                     {{ form_widget(waypointForm.worldChoice, {
                                         'attr': {
@@ -177,6 +177,10 @@
                                             'data-action': 'change->route-waypoint-modal#onWorldChoiceChange'
                                         }
                                     }) }}
+                                </div>
+                                <div class="col-span-1 flex flex-col items-center justify-center pb-2">
+                                     <div class="radar-loader"></div>
+                                     <div class="radar-loader-label">SYNC</div>
                                 </div>
                             </div>
                             <div class="mb-6">

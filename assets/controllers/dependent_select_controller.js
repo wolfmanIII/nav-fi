@@ -17,6 +17,8 @@ export default class extends Controller {
             return;
         }
 
+        this.setLoading(true);
+
         try {
             const response = await fetch(`${this.urlValue}?sector=${encodeURIComponent(sector)}`);
             if (!response.ok) throw new Error('Network response was not ok');
@@ -26,7 +28,13 @@ export default class extends Controller {
         } catch (error) {
             console.error('Failed to fetch worlds:', error);
             this.clearDestination();
+        } finally {
+            this.setLoading(false);
         }
+    }
+
+    setLoading(state) {
+        this.element.classList.toggle('is-loading', state);
     }
 
     updateDestination(worlds) {
