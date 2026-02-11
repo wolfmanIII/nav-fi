@@ -38,6 +38,10 @@ export default class extends Controller {
         this._onClickOutside = this.onClickOutside.bind(this);
         document.addEventListener('click', this._onClickOutside);
 
+        this._onResize = this.updatePosition.bind(this);
+        window.addEventListener('resize', this._onResize);
+        window.addEventListener('scroll', this._onResize, true); // true for capturing scroll on all elements
+
         this.selectedIndex = -1;
     }
 
@@ -45,7 +49,12 @@ export default class extends Controller {
         this.mutationObserver?.disconnect();
         this.originalSelect.removeEventListener('change', this._onExternalChange);
         document.removeEventListener('click', this._onClickOutside);
+        window.removeEventListener('resize', this._onResize);
+        window.removeEventListener('scroll', this._onResize, true);
+
         this.wrapper?.remove();
+        this.menu?.parentNode?.removeChild(this.menu); // Remove from wherever it was appended
+
         this.originalSelect.style.display = '';
         delete this.element.dataset.searchableSelectActive;
     }
@@ -76,7 +85,8 @@ export default class extends Controller {
         inputContainer.appendChild(icon);
 
         this.menu = document.createElement('div');
-        this.menu.className = 'absolute z-[100] w-full mt-1 bg-slate-900/95 border border-slate-700/50 rounded-lg shadow-2xl hidden backdrop-blur-xl animate-in fade-in zoom-in duration-200';
+        // Changed: Use fixed positioning to guarantee visibility regardless of parent overflow or stacking context
+        this.menu.className = 'fixed z-[9999] mt-1 bg-slate-900/95 border border-slate-700/50 rounded-lg shadow-2xl hidden backdrop-blur-xl animate-in fade-in zoom-in duration-200';
         this.menu.style.maxHeight = '250px';
         this.menu.style.overflowY = 'auto';
 
@@ -85,7 +95,17 @@ export default class extends Controller {
 
         this.menu.appendChild(this.resultsList);
         this.wrapper.appendChild(inputContainer);
-        this.wrapper.appendChild(this.menu);
+
+        this.menu.appendChild(this.resultsList);
+        this.wrapper.appendChild(inputContainer);
+
+        // Append menu to closest dialog (to handle Top Layer) or body
+        const parentDialog = this.element.closest('dialog');
+        if (parentDialog) {
+            parentDialog.appendChild(this.menu);
+        } else {
+            document.body.appendChild(this.menu);
+        }
 
         this.originalSelect.parentNode.insertBefore(this.wrapper, this.originalSelect.nextSibling);
 
@@ -125,22 +145,33 @@ export default class extends Controller {
         }
     }
 
+    updatePosition() {
+        if (this.menu.classList.contains('hidden')) return;
+
+        const rect = this.searchField.getBoundingClientRect();
+
+        // With fixed positioning, we use viewport coordinates directly
+        // No need to add scroll offsets
+        this.menu.style.top = `${rect.bottom}px`;
+        this.menu.style.left = `${rect.left}px`;
+        this.menu.style.width = `${rect.width}px`;
+    }
+
     openDropdown() {
         if (this.originalSelect.disabled) return;
         this.renderResults(this.searchField.value);
         this.menu.classList.remove('hidden');
-        this.wrapper.style.zIndex = '110';
+        this.updatePosition();
     }
 
     closeDropdown() {
         this.menu.classList.add('hidden');
-        this.wrapper.style.zIndex = '';
         this.selectedIndex = -1;
         this.syncFromNative();
     }
 
     onClickOutside(event) {
-        if (!this.wrapper.contains(event.target)) {
+        if (!this.wrapper.contains(event.target) && !this.menu.contains(event.target)) {
             this.closeDropdown();
         }
     }
@@ -148,6 +179,7 @@ export default class extends Controller {
     onInput() {
         this.renderResults(this.searchField.value);
         this.menu.classList.remove('hidden');
+        this.updatePosition();
     }
 
     renderResults(query) {
@@ -163,6 +195,7 @@ export default class extends Controller {
             noResults.className = 'disabled p-3 text-slate-500 text-[10px] uppercase font-bold tracking-[0.2em] text-center';
             noResults.textContent = this.noResultsTextValue;
             this.resultsList.appendChild(noResults);
+            this.updatePosition(); // Update position as height might change
             return;
         }
 
@@ -189,6 +222,7 @@ export default class extends Controller {
         });
 
         this.selectedIndex = -1;
+        this.updatePosition(); // Update position as height might change
     }
 
     selectOption(option) {
