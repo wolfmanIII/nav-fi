@@ -32,7 +32,7 @@ class TravellerMapDataService
             $systems = $this->sectorLookup->parseSector($sectorName);
             $worlds = [];
             foreach ($systems as $system) {
-                $label = sprintf('%s (%s)', $system['name'], $system['hex']);
+                $label = sprintf('%s (%s) - %s', $system['name'], $system['hex'], $system['uwp']);
                 $worlds[$label] = $system['hex'];
             }
             
