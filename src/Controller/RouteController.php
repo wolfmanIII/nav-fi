@@ -319,6 +319,8 @@ final class RouteController extends BaseController
             return new JsonResponse(['error' => 'Waypoint not found'], Response::HTTP_NOT_FOUND);
         }
 
+        $this->denyAccessUnlessGranted('waypoint_delete', $waypoint);
+
         $waypointService->removeWaypoint($route, $waypoint);
         $em->flush();
 

@@ -376,30 +376,58 @@
         background-attachment: fixed;
     }
 
-    /* Radar Loader */
+    /* Radar Loader Overlay */
+    .loader-overlay {
+        display: none;
+        position: absolute;
+        inset: 0;
+        z-index: 50;
+        background-color: rgba(15, 23, 42, 0.4);
+        /* slate-900/40 */
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        border-radius: 0.75rem;
+        /* rounded-xl */
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .is-loading .loader-overlay {
+        display: flex !important;
+    }
+
     .radar-loader {
-        @apply hidden w-5 h-5 relative mx-auto;
-        border: 2px solid rgba(6, 182, 212, 0.2);
+        width: 1.5rem;
+        height: 1.5rem;
+        position: relative;
         border-radius: 50%;
+        border: 2px solid rgba(34, 211, 238, 0.2);
     }
 
     .radar-loader::after {
         content: "";
-        @apply absolute -inset-[2px];
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
         border-radius: 50%;
-        background: conic-gradient(from 0deg, transparent 0%, #06b6d4 25%, transparent 100%);
-        mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 2px));
-        -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 2px));
-        @apply animate-spin-slow;
+        border: 2px solid transparent;
+        border-top-color: #22d3ee;
+        animation: spin 1s linear infinite;
     }
 
     .radar-loader-label {
-        @apply hidden font-orbitron text-[8px] uppercase tracking-[0.2em] text-cyan-500/60 text-center mt-1;
-    }
-
-    .is-loading .radar-loader,
-    .is-loading .radar-loader-label {
-        @apply block;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.3em;
+        color: #22d3ee;
+        text-align: center;
+        margin-top: 0.5rem;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
     }
 
     /* Scanlines effect (Optional enhancement) */

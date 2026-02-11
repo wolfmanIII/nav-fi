@@ -159,8 +159,13 @@
                                 'data-dependent-select-url-value': path('api_sector_worlds')
                             }
                         }) }}
-                            <div class="grid grid-cols-5 md:grid-cols-5 gap-4 mb-4 items-end">
-                                <div class="col-span-2 md:col-span-2">
+                            <div class="grid grid-cols-2 gap-4 mb-4 relative">
+                                {# Radar Overlay centered on the form #}
+                                <div class="loader-overlay">
+                                    <div class="radar-loader"></div>
+                                    <div class="radar-loader-label">SYNCING DATA</div>
+                                </div>
+                                <div class="col-span-1">
                                     <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">Sector (OTU)</label>
                                     {{ form_widget(waypointForm.sector, {
                                         'attr': {
@@ -169,7 +174,7 @@
                                         }
                                     }) }}
                                 </div>
-                                <div class="col-span-2 md:col-span-2">
+                                <div class="col-span-1">
                                     <label class="block text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50 mb-1">World Selection</label>
                                     {{ form_widget(waypointForm.worldChoice, {
                                         'attr': {
@@ -177,10 +182,6 @@
                                             'data-action': 'change->route-waypoint-modal#onWorldChoiceChange'
                                         }
                                     }) }}
-                                </div>
-                                <div class="col-span-1 flex flex-col items-center justify-center pb-2">
-                                     <div class="radar-loader"></div>
-                                     <div class="radar-loader-label">SYNC</div>
                                 </div>
                             </div>
                             <div class="mb-6">
@@ -301,12 +302,14 @@
                                 <td class="font-mono text-xs p-2">{{ waypoint.uwp ?? '—' }}</td>
                                 <td class="font-mono text-xs p-2 text-right text-emerald-300">{{ waypoint.jumpDistance ?? '—' }}</td>
                                 <td class="text-center p-2">
-                                    <button type="button"
-                                            class="btn btn-ghost btn-xs text-red-500 hover:text-red-400 hover:bg-red-500/10"
-                                            data-action="route-waypoint-modal#deleteWaypoint"
-                                            data-waypoint-id="{{ waypoint.id }}">
-                                        {% include 'icons/action-trash.html.twig' with { dim: 14 } %}
-                                    </button>
+                                    {% if is_granted('waypoint_delete', waypoint) %}
+                                        <button type="button"
+                                                class="btn btn-ghost btn-xs text-red-500 hover:text-red-400 hover:bg-red-500/10"
+                                                data-action="route-waypoint-modal#deleteWaypoint"
+                                                data-waypoint-id="{{ waypoint.id }}">
+                                            {% include 'icons/action-trash.html.twig' with { dim: 14 } %}
+                                        </button>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}

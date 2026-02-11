@@ -18,12 +18,20 @@ export default class extends Controller {
         }
 
         this.setLoading(true);
+        const startTime = Date.now();
 
         try {
             const response = await fetch(`${this.urlValue}?sector=${encodeURIComponent(sector)}`);
             if (!response.ok) throw new Error('Network response was not ok');
 
             const worlds = await response.json();
+
+            // Garantiamo almeno 800ms di visibilità per il loader
+            const elapsed = Date.now() - startTime;
+            if (elapsed < 800) {
+                await new Promise(resolve => setTimeout(resolve, 800 - elapsed));
+            }
+
             this.updateDestination(worlds);
         } catch (error) {
             console.error('Failed to fetch worlds:', error);

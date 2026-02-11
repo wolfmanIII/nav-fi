@@ -124,7 +124,7 @@
         </turbo-frame>
 
         <fieldset class="grid grid-cols-1 md:grid-cols-3 bg-slate-900/40 border border-slate-800 gap-6 p-6 rounded-xl shadow-inner mb-6 relative">
-            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Travel(Auto Calculated)</legend>
+            <legend class="px-3 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold font-orbitron tracking-[0.3em] text-cyan-500/80 uppercase">Travel Data(Auto filled)</legend>
 
             <div class="col-span-1">
                 <div class="flex items-baseline h-5 mb-1">
@@ -160,29 +160,36 @@
                 {{ form_errors(form.name) }}
             </div>
 
-            <div class="col-span-2 grid grid-cols-5 md:grid-cols-5 gap-4 items-end mb-4">
-                <div class="col-span-2">
+            <div class="col-span-2 grid grid-cols-2 gap-4 relative mb-4">
+                {# Radar Overlay centered on the section #}
+                <div class="loader-overlay">
+                    <div class="radar-loader"></div>
+                    <div class="radar-loader-label">SYNCING DATA</div>
+                </div>
+                <div class="col-span-1">
                     <div class="flex items-baseline h-5 mb-1">
                         {{ form_label(form.startSector, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                     </div>
                     {{ form_widget(form.startSector) }}
                     {{ form_errors(form.startSector) }}
                 </div>
-                <div class="col-span-2">
+                <div class="col-span-1">
                     <div class="flex items-baseline h-5 mb-1">
                         {{ form_label(form.startWorld, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
                     </div>
                     {{ form_widget(form.startWorld) }}
                     {{ form_errors(form.startWorld) }}
                 </div>
-                <div class="col-span-1 flex flex-col items-center justify-center pb-2">
-                     <div class="radar-loader"></div>
-                     <div class="radar-loader-label">SYNC</div>
+            </div>
+
+            <div class="col-span-2">
+                <div class="flex items-baseline h-5 mb-1">
+                    <label class="mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50">Waypoints</label>
                 </div>
             </div>
 
             <div class="col-span-2">
-                <div class="overflow-x-auto flex-grow relative min-h-[200px]">
+                <div class="overflow-x-auto flex-grow relative min-h-[200px] h-[200px]">
                     <table class="table table-sm w-full border-separate border-spacing-0">
                         <thead>
                         <tr class="border-b border-slate-800">
