@@ -149,23 +149,20 @@ final class RouteController extends BaseController
 
     #[RouteAttr('/route/details/{id}', name: 'app_route_details', methods: ['GET'])]
     public function details(
-        int $id,
+        Route $route,
+        string $sector = null,
+        string $hex = null,
         Request $request,
         EntityManagerInterface $em,
         TravellerMapSectorLookup $travellerMap,
         RouteWaypointService $waypointService
     ): Response {
         $user = $this->getUser();
-        if (!$user instanceof User) {
-            throw $this->createAccessDeniedException();
+        if ($route->getAsset()->getUser() !== $user) {
+            throw $this->createAccessDeniedException('You do not have access to this route.');
         }
 
-        $route = $em->getRepository(Route::class)->findOneForUserWithWaypoints($id, $user);
-        if (!$route) {
-            throw new NotFoundHttpException();
-        }
-
-        // Determina hex/sector da mostrare sulla mappa
+        // Handle "Jump to" logic
         $queryHex = trim((string) $request->query->get('marker_hex'));
         $querySector = trim((string) $request->query->get('marker_sector'));
 
@@ -181,6 +178,7 @@ final class RouteController extends BaseController
             $sector = null;
         }
 
+        // URL per Mappa Interattiva Standard (senza overlay per limiti URL/API)
         $mapUrl = $travellerMap->buildMapUrl($sector, $hex);
 
         // Form per modale aggiunta waypoint
