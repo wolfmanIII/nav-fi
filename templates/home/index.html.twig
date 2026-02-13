@@ -91,13 +91,13 @@
                     <div class="prose prose-invert prose-sm max-w-none text-slate-400 leading-relaxed">
                         <p>
                             <strong class="text-white">Nav-Fi</strong> is the holo-console for your Traveller campaign. 
-                            The <strong class="text-cyan-100">Voice of the Machine</strong> protocols are now engaged, providing real-time tactical feedback on temporal reconciliation, ledger integrity, and hard deck solvency limits.
+                            The <strong class="text-cyan-100">Voice of the Machine</strong> protocols are now engaged, providing real-time tactical feedback on temporal reconciliation, asynchronous navigation, and real parsec distance tracking.
                         </p>
                         <p class="mt-2 text-sm border-l-2 border-amber-500/30 pl-4 py-1 italic text-slate-300">
-                            <strong class="text-amber-400">Tactical Ledger & Cancellation</strong>: The system supports contract cancellation with diagonal VOID watermarking and automatic reconciliation of ledger transactions.
+                            <strong class="text-amber-400">Navigation HUD & Jump-Sync</strong>: High-speed tactical link is now active. Execute multi-waypoint transits with automated 7-day temporal progression and precise fuel estimation.
                         </p>
                         <p class="mt-2 text-xs border-l-2 border-cyan-500/30 pl-4 py-1 italic">
-                            <strong class="text-cyan-400">Referee Tactical Control</strong>: Smart resync tools ensure your ledger remains consistent even if you edit history or time-travel across campaign years.
+                            <strong class="text-cyan-400">Security & Integrity</strong>: Enhanced campaign isolation and strict ownership protocols ensure mission data remains synchronized and secure across the Imperial drift.
                         </p>
                     </div>
 
@@ -153,21 +153,21 @@
                       <div class="rounded-xl bg-slate-900 border border-slate-800 p-5 hover:border-emerald-500/30 hover:bg-slate-800/50 transition-all group">
                          <div class="flex items-start justify-between mb-4">
                             <div class="p-2 rounded-lg bg-emerald-950/30 text-emerald-400 group-hover:bg-emerald-900/40">
-                                {% include 'icons/annual-budget.html.twig' with { dim: 20 } %}
+                                {% include 'icons/routes.html.twig' with { dim: 20 } %}
                             </div>
-                            <span class="text-[10px] text-emerald-700 font-bold tracking-widest uppercase bg-emerald-950/20 px-2 py-1 rounded">Cycle_Bal</span>
+                            <span class="text-[10px] text-emerald-700 font-bold tracking-widest uppercase bg-emerald-950/20 px-2 py-1 rounded">Nav_Log</span>
                          </div>
-                         <h3 class="text-lg font-bold text-white mb-1">Performance Matrix</h3>
+                         <h3 class="text-lg font-bold text-white mb-1">Navigation HUD</h3>
                          <p class="text-sm text-slate-500 leading-relaxed">
-                             Aggregated income (w/ bonuses), upkeep, and debt on a single mission strip.
+                             Chart complex routes with real parsec coordinates. Automated jump-clock sync and fuel logistics for multi-sector transits.
                          </p>
-                     </div>
+                      </div>
 
                  </div>
 
                  {# Badge Cluster #}
                   <div class="flex flex-wrap gap-2 pt-2">
-                        {% for badge in ['Jump Ready', 'Owner Secured', 'Quick Scan', 'Session Timeline', 'Imp. Date', 'Cost Detail', 'Contract PDF', 'Vector Map', 'Void Tracking', 'Cancellation Support'] %}
+                         {% for badge in ['HUD Tactic', 'Jump-Sync', 'Parsec Precis.', 'Campaign Locked', 'Sector Cache', 'UWP Lookup', 'Temporal Progr.', 'Fuel Est.', 'Secure Link', 'Void Protocol'] %}
                              <span class="px-3 py-1.5 rounded border border-slate-800 bg-slate-950 text-xs text-slate-400 uppercase tracking-wider hover:border-slate-700 hover:text-slate-300 transition-colors cursor-default font-medium">
                                 {{ badge }}
                              </span>
