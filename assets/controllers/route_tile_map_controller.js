@@ -44,12 +44,12 @@ export default class extends Controller {
     waypointsValueChanged(value, previousValue) {
         if (!this.map) return;
 
-        // Prevent redraw on initial load if map isn't ready or if value hasnt truly changed (deep check optional but simple provided checks suffice)
+        // Previene il redraw al caricamento iniziale se la mappa non è pronta o se il valore non è cambiato veramente (check profondo opzionale, ma bastano controlli semplici)
         if (JSON.stringify(value) === JSON.stringify(previousValue)) return;
 
         console.log('Nav-Fi RouteTileMap: Waypoints changed, redrawing...');
 
-        // Clear existing layers
+        // Pulisce i layer esistenti
         if (this.routePolyline) {
             this.routePolyline.remove();
             this.routePolyline = null;
@@ -69,7 +69,7 @@ export default class extends Controller {
 
         this.containerTarget.style.backgroundColor = '#050505';
 
-        // 1. Setup Custom CRS and Map
+        // 1. Configurazione CRS Personalizzato e Mappa
         this.map = L.map(this.containerTarget, {
             crs: L.CRS.Simple, // Iniziamo con Simple
             minZoom: -4,
@@ -80,7 +80,7 @@ export default class extends Controller {
             zoom: 0
         });
 
-        // 2. Define Custom TileLayer for TravellerMap
+        // 2. Definizione TileLayer Personalizzato per TravellerMap
         const TravellerTileLayer = L.TileLayer.extend({
             getTileUrl: function (coords) {
                 let z = coords.z;
@@ -99,8 +99,8 @@ export default class extends Controller {
             bounds: [[-5000, -5000], [5000, 5000]]
         }).addTo(this.map);
 
-        // 3. Disegna Elementi (Markers/Route)
-        // Initial draw relies on waypointsValue being already set or set shortly
+        // 3. Disegna Elementi (Markers/Rotta)
+        // Il disegno iniziale dipende da waypointsValue che è già impostato o lo sarà a breve
         if (this.waypointsValue.length > 0) {
             await this.drawRoute();
         }
@@ -115,7 +115,7 @@ export default class extends Controller {
                     if (this.hasOverlayTarget) this.overlayTarget.remove();
                 }, 1000); // 1s wait for transition
             }
-        }, 3000);
+        }, 2000);
     }
 
     async getCoordinates(sectorName, hexCode) {
@@ -134,11 +134,11 @@ export default class extends Controller {
         const REFERENCE_HEX_X = 1;
         const REFERENCE_HEX_Y = 40;
 
-        // 1. World Space
+        // 1. Spazio Mondo (World Space)
         const worldX = (sectorData.sx - REFERENCE_SECTOR_X) * SECTOR_WIDTH + (hx - REFERENCE_HEX_X);
         const worldY = (sectorData.sy - REFERENCE_SECTOR_Y) * SECTOR_HEIGHT + (hy - REFERENCE_HEX_Y);
 
-        // 2. Map Space
+        // 2. Spazio Mappa (Map Space)
         const isEven = (n) => (n % 2) === 0;
         const PARSEC_SCALE_X = Math.cos(Math.PI / 6);
         const PARSEC_SCALE_Y = 1;
@@ -149,7 +149,7 @@ export default class extends Controller {
         var mapX = ix_adj * PARSEC_SCALE_X;
         var mapY = iy_adj * -PARSEC_SCALE_Y;
 
-        // 3. Leaflet Space (Lat = MapY, Lng = MapX)
+        // 3. Spazio Leaflet (Lat = MapY, Lng = MapX)
         return { lat: mapY, lng: mapX };
     }
 
@@ -195,21 +195,21 @@ export default class extends Controller {
             // Disegna
             const latLngs = routePoints.map(p => [p.lat, p.lng]);
 
-            // Cyan color: #22d3ee (Tailwind cyan-400), Dashed
+            // Colore Ciano: #22d3ee (Tailwind cyan-400), Tratteggiato
             this.routePolyline = L.polyline(latLngs, {
                 color: '#22d3ee',
                 weight: 4,
                 className: 'tile-route',
-                dashArray: '10, 10', // Dashed line
+                dashArray: '10, 10', // Linea tratteggiata
                 opacity: 0.8
             }).addTo(this.map);
 
-            this.routeMarkers = []; // Reset array
+            this.routeMarkers = []; // Resetta array
             routePoints.forEach(p => {
                 const marker = L.circleMarker([p.lat, p.lng], {
                     radius: 6,
                     color: '#22d3ee',
-                    fillColor: '#0891b2', // Darker cyan fill
+                    fillColor: '#0891b2', // Riempimento ciano più scuro
                     fillOpacity: 1,
                     weight: 2
                 }).addTo(this.map).bindPopup(`${p.meta.name} (${p.meta.hex}) <br> Lat: ${p.lat}, Lng: ${p.lng}`);
