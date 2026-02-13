@@ -44,6 +44,10 @@
                     <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
                     <span>5. Cancellation & VOID Tech</span>
                 </a>
+                <a href="#economic-nav" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors">
+                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
+                    <span>6. Economic HUD & Navigation</span>
+                </a>
             </div>
         </div>
 
@@ -548,7 +552,49 @@
             </div>
         </section>
 
-        {# 5. WORKFLOWS #}
+        {# 7. ECONOMIC HUD & NAVIGATION #}
+        <section id="economic-nav" class="mb-12 scroll-mt-6">
+            <div class="rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-cyan-950/20 border border-cyan-500/30 p-8">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2 font-orbitron">
+                    <span class="text-cyan-400">07 ///</span> Economic HUD & Navigation Link
+                </h2>
+                
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div class="rounded-lg bg-slate-950 p-5 border border-slate-800">
+                            <h3 class="text-lg font-bold text-cyan-300 mb-2 font-rajdhani uppercase tracking-widest">Navigation HUD Integration</h3>
+                            <p class="text-slate-400 text-sm">
+                                The Financial Core is now unified with the <strong>Tactical Navigation HUD</strong>. Jump events are not just narrative—they are financial triggers.
+                            </p>
+                            <ul class="text-slate-300 text-xs space-y-2 mt-4 list-disc pl-4">
+                                <li><strong>Fuel Logistics:</strong> Burn rates are calculated based on <strong>Real Parsec Distances</strong>, ensuring your ledger reflects actual jump costs.</li>
+                                <li><strong>Auto-Temporal Sync:</strong> Every Jump-Transit automatically advances the session clock by <strong>7 days</strong>, triggering pending ledger entries (Mortgages, Salaries).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-cyan-950/10 rounded-lg p-6 border border-cyan-500/20">
+                         <h4 class="text-xs font-bold text-cyan-100 uppercase tracking-widest mb-4">Jump-Sync Financial Protocol</h4>
+                         <div class="space-y-3">
+                             <div class="p-3 bg-slate-900/60 rounded border border-cyan-500/20 flex items-start gap-3">
+                                 <div class="text-cyan-400">{% include 'icons/routes.html.twig' with { dim: 16 } %}</div>
+                                 <div>
+                                     <p class="text-[11px] font-bold text-white">Engagement Mode</p>
+                                     <p class="text-[10px] text-slate-500 italic">Financial accounts are locked during transit to prevent causality paradoxes.</p>
+                                 </div>
+                             </div>
+                             <div class="p-3 bg-slate-900/60 rounded border border-emerald-500/20 flex items-start gap-3">
+                                 <div class="text-emerald-400"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M5 5h14M5 19h14M2 12h20L12 2z"/></svg></div>
+                                 <div>
+                                     <p class="text-[11px] font-bold text-white">Credit Audit</p>
+                                     <p class="text-[10px] text-slate-500 italic">Fuel costs are logged as 'SHIP_MAINT' ledger entries post-jump.</p>
+                                 </div>
+                             </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
         <section id="workflows" class="mb-12 scroll-mt-6">
             <div class="rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-cyan-950/10 border border-slate-800 p-8">
                 <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2 font-orbitron">
