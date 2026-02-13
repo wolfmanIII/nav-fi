@@ -125,6 +125,13 @@ export default class extends Controller {
                 this.hideEmptyRow();
                 this.toggleInvalidJumpAlert(data.hasInvalidJumps);
                 window.NavFiToast.notify('Waypoint added successfully', 'success');
+
+                // Dispatch event for map update
+                if (data.allWaypoints) {
+                    window.dispatchEvent(new CustomEvent('navfi:route-updated', {
+                        detail: { waypoints: data.allWaypoints }
+                    }));
+                }
             } else {
                 window.NavFiToast.notify(data.error || 'Error saving waypoint', 'error');
             }
@@ -172,6 +179,13 @@ export default class extends Controller {
                             }
                         }
                     });
+                }
+
+                // Dispatch event for map update
+                if (data.allWaypoints) {
+                    window.dispatchEvent(new CustomEvent('navfi:route-updated', {
+                        detail: { waypoints: data.allWaypoints }
+                    }));
                 }
 
                 window.NavFiToast.notify('Waypoint removed', 'success');

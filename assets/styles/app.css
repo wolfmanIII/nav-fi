@@ -376,70 +376,36 @@
         background-attachment: fixed;
     }
 
-    /* Radar Loader Overlay */
+    /* Radar Loader Overlay - Blocking (Opaque for initialization) */
     .loader-overlay {
         display: none;
         position: absolute;
         inset: 0;
         z-index: 50;
-        background-color: rgba(15, 23, 42, 0.4);
-        /* slate-900/40 */
+        background-color: #020617;
+        /* Solid Slate-950 (Was transparent) */
         backdrop-filter: blur(2px);
         -webkit-backdrop-filter: blur(2px);
         border-radius: 0.75rem;
-        /* rounded-xl */
         align-items: center;
         justify-content: center;
         flex-direction: column;
     }
 
-    .is-loading .loader-overlay {
-        display: flex !important;
-    }
+    /* Map Specific Sci-Fi Overlay (Restored Original) */
+    /* Combines Scanlines, Vignette, and Glow */
+    .map-scanline-overlay {
+        background-image:
+            /* Scanlines */
+            linear-gradient(to bottom, rgba(34, 211, 238, 0) 50%, rgba(34, 211, 238, 0.05) 50%),
+            /* Vertical Sub-pixel RGB hint */
+            linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03)),
+            /* Vignette (Restored) */
+            radial-gradient(circle at center, transparent 60%, rgba(2, 6, 23, 0.6) 100%);
 
-    .radar-loader {
-        width: 1.5rem;
-        height: 1.5rem;
-        position: relative;
-        border-radius: 50%;
-        border: 2px solid rgba(34, 211, 238, 0.2);
-    }
+        background-size: 100% 4px, 3px 100%, 100% 100%;
 
-    .radar-loader::after {
-        content: "";
-        position: absolute;
-        top: -2px;
-        left: -2px;
-        right: -2px;
-        bottom: -2px;
-        border-radius: 50%;
-        border: 2px solid transparent;
-        border-top-color: #22d3ee;
-        animation: spin 1s linear infinite;
-    }
-
-    .radar-loader-label {
-        font-family: 'Orbitron', sans-serif;
-        font-size: 8px;
-        text-transform: uppercase;
-        letter-spacing: 0.3em;
-        color: #22d3ee;
-        text-align: center;
-        margin-top: 0.5rem;
-        font-weight: bold;
-        text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
-    }
-
-    /* Scanlines effect (Optional enhancement) */
-    .bg-scifi-texture::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: linear-gradient(rgba(0, 0, 0, 0) 50%,
-                rgba(0, 0, 0, 0.15) 50%);
-        background-size: 100% 4px;
-        z-index: 100;
-        pointer-events: none;
-        opacity: 0.3;
+        /* Inner Shadow / Glow */
+        box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5), inset 0 0 2px rgba(34, 211, 238, 0.2);
     }
 }

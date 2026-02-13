@@ -7,7 +7,11 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
     <div class="flex flex-col items-stretch gap-6" 
-         data-controller="route-map route-waypoint-modal" 
+    <div class="flex flex-col items-stretch gap-6" 
+         data-controller="route-tile-map route-waypoint-modal" 
+         data-route-tile-map-base-url-value="https://travellermap.com"
+         data-route-tile-map-current-hex-value="{{ currentHex }}"
+         data-route-tile-map-current-sector-value="{{ currentSector }}"
          data-route-map-base-url-value="https://travellermap.com"
          data-route-map-current-hex-value="{{ currentHex }}"
          data-route-map-current-sector-value="{{ currentSector }}"
@@ -15,6 +19,7 @@
          {% for w in route.waypoints %}
              {% set waypoints_payload = waypoints_payload|merge([{hex: w.hex, sector: w.sector, name: w.world}]) %}
          {% endfor %}
+         data-route-tile-map-waypoints-value="{{ waypoints_payload|json_encode }}"
          data-route-map-waypoints-value="{{ waypoints_payload|json_encode }}"
          data-route-waypoint-modal-add-url-value="{{ path('app_route_waypoint_add', {id: route.id}) }}"
          data-route-waypoint-modal-delete-url-value="{{ path('app_route_waypoint_delete', {id: route.id, waypointId: '__ID__'}) }}"
@@ -132,10 +137,51 @@
                     </div>
                 </div>
                 
-                <div
-                    data-route-map-target="container"
-                    class="w-full h-[600px] rounded-lg border border-base-300 bg-slate-950 relative z-0"
-                ></div>
+                <!-- Map Wrapper with Overlay -->
+                <div class="relative w-full h-[600px] rounded-lg border border-base-300 bg-slate-950 overflow-hidden group">
+                    <!-- Map Container -->
+                    <div
+                        data-route-map-target="container"
+                        data-route-tile-map-target="container"
+                        class="absolute inset-0 z-0 bg-slate-950"
+                    ></div>
+
+                    <!-- Sci-Fi Overlay (Permanent) -->
+                    <div class="absolute inset-0 z-20 pointer-events-none select-none rounded-lg overflow-hidden map-scanline-overlay"></div>
+
+                    <!-- Loading Overlay (Restored & Blocking) -->
+                    <div data-route-tile-map-target="overlay" 
+                         class="absolute inset-0 z-50 flex items-center justify-center bg-slate-950 transition-opacity duration-1000">
+                        <div class="flex flex-col items-center gap-4 p-8">
+                            <!-- Animated radar/scanner -->
+                            <div class="relative w-24 h-24">
+                                <div class="absolute inset-0 rounded-full border-2 border-cyan-500/30 animate-ping"></div>
+                                <div class="absolute inset-2 rounded-full border-2 border-cyan-400/50 animate-pulse"></div>
+                                <div class="absolute inset-4 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 animate-spin" style="animation-duration: 3s;"></div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <svg class="w-12 h-12 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            
+                            <!-- Loading text -->
+                            <div class="text-center space-y-2">
+                                <div class="font-orbitron uppercase tracking-[0.3em] text-cyan-400 text-lg font-bold animate-pulse">
+                                    NAV SYNC
+                                </div>
+                                <div class="font-rajdhani uppercase tracking-[0.2em] text-cyan-300/70 text-sm">
+                                    // Establishing jump coordinates
+                                </div>
+                                <div class="flex gap-1 justify-center mt-3">
+                                    <div class="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" style="animation-delay: 0s;"></div>
+                                    <div class="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" style="animation-delay: 0.2s;"></div>
+                                    <div class="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" style="animation-delay: 0.4s;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="rounded-xl border border-slate-800 bg-slate-950/40 shadow-inner flex flex-col">
@@ -278,7 +324,7 @@
                                     {% if waypoint.hex %}
                                         <button type="button"
                                                 class="btn btn-ghost btn-xs text-[10px] uppercase font-bold tracking-widest text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 flex items-center gap-1.5"
-                                                data-action="route-map#jump"
+                                                data-action="route-tile-map#jump"
                                                 data-route-map-target="button"
                                                 data-hex="{{ waypoint.hex }}"
                                                 data-sector="{{ waypoint.sector }}">

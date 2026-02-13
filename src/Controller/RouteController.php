@@ -290,6 +290,8 @@ final class RouteController extends BaseController
                 'jumpDistance' => $waypoint->getJumpDistance(),
                 'zone' => $zone,
             ],
+            // Return FULL list for map update
+            'allWaypoints' => $this->serializeWaypoints($route),
             'routeFuelEstimate' => $route->getFuelEstimate(),
             'hasInvalidJumps' => $waypointService->hasInvalidJumps($route),
         ]);
@@ -335,6 +337,8 @@ final class RouteController extends BaseController
         return new JsonResponse([
             'success' => true,
             'updatedWaypoints' => $updatedWaypoints,
+            // Return FULL list for map update
+            'allWaypoints' => $this->serializeWaypoints($route),
             'routeFuelEstimate' => $route->getFuelEstimate(),
             'hasInvalidJumps' => $waypointService->hasInvalidJumps($route),
         ]);
@@ -364,5 +368,26 @@ final class RouteController extends BaseController
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
+    }
+
+    /**
+     * Helper to serialize all waypoints for map
+     */
+    private function serializeWaypoints(Route $route): array
+    {
+        $data = [];
+        foreach ($route->getWaypoints() as $wp) {
+            $data[] = [
+                'id' => $wp->getId(),
+                'position' => $wp->getPosition(),
+                'hex' => $wp->getHex(),
+                'sector' => $wp->getSector(),
+                'world' => $wp->getWorld(),
+                'uwp' => $wp->getUwp(),
+                'notes' => $wp->getNotes(),
+                'jumpDistance' => $wp->getJumpDistance(),
+            ];
+        }
+        return $data;
     }
 }
