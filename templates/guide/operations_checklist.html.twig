@@ -15,7 +15,7 @@
     } %}
         {% block content %}
             <div class="flex flex-wrap gap-2 mt-4">
-                {% for tag in ['Mission First', 'Assets & Personnel', 'Companies', 'Costs & Income', 'Mortgage & Amendments', 'Routes', 'Annual Budget', 'DDD/YYYY'] %}
+                {% for tag in ['Mission First', 'Assets & Personnel', 'Companies', 'Costs & Income', 'Mortgage & Amendments', 'Tactical Navigation', 'Annual Budget', 'DDD/YYYY'] %}
                      <span class="px-3 py-1.5 rounded bg-slate-900 border border-slate-700 text-xs font-bold tracking-wider text-slate-400 uppercase">{{ tag }}</span>
                 {% endfor %}
             </div>
@@ -229,9 +229,27 @@
             </div>
             <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Print Contract PDFs</h3>
             <p class="text-sm text-slate-400 leading-relaxed">When a job is ready, export the contract PDF and keep counterparty and local law visible at the table. Each PDF carries a template version marker for audit and reprints.</p>
-             <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
+            <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
                 Signed Copy
+            </div>
+        </div>
+
+        {# STEP 14 #}
+        <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 shadow-lg transition-all hover:border-cyan-500/30 hover:shadow-cyan-500/10 hover:-translate-y-1">
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-[10px] uppercase tracking-[0.25em] text-cyan-500 font-bold bg-cyan-950/20 px-2 py-1 rounded border border-cyan-500/10">Step 14</p>
+                <div class="text-cyan-500/50 group-hover:text-cyan-400 transition-colors">
+                    <span class="animate-pulse">
+                        {% include 'icons/nav-engage.html.twig' with { dim: 20 } %}
+                    </span>
+                </div>
+            </div>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Tactical Navigation</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Initiate <strong>Nav-Link</strong> for real-time travel. Each Jump-Transit advances the session clock by 7 days automatically. Monitor fuel burn based on real parsec distances between sector coordinates.</p>
+             <div class="mt-auto pt-4 flex items-center gap-2 text-[10px] uppercase tracking-widest text-slate-500 font-rajdhani font-bold">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
+                Engagement Mode
             </div>
         </div>
 

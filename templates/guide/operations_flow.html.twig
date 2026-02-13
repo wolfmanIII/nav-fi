@@ -16,7 +16,7 @@
         {% block content %}
              <p class="text-sm text-amber-400/80 font-bold italic mt-2">Consistency is purely advisory: the Referee has total tactical control over all data.</p>
             <div class="flex flex-wrap gap-2 mt-4">
-                {% for tag in ['Cross-mission Companies', 'Imperial Dates', 'Crew Timeline Status', 'Session Timeline Log', 'Mortgage Signing', 'Contract PDFs', 'Template Versioning', 'Asset Amendment', 'Routes & TRAVELLERMAP.COM'] %}
+                {% for tag in ['Cross-mission Companies', 'Imperial Dates', 'Crew Timeline Status', 'Session Timeline Log', 'Mortgage Signing', 'Contract PDFs', 'Template Versioning', 'Asset Amendment', 'Tactical HUD', 'Routes & TRAVELLERMAP.COM'] %}
                      <span class="px-3 py-1.5 rounded bg-slate-900 border border-slate-700 text-xs font-bold tracking-wider text-slate-400 uppercase">{{ tag }}</span>
                 {% endfor %}
             </div>
@@ -173,22 +173,22 @@
                 {% include 'icons/routes.html.twig' with { dim: 20 } %}
                 <p class="text-[10px] uppercase tracking-[0.25em] font-bold font-rajdhani">Nav Dossier</p>
             </div>
-            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Routes</h3>
+            <h3 class="text-xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors font-orbitron mb-3">Tactical Navigation</h3>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                Routes are built from waypoints and linked to Asset + Mission. Each waypoint carries a sector name or T5SS abbreviation plus its 4-digit hex for TravellerMap.
+                Routes are built from waypoints and linked to Asset + Mission. The <strong>Asynchronous Navigation HUD</strong> allows real-time transits without page reloads.
             </p>
             <ul class="mt-auto space-y-2">
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Start/Dest hex is auto-sealed by the first and last waypoint.</span>
+                    <span><strong>Real Distance Log:</strong> Distances are calculated in real parsecs between sector coordinates, driving precise fuel burns.</span>
                 </li>
                 <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Jump distances and fuel estimates are calculated on submit.</span>
+                    <span><strong>Temporal Auto-Sync:</strong> Every Jump-Transit automatically advances the Imperial session clock by 7 days.</span>
                 </li>
                  <li class="flex items-start gap-2 text-xs text-slate-500">
                     <span class="mt-1 w-1 h-1 rounded-full bg-cyan-500/50"></span>
-                    <span>Map links open `TRAVELLERMAP.COM` via coordinate sync for quick visual checks.</span>
+                    <span><strong>HUD HUD Interface:</strong> Map links open `TRAVELLERMAP.COM` with sector/hex sync for visual tactical confirmation.</span>
                 </li>
             </ul>
         </div>
