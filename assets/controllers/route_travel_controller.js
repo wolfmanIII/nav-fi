@@ -4,7 +4,8 @@ export default class extends Controller {
     static targets = ['play', 'rewind', 'forward'];
     static values = {
         id: Number,
-        active: Boolean
+        active: Boolean,
+        hasInvalidJumps: Boolean
     };
 
     connect() {
@@ -12,6 +13,11 @@ export default class extends Controller {
     }
 
     async togglePlay() {
+        if (this.hasInvalidJumpsValue) {
+            window.NavFiToast.notify('Cannot activate route: Recalculation required.', 'warning');
+            return;
+        }
+
         if (this.activeValue) {
             return;
         }
@@ -52,6 +58,11 @@ export default class extends Controller {
     }
 
     async travel(direction) {
+        if (this.hasInvalidJumpsValue) {
+            window.NavFiToast.notify('Cannot travel: Route requires recalculation.', 'warning');
+            return;
+        }
+
         if (!this.activeValue) return;
 
         const verb = direction === 'forward' ? 'Advance' : 'Rewind';
@@ -99,7 +110,17 @@ export default class extends Controller {
             this.playTarget.classList.add('text-cyan-400', 'border-cyan-500');
         }
 
-        this.rewindTarget.disabled = !this.activeValue;
-        this.forwardTarget.disabled = !this.activeValue;
+        this.rewindTarget.disabled = !this.activeValue || this.hasInvalidJumpsValue;
+        this.forwardTarget.disabled = !this.activeValue || this.hasInvalidJumpsValue;
+
+        if (this.hasInvalidJumpsValue) {
+            this.playTarget.disabled = true;
+            this.playTarget.classList.add('opacity-50', 'cursor-not-allowed');
+            this.playTarget.title = "Recalculation Required";
+        } else {
+            this.playTarget.disabled = false;
+            this.playTarget.classList.remove('opacity-50', 'cursor-not-allowed');
+            this.playTarget.title = ""; // Clear title if not disabled by invalid jumps
+        }
     }
 }
