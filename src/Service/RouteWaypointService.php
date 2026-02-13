@@ -108,9 +108,28 @@ final class RouteWaypointService
 
         $jumpRating = $this->routeMath->resolveJumpRating($route) ?? 1;
 
+        $settings = [
+            'avoidRedZones' => $route->isAvoidRedZones(),
+            'preferHighPort' => $route->isPreferHighPort(),
+        ];
+
         // Calcola path ottimizzato
-        $result = $this->optimizer->optimizeMultiStopRoute($startPoint, $destinations, $jumpRating);
+        $result = $this->optimizer->optimizeMultiStopRoute($startPoint, $destinations, $jumpRating, $settings);
         $optimizedPath = $result['path'];
+
+        // Salva lo stato del waypoint attivo (se presente)
+        $activeWpData = null;
+        if ($route->isActive()) {
+            foreach ($waypoints as $wp) {
+                if ($wp->isActive()) {
+                    $activeWpData = [
+                        'sector' => $wp->getSector(),
+                        'hex' => $wp->getHex()
+                    ];
+                    break;
+                }
+            }
+        }
 
         // Rimuovi vecchi waypoint
         foreach ($waypoints as $wp) {
@@ -121,12 +140,27 @@ final class RouteWaypointService
         // Crea nuovi waypoint dal path ottimizzato
         $position = 1;
         $previousWp = null;
+        $activeRestored = false;
+
         foreach ($optimizedPath as $point) {
             $waypoint = new RouteWaypoint();
             $waypoint->setHex($point['hex']);
             $waypoint->setSector($point['sector']);
             $waypoint->setPosition($position++);
             $waypoint->setRoute($route);
+
+            // Ripristina stato attivo se corrisponde
+            if ($activeWpData && !$activeRestored) {
+                if ($point['hex'] === $activeWpData['hex'] && $point['sector'] === $activeWpData['sector']) {
+                    $waypoint->setActive(true);
+                    $activeRestored = true;
+                }
+            }
+            
+            // Se la rotta è attiva ma non abbiamo trovato il waypoint attivo (es. cambio percorso),
+            // forse dovremmo forzare il primo come attivo?
+            // Per ora, seguiamo la logica "se lo trovo bene, altrimenti niente".
+            // TODO: Gestire caso "Ships off course"
 
             $this->enrichWaypointFromTravellerMap($waypoint);
 

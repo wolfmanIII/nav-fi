@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityRepository;
 use App\Service\TravellerMapDataService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -146,6 +147,22 @@ class RouteType extends AbstractType
                 'attr' => [
                     'class' => 'input input-bordered w-full bg-slate-950/50 border-slate-700 font-mono text-cyan-400 cursor-not-allowed',
                 ],
+            ])
+            ->add('avoidRedZones', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Avoid Red Zones',
+                'help' => 'Exclude interdicted systems from route calculation.',
+                'attr' => ['class' => 'toggle toggle-error'],
+                'label_attr' => ['class' => 'cursor-pointer label-text text-slate-300'],
+                'row_attr' => ['class' => 'form-control'],
+            ])
+            ->add('preferHighPort', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Require Starport (Avoid Wilderness Refuel)',
+                'help' => 'Exclude systems with Starport Class E or X (Wilderness Refueling only).',
+                'attr' => ['class' => 'toggle toggle-info'],
+                'label_attr' => ['class' => 'cursor-pointer label-text text-slate-300'],
+                'row_attr' => ['class' => 'form-control'],
             ])
             ->add('notes', TextareaType::class, [
                 'required' => false,

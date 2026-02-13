@@ -180,6 +180,24 @@
                     {{ form_widget(form.startWorld) }}
                     {{ form_errors(form.startWorld) }}
                 </div>
+                
+                {# Constraints #}
+                <div class="col-span-2 grid grid-cols-2 gap-4 mt-2">
+                    <div class="form-control">
+                        <label class="cursor-pointer label justify-start gap-4">
+                            {{ form_widget(form.avoidRedZones) }}
+                            <span class="label-text text-slate-300 font-orbitron text-[10px] uppercase tracking-wider font-bold">Avoid Red Zones</span>
+                        </label>
+                        <div class="text-[10px] text-slate-500 px-1">{{ form_help(form.avoidRedZones) }}</div>
+                    </div>
+                    <div class="form-control">
+                        <label class="cursor-pointer label justify-start gap-4">
+                            {{ form_widget(form.preferHighPort) }}
+                            <span class="label-text text-slate-300 font-orbitron text-[10px] uppercase tracking-wider font-bold">Require Starport</span>
+                        </label>
+                         <div class="text-[10px] text-slate-500 px-1">{{ form_help(form.preferHighPort) }}</div>
+                    </div>
+                </div>
             </div>
 
             <div class="col-span-2">

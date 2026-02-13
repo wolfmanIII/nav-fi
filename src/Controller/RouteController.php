@@ -484,7 +484,6 @@ final class RouteController extends BaseController
                 'uwp' => $wp->getUwp(),
                 'notes' => $wp->getNotes(),
                 'jumpDistance' => $wp->getJumpDistance(),
-                'active' => $wp->isActive(),
             ];
         }
         return $data;

@@ -76,6 +76,12 @@ class Route
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $payload = null;
 
+    #[ORM\Column(options: ['default' => true])]
+    private bool $avoidRedZones = true;
+
+    #[ORM\Column(options: ['default' => true])]
+    private bool $preferHighPort = true;
+
     /**
      * @var Collection<int, RouteWaypoint>
      */
@@ -377,5 +383,29 @@ class Route
             return null;
         }
         return $this->destDay . '/' . $this->destYear;
+    }
+
+    public function isAvoidRedZones(): bool
+    {
+        return $this->avoidRedZones;
+    }
+
+    public function setAvoidRedZones(bool $avoidRedZones): static
+    {
+        $this->avoidRedZones = $avoidRedZones;
+
+        return $this;
+    }
+
+    public function isPreferHighPort(): bool
+    {
+        return $this->preferHighPort;
+    }
+
+    public function setPreferHighPort(bool $preferHighPort): static
+    {
+        $this->preferHighPort = $preferHighPort;
+
+        return $this;
     }
 }

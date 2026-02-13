@@ -9,9 +9,6 @@ class RouteOptimizationService
     /**
      * @var array<string, array{x: int, y: int}>
      */
-    /**
-     * @var array<string, array{x: int, y: int}>
-     */
     private array $sectorCoordsMap = [];
 
     /**
@@ -43,8 +40,9 @@ class RouteOptimizationService
 
     /**
      * Trova la rotta più breve che visita tutte le destinazioni partendo da startPoint.
+     * @param array $settings Routing preferences (avoidRedZones, preferHighPort)
      */
-    public function optimizeMultiStopRoute(array $startPoint, array $destinations, int $jumpRating): array
+    public function optimizeMultiStopRoute(array $startPoint, array $destinations, int $jumpRating, array $settings = []): array
     {
         // 1. Carica i dati di tutti i settori coinvolti
         $involvedSectors = array_unique(array_merge(
@@ -100,7 +98,7 @@ class RouteOptimizationService
                 if ($from === $to) continue;
                 if (isset($this->pathCache[$from][$to])) continue;
 
-                $path = $this->findShortestPath($systemMap, $from, $to, $jumpRating);
+                $path = $this->findShortestPath($systemMap, $from, $to, $jumpRating, $settings);
                 if ($path !== null) {
                     $this->pathCache[$from][$to] = [
                         'path' => $path,
@@ -167,7 +165,7 @@ class RouteOptimizationService
         }
 
         if ($bestRoute === null) {
-            throw new \RuntimeException("Nessuna rotta valida trovata");
+            throw new \RuntimeException("Nessuna rotta valida trovata (Check jump rating or constraints)");
         }
 
         return ['path' => $bestRoute, 'total_jumps' => $minTotalJumps];
@@ -197,7 +195,7 @@ class RouteOptimizationService
             }
 
             if ($nearestKey === null) {
-                throw new \RuntimeException("Impossibile raggiungere le destinazioni rimanenti");
+                throw new \RuntimeException("Impossibile raggiungere le destinazioni rimanenti (Check jump rating or constraints)");
             }
 
             $cached = $this->pathCache[$currentKey][$nearestKey];
@@ -213,9 +211,13 @@ class RouteOptimizationService
         return ['path' => $fullPath, 'total_jumps' => $totalJumps];
     }
 
-    public function findShortestPath(array $systemMap, string $startKey, string $endKey, int $jumpRating): ?array
+    public function findShortestPath(array $systemMap, string $startKey, string $endKey, int $jumpRating, array $settings = []): ?array
     {
         if ($startKey === $endKey) return [$startKey];
+
+        // Settings extraction
+        $avoidRedZones = $settings['avoidRedZones'] ?? true;
+        $preferHighPort = $settings['preferHighPort'] ?? false;
 
         $openSet = [$startKey];
         $cameFrom = [];
@@ -243,6 +245,14 @@ class RouteOptimizationService
             $neighbors = $this->findReachableNeighbors($systemMap, $current, $jumpRating);
 
             foreach ($neighbors as $neighbor) {
+                // Apply Constraints logic here:
+                // Only if the neighbor is NOT the destination (always allow arriving at destination)
+                if ($neighbor !== $endKey) {
+                    if (!$this->isValidStop($systemMap[$neighbor], $avoidRedZones, $preferHighPort)) {
+                        continue;
+                    }
+                }
+
                 $tentativeG = $gScore[$current] + 1;
 
                 if ($tentativeG < ($gScore[$neighbor] ?? PHP_INT_MAX)) {
@@ -258,6 +268,37 @@ class RouteOptimizationService
         }
 
         return null;
+    }
+
+    private function isValidStop(array $system, bool $avoidRedZones, bool $preferHighPort): bool
+    {
+        // 1. Red Zone Check
+        if ($avoidRedZones && ($system['zone'] === 'R')) {
+            return false;
+        }
+
+        // 2. Refueling Logic
+        // Starport: A, B, C, D (Not E, Not X)
+        // UWP format: X000000-0. First char is Starport.
+        $starport = $system['uwp'][0] ?? 'X';
+        $hasStarport = !in_array($starport, ['E', 'X']);
+        
+        // Gas Giants (fuel scoop): gas_giants > 0
+        $hasGasGiant = ($system['gas_giants'] ?? 0) > 0;
+
+        if ($preferHighPort) {
+            // "Require Starport (Avoid Wilderness Refuel)" -> Must have valid Starport
+            if (!$hasStarport) {
+                return false;
+            }
+        } else {
+            // Standard: Need either Starport OR Gas Giant
+            if (!$hasStarport && !$hasGasGiant) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function findReachableNeighbors(array $systemMap, string $centerKey, int $jumpRating): array
