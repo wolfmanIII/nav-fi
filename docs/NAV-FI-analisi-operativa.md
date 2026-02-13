@@ -21,10 +21,14 @@ Nav-Fi³ utilizza **Smart Forms** che si adattano al contesto. Quando si registr
 1.  **Vendor Management**: Durante la registrazione di un `Cost`, è possibile selezionare un Vendor (Compagnia) esistente o inserirne uno nuovo testualmente. In caso di nuovo inserimento, il sistema lo registrerà come entità permanente.
 2.  **Trade & Inventory**: Gli acquisti di merci (`TRADE`) richiedono un link a un `FinancialAccount` attivo. La merce rimane in inventario finché non viene liquidata con un `Income` corrispondente.
 
-### Fase 3: Incassi e Contratti (Income)
-La registrazione di un `Income` segue la stessa logica XOR:
-*   **Payer**: Può essere un Patron registrato o un nuovo Alias.
 *   **Receiver**: È il conto dell'Asset che riceve i fondi.
+
+### Fase 4: Navigazione Tattica e Viaggio (Navigation HUD)
+Nav-Fi³ offre un sistema di navigazione asincrona per gestire il movimento tra sistemi:
+1.  **Initiate Nav-Link**: Dalla pagina di dettaglio della rotta, attivando il link di navigazione si inizializza la sequenza di viaggio. L'interfaccia si trasforma in un HUD tattico.
+2.  **Execute Transit**: Il transito tra waypoint (Engagement/Transit/Retrace) avviene senza ricaricare la pagina. 
+3.  **Temporal Auto-Sync**: Ogni salto effettuato avanza automaticamente l'orologio della campagna di **7 giorni**, aggiornando istantaneamente la navbar di sistema.
+4.  **Real Distance Log**: Le distanze visualizzate sono calcolate in parsec reali tra le coordinate dei sistemi, garantendo che le stime del carburante siano accurate per ogni tratta.
 
 ### 4. Procedure Operative (SOP)
 

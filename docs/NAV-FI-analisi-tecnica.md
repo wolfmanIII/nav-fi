@@ -1,7 +1,7 @@
 # Nav-Fi³ Web – Analisi Tecnica (Autorità Centrale)
 
-> **Versione**: 3.0 (Consolidated)
-> **Ultimo Aggiornamento**: 2026-01-25
+> **Versione**: 3.1 (Navigation Update)
+> **Ultimo Aggiornamento**: 2026-02-13
 
 **Nav-Fi³** è una piattaforma applicativa web enterprise-grade (Symfony 7.4) finalizzata alla gestione contabile, tattica e logistica di campagne per il sistema di simulazione **Traveller**. Il sistema è progettato come un **Tactical Operating System (TOS)** con un motore finanziario double-entry e un sistema di cronologia basato su cursore temporale.
 
@@ -14,7 +14,7 @@
     *   **CSS**: Tailwind CSS 4 + DaisyUI (Tema "Abyss", dark mode nativa).
 *   **Database**: Doctrine ORM (PostgreSQL primario).
     *   **BCMath**: Utilizzato per tutti i calcoli monetari (Cr/MCr) per evitare errori di virgola mobile.
-*   **Security**: MFA (TOTP) + OAuth (Google Login). Ownership strict via Voters.
+*   **Security**: MFA (TOTP) + OAuth (Google Login). Ownership strict via Voters e controlli di integrità a livello di Campagna. Gestione errori standardizzata tramite `\Throwable` per la cattura di runtime error fatali.
 *   **PDF Generation**: `KnpSnappyBundle` con `wkhtmltopdf` (Qt patched).
 
 ## 2. Architettura "Financial Core" (The Ledger)
@@ -68,6 +68,7 @@ Per superare i limiti del protocollo HTTP (campi disabilitati non inviati) e gar
 ### 3.1. The Cube (Contract Broker)
 Generatore deterministico di opportunità basato su **Seed** fisso e dati TravellerMap.
 *   **Advanced Acceptance**: Supporto per sovrascrittura manuale della data missione (Pickup, Departure, Dispatch) e gestione scadenze (`deadline`).
+*   **Security Context**: Filtro rigoroso degli Asset per Campagna di appartenenza e verifica ownership dell'opportunità prima dell'accettazione.
 *   **Conversion Engine**: Trasformazione rigorosa dei DTO in entità `Income` o `Cost` con popolamento automatico dei dettagli ricchi.
 
 ### 3.2. Trade & Liquidation Protocol
@@ -86,6 +87,10 @@ Generatore deterministico di opportunità basato su **Seed** fisso e dati Travel
 ### 3.5. Navigation & Routes (TravellerMap Integration)
 *   **Pathfinding (A*)**: Il `RouteOptimizationService` calcola percorsi ottimali tra esagoni considerando il `Jump Rating` e i dati astrografici.
 *   **TSP Optimization**: Algoritmo per ordinare tappe multiple in una rotta complessa (Traveling Salesman Problem).
+*   **Asynchronous Navigation HUD**: Sistema di viaggio gestito tramite API JSON e controller Stimulus (`route_travel_controller`), che permette attivazione e transito tra waypoint senza reload della pagina.
+*   **Real Distance Calculation**: Il calcolo del `Jump Distance` è stato migrato da una stima teorica alla somma dei parsec reali tra i waypoint. Questo garantisce precisione nel calcolo del carburante stimato (`RouteMathHelper`).
+*   **Temporal Sync**: Ogni salto registrato (Engagement/Transit) avanza automaticamente la data della Campagna di 7 giorni standard, sincronizzando l'HUD e la navbar in tempo reale.
+*   **Performance Cache**: Implementata una cache a livello di richiesta (`$sectorCache`) per i lookup dei settori TravellerMap, riducendo l'overhead sulle chiamate AJAX per la visualizzazione delle zone (Red/Amber).
 *   **TravellerMap API**: Lookup dinamico di UWP, nomi dei mondi e trade codes. Integrazione via iframe e Static Map API per la visualizzazione tattica.
 
 ### 3.6. Narrative System (The Cube Engine)
