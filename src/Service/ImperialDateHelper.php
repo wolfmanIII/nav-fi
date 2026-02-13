@@ -72,4 +72,29 @@ class ImperialDateHelper
 
         return sprintf('%03d/%d', $day, $year);
     }
+
+    /**
+     * Adds days to a given day/year considering a 365-day year.
+     * Returns ['day' => int, 'year' => int]
+     */
+    public function addDays(int $day, int $year, int $daysToAdd): array
+    {
+        if ($daysToAdd < 0) {
+            // Handle subtraction if needed, though mostly forward
+            // user explicitly asked for "Forward" and "Reward" (interpreted as Back) to ADVANCE date.
+            // But if logic requires real subtraction:
+            // For now, let's assumes simple addition logic logic as requested by user ("mai indietreggiare" with dates)
+            // Wait, if I implement travelBackward, user said "faranno avanzare(mai indietreggiare) la sessionDate".
+            // So I should always ADD days, even if moving back in space.
+            // So this method effectively just adds.
+        }
+
+        $totalDays = $day + $daysToAdd;
+        while ($totalDays > 365) {
+            $totalDays -= 365;
+            $year++;
+        }
+
+        return ['day' => $totalDays, 'year' => $year];
+    }
 }

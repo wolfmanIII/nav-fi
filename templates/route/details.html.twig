@@ -17,7 +17,7 @@
          data-route-map-current-sector-value="{{ currentSector }}"
          {% set waypoints_payload = [] %}
          {% for w in route.waypoints %}
-             {% set waypoints_payload = waypoints_payload|merge([{hex: w.hex, sector: w.sector, name: w.world}]) %}
+             {% set waypoints_payload = waypoints_payload|merge([{hex: w.hex, sector: w.sector, name: w.world, active: w.active}]) %}
          {% endfor %}
          data-route-tile-map-waypoints-value="{{ waypoints_payload|json_encode }}"
          data-route-map-waypoints-value="{{ waypoints_payload|json_encode }}"
@@ -185,6 +185,39 @@
             </div>
 
             <div class="rounded-xl border border-slate-800 bg-slate-950/40 shadow-inner flex flex-col">
+                {# Travel Toolbar #}
+                <div class="flex items-center justify-center gap-8 p-3 border-b border-slate-800 bg-slate-900/30"
+                     data-controller="route-travel"
+                     data-route-travel-id-value="{{ route.id }}"
+                     data-route-travel-active-value="{{ route.active ? 'true' : 'false' }}">
+
+                    <button class="btn btn-sm btn-circle btn-ghost text-cyan-500 disabled:opacity-20 hover:bg-cyan-500/10 transition-all duration-300"
+                            data-action="route-travel#rewind"
+                            data-route-travel-target="rewind"
+                            title="Rewind (Previous Waypoint)">
+                        {% include 'icons/rewind.html.twig' %}
+                    </button>
+
+                    <button class="btn btn-md btn-circle btn-outline border-cyan-500 text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.3)] transition-all duration-300 relative group"
+                            data-action="route-travel#togglePlay"
+                            data-route-travel-target="play"
+                            title="Toggle Travel Mode">
+                         <div class="absolute inset-0 rounded-full border border-cyan-400 opacity-0 group-hover:animate-ping"></div>
+                        {% include 'icons/play.html.twig' %}
+                    </button>
+
+                    <button class="btn btn-sm btn-circle btn-ghost text-cyan-500 disabled:opacity-20 hover:bg-cyan-500/10 transition-all duration-300"
+                            data-action="route-travel#forward"
+                            data-route-travel-target="forward"
+                            title="Forward (Next Waypoint)">
+                        {% include 'icons/forward.html.twig' %}
+                    </button>
+                    
+                    <div class="hidden" data-route-travel-target="statusIndicator">
+                        <span class="loading loading-spinner text-cyan-500"></span>
+                    </div>
+                </div>
+
                 {# Header con pulsante Add e Warning #}
                 <div class="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-900/50">
                     <span class="font-orbitron text-[10px] uppercase tracking-[0.3em] text-slate-400">Waypoints</span>
@@ -319,7 +352,7 @@
                     <tbody class="divide-y divide-slate-800/50" data-route-waypoint-modal-target="tableBody">
                     {% if route.waypoints|length > 0 %}
                         {% for waypoint in route.waypoints %}
-                            <tr class="hover:bg-emerald-500/5 transition-colors text-slate-300">
+                            <tr class="transition-colors text-slate-300 {{ waypoint.active ? 'bg-cyan-900/20 shadow-[inset_0_0_20px_rgba(34,211,238,0.1)] border-l-2 border-cyan-500' : 'hover:bg-emerald-500/5' }}">
                                 <td class="text-center p-2">
                                     {% if waypoint.hex %}
                                         <button type="button"

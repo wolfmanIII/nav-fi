@@ -205,21 +205,27 @@ export default class extends Controller {
             }).addTo(this.map);
 
             this.routeMarkers = []; // Resetta array
+            let activePoint = null;
+
             routePoints.forEach(p => {
+                const isActive = p.meta.active === true;
+                if (isActive) activePoint = p;
+
                 const marker = L.circleMarker([p.lat, p.lng], {
-                    radius: 6,
-                    color: '#22d3ee',
-                    fillColor: '#0891b2', // Riempimento ciano più scuro
+                    radius: isActive ? 10 : 6,
+                    color: isActive ? '#fafafa' : '#22d3ee', // Bordo bianco per attivo
+                    fillColor: isActive ? '#ef4444' : '#0891b2', // Riempimento rosso per attivo
                     fillOpacity: 1,
-                    weight: 2
-                }).addTo(this.map).bindPopup(`${p.meta.name} (${p.meta.hex}) <br> Lat: ${p.lat}, Lng: ${p.lng}`);
+                    weight: isActive ? 3 : 2
+                }).addTo(this.map).bindPopup(`${p.meta.name} (${p.meta.hex}) <br> Lat: ${p.lat}, Lng: ${p.lng} ${isActive ? '<br><strong>POSIZIONE ATTIVA</strong>' : ''}`);
+
                 this.routeMarkers.push(marker);
             });
 
-            // Centra su start con animazione
-            const start = routePoints[0];
-            console.log(`Nav-Fi RouteTileMap: Initial flyTo(${start.lat}, ${start.lng})...`);
-            this.map.flyTo([start.lat, start.lng], 6, { animate: true, duration: 2.0 });
+            // Centra su start o su ATTIVO con animazione
+            const target = activePoint || routePoints[0];
+            console.log(`Nav-Fi RouteTileMap: Initial flyTo(${target.lat}, ${target.lng})...`);
+            this.map.flyTo([target.lat, target.lng], 6, { animate: true, duration: 2.0 });
         }
     }
 

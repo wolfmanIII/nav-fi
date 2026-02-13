@@ -370,6 +370,104 @@ final class RouteController extends BaseController
         }
     }
 
+    #[RouteAttr('/route/{id}/activate', name: 'app_route_activate', methods: ['POST'])]
+    public function activate(int $id, EntityManagerInterface $em): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $route = $em->getRepository(Route::class)->findOneForUserWithWaypoints($id, $user);
+        if (!$route) {
+            return new JsonResponse(['error' => 'Route not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Activate Route
+        $route->setActive(true);
+
+        // Set first waypoint as active
+        foreach ($route->getWaypoints() as $wp) {
+            $wp->setActive($wp->getPosition() === 1);
+        }
+
+        $em->flush();
+
+        return new JsonResponse(['success' => true]);
+    }
+
+    #[RouteAttr('/route/{id}/travel/{direction}', name: 'app_route_travel', methods: ['POST'])]
+    public function travel(
+        int $id,
+        string $direction,
+        EntityManagerInterface $em,
+        \App\Service\ImperialDateHelper $dateHelper
+    ): JsonResponse {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $route = $em->getRepository(Route::class)->findOneForUserWithWaypoints($id, $user);
+        if (!$route) {
+            return new JsonResponse(['error' => 'Route not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        if (!$route->isActive()) {
+            return new JsonResponse(['error' => 'Route is not active'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $activeWp = null;
+        foreach ($route->getWaypoints() as $wp) {
+            if ($wp->isActive()) {
+                $activeWp = $wp;
+                break;
+            }
+        }
+
+        if (!$activeWp) {
+            return new JsonResponse(['error' => 'No active waypoint found'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $targetPosition = $direction === 'forward'
+            ? $activeWp->getPosition() + 1
+            : $activeWp->getPosition() - 1;
+
+        $targetWp = null;
+        foreach ($route->getWaypoints() as $wp) {
+            if ($wp->getPosition() === $targetPosition) {
+                $targetWp = $wp;
+                break;
+            }
+        }
+
+        if (!$targetWp) {
+            return new JsonResponse(['error' => 'End of route reached'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Deactivate current, activate target
+        $activeWp->setActive(false);
+        $targetWp->setActive(true);
+
+        // Update Campaign Date (+7 days per jump, regardless of direction)
+        $campaign = $route->getCampaign();
+        if ($campaign && $campaign->getSessionDay() && $campaign->getSessionYear()) {
+            $newDate = $dateHelper->addDays($campaign->getSessionDay(), $campaign->getSessionYear(), 7);
+            $campaign->setSessionDay($newDate['day']);
+            $campaign->setSessionYear($newDate['year']);
+        }
+
+        $em->flush();
+
+        return new JsonResponse([
+            'success' => true,
+            'activeWaypointId' => $targetWp->getId(),
+            'activeWaypointHex' => $targetWp->getHex(),
+            'activeWaypointSector' => $targetWp->getSector(),
+            'sessionDate' => $campaign ? $dateHelper->format($campaign->getSessionDay(), $campaign->getSessionYear()) : null
+        ]);
+    }
+
     /**
      * Helper to serialize all waypoints for map
      */
@@ -386,6 +484,7 @@ final class RouteController extends BaseController
                 'uwp' => $wp->getUwp(),
                 'notes' => $wp->getNotes(),
                 'jumpDistance' => $wp->getJumpDistance(),
+                'active' => $wp->isActive(),
             ];
         }
         return $data;

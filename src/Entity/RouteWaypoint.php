@@ -16,6 +16,9 @@ class RouteWaypoint
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $active = false;
+
     #[ORM\ManyToOne(inversedBy: 'waypoints')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Route $route = null;
@@ -41,6 +44,18 @@ class RouteWaypoint
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
+
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
+
+        return $this;
+    }
 
     public function getId(): ?int
     {

@@ -20,6 +20,9 @@ class Route
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $active = false;
+
     #[ORM\Column(type: Types::GUID)]
     private ?string $code = null;
 
@@ -86,6 +89,18 @@ class Route
         $this->setCode(Uuid::v7()->toRfc4122());
         $this->plannedAt = new \DateTimeImmutable();
         $this->waypoints = new ArrayCollection();
+    }
+
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
+
+        return $this;
     }
 
     public function getId(): ?int
