@@ -10,13 +10,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Asset;
 use App\Entity\Income;
 use App\Entity\Cost;
+use App\Dto\Cube\CubeOpportunityData;
+use App\Repository\CostCategoryRepository;
 
 class BrokerService
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly BrokerSessionRepository $sessionRepo,
-        private readonly \App\Repository\CostCategoryRepository $costCategoryRepo,
+        private readonly CostCategoryRepository $costCategoryRepo,
         private readonly TheCubeEngine $engine,
         private readonly OpportunityConverter $converter
     ) {}
@@ -40,7 +42,7 @@ class BrokerService
     }
 
     /**
-     * @return \App\Dto\Cube\CubeOpportunityData[]
+     * @return CubeOpportunityData[]
      */
     public function generateOpportunities(BrokerSession $session, array $originData, array $allSystems = []): array
     {
@@ -52,7 +54,7 @@ class BrokerService
     {
         // Validate via DTO
         // This ensures the array has the correct structure before saving
-        $dto = \App\Dto\Cube\CubeOpportunityData::fromArray($oppData);
+        $dto = CubeOpportunityData::fromArray($oppData);
 
         $opp = new BrokerOpportunity();
         $opp->setSession($session);
@@ -70,7 +72,7 @@ class BrokerService
     public function acceptOpportunity(BrokerOpportunity $opportunity, Asset $asset, array $overrides = []): Income|Cost
     {
         // 1. Converti in DTO per passare i dati puliti
-        $dto = \App\Dto\Cube\CubeOpportunityData::fromArray($opportunity->getData());
+        $dto = CubeOpportunityData::fromArray($opportunity->getData());
 
         // 2. Chiama il converter per generare l'Income (speculativo o reale) OPPURE il Costo (Trade)
         $financialEntity = $this->converter->convert($dto, $asset, $overrides);

@@ -7,6 +7,7 @@ use App\Entity\CompanyRole;
 use App\Entity\User;
 use App\Repository\CompanyRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\Cube\NameGeneratorService;
 
 /**
  * Service per la gestione centralizzata delle Company (Patroni, Banche, Fornitori).
@@ -18,7 +19,7 @@ class CompanyManager
         private readonly EntityManagerInterface $em,
         private readonly CompanyRepository $companyRepository,
         private readonly NormalizationService $normalizationService,
-        private readonly \App\Service\Cube\NameGeneratorService $nameGenerator
+        private readonly NameGeneratorService $nameGenerator
     ) {}
 
     /**

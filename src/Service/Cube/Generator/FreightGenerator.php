@@ -4,6 +4,7 @@ namespace App\Service\Cube\Generator;
 
 use App\Dto\Cube\CubeOpportunityData;
 use App\Repository\CompanyRepository;
+use App\Service\Cube\NameGeneratorService;
 use App\Service\GameRulesEngine;
 use Random\Randomizer;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -14,7 +15,7 @@ class FreightGenerator implements OpportunityGeneratorInterface
         #[Autowire('%app.cube.economy%')]
         private readonly array $economyConfig,
         private readonly CompanyRepository $companyRepo,
-        private readonly \App\Service\Cube\NameGeneratorService $nameGenerator,
+        private readonly NameGeneratorService $nameGenerator,
         private readonly GameRulesEngine $rules
     ) {}
 

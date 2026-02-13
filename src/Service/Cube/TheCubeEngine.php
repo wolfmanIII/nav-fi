@@ -9,6 +9,7 @@ use App\Service\RouteMathHelper;
 use App\Dto\Cube\CubeOpportunityData;
 use Random\Engine\Xoshiro256StarStar;
 use Random\Randomizer;
+use App\Entity\User;
 
 class TheCubeEngine
 {
@@ -79,7 +80,7 @@ class TheCubeEngine
         return $results;
     }
 
-    private function generateSingle(Randomizer $randomizer, string $originName, string $originHex, array $destinations, int $maxDist, int $index, int $sessionDay, int $sessionYear, string $sector, ?\App\Entity\User $user): CubeOpportunityData
+    private function generateSingle(Randomizer $randomizer, string $originName, string $originHex, array $destinations, int $maxDist, int $index, int $sessionDay, int $sessionYear, string $sector, ?User $user): CubeOpportunityData
     {
         // Seleziona destinazione
         $destination = null;

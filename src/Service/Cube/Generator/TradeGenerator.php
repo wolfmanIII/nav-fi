@@ -3,8 +3,8 @@
 namespace App\Service\Cube\Generator;
 
 use App\Dto\Cube\CubeOpportunityData;
-
 use App\Repository\CompanyRepository;
+use App\Service\Cube\NameGeneratorService;
 use App\Service\GameRulesEngine;
 use Random\Randomizer;
 
@@ -12,7 +12,7 @@ class TradeGenerator implements OpportunityGeneratorInterface
 {
     public function __construct(
         private readonly CompanyRepository $companyRepo,
-        private readonly \App\Service\Cube\NameGeneratorService $nameGenerator,
+        private readonly NameGeneratorService $nameGenerator,
         private readonly GameRulesEngine $rules
     ) {}
 

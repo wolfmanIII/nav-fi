@@ -3,6 +3,7 @@
 namespace App\Service\Cube\Generator;
 
 use App\Dto\Cube\CubeOpportunityData;
+use Random\Randomizer;
 
 interface OpportunityGeneratorInterface
 {
@@ -14,7 +15,7 @@ interface OpportunityGeneratorInterface
     /**
      * Generates an opportunity.
      */
-    public function generate(array $context, int $maxDist, \Random\Randomizer $randomizer): CubeOpportunityData;
+    public function generate(array $context, int $maxDist, Randomizer $randomizer): CubeOpportunityData;
 
     /**
      * Returns the type identifier for this generator (e.g., 'FREIGHT', 'PASSENGER').

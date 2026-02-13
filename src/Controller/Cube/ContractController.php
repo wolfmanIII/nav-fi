@@ -16,14 +16,12 @@ use App\Entity\Company;
 use App\Entity\CompanyRole;
 use App\Service\CompanyManager;
 use Doctrine\ORM\EntityManagerInterface;
-
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/cube/contract', name: 'app_cube_contract_')]
 #[IsGranted('ROLE_USER')]
 class ContractController extends AbstractController
 {
-
     public function __construct(
         private readonly BrokerService $brokerService,
         private readonly AssetRepository $assetRepo,
@@ -34,22 +32,28 @@ class ContractController extends AbstractController
     #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(BrokerOpportunity $opportunity): Response
     {
-        // Security check: ensure session belongs to campaign user has access to (TODO)
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        // Security check: l'opportunità deve appartenere a una campagna accessibile dall'utente
+        $campaign = $opportunity->getSession()?->getCampaign();
+        if ($campaign && $campaign->getUser() !== $user) {
+            throw $this->createAccessDeniedException("SECURITY ALERT: Accesso non autorizzato ai dati tattici della campagna.");
+        }
 
         // Check if patron exists as an existing Company for this user
         $existingPatron = null;
         $patronName = $opportunity->getData()['details']['patron'] ?? null;
         if ($patronName) {
-            $user = $this->getUser();
-            if ($user instanceof User) {
-                // Centralizzato tramite CompanyManager (SOLID)
-                $existingPatron = $this->companyManager->findByCanonical($patronName, $user);
-            }
+            // Centralizzato tramite CompanyManager (SOLID)
+            $existingPatron = $this->companyManager->findByCanonical($patronName, $user);
         }
 
         return $this->render('cube/show.html.twig', [
             'opportunity' => $opportunity,
-            'assets' => $this->assetRepo->findAll(), // TODO: Filter by Campaign
+            'assets' => $this->assetRepo->findBy(['campaign' => $campaign]), // Filtro per Campagna (Risolto TODO)
             'localLaws' => $this->em->getRepository(LocalLaw::class)->findAll(),
             'companyRoles' => $this->em->getRepository(CompanyRole::class)->findAll(),
             'existingPatron' => $existingPatron,
@@ -95,8 +99,8 @@ class ContractController extends AbstractController
 
             // Redirect to the Asset's ledger or dashboard (TBD, for now back to show)
             return $this->redirectToRoute('app_cube_contract_show', ['id' => $opportunity->getId()]);
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Error signing contract: ' . $e->getMessage());
+        } catch (\Throwable $e) { // Passaggio a Throwable per catturare tutti gli errori fatali
+            $this->addFlash('error', 'CRITICAL SYSTEM ERROR signing contract: ' . $e->getMessage());
             return $this->redirectToRoute('app_cube_contract_show', ['id' => $opportunity->getId()]);
         }
     }
