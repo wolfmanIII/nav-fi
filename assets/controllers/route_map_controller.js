@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.min.css';
 
-// Correzione per le icone dei marker predefinite in ambienti Webpack/Turbo/AssetMapper
+// Fix icone Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -10,165 +10,231 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-/**
- * Coordinate System (CRS) Personalizzato per TravellerMap
- * 
- * TravellerMap usa un sistema di coordinate dove:
- * X (Lng) cresce verso destra (Trailing)
- * Y (Lat) cresce verso il basso (Rimward)
- * 
- * Leaflet CRS.Simple mappa di default (x, y) a (x, -y).
- * Questa estensione usa una trasformazione "Identità" (1, 0, 1, 0)
- * per mappare (x, y) direttamente a (x, y) senza inversione.
- */
-const TravellerCRS = L.Util.extend({}, L.CRS.Simple, {
-  transformation: new L.Transformation(1, 0, 1, 0),
-});
-
-class TravellerMapTileLayer extends L.TileLayer {
-  getTileUrl(coords) {
-    // API TravellerMap: https://travellermap.com/api/tile?x=...&y=...&scale=...&options=...
-    // La scala è pixel per parsec.
-    // Usiamo la convenzione Scale = 2^Zoom
-
-    // Zoom 0 = Scale 1 (1 px/pc) -> Un tile copre 256 parsec
-    // Zoom 6 = Scale 64 (64 px/pc) -> Un tile copre 4 parsec
-
-    const scale = Math.pow(2, coords.z);
-
-    // Lato del tile in pixel (sempre 256 in Leaflet)
-    const tilePx = 256;
-
-    // Lato del tile in Parsec (nello spazio Traveller)
-    const pSide = tilePx / scale;
-
-    // Coordinate del tile (indici interi)
-    // Con il nostro CRS Identity:
-    // Tile (0,0) copre [0, pSide] x [0, pSide] parsec
-    // Tile (x,y) ha il centro a (x*pSide + pSide/2, y*pSide + pSide/2)
-
-    // NOTA: Usiamo Math.floor per arrotondare eventuali imprecisioni di Leaflet
-    const cx = (coords.x * pSide) + (pSide / 2);
-    const cy = (coords.y * pSide) + (pSide / 2);
-
-    // Costruzione URL
-    // options=895 abilita rotte, confini, nomi, ecc.
-    // style=poster è lo stile "dark sci-fi"
-    return `https://travellermap.com/api/tile?x=${cx}&y=${cy}&scale=${scale}&options=895&style=poster`;
-  }
-
-  getTileSize() {
-    return new L.Point(256, 256);
-  }
-}
-
 export default class extends Controller {
   static targets = ['container', 'overlay'];
   static values = {
     baseUrl: String,
-    currentHex: String, // es., "1910"
-    currentSector: String, // es., "Spinward Marches"
+    currentHex: String,
+    currentSector: String,
+    waypoints: Array
   };
 
   connect() {
-    console.log('Nav-Fi Map: Connesso.');
     this.initMap();
   }
 
-  initMap() {
+  async initMap() {
     if (!this.hasContainerTarget) return;
 
-    console.log('Nav-Fi Map: Inizializzazione con TravellerCRS (Debug Mode)...');
+    console.log('Nav-Fi Map: Initializing (Multi-Sector + Local Coord Calculation)...');
 
-    // Rimuovi eventuali stili precedenti
-    this.containerTarget.style.backgroundColor = '';
+    this.containerTarget.style.backgroundColor = '#050505';
+    this.sectorCache = {}; // Cache per fetchSectorBounds
 
-    // INJECT DEBUG STYLE
-    // Bordo verde per i tile per visualizzare la griglia e capire se ci sono buchi
-    if (!document.getElementById('leaflet-debug-style')) {
-      const style = document.createElement('style');
-      style.id = 'leaflet-debug-style';
-      style.innerHTML = `
-          .leaflet-tile { 
-            outline: 1px solid rgba(0, 255, 0, 0.3) !important; 
-          }
-          .leaflet-container {
-            background-color: #050505; /* Sfondo quasi nero per contrasto */
-          }
-        `;
-      document.head.appendChild(style);
-    }
-
-    // Inizializza la mappa
+    // 1. Inizializza Mappa
     this.map = L.map(this.containerTarget, {
-      crs: TravellerCRS, // Usa il CRS senza inversione Y
-      minZoom: -4,       // AMPIO margine di zoom out
-      maxZoom: 9,        // AMPIO margine di zoom in
+      crs: L.CRS.Simple,
+      minZoom: -2,
+      maxZoom: 8,
       zoomControl: true,
       attributionControl: false,
-      center: [0, 0],    // Centro iniziale (0,0) parsec
-      zoom: 0,
-      worldCopyJump: false // Disabilita salti strani
+      center: [0, 0],
+      zoom: 1
     });
 
-    // Aggiungi il layer dei tile
-    // Rimuovi bounds e noWrap per vedere se il problema era lì
-    this.map.addLayer(new TravellerMapTileLayer({
-      noWrap: false, // Lasciamo wrappare per ora (default)
-      bounds: null   // Nessun limite
-    }));
+    try {
+      // 2. Identifica i Settori da Caricare
+      let sectorsToLoad = new Set();
 
-    // Navigazione iniziale
-    const startHex = this.hasCurrentHexValue ? this.currentHexValue : null;
-    const startSector = this.hasCurrentSectorValue ? this.currentSectorValue : null;
+      // Aggiungi settori dei waypoint
+      if (this.hasWaypointsValue && this.waypointsValue.length > 0) {
+        this.waypointsValue.forEach(w => {
+          if (w.sector) sectorsToLoad.add(w.sector);
+        });
+      }
+      // Fallback sul settore corrente se non ci sono waypoint
+      else if (this.hasCurrentSectorValue) {
+        sectorsToLoad.add(this.currentSectorValue);
+      }
 
-    if (startHex && startSector) {
-      console.log(`Nav-Fi Map: Risoluzione coordinate per ${startSector} ${startHex}...`);
-      this.resolveCoordinates(startHex, startSector).then(coords => {
-        if (coords) {
-          const y = coords.y;
-          const x = coords.x;
+      const uniqueSectors = Array.from(sectorsToLoad);
+      console.log('Nav-Fi Map: Sectors to load:', uniqueSectors);
 
-          console.log(`Nav-Fi Map: Setting view a Y:${y}, X:${x}`);
+      // 3. Carica ed aggiungi gli Overlay
+      const sectorPromises = uniqueSectors.map(async sectorName => {
+        const data = await this.fetchSectorBounds(sectorName);
+        if (data) {
+          const leafletBounds = [
+            [-data.maxY, data.minX],
+            [-data.minY, data.maxX]
+          ];
 
-          // Imposta vista
-          this.map.setView([y, x], 4);
+          const posterUrl = `https://travellermap.com/api/poster?sector=${encodeURIComponent(sectorName)}&style=poster&options=895&scale=64`;
 
-          // Marker
-          L.circleMarker([y, x], {
-            radius: 8,
-            color: '#10b981',
-            fillColor: '#34d399',
-            fillOpacity: 0.8
-          }).addTo(this.map).bindPopup(`<b>${startSector}</b><br>${startHex}`);
-        } else {
-          console.warn('Nav-Fi Map: Coordinate non trovate.');
+          L.imageOverlay(posterUrl, leafletBounds, {
+            opacity: 1,
+            className: 'sector-overlay'
+          }).addTo(this.map);
+
+          return leafletBounds;
         }
-      }).catch(err => {
-        console.error('Nav-Fi Map: Errore risoluzione', err);
-      }).finally(() => {
-        this.hideOverlay();
+        return null;
       });
-    } else {
+
+      await Promise.all(sectorPromises);
+
+      // 4. Disegna Rotta e Waypoint
+      let routePoints = [];
+
+      if (this.hasWaypointsValue && this.waypointsValue.length > 0) {
+        console.log('Nav-Fi Map: Processing Route Waypoints...');
+
+        // Risolvi Coordinate (Localmente ora!)
+        const waypointPromises = this.waypointsValue.map(async w => {
+          if (!w.hex || !w.sector) return null;
+          const coords = await this.resolveCoordinates(w.hex, w.sector);
+          if (coords) {
+            return {
+              lat: -coords.y, // Inverti Y per Leaflet
+              lng: coords.x,
+              meta: w
+            };
+          }
+          return null;
+        });
+
+        const results = await Promise.all(waypointPromises);
+        routePoints = results.filter(p => p !== null);
+
+        if (routePoints.length > 0) {
+          const latLngs = routePoints.map(p => [p.lat, p.lng]);
+
+          // Linea Rotta
+          L.polyline(latLngs, {
+            color: '#22d3ee', // cyan-400
+            weight: 3,
+            opacity: 0.9,
+            dashArray: '5, 10',
+            lineCap: 'round',
+            className: 'route-line'
+          }).addTo(this.map);
+
+          // Markers
+          routePoints.forEach((p, index) => {
+            const isStart = index === 0;
+            const isEnd = index === routePoints.length - 1;
+
+            let color = '#22d3ee'; // Cyan (Intermedio)
+            let radius = 4;
+
+            if (isStart) { color = '#10b981'; radius = 6; } // Green
+            if (isEnd) { color = '#ef4444'; radius = 6; } // Red
+
+            L.circleMarker([p.lat, p.lng], {
+              radius: radius,
+              color: color,
+              fillColor: '#000',
+              fillOpacity: 1,
+              weight: 2
+            }).addTo(this.map)
+              .bindPopup(`<div class="font-orbitron text-xs"><b>${index + 1}. ${p.meta.name || 'Waypt'}</b><br>${p.meta.hex} (${p.meta.sector})</div>`);
+          });
+
+          // 5. CENTRA SUL PRIMO WAYPOINT (Richiesta Utente)
+          // Usa lo stesso livello di zoom (6) della funzione jump()
+          const startPoint = routePoints[0];
+          console.log('Nav-Fi Map: Centering on Start Point', startPoint);
+          this.map.setView([startPoint.lat, startPoint.lng], 6);
+
+          // Opzionale: Apri il popup del primo punto per evidenziarlo
+          // Dobbiamo ritrovare il marker corrispondente se vogliamo aprire il popup
+          this.map.eachLayer((layer) => {
+            if (layer instanceof L.CircleMarker) {
+              const latLng = layer.getLatLng();
+              if (latLng.lat === startPoint.lat && latLng.lng === startPoint.lng) {
+                layer.openPopup();
+              }
+            }
+          });
+
+        } else {
+          console.warn('Nav-Fi Map: No valid route points resolved.');
+        }
+      }
+
+    } catch (err) {
+      console.error('Nav-Fi Map: Init Error', err);
+    } finally {
       this.hideOverlay();
     }
   }
 
-  async resolveCoordinates(hex, sector) {
-    if (!hex || !sector) return null;
+  async fetchSectorBounds(sectorName) {
+    if (this.sectorCache && this.sectorCache[sectorName]) {
+      return this.sectorCache[sectorName];
+    }
+
+    const url = `https://travellermap.com/api/search?q=${encodeURIComponent(sectorName)}`;
     try {
-      const url = `https://travellermap.com/api/search?q=${encodeURIComponent(hex + ' ' + sector)}`;
       const res = await fetch(url);
       const data = await res.json();
-      if (data.results && data.results.length > 0) {
-        return data.results[0].coords;
+
+      if (data.Results && data.Results.Items && data.Results.Items.length > 0) {
+        const item = data.Results.Items.find(i => i.Sector);
+        if (item && item.Sector) {
+          const sx = item.Sector.SectorX;
+          const sy = item.Sector.SectorY;
+
+          const minX = sx * 32;
+          const minY = sy * 40;
+
+          const result = {
+            minX: minX,
+            maxX: minX + 32,
+            minY: minY,
+            maxY: minY + 40,
+            sx: sx,
+            sy: sy
+          };
+
+          this.sectorCache[sectorName] = result;
+          return result;
+        }
       }
     } catch (e) {
-      console.error('Nav-Fi Map: Errore API Search', e);
+      console.error('Nav-Fi Map: Sector Search Error', e);
     }
     return null;
   }
 
+  async resolveCoordinates(hex, sectorName) {
+    if (!hex || !sectorName) return null;
+
+    const sectorData = await this.fetchSectorBounds(sectorName);
+    if (!sectorData) return null;
+
+    const hx = parseInt(hex.substring(0, 2), 10);
+    const hy = parseInt(hex.substring(2, 4), 10);
+
+    if (isNaN(hx) || isNaN(hy)) return null;
+
+    // 3. Calcolo Coordinate Globali Parsec
+    // Le coordinate Hex (1-32, 1-40) sono 1-based.
+    // Il grid Leaflet/ImageOverlay che abbiamo impostato va da 0 a 32 (X) e 0 a -40 (Y/Lat).
+
+    // X: (sx * 32) + hx - 0.5 (Per centrare nella colonna)
+    const gx = (sectorData.sx * 32) + hx - 0.5;
+
+    // Y: (sy * 40) + hy - 0.5 (Per centrare nella riga)
+    // STAGGER: Le colonne PARI (2, 4...) sono shiftate in basso di 0.5
+    const stagger = (hx % 2 === 0) ? 0.5 : 0;
+    const gy = (sectorData.sy * 40) + hy - 0.5 + stagger;
+
+    // Lat è negativa (va verso il basso)
+    return { x: gx, y: gy };
+  }
+
+  // Jump rimane invariato ma usa la nuova logica di zoom se necessario
   async jump(event) {
     const hex = event.currentTarget.dataset.hex;
     const sector = event.currentTarget.dataset.sector;
@@ -176,18 +242,19 @@ export default class extends Controller {
     if (sector && hex) {
       const coords = await this.resolveCoordinates(hex, sector);
       if (coords) {
-        const y = coords.y;
-        const x = coords.x;
+        const lat = -coords.y;
+        const lng = coords.x;
 
-        this.map.flyTo([y, x], 4, { duration: 1.5 });
+        this.map.flyTo([lat, lng], 6); // Zoom più alto (vicino)
+
         this.updateActiveStates(hex, sector);
 
-        L.circleMarker([y, x], {
+        L.circleMarker([lat, lng], {
           radius: 8,
           color: '#10b981',
           fillColor: '#34d399',
-          fillOpacity: 0.8
-        }).addTo(this.map).bindPopup(`<b>${sector}</b><br>${hex}`).openPopup();
+          fillOpacity: 1
+        }).addTo(this.map).bindPopup(`<div class="font-orbitron text-xs"><b>${sector}</b><br>${hex}</div>`).openPopup();
       }
     }
   }
@@ -196,23 +263,17 @@ export default class extends Controller {
     const buttons = document.querySelectorAll('[data-route-map-target="button"]');
     buttons.forEach((btn) => {
       if (!btn.dataset.originalHtml) btn.dataset.originalHtml = btn.innerHTML;
-      const isMatch = (btn.dataset.hex === hex && btn.dataset.sector === sector);
-
-      if (isMatch) {
-        btn.classList.add('opacity-50', 'pointer-events-none', 'border-emerald-500/50', 'bg-emerald-500/20', 'text-emerald-400');
-        btn.classList.remove('text-slate-400');
-        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> ACTIVE`;
+      if (btn.dataset.hex === hex && btn.dataset.sector === sector) {
+        btn.classList.add('opacity-50', 'pointer-events-none');
+        btn.innerHTML = `ACTIVE`;
       } else {
-        btn.classList.remove('opacity-50', 'pointer-events-none', 'border-emerald-500/50', 'bg-emerald-500/20', 'text-emerald-400');
-        btn.classList.add('text-slate-400');
+        btn.classList.remove('opacity-50', 'pointer-events-none');
         btn.innerHTML = btn.dataset.originalHtml;
       }
     });
   }
 
   hideOverlay() {
-    if (this.hasOverlayTarget) {
-      this.overlayTarget.classList.add('hidden');
-    }
+    if (this.hasOverlayTarget) this.overlayTarget.classList.add('hidden');
   }
 }

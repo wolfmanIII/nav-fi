@@ -11,6 +11,11 @@
          data-route-map-base-url-value="https://travellermap.com"
          data-route-map-current-hex-value="{{ currentHex }}"
          data-route-map-current-sector-value="{{ currentSector }}"
+         {% set waypoints_payload = [] %}
+         {% for w in route.waypoints %}
+             {% set waypoints_payload = waypoints_payload|merge([{hex: w.hex, sector: w.sector, name: w.world}]) %}
+         {% endfor %}
+         data-route-map-waypoints-value="{{ waypoints_payload|json_encode }}"
          data-route-waypoint-modal-add-url-value="{{ path('app_route_waypoint_add', {id: route.id}) }}"
          data-route-waypoint-modal-delete-url-value="{{ path('app_route_waypoint_delete', {id: route.id, waypointId: '__ID__'}) }}"
          data-route-waypoint-modal-lookup-url-value="{{ path('app_route_waypoint_lookup') }}"
