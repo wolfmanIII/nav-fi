@@ -65,7 +65,7 @@ class FiscalCloseCommand extends Command
         try {
             $this->fiscalYearService->closeFiscalYear($asset, $year);
             $io->success("Fiscal Year $year closed successfully. Snapshot created for " . ($year + 1));
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $io->error($e->getMessage());
             return Command::FAILURE;
         }

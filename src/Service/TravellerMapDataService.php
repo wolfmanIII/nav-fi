@@ -35,12 +35,12 @@ class TravellerMapDataService
                 $label = sprintf('%s (%s) - %s', $system['name'], $system['hex'], $system['uwp']);
                 $worlds[$label] = $system['hex'];
             }
-            
+
             // Ordina per label (chiave)
             ksort($worlds);
-            
+
             return $worlds;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->logger->error('Failed to get worlds for sector', [
                 'sector' => $sectorName,
                 'error' => $e->getMessage()
@@ -154,13 +154,13 @@ class TravellerMapDataService
             ]);
 
             $content = $response->getContent();
-            
+
             // Verifica base della validità del JSON
             json_decode($content, true, 512, JSON_THROW_ON_ERROR);
 
             $fs = new Filesystem();
             $fs->dumpFile($filePath, $content);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->logger->error('Failed to refresh TravellerMap sectors metadata', ['error' => $e->getMessage()]);
             if (!file_exists($filePath)) {
                 // Se il file non esiste e il download fallisce, non possiamo fare molto

@@ -29,13 +29,13 @@ class TravellerMapRefreshCommand extends Command
         try {
             $io->info('Fetching data from TravellerMap...');
             $data = $this->dataService->getSectorsMetadata(true);
-            
+
             $io->success(sprintf('Successfully refreshed metadata. Found %d sectors.', count($data['Sectors'] ?? [])));
-            
+
             return Command::SUCCESS;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $io->error('Failed to refresh metadata: ' . $e->getMessage());
-            
+
             return Command::FAILURE;
         }
     }
