@@ -42,33 +42,51 @@ export default class extends Controller {
       zoom: 1
     });
 
+    // Correzione Aspect Ratio per Esagoni "Flat Top" di TravellerMap.
+    // Il sistema di coordinate standard di Leaflet è quadrato (1:1).
+    // La griglia esagonale di Traveller ha una spaziatura verticale maggiore rispetto all'orizzontale.
+    // Distanza Verticale (tra centri) / Distanza Orizzontale (tra centri) = sqrt(3) / 1.5 ≈ 1.1547.
+    // Moltiplichiamo le coordinate Y per questo fattore per ripristinare le proporzioni corrette
+    // ed evitare lo schiacciamento verticale.
+    const HEX_ASPECT_RATIO = 1.1547;
+
     try {
       // 2. Identifica i Settori da Caricare
       let sectorsToLoad = new Set();
 
-      // Aggiungi settori dei waypoint
+      // Aggiungi setttore corrente
+      if (this.hasCurrentSectorValue) {
+        sectorsToLoad.add(this.currentSectorValue);
+      }
+
+      // Aggiungi i settori dei waypoint
       if (this.hasWaypointsValue && this.waypointsValue.length > 0) {
         this.waypointsValue.forEach(w => {
           if (w.sector) sectorsToLoad.add(w.sector);
         });
       }
-      // Fallback sul settore corrente se non ci sono waypoint
-      else if (this.hasCurrentSectorValue) {
-        sectorsToLoad.add(this.currentSectorValue);
-      }
 
       const uniqueSectors = Array.from(sectorsToLoad);
       console.log('Nav-Fi Map: Sectors to load:', uniqueSectors);
 
-      // 3. Carica ed aggiungi gli Overlay
+      // 3. Carica ed aggiungi gli Overlay per TUTTI i settori necessari
       const sectorPromises = uniqueSectors.map(async sectorName => {
-        const data = await this.fetchSectorBounds(sectorName);
-        if (data) {
+        const bounds = await this.fetchSectorBounds(sectorName);
+        if (bounds) {
+          // Applica Aspect Ratio a tutto l'asse Y
+          // Coordinate Leaflet: 
+          // Top-Left: [ -globalYMax, minX ]
+          // Bottom-Right: [ -globalYMin, maxX ]
+
+          const globalYMin = bounds.minY * HEX_ASPECT_RATIO;
+          const globalYMax = bounds.maxY * HEX_ASPECT_RATIO;
+
           const leafletBounds = [
-            [-data.maxY, data.minX],
-            [-data.minY, data.maxX]
+            [-globalYMax, bounds.minX],
+            [-globalYMin, bounds.maxX]
           ];
 
+          // Poster URL (Scale 64 per performance/quality balance)
           const posterUrl = `https://travellermap.com/api/poster?sector=${encodeURIComponent(sectorName)}&style=poster&options=895&scale=64`;
 
           L.imageOverlay(posterUrl, leafletBounds, {
@@ -147,7 +165,6 @@ export default class extends Controller {
           this.map.setView([startPoint.lat, startPoint.lng], 6);
 
           // Opzionale: Apri il popup del primo punto per evidenziarlo
-          // Dobbiamo ritrovare il marker corrispondente se vogliamo aprire il popup
           this.map.eachLayer((layer) => {
             if (layer instanceof L.CircleMarker) {
               const latLng = layer.getLatLng();
@@ -218,23 +235,23 @@ export default class extends Controller {
 
     if (isNaN(hx) || isNaN(hy)) return null;
 
-    // 3. Calcolo Coordinate Globali Parsec
-    // Le coordinate Hex (1-32, 1-40) sono 1-based.
-    // Il grid Leaflet/ImageOverlay che abbiamo impostato va da 0 a 32 (X) e 0 a -40 (Y/Lat).
+    // Ratio Y/X (spacing) ≈ 1.1547 per compensare la geometria esagonale su grid quadrato
+    const HEX_ASPECT_RATIO = 1.1547;
 
     // X: (sx * 32) + hx - 0.5 (Per centrare nella colonna)
     const gx = (sectorData.sx * 32) + hx - 0.5;
 
-    // Y: (sy * 40) + hy - 0.5 (Per centrare nella riga)
+    // Y: Scalato per Aspect Ratio
     // STAGGER: Le colonne PARI (2, 4...) sono shiftate in basso di 0.5
     const stagger = (hx % 2 === 0) ? 0.5 : 0;
-    const gy = (sectorData.sy * 40) + hy - 0.5 + stagger;
+    const rawY = (sectorData.sy * 40) + hy - 0.5 + stagger;
+
+    const gy = rawY * HEX_ASPECT_RATIO;
 
     // Lat è negativa (va verso il basso)
     return { x: gx, y: gy };
   }
 
-  // Jump rimane invariato ma usa la nuova logica di zoom se necessario
   async jump(event) {
     const hex = event.currentTarget.dataset.hex;
     const sector = event.currentTarget.dataset.sector;
@@ -247,12 +264,15 @@ export default class extends Controller {
 
         this.map.flyTo([lat, lng], 6); // Zoom più alto (vicino)
 
+        // Aggiorna stato active sui bottoni waypoint
         this.updateActiveStates(hex, sector);
 
+        // Aggiungi marker temporaneo o evidenzia quello esistente?
+        // Per ora usiamo un circle marker extra
         L.circleMarker([lat, lng], {
           radius: 8,
-          color: '#10b981',
-          fillColor: '#34d399',
+          color: '#10b981', // emerald-500
+          fillColor: '#34d399', // emerald-400
           fillOpacity: 1
         }).addTo(this.map).bindPopup(`<div class="font-orbitron text-xs"><b>${sector}</b><br>${hex}</div>`).openPopup();
       }
@@ -261,8 +281,10 @@ export default class extends Controller {
 
   updateActiveStates(hex, sector) {
     const buttons = document.querySelectorAll('[data-route-map-target="button"]');
-    buttons.forEach((btn) => {
+    buttons.forEach(btn => {
+      // Salva html originale se non c'è
       if (!btn.dataset.originalHtml) btn.dataset.originalHtml = btn.innerHTML;
+
       if (btn.dataset.hex === hex && btn.dataset.sector === sector) {
         btn.classList.add('opacity-50', 'pointer-events-none');
         btn.innerHTML = `ACTIVE`;
@@ -274,6 +296,8 @@ export default class extends Controller {
   }
 
   hideOverlay() {
-    if (this.hasOverlayTarget) this.overlayTarget.classList.add('hidden');
+    if (this.hasOverlayTarget) {
+      this.overlayTarget.classList.add('hidden');
+    }
   }
 }
