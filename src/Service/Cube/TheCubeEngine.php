@@ -33,13 +33,13 @@ class TheCubeEngine
     {
         // 1. Inizializza PRNG Isolato (PHP 8.2+)
         $seedString = sprintf('%s_%s_%s', $session->getSeed(), $session->getSector(), $session->getOriginHex());
-        // Hash the seed to get a robust binary string for Xoshiro
+        // Calcola l'hash del seed per ottenere una stringa binaria robusta per Xoshiro
         $seedHash = hash('sha256', $seedString, true);
 
         $engine = new Xoshiro256StarStar($seedHash);
         $randomizer = new Randomizer($engine);
 
-        // Determine count deterministically based on seed if not provided
+        // Determina il numero in modo deterministico basandosi sul seed, se non fornito
         if ($count === null) {
             $count = $randomizer->getInt(10, 20);
         }
@@ -136,7 +136,7 @@ class TheCubeEngine
         }
 
         if (!$selectedGenerator) {
-            // Fallback to TRADE if not found (should not happen if configured correctly)
+            // Fallback su TRADE se non trovato (non dovrebbe accadere se configurato correttamente)
             foreach ($this->generators as $generator) {
                 if ($generator->supports('TRADE')) {
                     $selectedGenerator = $generator;

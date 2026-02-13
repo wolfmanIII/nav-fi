@@ -42,13 +42,13 @@ class CubeController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        // Get session_id from query if provided
+        // Recupera session_id dalla query se fornito
         $sessionId = $request->query->get('session_id');
         $activeSession = null;
 
         if ($sessionId) {
             $activeSession = $this->sessionRepo->find($sessionId);
-            // Verify ownership through campaign
+            // Verifica la proprietà attraverso la campagna
             if ($activeSession && $activeSession->getCampaign()->getUser() !== $user) {
                 $activeSession = null;
             }
@@ -56,10 +56,10 @@ class CubeController extends AbstractController
 
         $campaign = $activeSession?->getCampaign();
 
-        // Get all campaigns
+        // Recupera tutte le campagne
         $allCampaigns = $this->entityManager->getRepository(Campaign::class)->findAll();
 
-        // Get all DRAFT sessions for the user (across all campaigns)
+        // Recupera tutte le sessioni DRAFT per l'utente (attraverso tutte le campagne)
         $draftSessions = $this->sessionRepo->createQueryBuilder('s')
             ->join('s.campaign', 'c')
             ->where('c.user = :user')
@@ -107,11 +107,11 @@ class CubeController extends AbstractController
     #[Route('/generate/{id}', name: 'app_cube_generate', methods: ['GET'])]
     public function generate(BrokerSession $session): JsonResponse
     {
-        // 1. Get Full Sector Data context (to find neighbors)
-        // We use parseSector to get all systems
+        // 1. Recupera il contesto completo dei dati del settore (per trovare i vicini)
+        // Utilizziamo parseSector per ottenere tutti i sistemi
         $systems = $this->travellerMap->parseSector($session->getSector());
 
-        // Find Origin Data in the list
+        // Trova i dati di origine nella lista
         $originData = null;
         $originHex = $session->getOriginHex();
 
@@ -126,12 +126,12 @@ class CubeController extends AbstractController
             return $this->json(['error' => 'Origin World not found in Sector Data'], 404);
         }
 
-        // Pass ALL systems to the engine so it can pick destinations
+        // Passa TUTTI i sistemi al motore affinché possa scegliere le destinazioni
         /** @var CubeOpportunityData[] $opportunities */
         $opportunities = $this->brokerService->generateOpportunities($session, $originData, $systems);
 
-        // Filter out already saved opportunities
-        // Optimization: For MVP we iterate. TBD: JSON query if list grows.
+        // Filtra le opportunità già salvate
+        // Ottimizzazione: Per l'MVP iteriamo. Da valutare query JSON se la lista cresce.
         $savedOpps = $session->getOpportunities();
         $savedSignatures = [];
         foreach ($savedOpps as $saved) {
@@ -142,11 +142,11 @@ class CubeController extends AbstractController
         }
 
         $filtered = array_values(array_filter($opportunities, function ($opp) use ($savedSignatures) {
-            // Keep if signature is NOT in saved list
+            // Mantieni se la firma NON è nella lista dei salvati
             return !isset($savedSignatures[$opp->signature]);
         }));
 
-        // Serialize DTOs to array for JSON response
+        // Serializza i DTO in array per la risposta JSON
         $serialized = array_map(fn($opp) => $opp->toArray(), $filtered);
 
         return $this->json($serialized);
@@ -158,15 +158,15 @@ class CubeController extends AbstractController
         try {
             $payload = $request->toArray();
 
-            // Check if already saved (Double submission protection)
-            // Or if strict uniqueness is needed
+            // Verifica se è già salvato (protezione doppia sottomissione)
+            // O se è necessaria una unicità rigorosa
 
             $opp = $this->brokerService->saveOpportunity($session, $payload);
 
             return $this->json(['status' => 'saved', 'id' => $opp->getId()]);
         } catch (\Throwable $e) {
-            // Log for debugging
-            // $this->logger->error(...) - needing logger injection or simplified usage
+            // Log per il debug
+            // $this->logger->error(...) - richiede iniezione logger o utilizzo semplificato
             error_log('Cube Save Error: ' . $e->getMessage());
 
             return $this->json(['error' => 'Persistence Failed: ' . $e->getMessage()], 500);
@@ -181,7 +181,7 @@ class CubeController extends AbstractController
             return $this->json(['error' => 'Opportunity not found'], 404);
         }
 
-        // Security / Logic Check: Prevent purging if converted/accepted
+        // Controllo di Sicurezza / Logica: impedisci l'eliminazione se convertito/accettato
         if (in_array($opportunity->getStatus(), [BrokerOpportunity::STATUS_CONVERTED, BrokerOpportunity::STATUS_ACCEPTED])) {
             return $this->json(['error' => 'Cannot purge an accepted contract.'], 403);
         }
@@ -205,7 +205,7 @@ class CubeController extends AbstractController
             throw $this->createNotFoundException('Contract Manifest not found.');
         }
 
-        // Check if patron exists as an existing Company for this user
+        // Verifica se il patron esiste come Compagnia già registrata per l'utente
         $existingPatron = null;
         $patronName = $opportunity->getData()['details']['patron'] ?? null;
         if ($patronName) {
@@ -266,16 +266,16 @@ class CubeController extends AbstractController
             $asset = $form->get('asset')->getData();
             $localLaw = $form->get('localLaw')->getData();
 
-            // Extract Dates
+            // Estrai Date
             $startDate = $form->has('startDate') ? $form->get('startDate')->getData() : null;
             $deadlineDate = $form->has('deadlineDate') ? $form->get('deadlineDate')->getData() : null;
 
-            // Extract Patron info
+            // Estrai info Patron
             $patronRole = $form->has('patronRole') ? $form->get('patronRole')->getData() : null;
             $patronCompanyId = $form->has('patronCompany') ? $form->get('patronCompany')->getData() : null;
 
             if ($patronName && empty($patronCompanyId) && empty($patronRole) && !$existingPatron) {
-                // Handled by Form Logic usually, but double check
+                // Gestito solitamente dalla logica del form, ma effettuiamo un doppio controllo
                 $this->addFlash('error', 'To register a new Company/Patron, you must select a Role.');
                 return $this->redirectToRoute('app_cube_contract_show', ['id' => $id]);
             }
@@ -288,7 +288,7 @@ class CubeController extends AbstractController
                     'deadline_year' => $deadlineDate?->getYear(),
                     'local_law_id' => $localLaw?->getId(),
                     'patron_role_id' => $patronRole?->getId(),
-                    'patron_company_id' => $patronCompanyId, // Hidden field value
+                    'patron_company_id' => $patronCompanyId, // Valore del campo nascosto
                 ];
 
                 $this->brokerService->acceptOpportunity($opportunity, $asset, array_filter($overrides, fn($v) => !is_null($v)));
@@ -297,7 +297,7 @@ class CubeController extends AbstractController
                 return $this->redirectToRoute('app_cube_index', ['session_id' => $opportunity->getSession()->getId()]);
             } catch (\Throwable $e) {
                 $this->addFlash('error', 'Error accepting contract: ' . $e->getMessage());
-                // Fallthrough to redirect back
+                // Fallback: reindirizza indietro in caso di errore
             }
         } else {
             foreach ($form->getErrors(true) as $error) {
@@ -316,7 +316,7 @@ class CubeController extends AbstractController
             throw $this->createNotFoundException('Session not found');
         }
 
-        // Verify ownership (or security voter)
+        // Verifica proprietà (o security voter)
         if ($session->getCampaign()->getUser() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
         }

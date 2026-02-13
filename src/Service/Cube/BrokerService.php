@@ -52,15 +52,15 @@ class BrokerService
 
     public function saveOpportunity(BrokerSession $session, array $oppData): BrokerOpportunity
     {
-        // Validate via DTO
-        // This ensures the array has the correct structure before saving
+        // Valida tramite DTO
+        // Questo assicura che l'array abbia la struttura corretta prima del salvataggio
         $dto = CubeOpportunityData::fromArray($oppData);
 
         $opp = new BrokerOpportunity();
         $opp->setSession($session);
         $opp->setSummary($dto->summary);
         $opp->setAmount((string)$dto->amount);
-        $opp->setData($dto->toArray()); // Store strict data structure
+        $opp->setData($dto->toArray()); // Memorizza una struttura dati rigorosa
         $opp->setStatus(BrokerOpportunity::STATUS_SAVED);
 
         $this->em->persist($opp);

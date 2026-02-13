@@ -243,7 +243,7 @@ final class MortgageController extends BaseController
         $payment->setMortgage($mortgage);
         $paymentForm = $this->createForm(MortgageInstallmentType::class, $payment, ['summary' => $summary]);
 
-        // Sign Form (Integrated with Start Date)
+        // Form di firma (integrato con la data di inizio)
         $signForm = $this->container->get('form.factory')->createNamedBuilder('mortgage_sign')
             ->setAction($this->generateUrl('app_mortgage_sign', ['id' => $mortgage->getId()]))
             ->setMethod('POST')
@@ -259,7 +259,7 @@ final class MortgageController extends BaseController
             ])
             ->getForm();
 
-        // Start Date Form for Modal
+        // Form per la data di inizio (per il modale)
         $startImperialDate = new ImperialDate($mortgage->getStartYear(), $mortgage->getStartDay());
         $startDateForm = $this->container->get('form.factory')->createNamedBuilder('mortgage_set_start_date', FormType::class, ['startDate' => $startImperialDate])
             ->setAction($this->generateUrl('app_mortgage_set_start_date', ['id' => $mortgage->getId()]))
@@ -378,7 +378,7 @@ final class MortgageController extends BaseController
                 return $this->redirectToRoute('app_mortgage_edit', ['id' => $mortgage->getId()]);
             }
 
-            // Set Signing Date from Session
+            // Imposta la data di firma dalla sessione corrente
             $mortgage->setSigningDay($campaign->getSessionDay());
             $mortgage->setSigningYear($campaign->getSessionYear());
 
@@ -386,11 +386,11 @@ final class MortgageController extends BaseController
                 $mortgage->setSigningLocation($data['signingLocation']);
             }
 
-            // Handle Optional Start Date
+            // Gestione della data di inizio opzionale
             /** @var ImperialDate|null $startDate */
             $startDate = $data['startDate'];
             if ($startDate instanceof ImperialDate && $startDate->getDay() !== null && $startDate->getYear() !== null) {
-                // Validate StartDate >= SigningDate
+                // Valida che StartDate sia successiva o uguale alla SigningDate
                 $startDay = $startDate->getDay();
                 $startYear = $startDate->getYear();
                 $signingDay = $mortgage->getSigningDay();
