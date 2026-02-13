@@ -358,15 +358,16 @@ class Route
 
     public function getJumpDistance(): ?int
     {
-        $jumpRating = $this->getJumpRating() ?? $this->getAsset()?->getJumpDriveRating();
-
-        if ($jumpRating === null) {
-            return null;
+        if ($this->waypoints->isEmpty()) {
+            return 0;
         }
 
-        $waypointCount = $this->waypoints->count();
+        $total = 0;
+        foreach ($this->waypoints as $wp) {
+            $total += $wp->getJumpDistance() ?? 0;
+        }
 
-        return $waypointCount < 2 ? 0 : $jumpRating * ($waypointCount - 1);
+        return $total;
     }
 
     public function getStartDateImperial(): ?string

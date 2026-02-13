@@ -28,6 +28,22 @@ export default class extends Controller {
         recalculateUrl: String
     };
 
+    connect() {
+        this.onRouteRefreshBound = (event) => {
+            if (event.detail && event.detail.waypoints) {
+                this.refreshTable(event.detail.waypoints);
+                if (event.detail.hasInvalidJumps !== undefined) {
+                    this.toggleInvalidJumpAlert(event.detail.hasInvalidJumps);
+                }
+            }
+        };
+        window.addEventListener('navfi:route-refresh', this.onRouteRefreshBound);
+    }
+
+    disconnect() {
+        window.removeEventListener('navfi:route-refresh', this.onRouteRefreshBound);
+    }
+
 
     // Apre la modale
     openModal() {
@@ -161,32 +177,17 @@ export default class extends Controller {
             const data = await response.json();
 
             if (data.success) {
-                row.remove();
-                this.checkEmptyTable();
-                this.toggleInvalidJumpAlert(data.hasInvalidJumps);
+                // Refresh everything via events
+                window.dispatchEvent(new CustomEvent('navfi:route-refresh', {
+                    detail: {
+                        waypoints: data.allWaypoints,
+                        hasInvalidJumps: data.hasInvalidJumps
+                    }
+                }));
 
-                // Update remaining waypoints (position & distance)
-                if (data.updatedWaypoints) {
-                    data.updatedWaypoints.forEach(wp => {
-                        const btn = this.tableBodyTarget.querySelector(`button[data-waypoint-id="${wp.id}"]`);
-                        if (btn) {
-                            const wpRow = btn.closest('tr');
-                            if (wpRow) {
-                                // Update Position (Column 1)
-                                wpRow.cells[1].textContent = wp.position;
-                                // Update Distance (Column 6)
-                                wpRow.cells[6].textContent = wp.jumpDistance !== null ? wp.jumpDistance : '—';
-                            }
-                        }
-                    });
-                }
-
-                // Dispatch event for map update
-                if (data.allWaypoints) {
-                    window.dispatchEvent(new CustomEvent('navfi:route-updated', {
-                        detail: { waypoints: data.allWaypoints }
-                    }));
-                }
+                window.dispatchEvent(new CustomEvent('navfi:route-updated', {
+                    detail: { waypoints: data.allWaypoints }
+                }));
 
                 window.NavFiToast.notify('Waypoint removed', 'success');
             } else {
@@ -209,10 +210,18 @@ export default class extends Controller {
         }
     }
 
+    // Aggiorna l'intera tabella dai dati waypoint
+    refreshTable(waypoints) {
+        this.tableBodyTarget.innerHTML = '';
+        waypoints.forEach(wp => this.addRowToTable(wp));
+        this.checkEmptyTable();
+    }
+
     // Aggiunge riga alla tabella
     addRowToTable(wp) {
         const row = document.createElement('tr');
-        row.className = 'hover:bg-emerald-500/5 transition-colors text-slate-300 border-b border-slate-800/50';
+        const activeClass = wp.active ? 'bg-cyan-500/10 border-cyan-500/30' : 'hover:bg-emerald-500/5 transition-colors border-slate-800/50';
+        row.className = `${activeClass} text-slate-300 border-b`;
 
         // Determina classe badge per zona
         let badgeClass = 'badge-ghost text-slate-300';
@@ -224,7 +233,7 @@ export default class extends Controller {
                 ${wp.hex ? `
                     <button type="button"
                             class="btn btn-ghost btn-xs text-[10px] uppercase font-bold tracking-widest text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 flex items-center gap-1.5"
-                            data-action="route-map#jump"
+                            data-action="route-tile-map#jump"
                             data-route-map-target="button"
                             data-hex="${wp.hex}"
                             data-sector="${wp.sector || ''}">
@@ -299,7 +308,20 @@ export default class extends Controller {
             const data = await response.json();
 
             if (data.success) {
-                window.location.reload();
+                this.refreshTable(data.allWaypoints);
+                this.toggleInvalidJumpAlert(data.hasInvalidJumps);
+
+                // Dispatch event for map update
+                window.dispatchEvent(new CustomEvent('navfi:route-updated', {
+                    detail: { waypoints: data.allWaypoints }
+                }));
+
+                // Hide overlay
+                if (this.hasLoadingOverlayTarget) {
+                    this.loadingOverlayTarget.classList.add('hidden');
+                }
+
+                window.NavFiToast.notify('Route recalculated and optimized', 'success');
             } else {
                 window.NavFiToast.notify(data.error || 'Recalculation error', 'error');
                 // Hide overlay on error

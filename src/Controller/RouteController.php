@@ -18,6 +18,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route as RouteAttr;
 use App\Entity\User;
+use App\Service\RouteTravelService;
+use App\Service\ImperialDateHelper;
 
 final class RouteController extends BaseController
 {
@@ -291,7 +293,7 @@ final class RouteController extends BaseController
                 'zone' => $zone,
             ],
             // Return FULL list for map update
-            'allWaypoints' => $this->serializeWaypoints($route),
+            'allWaypoints' => $this->serializeWaypoints($route, $sectorLookup),
             'routeFuelEstimate' => $route->getFuelEstimate(),
             'hasInvalidJumps' => $waypointService->hasInvalidJumps($route),
         ]);
@@ -302,7 +304,8 @@ final class RouteController extends BaseController
         int $id,
         int $waypointId,
         EntityManagerInterface $em,
-        RouteWaypointService $waypointService
+        RouteWaypointService $waypointService,
+        TravellerMapSectorLookup $sectorLookup
     ): JsonResponse {
         $user = $this->getUser();
         if (!$user instanceof User) {
@@ -338,7 +341,7 @@ final class RouteController extends BaseController
             'success' => true,
             'updatedWaypoints' => $updatedWaypoints,
             // Return FULL list for map update
-            'allWaypoints' => $this->serializeWaypoints($route),
+            'allWaypoints' => $this->serializeWaypoints($route, $sectorLookup),
             'routeFuelEstimate' => $route->getFuelEstimate(),
             'hasInvalidJumps' => $waypointService->hasInvalidJumps($route),
         ]);
@@ -348,7 +351,8 @@ final class RouteController extends BaseController
     public function recalculateRoute(
         int $id,
         EntityManagerInterface $em,
-        RouteWaypointService $waypointService
+        RouteWaypointService $waypointService,
+        TravellerMapSectorLookup $sectorLookup
     ): JsonResponse {
         $user = $this->getUser();
         if (!$user instanceof User) {
@@ -364,44 +368,22 @@ final class RouteController extends BaseController
             $waypointService->recalculateRoute($route);
             $em->flush();
 
-            return new JsonResponse(['success' => true]);
-        } catch (\Exception $e) {
+            return new JsonResponse([
+                'success' => true,
+                'allWaypoints' => $this->serializeWaypoints($route, $sectorLookup),
+                'hasInvalidJumps' => $waypointService->hasInvalidJumps($route),
+            ]);
+        } catch (\Throwable $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 
     #[RouteAttr('/route/{id}/activate', name: 'app_route_activate', methods: ['POST'])]
-    public function activate(int $id, EntityManagerInterface $em): JsonResponse
-    {
-        $user = $this->getUser();
-        if (!$user instanceof User) {
-            return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
-        }
-
-        $route = $em->getRepository(Route::class)->findOneForUserWithWaypoints($id, $user);
-        if (!$route) {
-            return new JsonResponse(['error' => 'Route not found'], Response::HTTP_NOT_FOUND);
-        }
-
-        // Activate Route
-        $route->setActive(true);
-
-        // Set first waypoint as active
-        foreach ($route->getWaypoints() as $wp) {
-            $wp->setActive($wp->getPosition() === 1);
-        }
-
-        $em->flush();
-
-        return new JsonResponse(['success' => true]);
-    }
-
-    #[RouteAttr('/route/{id}/travel/{direction}', name: 'app_route_travel', methods: ['POST'])]
-    public function travel(
+    public function activate(
         int $id,
-        string $direction,
         EntityManagerInterface $em,
-        \App\Service\ImperialDateHelper $dateHelper
+        RouteTravelService $travelService,
+        TravellerMapSectorLookup $sectorLookup
     ): JsonResponse {
         $user = $this->getUser();
         if (!$user instanceof User) {
@@ -413,68 +395,75 @@ final class RouteController extends BaseController
             return new JsonResponse(['error' => 'Route not found'], Response::HTTP_NOT_FOUND);
         }
 
-        if (!$route->isActive()) {
-            return new JsonResponse(['error' => 'Route is not active'], Response::HTTP_BAD_REQUEST);
+        try {
+            $travelService->activate($route);
+            return new JsonResponse([
+                'success' => true,
+                'allWaypoints' => $this->serializeWaypoints($route, $sectorLookup)
+            ]);
+        } catch (\Throwable $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    #[RouteAttr('/route/{id}/travel/{direction}', name: 'app_route_travel', methods: ['POST'])]
+    public function travel(
+        int $id,
+        string $direction,
+        EntityManagerInterface $em,
+        RouteTravelService $travelService,
+        ImperialDateHelper $dateHelper,
+        TravellerMapSectorLookup $sectorLookup
+    ): JsonResponse {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
         }
 
-        $activeWp = null;
-        foreach ($route->getWaypoints() as $wp) {
-            if ($wp->isActive()) {
-                $activeWp = $wp;
-                break;
-            }
+        $route = $em->getRepository(Route::class)->findOneForUserWithWaypoints($id, $user);
+        if (!$route) {
+            return new JsonResponse(['error' => 'Route not found'], Response::HTTP_NOT_FOUND);
         }
 
-        if (!$activeWp) {
-            return new JsonResponse(['error' => 'No active waypoint found'], Response::HTTP_BAD_REQUEST);
+        try {
+            $targetWp = $travelService->travel($route, $direction);
+            $campaign = $route->getCampaign();
+
+            return new JsonResponse([
+                'success' => true,
+                'activeWaypointId' => $targetWp->getId(),
+                'activeWaypointHex' => $targetWp->getHex(),
+                'activeWaypointSector' => $targetWp->getSector(),
+                'sessionDate' => $campaign ? $dateHelper->format($campaign->getSessionDay(), $campaign->getSessionYear()) : null,
+                'allWaypoints' => $this->serializeWaypoints($route, $sectorLookup)
+            ]);
+        } catch (\Throwable $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
-
-        $targetPosition = $direction === 'forward'
-            ? $activeWp->getPosition() + 1
-            : $activeWp->getPosition() - 1;
-
-        $targetWp = null;
-        foreach ($route->getWaypoints() as $wp) {
-            if ($wp->getPosition() === $targetPosition) {
-                $targetWp = $wp;
-                break;
-            }
-        }
-
-        if (!$targetWp) {
-            return new JsonResponse(['error' => 'End of route reached'], Response::HTTP_BAD_REQUEST);
-        }
-
-        // Deactivate current, activate target
-        $activeWp->setActive(false);
-        $targetWp->setActive(true);
-
-        // Update Campaign Date (+7 days per jump, regardless of direction)
-        $campaign = $route->getCampaign();
-        if ($campaign && $campaign->getSessionDay() && $campaign->getSessionYear()) {
-            $newDate = $dateHelper->addDays($campaign->getSessionDay(), $campaign->getSessionYear(), 7);
-            $campaign->setSessionDay($newDate['day']);
-            $campaign->setSessionYear($newDate['year']);
-        }
-
-        $em->flush();
-
-        return new JsonResponse([
-            'success' => true,
-            'activeWaypointId' => $targetWp->getId(),
-            'activeWaypointHex' => $targetWp->getHex(),
-            'activeWaypointSector' => $targetWp->getSector(),
-            'sessionDate' => $campaign ? $dateHelper->format($campaign->getSessionDay(), $campaign->getSessionYear()) : null
-        ]);
     }
 
     /**
      * Helper to serialize all waypoints for map
      */
-    private function serializeWaypoints(Route $route): array
+    private function serializeWaypoints(Route $route, TravellerMapSectorLookup $sectorLookup): array
     {
         $data = [];
+        $sectorCache = [];
         foreach ($route->getWaypoints() as $wp) {
+            $zone = null;
+            if ($wp->getSector() && $wp->getHex()) {
+                if (!isset($sectorCache[$wp->getSector()])) {
+                    $sectorCache[$wp->getSector()] = $sectorLookup->parseSector($wp->getSector());
+                }
+
+                foreach ($sectorCache[$wp->getSector()] as $system) {
+                    if ($system['hex'] === $wp->getHex()) {
+                        $zone = $system['zone'] ?? null;
+                        break;
+                    }
+                }
+            }
+
             $data[] = [
                 'id' => $wp->getId(),
                 'position' => $wp->getPosition(),
@@ -484,6 +473,8 @@ final class RouteController extends BaseController
                 'uwp' => $wp->getUwp(),
                 'notes' => $wp->getNotes(),
                 'jumpDistance' => $wp->getJumpDistance(),
+                'active' => $wp->isActive(),
+                'zone' => $zone,
             ];
         }
         return $data;

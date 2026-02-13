@@ -127,20 +127,9 @@ class RouteMathHelper
             return null;
         }
 
-        $hexes = [];
-        foreach ($route->getWaypoints() as $waypoint) {
-            $hexes[] = (string) $waypoint->getHex();
-        }
+        $totalJumpNumber = $route->getJumpDistance();
 
-        $distances = $this->segmentDistances($hexes);
-        $totalJumpNumber = 0;
-        foreach ($distances as $distance) {
-            if ($distance !== null) {
-                $totalJumpNumber += $distance;
-            }
-        }
-
-        if ($totalJumpNumber === 0) {
+        if (!$totalJumpNumber || $totalJumpNumber === 0) {
             return null;
         }
 

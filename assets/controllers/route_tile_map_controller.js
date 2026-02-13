@@ -115,7 +115,7 @@ export default class extends Controller {
                     if (this.hasOverlayTarget) this.overlayTarget.remove();
                 }, 1000); // 1s wait for transition
             }
-        }, 2000);
+        }, 4000);
     }
 
     async getCoordinates(sectorName, hexCode) {

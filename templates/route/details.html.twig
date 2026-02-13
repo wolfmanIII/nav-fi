@@ -3,6 +3,7 @@
 {% block title %}Nav-Fi&sup3; - Route{% endblock %}
 
 {% block pageContent %}
+    {% import '_tooltip.html.twig' as UI %}
     {# Debug: Explicitly load Leaflet CSS to ensure tiles render correctly #}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
@@ -87,9 +88,9 @@
                 <div class="text-lg text-cyan-100">{{ route.campaign ? route.campaign.title : '—' }}</div>
             </div>
             <div class="rounded-xl border border-base-300 bg-base-200 p-4">
-                <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Jump Rating / Total Route Fuel</div>
+                <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Jump Distance / Total Route Fuel</div>
                 <div class="text-lg text-cyan-100">
-                    {{ route.asset.jumpDriveRating ?? '—' }} / {{ route_total_fuel(route) ?? '—' }}
+                    {{ route.jumpDistance ?? '—' }} / {{ route_total_fuel(route) ?? '—' }}
                 </div>
             </div>
         </div>
@@ -203,27 +204,45 @@
                      data-route-travel-active-value="{{ route.active ? 'true' : 'false' }}"
                      data-route-travel-has-invalid-jumps-value="{{ hasInvalidJumps ? 'true' : 'false' }}">
 
-                    <button class="btn btn-sm btn-circle btn-ghost text-cyan-500 disabled:opacity-20 hover:bg-cyan-500/10 transition-all duration-300"
-                            data-action="route-travel#rewind"
-                            data-route-travel-target="rewind"
-                            title="Rewind (Previous Waypoint)">
-                        {% include 'icons/rewind.html.twig' %}
-                    </button>
+                    {{ UI.button(
+                        'RETRACE // Return to Previous Waypoint',
+                        'Retrace',
+                        'icons/nav-retrace.html.twig',
+                        {
+                            dim: 24,
+                            position: 'tooltip-top',
+                            buttonClass: 'btn btn-sm btn-circle btn-ghost text-cyan-500 disabled:opacity-20 hover:bg-cyan-500/10 transition-all duration-300',
+                            attrs: {
+                                'data-action': 'route-travel#rewind',
+                                'data-route-travel-target': 'rewind'
+                            }
+                        }
+                    ) }}
 
-                    <button class="btn btn-md btn-circle btn-outline border-cyan-500 text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.3)] transition-all duration-300 relative group"
-                            data-action="route-travel#togglePlay"
-                            data-route-travel-target="play"
-                            title="Toggle Travel Mode">
-                         <div class="absolute inset-0 rounded-full border border-cyan-400 opacity-0 group-hover:animate-ping"></div>
-                        {% include 'icons/play.html.twig' %}
-                    </button>
+                    <div class="tooltip tooltip-top" data-tip="INITIATE // Enable Navigation Tracking">
+                        <button class="btn btn-md btn-circle btn-outline border-cyan-500 text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.3)] transition-all duration-300 relative group"
+                                data-action="route-travel#togglePlay"
+                                data-route-travel-target="play"
+                                type="button">
+                             <div class="absolute inset-0 rounded-full border border-cyan-400 opacity-0 group-hover:animate-ping"></div>
+                            {% include 'icons/nav-engage.html.twig' %}
+                        </button>
+                    </div>
 
-                    <button class="btn btn-sm btn-circle btn-ghost text-cyan-500 disabled:opacity-20 hover:bg-cyan-500/10 transition-all duration-300"
-                            data-action="route-travel#forward"
-                            data-route-travel-target="forward"
-                            title="Forward (Next Waypoint)">
-                        {% include 'icons/forward.html.twig' %}
-                    </button>
+                    {{ UI.button(
+                        'TRANSIT // Advance to Next Waypoint',
+                        'Transit',
+                        'icons/nav-transit.html.twig',
+                        {
+                            dim: 24,
+                            position: 'tooltip-top',
+                            buttonClass: 'btn btn-sm btn-circle btn-ghost text-cyan-500 disabled:opacity-20 hover:bg-cyan-500/10 transition-all duration-300',
+                            attrs: {
+                                'data-action': 'route-travel#forward',
+                                'data-route-travel-target': 'forward'
+                            }
+                        }
+                    ) }}
                     
                     <div class="hidden absolute -right-8" data-route-travel-target="statusIndicator">
                         <span class="loading loading-spinner loading-xs text-cyan-500"></span>
@@ -248,8 +267,7 @@
                                 <span class="text-[10px] uppercase tracking-widest font-bold font-orbitron">Invalid Jump</span>
                             </div>
 
-                            {% import '_tooltip.html.twig' as UI %}
-                            {{ UI.button(
+                                {{ UI.button(
                                 'Recalculate Route',
                                 'Recalculate',
                                 'icons/recalculate.html.twig',
