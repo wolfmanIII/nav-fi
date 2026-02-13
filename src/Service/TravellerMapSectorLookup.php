@@ -64,7 +64,7 @@ class TravellerMapSectorLookup
                     ];
                 }
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->logger->error('Error looking up world', [
                 'sector' => $sector,
                 'hex' => $hex,
@@ -231,7 +231,7 @@ class TravellerMapSectorLookup
             $this->cleanupOldFiles($safeName);
 
             $fs->dumpFile($fullPath, $content);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->logger->error("Failed to download sector data", ['error' => $e->getMessage()]);
             throw $e;
         }
@@ -266,7 +266,7 @@ class TravellerMapSectorLookup
         foreach ($files as $file) {
             try {
                 $fs->remove($file);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 // Ignora errori cancellazione
             }
         }

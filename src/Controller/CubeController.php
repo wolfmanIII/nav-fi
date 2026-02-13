@@ -22,6 +22,7 @@ use App\Entity\CompanyRole;
 use App\Entity\Asset;
 use App\Entity\BrokerOpportunity;
 use App\Dto\Cube\CubeOpportunityData;
+use App\Form\ContractAcceptanceType;
 
 #[Route('/cube')]
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
@@ -163,7 +164,7 @@ class CubeController extends AbstractController
             $opp = $this->brokerService->saveOpportunity($session, $payload);
 
             return $this->json(['status' => 'saved', 'id' => $opp->getId()]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // Log for debugging
             // $this->logger->error(...) - needing logger injection or simplified usage
             error_log('Cube Save Error: ' . $e->getMessage());
@@ -220,7 +221,7 @@ class CubeController extends AbstractController
             'campaign' => $campaign
         ]);
 
-        $form = $this->createForm(\App\Form\ContractAcceptanceType::class, null, [
+        $form = $this->createForm(ContractAcceptanceType::class, null, [
             'opportunity' => $opportunity,
             'existing_patron' => $existingPatron,
             'action' => $this->generateUrl('app_cube_contract_accept', ['id' => $id]),
@@ -254,7 +255,7 @@ class CubeController extends AbstractController
             }
         }
 
-        $form = $this->createForm(\App\Form\ContractAcceptanceType::class, null, [
+        $form = $this->createForm(ContractAcceptanceType::class, null, [
             'opportunity' => $opportunity,
             'existing_patron' => $existingPatron,
         ]);
@@ -294,7 +295,7 @@ class CubeController extends AbstractController
                 $this->addFlash('success', 'Contract Accepted! Financial records updated.');
 
                 return $this->redirectToRoute('app_cube_index', ['session_id' => $opportunity->getSession()->getId()]);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $this->addFlash('error', 'Error accepting contract: ' . $e->getMessage());
                 // Fallthrough to redirect back
             }

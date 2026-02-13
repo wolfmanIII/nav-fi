@@ -697,7 +697,7 @@ final class AssetController extends BaseController
             try {
                 $tradeService->liquidateCargo($cost, $salePrice, $location, $day, $year, $localLaw, $buyerCompany);
                 $this->addFlash('success', 'Cargo sold for ' . number_format($salePrice) . ' Cr.');
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $this->addFlash('error', 'Liquidation failed: ' . $e->getMessage());
             }
         } else {
@@ -738,7 +738,7 @@ final class AssetController extends BaseController
         $this->denyAccessUnlessGranted(AssetVoter::ADD_LOOT, $asset);
 
         $cost = new Cost();
-        $form = $this->createForm(\App\Form\CargoLootType::class, $cost);
+        $form = $this->createForm(CargoLootType::class, $cost);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
