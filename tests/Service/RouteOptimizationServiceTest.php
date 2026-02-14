@@ -16,54 +16,73 @@ class RouteOptimizationServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->lookupMock = $this->createMock(TravellerMapSectorLookup::class);
+        $dataServiceMock = $this->createMock(\App\Service\TravellerMapDataService::class);
         $mathHelper = new RouteMathHelper(); // Real logic is fine here, it's pure math
-        $logger = new NullLogger();
+        $logger = new \Psr\Log\NullLogger();
 
-        $this->service = new RouteOptimizationService($this->lookupMock, $mathHelper, $logger);
+        $this->service = new RouteOptimizationService($this->lookupMock, $dataServiceMock, $mathHelper, $logger);
     }
 
     public function testFindShortestPathDirectJump(): void
     {
         // Verifica Logica: A -> B dist 2, Jump 2. Dovrebbe essere [A, B]
-        $map = [
-            '0101' => ['hex' => '0101'],
-            '0103' => ['hex' => '0103'] // Dist 2
+        $sectorData = [
+            ['hex' => '0101', 'uwp' => 'C000000-0', 'zone' => '', 'name' => 'A'],
+            ['hex' => '0103', 'uwp' => 'C000000-0', 'zone' => '', 'name' => 'B'] // Dist 2
         ];
+        $this->lookupMock->method('parseSector')->willReturn($sectorData);
 
-        $path = $this->service->findShortestPath($map, '0101', '0103', 2);
+        $result = $this->service->optimizeMultiStopRoute(
+            ['sector' => 'Test', 'hex' => '0101'],
+            [['sector' => 'Test', 'hex' => '0103']],
+            2
+        );
 
-        $this->assertCount(2, $path);
-        $this->assertEquals(['0101', '0103'], $path);
+        $this->assertCount(2, $result['path']);
+        $this->assertEquals('0101', $result['path'][0]['hex']);
+        $this->assertEquals('0103', $result['path'][1]['hex']);
     }
 
     public function testFindShortestPathWithIntermediateStop(): void
     {
         // A -> C (Dist 4). Jump 2. Serve intermedio B (a dist 2).
         // 0101 -> 0103 -> 0105
-        $map = [
-            '0101' => ['hex' => '0101'],
-            '0103' => ['hex' => '0103'],
-            '0105' => ['hex' => '0105']
+        $sectorData = [
+            ['hex' => '0101', 'uwp' => 'C000000-0', 'zone' => '', 'name' => 'A'],
+            ['hex' => '0103', 'uwp' => 'C000000-0', 'zone' => '', 'name' => 'B'],
+            ['hex' => '0105', 'uwp' => 'C000000-0', 'zone' => '', 'name' => 'C']
         ];
+        $this->lookupMock->method('parseSector')->willReturn($sectorData);
 
         // Jump 2. Diretto 0101->0105 è impossibile (dist 4). Deve fermarsi a 0103.
-        $path = $this->service->findShortestPath($map, '0101', '0105', 2);
+        $result = $this->service->optimizeMultiStopRoute(
+            ['sector' => 'Test', 'hex' => '0101'],
+            [['sector' => 'Test', 'hex' => '0105']],
+            2
+        );
 
-        $this->assertNotNull($path);
-        $this->assertEquals(['0101', '0103', '0105'], $path);
+        $this->assertCount(3, $result['path']);
+        $this->assertEquals('0101', $result['path'][0]['hex']);
+        $this->assertEquals('0103', $result['path'][1]['hex']);
+        $this->assertEquals('0105', $result['path'][2]['hex']);
     }
 
     public function testFindShortestPathUnreachable(): void
     {
         // A -> B (Dist 4). Jump 2. Nessun intermedio.
-        $map = [
-            '0101' => ['hex' => '0101'],
-            '0105' => ['hex' => '0105']
+        $sectorData = [
+            ['hex' => '0101', 'uwp' => 'C000000-0', 'zone' => '', 'name' => 'A'],
+            ['hex' => '0105', 'uwp' => 'C000000-0', 'zone' => '', 'name' => 'B'] // Dist 4
         ];
+        $this->lookupMock->method('parseSector')->willReturn($sectorData);
 
-        $path = $this->service->findShortestPath($map, '0101', '0105', 2);
+        $this->expectException(\RuntimeException::class);
 
-        $this->assertNull($path);
+        $this->service->optimizeMultiStopRoute(
+            ['sector' => 'Test', 'hex' => '0101'],
+            [['sector' => 'Test', 'hex' => '0105']],
+            2
+        );
     }
 
     public function testOptimizeMultiStopRouteTSP(): void
@@ -76,15 +95,20 @@ class RouteOptimizationServiceTest extends TestCase
         // Se facessimo A -> C -> B: A->B->C (2 salti per arrivare a C) + C->B (1 salto) = 3 salti.
 
         $sectorData = [
-            ['hex' => '0101', 'name' => 'A'],
-            ['hex' => '0102', 'name' => 'B'],
-            ['hex' => '0103', 'name' => 'C'],
+            ['hex' => '0101', 'name' => 'A', 'uwp' => 'C000000-0', 'zone' => '', 'cube' => [0, 0, 0]],
+            ['hex' => '0102', 'name' => 'B', 'uwp' => 'C000000-0', 'zone' => '', 'cube' => [0, -2, 2]],
+            ['hex' => '0103', 'name' => 'C', 'uwp' => 'C000000-0', 'zone' => '', 'cube' => [0, -4, 4]],
         ];
 
         $this->lookupMock->method('parseSector')->willReturn($sectorData);
 
         // Partenza A. Dest: C, B. JumpRating 1.
-        $result = $this->service->optimizeMultiStopRoute('TestSector', '0101', ['0103', '0102'], 1);
+        $startPoint = ['sector' => 'TestSector', 'hex' => '0101'];
+        $destinations = [
+            ['sector' => 'TestSector', 'hex' => '0103'],
+            ['sector' => 'TestSector', 'hex' => '0102']
+        ];
+        $result = $this->service->optimizeMultiStopRoute($startPoint, $destinations, 1);
 
         // Miglior percorso dovrebbe essere A -> B -> C 
         // Nota: TSP ottimizza la visita di TUTTE le destinazioni.
@@ -101,7 +125,10 @@ class RouteOptimizationServiceTest extends TestCase
         // Caso 1 (A->C->B) costa: A->B->C(2) + C->B(1) = 3 salti.
 
         // Quindi percorso atteso: 0101, 0102, 0103.
-        $this->assertEquals(['0101', '0102', '0103'], $result['path']);
+        // Quindi percorso atteso: 0101, 0102, 0103.
+        $this->assertEquals('0101', $result['path'][0]['hex']);
+        $this->assertEquals('0102', $result['path'][1]['hex']);
+        $this->assertEquals('0103', $result['path'][2]['hex']);
         $this->assertEquals(2, $result['total_jumps']);
     }
 
@@ -111,16 +138,20 @@ class RouteOptimizationServiceTest extends TestCase
         $sectorData = [];
         for ($i = 1; $i <= 8; $i++) {
             $hex = sprintf('01%02d', $i);
-            $sectorData[] = ['hex' => $hex, 'name' => 'System ' . $hex];
+            $sectorData[] = ['hex' => $hex, 'name' => 'System ' . $hex, 'uwp' => 'C000000-0', 'zone' => ''];
         }
 
         $this->lookupMock->method('parseSector')->willReturn($sectorData);
 
         // Destinazioni (7): Tutte tranne la partenza 0101, in ordine sparso
-        $destinations = ['0108', '0103', '0105', '0102', '0107', '0104', '0106'];
+        $destPoints = [];
+        foreach (['0108', '0103', '0105', '0102', '0107', '0104', '0106'] as $h) {
+            $destPoints[] = ['sector' => 'TestSector', 'hex' => $h];
+        }
 
         // Con N=7 dest, scatterà l'euristica Nearest Neighbor
-        $result = $this->service->optimizeMultiStopRoute('TestSector', '0101', $destinations, 1);
+        $startPoint = ['sector' => 'TestSector', 'hex' => '0101'];
+        $result = $this->service->optimizeMultiStopRoute($startPoint, $destPoints, 1);
 
         // Il percorso lineare dovrebbe comunque essere trovato (o quasi) dall'euristica
         // 0101 -> 0102 -> 0103 -> 0104 -> 0105 -> 0106 -> 0107 -> 0108
@@ -128,8 +159,9 @@ class RouteOptimizationServiceTest extends TestCase
         $this->assertEquals(7, $result['total_jumps']);
 
         // Verifica che tutte le dest siano nel path
-        foreach ($destinations as $dest) {
-            $this->assertContains($dest, $result['path']);
+        $pathHexes = array_column($result['path'], 'hex');
+        foreach (['0108', '0103', '0105', '0102', '0107', '0104', '0106'] as $dest) {
+            $this->assertContains($dest, $pathHexes);
         }
     }
 }

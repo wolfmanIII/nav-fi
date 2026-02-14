@@ -4,14 +4,15 @@ export default class extends Controller {
     static targets = ['campaignSelect', 'assetSelect'];
 
     connect() {
-        // Optional: Trigger initial filter if campaign is pre-selected?
-        // Usually not needed for new forms, but useful for edits if campaign field was persistent.
-        // Since mapped=false, it starts empty or default.
+        if (this.campaignSelectTarget.value) {
+            this.filterAssets();
+        }
     }
 
     async filterAssets(event) {
-        const campaignId = event.target.value;
+        const campaignId = event ? event.target.value : this.campaignSelectTarget.value;
         const assetSelect = this.assetSelectTarget;
+        const currentAssetId = assetSelect.value;
 
         // Clear current options
         assetSelect.innerHTML = '<option value="">Loading...</option>';
@@ -27,7 +28,8 @@ export default class extends Controller {
             let optionsHtml = '<option value="">None // Independent Account</option>';
 
             assets.forEach(asset => {
-                optionsHtml += `<option value="${asset.id}">${asset.name}</option>`;
+                const selected = String(asset.id) === String(currentAssetId) ? 'selected' : '';
+                optionsHtml += `<option value="${asset.id}" ${selected}>${asset.name}</option>`;
             });
 
             assetSelect.innerHTML = optionsHtml;

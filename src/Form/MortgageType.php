@@ -58,6 +58,7 @@ class MortgageType extends AbstractType
             ])
             ->add('campaign', EntityType::class, [
                 'class' => Campaign::class,
+                'label' => 'Mission',
                 'mapped' => false,
                 'required' => true,
                 'placeholder' => '// MISSION',

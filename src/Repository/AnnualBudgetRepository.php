@@ -55,7 +55,7 @@ class AnnualBudgetRepository extends ServiceEntityRepository
             ->leftJoin('b.financialAccount', 'fa')
             ->leftJoin('fa.asset', 'a')
             ->leftJoin('a.campaign', 'c')
-            ->addSelect('a', 'c')
+            ->addSelect('fa', 'a', 'c')
             ->andWhere('b.user = :user')
             ->setParameter('user', $user);
 

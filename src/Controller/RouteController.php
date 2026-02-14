@@ -291,6 +291,7 @@ final class RouteController extends BaseController
                 'notes' => $waypoint->getNotes(),
                 'jumpDistance' => $waypoint->getJumpDistance(),
                 'zone' => $zone,
+                'deletable' => $this->isGranted('waypoint_delete', $waypoint),
             ],
             // Return FULL list for map update
             'allWaypoints' => $this->serializeWaypoints($route, $sectorLookup),
@@ -474,6 +475,7 @@ final class RouteController extends BaseController
                 'notes' => $wp->getNotes(),
                 'jumpDistance' => $wp->getJumpDistance(),
                 'active' => $wp->isActive(),
+                'deletable' => $this->isGranted('waypoint_delete', $wp),
                 'zone' => $zone,
             ];
         }

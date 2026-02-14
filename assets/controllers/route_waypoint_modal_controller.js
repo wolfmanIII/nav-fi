@@ -253,12 +253,14 @@ export default class extends Controller {
             <td class="font-mono text-xs p-2">${wp.uwp || '—'}</td>
             <td class="font-mono text-xs p-2 text-right text-emerald-300">${wp.jumpDistance || '—'}</td>
             <td class="text-center p-2">
-                <button type="button"
-                        class="btn btn-ghost btn-xs text-red-500 hover:text-red-400 hover:bg-red-500/10"
-                        data-action="route-waypoint-modal#deleteWaypoint"
-                        data-waypoint-id="${wp.id}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M8 6l1-3h6l1 3"></path></svg>
-                </button>
+                ${wp.deletable ? `
+                    <button type="button"
+                            class="btn btn-ghost btn-xs text-red-500 hover:text-red-400 hover:bg-red-500/10"
+                            data-action="route-waypoint-modal#deleteWaypoint"
+                            data-waypoint-id="${wp.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M8 6l1-3h6l1 3"></path></svg>
+                    </button>
+                ` : ''}
             </td>
         `;
         this.tableBodyTarget.appendChild(row);

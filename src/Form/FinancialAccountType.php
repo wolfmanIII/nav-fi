@@ -25,6 +25,8 @@ class FinancialAccountType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $user = $this->security->getUser();
+        /** @var FinancialAccount|null $account */
+        $account = $options['data'] ?? null;
 
         $builder
             ->add('bank', EntityType::class, [
@@ -65,6 +67,7 @@ class FinancialAccountType extends AbstractType
                 'label' => 'Mission',
                 'required' => false,
                 'mapped' => false,
+                'data' => $account?->getCampaign(),
                 'placeholder' => '// All Missions (Show All Assets)',
                 'query_builder' => function (CampaignRepository $cr) use ($user) {
                     return $cr->createQueryBuilder('c')

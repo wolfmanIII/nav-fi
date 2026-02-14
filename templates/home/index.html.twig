@@ -69,9 +69,17 @@
                             <div class="text-emerald-400 mb-2 group-hover:scale-110 transition-transform">{% include 'icons/credits.html.twig' with { dim: 20 } %}</div>
                             <span class="text-xs font-bold text-slate-300 group-hover:text-white">PAYROLL</span>
                         </a>
-                         <a href="{{ path('app_cost_index') }}" class="col-span-2 flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-950 border border-slate-800 hover:border-slate-600 hover:bg-slate-900 transition-all group">
-                             <div class="text-slate-400 group-hover:text-white">{% include 'icons/cost.html.twig' with { dim: 16 } %}</div>
-                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">MISSION OUTFLOW LOGS</span>
+                        <a href="{{ path('app_financial_account_index') }}" class="flex flex-col items-center justify-center p-4 rounded-lg bg-slate-950 border border-slate-800 hover:border-indigo-500/30 hover:bg-slate-900 transition-all text-center group">
+                            <div class="text-indigo-400 mb-2 group-hover:scale-110 transition-transform">{% include 'icons/wallet.html.twig' with { dim: 20 } %}</div>
+                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">LEDGERS</span>
+                        </a>
+                        <a href="{{ path('app_income_index') }}" class="flex flex-col items-center justify-center p-4 rounded-lg bg-slate-950 border border-slate-800 hover:border-blue-500/30 hover:bg-slate-900 transition-all text-center group">
+                            <div class="text-blue-400 mb-2 group-hover:scale-110 transition-transform">{% include 'icons/income.html.twig' with { dim: 20 } %}</div>
+                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">MISSION INFLOW</span>
+                        </a>
+                        <a href="{{ path('app_cost_index') }}" class="flex flex-col items-center justify-center p-4 rounded-lg bg-slate-950 border border-slate-800 hover:border-orange-500/30 hover:bg-slate-900 transition-all text-center group">
+                            <div class="text-orange-400 mb-2 group-hover:scale-110 transition-transform">{% include 'icons/cost.html.twig' with { dim: 20 } %}</div>
+                            <span class="text-xs font-bold text-slate-300 group-hover:text-white">MISSION OUTFLOW</span>
                         </a>
                     </div>
                 </div>

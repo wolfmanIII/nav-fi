@@ -152,9 +152,9 @@
                                         {{ budget.asset.name }}
                                     </h3>
                                     <p class="text-sm text-slate-500 font-mono mt-1">
-                                        SP_SYSTEM: {{ (budget.startDay is not null and budget.startYear is not null) ? (budget.startDay|imperial_date(budget.startYear)) : '???' }} 
+                                        SP_SYSTEM: {{ (budget.startDay is not null) ? (budget.startDay|imperial_date(budget.startYear)) : '—' }} 
                                         <span class="mx-2 text-slate-700">>></span> 
-                                        {{ (budget.endDay is not null and budget.endYear is not null) ? (budget.endDay|imperial_date(budget.endYear)) : '???' }}
+                                        {{ (budget.endDay is not null) ? (budget.endDay|imperial_date(budget.endYear)) : '—' }}
                                     </p>
                                 </div>
                                 <div class="text-right">
@@ -165,11 +165,11 @@
                             {# Budget Matrix - Larger icons/fonts for full width #}
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
                                 <div class="p-6 rounded-lg bg-slate-950/50 border border-slate-800 flex flex-col items-center group/metric transition-colors hover:border-emerald-500/20">
-                                    <span class="text-xs uppercase text-emerald-500/70 font-bold mb-2 tracking-widest">Incomes</span>
+                                    <span class="text-xs uppercase text-emerald-500/70 font-bold mb-2 tracking-widest">Incoming Credits</span>
                                     <span class="text-xl font-mono text-emerald-400 font-bold">{{ budget.totalIncomeAmount|format_number({ max_fraction_digit: 0 }, 'decimal', 'default', locale) }}</span>
                                 </div>
                                 <div class="p-6 rounded-lg bg-slate-950/50 border border-slate-800 flex flex-col items-center group/metric transition-colors hover:border-amber-500/20">
-                                    <span class="text-xs uppercase text-amber-500/70 font-bold mb-2 tracking-widest">Costs</span>
+                                    <span class="text-xs uppercase text-amber-500/70 font-bold mb-2 tracking-widest">Outgoing Credits</span>
                                     <span class="text-xl font-mono text-amber-400 font-bold">{{ budget.totalCostsAmount|format_number({ max_fraction_digit: 0 }, 'decimal', 'default', locale) }}</span>
                                 </div>
                                 <div class="p-6 rounded-lg bg-slate-950/50 border border-slate-800 flex flex-col items-center group/metric transition-colors hover:border-red-500/20">
