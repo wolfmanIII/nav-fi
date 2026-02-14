@@ -33,6 +33,7 @@ class IncomeType extends AbstractType
     public function __construct(
         private readonly IncomeDetailsSubscriber $incomeDetailsSubscriber,
         private readonly DayYearLimits $dayYearLimits,
+        private readonly \App\Service\TravellerMapDataService $dataService,
     ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -61,10 +62,31 @@ class IncomeType extends AbstractType
                 'min_year' => $minYear,
                 'max_year' => $this->dayYearLimits->getYearMax(),
             ])
+            ->add('signingSector', ChoiceType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Signing Sector',
+                'placeholder' => '// SELECT SECTOR',
+                'choices' => $this->dataService->getOtuSectors(),
+                'attr' => [
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                ],
+            ])
+            ->add('signingWorld', ChoiceType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Signing World',
+                'placeholder' => '// SELECT WORLD',
+                'choices' => [],
+                'disabled' => true,
+                'attr' => [
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                ],
+            ])
             ->add('signingLocation', TextType::class, [
                 'required' => true,
-                'label' => 'Signing Location',
-                'attr' => ['class' => 'input m-1 w-full'],
+                'label' => 'Signing Location (Full)',
+                'attr' => ['class' => 'input m-1 w-full', 'readonly' => true],
             ])
             ->add('paymentDate', ImperialDateType::class, [
                 'mapped' => false,
@@ -286,6 +308,32 @@ class IncomeType extends AbstractType
             ])
         ;
 
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            /** @var Income $income */
+            $income = $event->getData();
+            $form = $event->getForm();
+            if (!$income) return;
+
+            $location = $income->getSigningLocation();
+            if ($location && str_contains($location, ' // ')) {
+                [$sector, $world] = explode(' // ', $location, 2);
+                $sector = trim($sector);
+                $world = trim($world);
+                $form->get('signingSector')->setData($sector);
+
+                $form->add('signingWorld', ChoiceType::class, [
+                    'mapped' => false,
+                    'required' => false,
+                    'label' => 'Signing World',
+                    'choices' => [$world => $world],
+                    'data' => $world,
+                    'attr' => [
+                        'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                    ],
+                ]);
+            }
+        });
+
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
             /** @var Income $income */
             $income = $event->getData();
@@ -319,6 +367,12 @@ class IncomeType extends AbstractType
             if ($cancel instanceof ImperialDate) {
                 $income->setCancelDay($cancel->getDay());
                 $income->setCancelYear($cancel->getYear());
+            }
+
+            $sector = $form->get('signingSector')->getData();
+            $world = $form->get('signingWorld')->getData();
+            if ($sector && $world) {
+                $income->setSigningLocation(sprintf('%s // %s', $sector, $world));
             }
 
             if ($income->isCancelled()) {

@@ -1,0 +1,52 @@
+{% macro picker(sector_field, world_field, full_field, label, description) %}
+    <div class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 relative" 
+         data-controller="dependent-select"
+         data-dependent-select-url-value="{{ path('api_sector_worlds') }}">
+        {# Radar Overlay centered on the section #}
+        <div class="loader-overlay" data-dependent-select-target="loader">
+            <div class="radar-loader"></div>
+            <div class="radar-loader-label">SYNCING DATA</div>
+        </div>
+
+        <div>
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(sector_field, label ~ ' Sector', { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
+            {{ form_widget(sector_field, { 
+                attr: { 
+                    'data-controller': 'searchable-select',
+                    'data-dependent-select-target': 'source',
+                    'data-action': 'change->dependent-select#syncFull change->dependent-select#change'
+                }
+            }) }}
+            {{ form_errors(sector_field) }}
+        </div>
+
+        <div>
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(world_field, label ~ ' World', { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
+            {{ form_widget(world_field, { 
+                attr: { 
+                    'data-controller': 'searchable-select',
+                    'data-dependent-select-target': 'destination',
+                    'data-action': 'change->dependent-select#syncFull'
+                }
+            }) }}
+            {{ form_errors(world_field) }}
+        </div>
+
+        <div class="col-span-2">
+            <div class="flex items-baseline h-5 mb-1">
+                {{ form_label(full_field, label ~ ' (Full Path)', { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
+            </div>
+            {{ form_widget(full_field, { attr: { 
+                'data-dependent-select-target': 'full'
+            } }) }}
+            {% if description %}
+                <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">{{ description }}</div>
+            {% endif %}
+            {{ form_errors(full_field) }}
+        </div>
+    </div>
+{% endmacro %}

@@ -1,44 +1,58 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ['source', 'destination'];
-    static values = {
-        url: String,
-    };
+    static targets = ['source', 'destination', 'loader', 'full'];
+    static values = { url: String };
 
     connect() {
+        if (this.hasSourceTarget && this.sourceTarget.value) {
+            this.syncFull();
+            // Fetch mondi se abbiamo un settore ma la lista mondi è ridotta (modalità Edit)
+            if (this.hasDestinationTarget && this.destinationTarget.options.length <= 2) {
+                this.change({ target: this.sourceTarget });
+            }
+        }
     }
 
     async change(event) {
         const sector = event.target.value;
-
         if (!sector) {
             this.clearDestination();
+            this.syncFull();
             return;
         }
 
         this.setLoading(true);
-        const startTime = Date.now();
-
         try {
-            const response = await fetch(`${this.urlValue}?sector=${encodeURIComponent(sector)}`);
-            if (!response.ok) throw new Error('Network response was not ok');
-
+            const fetchUrl = `${this.urlValue}?sector=${encodeURIComponent(sector)}`;
+            const response = await fetch(fetchUrl);
             const worlds = await response.json();
-
-            // Garantiamo almeno 800ms di visibilità per il loader
-            const elapsed = Date.now() - startTime;
-            if (elapsed < 800) {
-                await new Promise(resolve => setTimeout(resolve, 800 - elapsed));
-            }
-
             this.updateDestination(worlds);
+            this.syncFull();
         } catch (error) {
-            console.error('Failed to fetch worlds:', error);
-            this.clearDestination();
+            this.syncFull();
         } finally {
             this.setLoading(false);
         }
+    }
+
+    syncFull() {
+        if (!this.hasFullTarget) return;
+        const sectorVal = this.hasSourceTarget ? this.sourceTarget.value : '';
+        const worldSelect = this.hasDestinationTarget ? this.destinationTarget : null;
+        let worldLabel = '';
+
+        if (sectorVal && worldSelect && worldSelect.value) {
+            const selectedOpt = worldSelect.options[worldSelect.selectedIndex];
+            // Pulizia label: togliamo l'Hex e i prefissi per avere "Regina" pulito
+            worldLabel = selectedOpt ? selectedOpt.text.split(' (')[0].replace('// ', '').trim() : worldSelect.value;
+            this.fullTarget.value = `${sectorVal} // ${worldLabel}`;
+        } else if (sectorVal) {
+            this.fullTarget.value = `${sectorVal} // ...`;
+        } else {
+            this.fullTarget.value = '';
+        }
+        this.fullTarget.dispatchEvent(new Event('input', { bubbles: true }));
     }
 
     setLoading(state) {
@@ -46,29 +60,33 @@ export default class extends Controller {
     }
 
     updateDestination(worlds) {
+        if (!this.hasDestinationTarget) return;
         const select = this.destinationTarget;
+
+        // Salviamo il valore corrente (che potrebbe essere il NOME dal DB o l'HEX dall'API)
         const currentVal = select.value;
+        const currentText = select.options[select.selectedIndex]?.text || '';
 
-        // Pulisci select originale
         select.innerHTML = '<option value="">// SELECT WORLD</option>';
-        worlds.forEach(world => {
-            const option = document.createElement('option');
-            option.value = world.value;
-            option.text = world.label;
-            select.appendChild(option);
-        });
+        if (Array.isArray(worlds)) {
+            worlds.forEach(world => {
+                const option = document.createElement('option');
+                option.value = world.value; // Hex
+                option.text = world.label; // Nome (Hex) ...
 
-        // Abilita la select
-        select.disabled = false;
-
-        if (currentVal) {
-            select.value = currentVal;
-            // Trigger change event to sync with other controllers
-            select.dispatchEvent(new Event('change', { bubbles: true }));
+                // Match corazzato: per valore esatto OR se la label inizia con il valore salvato (es "Regina")
+                if (world.value === currentVal || (currentVal && world.label.startsWith(currentVal)) || (currentText && world.label.startsWith(currentText))) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
         }
+        select.disabled = false;
+        select.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
     clearDestination() {
+        if (!this.hasDestinationTarget) return;
         const select = this.destinationTarget;
         select.innerHTML = '<option value="">// SELECT WORLD</option>';
         select.disabled = true;

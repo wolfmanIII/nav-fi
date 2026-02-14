@@ -3,6 +3,8 @@
 namespace App\Form\Type;
 
 use App\Form\Config\DayYearLimits;
+use App\Service\TravellerMapDataService;
+use App\Form\Type\ContractFieldOptionsTrait;
 use App\Model\ImperialDate;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -157,7 +159,18 @@ class IncomeDetailsType extends AbstractType
         'proofOfDelivery' => 'list-proof-of-delivery',
     ];
 
-    public function __construct(private readonly DayYearLimits $limits) {}
+    private const MAP_FIELDS = [
+        'origin' => ['sector' => 'originSector', 'world' => 'originWorld'],
+        'destination' => ['sector' => 'destinationSector', 'world' => 'destinationWorld'],
+        'location' => ['sector' => 'locationSector', 'world' => 'locationWorld'],
+        'incidentLocation' => ['sector' => 'incidentSector', 'world' => 'incidentWorld'],
+        'siteLocation' => ['sector' => 'siteSector', 'world' => 'siteWorld'],
+    ];
+
+    public function __construct(
+        private readonly DayYearLimits $limits,
+        private readonly TravellerMapDataService $dataService,
+    ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -178,6 +191,51 @@ class IncomeDetailsType extends AbstractType
                     'data' => new ImperialDate($year, $day),
                     'min_year' => $campaignStartYear,
                     'max_year' => $this->limits->getYearMax(),
+                ]);
+                continue;
+            }
+
+            // Gestione MAP_FIELDS (Sector/World)
+            if (isset(self::MAP_FIELDS[$fieldName])) {
+                $config = self::MAP_FIELDS[$fieldName];
+
+                // Campo Settore
+                $builder->add($config['sector'], ChoiceType::class, [
+                    'mapped' => false,
+                    'required' => false,
+                    'label' => ucfirst($fieldName) . ' Sector',
+                    'placeholder' => '// SELECT SECTOR',
+                    'choices' => $this->dataService->getOtuSectors(),
+                    'attr' => [
+                        'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                        'data-controller' => 'searchable-select',
+                        'data-searchable-select-placeholder-value' => 'Search Sector...',
+                        'data-action' => 'change->dependent-select#change',
+                        'data-dependent-select-target' => 'source',
+                    ],
+                ]);
+
+                // Campo World (ChoiceType vuoto, popolato via JS)
+                $builder->add($config['world'], ChoiceType::class, [
+                    'mapped' => false,
+                    'required' => false,
+                    'label' => ucfirst($fieldName) . ' World',
+                    'placeholder' => '// SELECT WORLD',
+                    'choices' => [],
+                    'disabled' => true,
+                    'attr' => [
+                        'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                        'data-controller' => 'searchable-select',
+                        'data-searchable-select-placeholder-value' => 'Search World...',
+                        'data-dependent-select-target' => 'destination',
+                    ],
+                ]);
+
+                // Il campo originale diventa HiddenType (verrà popolato sul submit o via JS se vogliamo)
+                // In realtà lo teniamo come TextType ma lo renderemo invisibile o lo popoliamo nel listener.
+                $this->addIfEnabled($builder, $options, $fieldName, TextType::class, [
+                    'required' => false,
+                    'attr' => ['class' => 'input m-1 w-full', 'readonly' => true],
                 ]);
                 continue;
             }
@@ -246,11 +304,46 @@ class IncomeDetailsType extends AbstractType
             ]);
         }
 
-        // Listener per decomprimere le date Imperiali nell'array finale
+        // Listener per inizializzare le select Sector/World dai dati esistenti
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+            $data = $event->getData();
+            $form = $event->getForm();
+            if (!$data) return;
+
+            foreach (self::MAP_FIELDS as $fieldName => $config) {
+                if (!empty($data[$fieldName]) && str_contains($data[$fieldName], ' // ')) {
+                    [$sector, $world] = explode(' // ', $data[$fieldName], 2);
+
+                    if ($form->has($config['sector'])) {
+                        $form->get($config['sector'])->setData($sector);
+                    }
+
+                    // Aggiungiamo dinamicamente l'opzione World per permettere al componente ChoiceType 
+                    // di validare/visualizzare il valore corrente anche se la lista è solitamente vuota (gestita via JS)
+                    if ($form->has($config['world'])) {
+                        $form->add($config['world'], ChoiceType::class, [
+                            'mapped' => false,
+                            'required' => false,
+                            'label' => ucfirst($fieldName) . ' World',
+                            'choices' => [$world => $world],
+                            'data' => $world,
+                            'attr' => [
+                                'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                                'data-controller' => 'searchable-select',
+                                'data-dependent-select-target' => 'destination',
+                            ],
+                        ]);
+                    }
+                }
+            }
+        });
+
+        // Listener per decomprimere le date Imperiali e le locazioni nell'array finale
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
             $data = $event->getData();
             $form = $event->getForm();
 
+            // Date Imperiali
             foreach (self::DATE_FIELDS as $fieldName => $keys) {
                 if ($form->has($fieldName)) {
                     /** @var ImperialDate|null $date */
@@ -258,6 +351,20 @@ class IncomeDetailsType extends AbstractType
                     if ($date instanceof ImperialDate) {
                         $data[$keys['day']] = $date->getDay();
                         $data[$keys['year']] = $date->getYear();
+                    }
+                }
+            }
+
+            // Locazioni (Map Fields)
+            foreach (self::MAP_FIELDS as $fieldName => $config) {
+                if ($form->has($config['sector']) && $form->has($config['world'])) {
+                    $sector = $form->get($config['sector'])->getData();
+                    $world = $form->get($config['world'])->getData();
+
+                    if (!empty($sector) && !empty($world)) {
+                        // Formato: Sector // World (Hex)
+                        // Il valore di 'world' restituito dall'API (dependent-select) dovrebbe già essere nel formato "World (Hex)"
+                        $data[$fieldName] = sprintf('%s // %s', $sector, $world);
                     }
                 }
             }

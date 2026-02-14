@@ -3,24 +3,12 @@
         MAIL Details
     </legend>
 
+    {% import '_location_picker.html.twig' as location_picker %}
     {# CORE DATA #}
     <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-            <div class="flex items-baseline h-5 mb-1">
-                {{ form_label(detail_form.origin, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            </div>
-            {{ form_widget(detail_form.origin, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
-             <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Origin hub/port.</div>
-            {{ form_errors(detail_form.origin) }}
-        </div>
-
-        <div>
-            <div class="flex items-baseline h-5 mb-1">
-                {{ form_label(detail_form.destination, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            </div>
-            {{ form_widget(detail_form.destination, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
-             <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Destination hub/port.</div>
-            {{ form_errors(detail_form.destination) }}
+        <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ location_picker.picker(detail_form.originSector, detail_form.originWorld, detail_form.origin, 'Origin', 'Origin hub/port.') }}
+            {{ location_picker.picker(detail_form.destinationSector, detail_form.destinationWorld, detail_form.destination, 'Destination', 'Destination hub/port.') }}
         </div>
 
         {# Dates #}

@@ -376,23 +376,7 @@
         background-attachment: fixed;
     }
 
-    /* Radar Loader Overlay - Blocking (Opaque for initialization) */
-    .loader-overlay {
-        display: none;
-        position: absolute;
-        inset: 0;
-        z-index: 50;
-        background-color: #020617;
-        /* Solid Slate-950 (Was transparent) */
-        backdrop-filter: blur(2px);
-        -webkit-backdrop-filter: blur(2px);
-        border-radius: 0.75rem;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-    }
 
-    /* Map Specific Sci-Fi Overlay (Restored Original) */
     /* Combines Scanlines, Vignette, and Glow */
     .map-scanline-overlay {
         background-image:
@@ -408,4 +392,63 @@
         /* Inner Shadow / Glow */
         box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5), inset 0 0 2px rgba(34, 211, 238, 0.2);
     }
+}
+/* Radar Loader Overlay - Global Scope (Outside @layer to ensure priority) */
+.loader-overlay {
+    display: none !important;
+    position: absolute;
+    inset: 0;
+    z-index: 100 !important;
+    background-color: #020617 !important;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 0.75rem;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    opacity: 1 !important;
+}
+
+.is-loading .loader-overlay {
+    display: flex !important;
+}
+
+/* Radar Loader Anim */
+.radar-loader {
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(circle at center, rgba(6, 182, 212, 0.05) 0%, transparent 70%);
+}
+
+.radar-loader::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 50%;
+    background: conic-gradient(from 0deg at 0% 0%, rgba(6, 182, 212, 0.4) 0%, transparent 25%);
+    transform-origin: 0% 0%;
+    animation: radar-sweep 2s infinite linear;
+    border-top: 1px solid rgba(6, 182, 212, 0.6);
+}
+
+.radar-loader-label {
+    margin-top: 0.75rem;
+    font-size: 9px;
+    font-weight: 700;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.3em;
+    color: #22d3ee; /* cyan-400 */
+    text-transform: uppercase;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes radar-sweep {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }

@@ -31,7 +31,10 @@ use App\Repository\FinancialAccountRepository;
 
 class CostType extends AbstractType
 {
-    public function __construct(private readonly DayYearLimits $limits) {}
+    public function __construct(
+        private readonly DayYearLimits $limits,
+        private readonly \App\Service\TravellerMapDataService $dataService
+    ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -251,12 +254,34 @@ class CostType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 3],
             ])
+            ->add('targetSector', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Target Sector',
+                'placeholder' => '// SELECT SECTOR',
+                'choices' => $this->dataService->getOtuSectors(),
+                'attr' => [
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                ],
+            ])
+            ->add('targetWorld', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Target World',
+                'placeholder' => '// SELECT WORLD',
+                'choices' => [],
+                'disabled' => true,
+                'attr' => [
+                    'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                ],
+            ])
             ->add('targetDestination', TextType::class, [
                 'required' => false,
-                'label' => 'Target Trade Destination (Optional)',
+                'label' => 'Target Trade Destination',
                 'attr' => [
                     'class' => 'input m-1 w-full',
-                    'placeholder' => 'e.g. Sol System, Station X... (Used for Trade Goods)'
+                    'readonly' => true,
+                    'placeholder' => 'Pick Sector and World above...'
                 ],
             ]);
 
@@ -302,6 +327,52 @@ class CostType extends AbstractType
             }
             $cost->setDetailItems($validDetails);
             $cost->setAmount(sprintf('%.2f', $total));
+
+            // Map field reconstrucion
+            $sector = $form->get('targetSector')->getData();
+            $world = $form->get('targetWorld')->getData();
+            if ($sector && $world) {
+                $cost->setTargetDestination(sprintf('%s // %s', $sector, $world));
+            }
+        });
+
+        // PRE_SET_DATA to initialize map fields
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            /** @var Cost|null $cost */
+            $cost = $event->getData();
+            $form = $event->getForm();
+            if (!$cost) return;
+
+            $location = $cost->getTargetDestination();
+            if ($location && str_contains($location, ' // ')) {
+                [$sector, $world] = explode(' // ', $location, 2);
+                $sector = trim($sector);
+                $world = trim($world);
+
+                // Ridefiniamo il settore con il dato pre-impostato
+                $form->add('targetSector', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, [
+                    'mapped' => false,
+                    'required' => false,
+                    'label' => 'Target Sector',
+                    'placeholder' => '// SELECT SECTOR',
+                    'choices' => $this->dataService->getOtuSectors(),
+                    'data' => $sector, // Forza il valore selezionato
+                    'attr' => [
+                        'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                    ],
+                ]);
+
+                $form->add('targetWorld', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, [
+                    'mapped' => false,
+                    'required' => false,
+                    'label' => 'Target World',
+                    'choices' => [$world => $world],
+                    'data' => $world,
+                    'attr' => [
+                        'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
+                    ],
+                ]);
+            }
         });
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);

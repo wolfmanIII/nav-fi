@@ -3,18 +3,14 @@
         TRADE Details
     </legend>
 
+    {% import '_location_picker.html.twig' as location_picker %}
     {# CORE DATA #}
     <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-            <div class="flex items-baseline h-5 mb-1">
-                {{ form_label(detail_form.location, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
-            </div>
-            {{ form_widget(detail_form.location, { attr: { class: 'input input-bordered w-full bg-slate-950/50 border-slate-700' } }) }}
-             <div class="text-[10px] text-slate-500 mt-1 font-rajdhani uppercase tracking-wider">Exchange location or market.</div>
-            {{ form_errors(detail_form.location) }}
+        <div class="col-span-2">
+            {{ location_picker.picker(detail_form.locationSector, detail_form.locationWorld, detail_form.location, 'Location', 'Exchange location or market.') }}
         </div>
 
-        <div>
+        <div class="col-span-2">
            <div class="flex items-baseline h-5 mb-1">
                 {{ form_label(detail_form.goodsDescription, null, { label_attr: { class: 'mb-0 text-slate-300 text-[10px] uppercase tracking-widest font-bold font-orbitron opacity-50' } }) }}
             </div>
