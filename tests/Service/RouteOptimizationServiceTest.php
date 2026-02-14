@@ -16,7 +16,7 @@ class RouteOptimizationServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->lookupMock = $this->createMock(TravellerMapSectorLookup::class);
-        $dataServiceMock = $this->createMock(\App\Service\TravellerMapDataService::class);
+        $dataServiceMock = $this->createStub(\App\Service\TravellerMapDataService::class);
         $mathHelper = new RouteMathHelper(); // Real logic is fine here, it's pure math
         $logger = new \Psr\Log\NullLogger();
 

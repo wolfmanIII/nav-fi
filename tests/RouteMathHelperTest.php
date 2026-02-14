@@ -53,11 +53,11 @@ class RouteMathHelperTest extends TestCase
 
     public function testEstimateJumpFuelReturnsNullIfNoShipDetails(): void
     {
-        $asset = $this->createMock(Asset::class);
+        $asset = $this->createStub(Asset::class);
         // Ritorniamo uno spec vuoto
         $asset->method('getSpec')->willReturn(new \App\Model\Asset\AssetSpec([]));
 
-        $route = $this->createMock(Route::class);
+        $route = $this->createStub(Route::class);
         $route->method('getAsset')->willReturn($asset);
 
         $distances = [null, 1];
@@ -68,12 +68,12 @@ class RouteMathHelperTest extends TestCase
 
     public function testEstimateJumpFuelReturnsNullIfNoDistances(): void
     {
-        $asset = $this->createMock(Asset::class);
+        $asset = $this->createStub(Asset::class);
         $asset->method('getSpec')->willReturn(new \App\Model\Asset\AssetSpec([
             'hull' => ['tons' => 200],
         ]));
 
-        $route = $this->createMock(Route::class);
+        $route = $this->createStub(Route::class);
         $route->method('getAsset')->willReturn($asset);
 
         $distances = [null]; // Solo punto iniziale
@@ -101,25 +101,32 @@ class RouteMathHelperTest extends TestCase
 
     public function testTotalRequiredFuelCalculatesSumOfAllSegments(): void
     {
-        $assetMock = $this->createMock(Asset::class);
-        $assetMock->method('getSpec')->willReturn(new \App\Model\Asset\AssetSpec([
+        $assetStub = $this->createStub(Asset::class);
+        $assetStub->method('getSpec')->willReturn(new \App\Model\Asset\AssetSpec([
             'hull' => ['tons' => 200],
         ]));
 
-        $route = $this->createMock(Route::class);
-        $route->method('getAsset')->willReturn($assetMock);
+        $route = new Route();
+        $route->setAsset($assetStub);
 
         // Punti di passaggio: A -> (1pc) -> B -> (2pc) -> C
         // Scafo 200 -> 10% = 20 tonnellate/parsec
         // Totale: (1 * 20) + (2 * 20) = 60.00 tonnellate
         $w1 = new \App\Entity\RouteWaypoint();
         $w1->setHex('0101');
+        $w1->setJumpDistance(0);
+
         $w2 = new \App\Entity\RouteWaypoint();
         $w2->setHex('0102'); // Distanza 1
+        $w2->setJumpDistance(1);
+
         $w3 = new \App\Entity\RouteWaypoint();
         $w3->setHex('0104'); // Distanza 2
+        $w3->setJumpDistance(2);
 
-        $route->method('getWaypoints')->willReturn(new \Doctrine\Common\Collections\ArrayCollection([$w1, $w2, $w3]));
+        $route->addWaypoint($w1);
+        $route->addWaypoint($w2);
+        $route->addWaypoint($w3);
 
         $totalFuel = $this->helper->totalRequiredFuel($route);
         $this->assertSame('60.00', $totalFuel);

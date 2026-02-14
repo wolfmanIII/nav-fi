@@ -37,8 +37,8 @@ class NarrativeEngineTest extends TestCase
             ]
         ];
 
-        $companyRepo = $this->createMock(\App\Repository\CompanyRepository::class);
-        $nameGenerator = $this->createMock(\App\Service\Cube\NameGeneratorService::class);
+        $companyRepo = $this->createStub(\App\Repository\CompanyRepository::class);
+        $nameGenerator = $this->createStub(\App\Service\Cube\NameGeneratorService::class);
         $this->narrative = new NarrativeService($economyConfig, $companyRepo, $nameGenerator);
     }
 

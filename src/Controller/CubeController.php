@@ -23,6 +23,7 @@ use App\Entity\Asset;
 use App\Entity\BrokerOpportunity;
 use App\Dto\Cube\CubeOpportunityData;
 use App\Form\ContractAcceptanceType;
+use App\Service\TravellerMapDataService;
 
 #[Route('/cube')]
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
@@ -34,6 +35,7 @@ class CubeController extends AbstractController
         private readonly TravellerMapSectorLookup $travellerMap,
         private readonly EntityManagerInterface $entityManager,
         private readonly CompanyManager $companyManager,
+        private readonly TravellerMapDataService $dataService,
     ) {}
 
     #[Route('/', name: 'app_cube_index', methods: ['GET'])]
@@ -82,6 +84,7 @@ class CubeController extends AbstractController
             'campaign' => $campaign,
             'campaigns' => $allCampaigns,
             'draft_sessions' => $draftSessions,
+            'otu_sectors' => $this->dataService->getOtuSectors(),
         ]);
     }
 

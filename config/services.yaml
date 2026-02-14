@@ -58,3 +58,9 @@ services:
     Scheb\TwoFactorBundle\Controller\FormController:
         alias: scheb_two_factor.form_controller
         public: true
+
+when@test:
+    services:
+        App\Service\Pdf\PdfGeneratorInterface:
+            alias: App\Service\Pdf\GotenbergPdfGenerator
+            public: true

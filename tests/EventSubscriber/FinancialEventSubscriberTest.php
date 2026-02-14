@@ -21,7 +21,7 @@ class FinancialEventSubscriberTest extends TestCase
     protected function setUp(): void
     {
         $this->ledgerService = $this->createMock(LedgerService::class);
-        $this->dateHelper = $this->createMock(ImperialDateHelper::class);
+        $this->dateHelper = $this->createStub(ImperialDateHelper::class);
 
         $this->subscriber = new FinancialEventSubscriber(
             $this->ledgerService,
@@ -46,7 +46,7 @@ class FinancialEventSubscriberTest extends TestCase
 
         // Non cancellato
 
-        $em = $this->createMock(\Doctrine\ORM\EntityManagerInterface::class);
+        $em = $this->createStub(\Doctrine\ORM\EntityManagerInterface::class);
         $args = new PostPersistEventArgs($income, $em);
 
         $this->ledgerService->expects($this->once())
@@ -82,7 +82,7 @@ class FinancialEventSubscriberTest extends TestCase
         $account->setAsset($asset);
         $income->setFinancialAccount($account);
 
-        $em = $this->createMock(\Doctrine\ORM\EntityManagerInterface::class);
+        $em = $this->createStub(\Doctrine\ORM\EntityManagerInterface::class);
         $args = new PostPersistEventArgs($income, $em);
 
         // Mock della logica Date Helper
@@ -126,7 +126,7 @@ class FinancialEventSubscriberTest extends TestCase
         $account->setAsset($asset);
         $income->setFinancialAccount($account);
 
-        $em = $this->createMock(\Doctrine\ORM\EntityManagerInterface::class);
+        $em = $this->createStub(\Doctrine\ORM\EntityManagerInterface::class);
         $args = new PostPersistEventArgs($income, $em);
 
         // Mock della logica Date Helper
@@ -167,7 +167,7 @@ class FinancialEventSubscriberTest extends TestCase
         $account->setAsset($asset);
         $cost->setFinancialAccount($account);
 
-        $em = $this->createMock(\Doctrine\ORM\EntityManagerInterface::class);
+        $em = $this->createStub(\Doctrine\ORM\EntityManagerInterface::class);
         $args = new PostPersistEventArgs($cost, $em);
 
         $this->ledgerService->expects($this->once())
