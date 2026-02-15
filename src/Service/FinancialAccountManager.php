@@ -10,6 +10,7 @@ use App\Entity\FinancialAccount;
 use App\Entity\User;
 use App\Service\CompanyManager;
 use Doctrine\ORM\EntityManagerInterface;
+use RuntimeException;
 
 /**
  * Manager per la gestione dei FinancialAccount.

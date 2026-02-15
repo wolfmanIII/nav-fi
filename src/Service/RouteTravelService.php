@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Route;
 use App\Entity\RouteWaypoint;
 use Doctrine\ORM\EntityManagerInterface;
+use LogicException;
 
 /**
  * Service dedicato alla gestione della logica di viaggio e navigazione.
