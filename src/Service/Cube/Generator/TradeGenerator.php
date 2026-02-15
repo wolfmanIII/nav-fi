@@ -28,8 +28,11 @@ class TradeGenerator implements OpportunityGeneratorInterface
 
     public function generate(array $context, int $maxDist, Randomizer $randomizer): CubeOpportunityData
     {
-        // Risorse disponibili (TODO: Spostare in configurazione o DB in futuro)
-        $resources = ['Radioactives', 'Metals', 'Crystals', 'Luxuries', 'Electronics', 'Pharmaceuticals', 'Industrial Machinery'];
+        // Risorse disponibili recuperate dal sistema di regole (fallback hardcoded necessario per integrità TOS)
+        $resources = $this->rules->get('trade.available_resources', ['Radioactives', 'Metals', 'Crystals', 'Luxuries', 'Electronics', 'Pharmaceuticals', 'Industrial Machinery']);
+        if (is_string($resources)) {
+            $resources = json_decode($resources, true) ?: [];
+        }
         $resource = $resources[$randomizer->getInt(0, count($resources) - 1)];
 
         // Quantità (Tonnellate) con Distribuzione Pesata

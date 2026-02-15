@@ -3,6 +3,7 @@
 {% block title %}Nav-Fi&sup3; - Cargo Hold{% endblock %}
 
 {% block pageContent %}
+    {% set locale = app.request.locale ?? 'en' %}
     <div class="">
 
 
@@ -61,7 +62,7 @@
                                     {% if item.amount == 0 %}
                                         LOOT
                                     {% else %}
-                                        {{ item.amount|number_format(0, '.', ',') }} Cr
+                                        {{ item.amount|format_number({fraction_digit: 0}, 'decimal', 'default', locale) }} Cr
                                     {% endif %}
                                 </span>
                             </div>

@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Transaction;
 use App\Entity\Asset;
+use App\Entity\FinancialAccount;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,7 +22,7 @@ class TransactionRepository extends ServiceEntityRepository
      * Trova transazioni Pending che sono diventate effettive (Data <= Data Corrente).
      * @return Transaction[]
      */
-    public function findPendingEffective(\App\Entity\FinancialAccount $account, int $currentDay, int $currentYear): array
+    public function findPendingEffective(FinancialAccount $account, int $currentDay, int $currentYear): array
     {
         return $this->createQueryBuilder('t')
             ->where('t.financialAccount = :account')
@@ -34,7 +36,7 @@ class TransactionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findPostedFuture(\App\Entity\FinancialAccount $account, int $currentDay, int $currentYear): array
+    public function findPostedFuture(FinancialAccount $account, int $currentDay, int $currentYear): array
     {
         return $this->createQueryBuilder('t')
             ->where('t.financialAccount = :account')
@@ -48,7 +50,7 @@ class TransactionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findForAccount(\App\Entity\FinancialAccount $account, int $page = 1, int $limit = 20): array
+    public function findForAccount(FinancialAccount $account, int $page = 1, int $limit = 20): array
     {
         $qb = $this->createQueryBuilder('t')
             ->where('t.financialAccount = :account')
@@ -60,7 +62,7 @@ class TransactionRepository extends ServiceEntityRepository
 
         $query = $qb->getQuery();
 
-        $paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($query);
+        $paginator = new Paginator($query);
         $total = count($paginator);
 
         $paginator->getQuery()

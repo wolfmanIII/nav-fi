@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\GameRule;
 use App\Service\GameRulesEngine;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -65,7 +66,7 @@ class GameRuleCrudController extends AbstractCrudController
             ->hideOnIndex();
     }
 
-    public function persistEntity(\Doctrine\ORM\EntityManagerInterface $entityManager, $entityInstance): void
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         parent::persistEntity($entityManager, $entityInstance);
         if ($entityInstance instanceof GameRule) {
@@ -73,7 +74,7 @@ class GameRuleCrudController extends AbstractCrudController
         }
     }
 
-    public function updateEntity(\Doctrine\ORM\EntityManagerInterface $entityManager, $entityInstance): void
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         parent::updateEntity($entityManager, $entityInstance);
         if ($entityInstance instanceof GameRule) {

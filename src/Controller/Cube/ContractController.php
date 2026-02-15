@@ -53,7 +53,7 @@ class ContractController extends AbstractController
 
         return $this->render('cube/show.html.twig', [
             'opportunity' => $opportunity,
-            'assets' => $this->assetRepo->findBy(['campaign' => $campaign]), // Filtro per Campagna (Risolto TODO)
+            'assets' => $this->assetRepo->findBy(['campaign' => $campaign]), // Filtro per Campagna
             'localLaws' => $this->em->getRepository(LocalLaw::class)->findAll(),
             'companyRoles' => $this->em->getRepository(CompanyRole::class)->findAll(),
             'existingPatron' => $existingPatron,

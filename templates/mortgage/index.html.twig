@@ -226,7 +226,7 @@
                                 <div class="py-6 px-8 rounded-lg bg-cyan-900/10 border-x-2 border-cyan-500/20 flex items-center justify-between">
                                     <span class="text-xs uppercase tracking-widest text-cyan-500/70 font-bold">Total Liability</span>
                                     <div class="text-xl font-mono font-bold text-cyan-300">
-                                        {{ mortgage.calculate.asset_cost|number_format(2) }}
+                                        {{ mortgage.calculate.asset_cost|format_number({ min_fraction_digit: 2, max_fraction_digit: 2 }, 'decimal', 'default', locale) }}
                                         <span class="text-xs text-cyan-600">Cr</span>
                                     </div>
                                 </div>

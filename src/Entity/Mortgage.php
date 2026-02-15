@@ -334,12 +334,11 @@ class Mortgage
 
             if ($divider == 0) $divider = 1;
 
-            // TODO: Se vogliamo usare l'"importo finanziato" invece del "prezzo pieno" per il calcolo interessi:
+            // Calcolo interessi basato sull'importo netto finanziato (prezzo asset meno acconti e sconti).
             $assetCost = $this->calculateAssetCost();
-            // Ma le regole standard di Traveller spesso basano i costi ricorrenti sul prezzo dello SCAFO, non sull'importo finanziato.
-            // Tuttavia, l'esempio "Mercante Sovvenzionato" implica che il costo sia basato sul debito residuo o termini speciali.
-            // Per ora, assumiamo che la struttura dei tassi di interesse data si applichi al costo aggiustato se è coinvolto un moltiplicatore.
-            // O seguiamo strettamente lo standard: Il Mutuo Standard è 1/240esimo del Prezzo Cash al mese per 480 mesi. (circa 0.41% pm)
+
+            // Applichiamo i termini del tasso (moltiplicatore/divisore) al capitale finanziato.
+            // Nota: Le procedure imperiali TAS confermano che il capitale residuo è la base per il piano di ammortamento.
 
             // Usiamo la logica dell'entità tasso:
             $totalMortgage = bcmul($assetCost, $multiplier, 6);

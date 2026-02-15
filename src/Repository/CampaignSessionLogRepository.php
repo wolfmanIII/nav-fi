@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\CampaignSessionLog;
+use App\Entity\Campaign;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -15,7 +17,7 @@ class CampaignSessionLogRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, CampaignSessionLog::class);
     }
-    public function findForCampaign(\App\Entity\Campaign $campaign, int $page = 1, int $limit = 10): array
+    public function findForCampaign(Campaign $campaign, int $page = 1, int $limit = 10): array
     {
         $qb = $this->createQueryBuilder('l')
             ->where('l.campaign = :campaign')
@@ -24,7 +26,7 @@ class CampaignSessionLogRepository extends ServiceEntityRepository
 
         $query = $qb->getQuery();
 
-        $paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($query);
+        $paginator = new Paginator($query);
         $total = count($paginator);
 
         $paginator->getQuery()

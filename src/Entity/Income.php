@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\IncomeRepository;
 use App\Entity\LocalLaw;
 use App\Entity\Cost;
+use App\Model\IncomeDetails;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
@@ -164,9 +165,9 @@ class Income
         return $this;
     }
 
-    public function getDetailsData(): \App\Model\IncomeDetails
+    public function getDetailsData(): IncomeDetails
     {
-        return \App\Model\IncomeDetails::fromArray($this->details ?? []);
+        return IncomeDetails::fromArray($this->details ?? []);
     }
 
     public function getPurchaseCost(): ?Cost

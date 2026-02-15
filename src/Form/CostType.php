@@ -28,12 +28,13 @@ use Symfony\Component\Validator\Constraints\Count;
 use App\Entity\Campaign;
 use App\Entity\FinancialAccount;
 use App\Repository\FinancialAccountRepository;
+use App\Service\TravellerMapDataService;
 
 class CostType extends AbstractType
 {
     public function __construct(
         private readonly DayYearLimits $limits,
-        private readonly \App\Service\TravellerMapDataService $dataService
+        private readonly TravellerMapDataService $dataService
     ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

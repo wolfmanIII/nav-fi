@@ -27,13 +27,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\Campaign;
 use App\Entity\FinancialAccount;
 use App\Repository\FinancialAccountRepository;
+use App\Service\TravellerMapDataService;
 
 class IncomeType extends AbstractType
 {
     public function __construct(
         private readonly IncomeDetailsSubscriber $incomeDetailsSubscriber,
         private readonly DayYearLimits $dayYearLimits,
-        private readonly \App\Service\TravellerMapDataService $dataService,
+        private readonly TravellerMapDataService $dataService,
     ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

@@ -6,6 +6,7 @@ use App\Repository\CompanyRepository;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use App\Model\Cube\Narrative\Story;
 use App\Model\Cube\Narrative\MissionArchetype;
+use App\Entity\User;
 use Random\Randomizer;
 
 class NarrativeService
@@ -31,7 +32,7 @@ class NarrativeService
     /**
      * Genera una storia completa basata sull'archetipo e il patrono.
      */
-    public function generateStory(string $sector, Randomizer $randomizer, ?\App\Entity\User $user = null): Story
+    public function generateStory(string $sector, Randomizer $randomizer, ?User $user = null): Story
     {
         // 1. Seleziona Patron
         $patronInfo = $this->patronConfig[$randomizer->getInt(0, count($this->patronConfig) - 1)];

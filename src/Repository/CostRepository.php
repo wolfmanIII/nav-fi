@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Cost;
 use App\Entity\User;
+use App\Entity\FinancialAccount;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
@@ -113,7 +114,7 @@ class CostRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findUnsoldTradeCargoForAccount(\App\Entity\FinancialAccount $account): array
+    public function findUnsoldTradeCargoForAccount(FinancialAccount $account): array
     {
         // Similar to findUnsoldTradeGoods but filtered by FinancialAccount
         return $this->createQueryBuilder('c')

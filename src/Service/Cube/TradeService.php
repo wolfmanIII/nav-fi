@@ -7,13 +7,15 @@ use App\Entity\Income;
 use App\Repository\IncomeCategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\LocalLaw;
+use App\Entity\Company;
+use App\Service\CompanyManager;
 
 class TradeService
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly IncomeCategoryRepository $incomeCategoryRepo,
-        private readonly \App\Service\CompanyManager $companyManager
+        private readonly CompanyManager $companyManager
     ) {}
 
     public function liquidateCargo(
@@ -23,7 +25,7 @@ class TradeService
         int $day,
         int $year,
         ?LocalLaw $localLaw = null,
-        ?\App\Entity\Company $buyerCompany = null
+        ?Company $buyerCompany = null
     ): Income {
         // Validazione: Assicurarsi che il costo sia di tipo TRADE e non sia già stato venduto?
         // Affidarsi al chiamante o controllare qui? Controlliamo qui per sicurezza.
@@ -58,24 +60,24 @@ class TradeService
 
         // Assegna il Pagatore (Company)
         if ($buyerCompany) {
-             // Se è stata passata una compagnia specifica (es. selezionata dalla form), usiamo quella.
-             $income->setCompany($buyerCompany);
+            // Se è stata passata una compagnia specifica (es. selezionata dalla form), usiamo quella.
+            $income->setCompany($buyerCompany);
         } else {
-             // Altrimenti procediamo con la logica automatica (Trade Exchange)
-             $role = $this->companyManager->getRoleByCode('TRADER');
-             
-             if ($role) {
-                 // Naming convention: "{Location} Trade Exchange" instead of "Market at {Location}"
-                 $buyerName = $location && $location !== 'Unknown' ? "$location Trade Exchange" : "Local Traders";
-                 
-                 // Crea o trova un'azienda generica che rappresenta il mercato in questa posizione
-                 $buyerCompany = $this->companyManager->findOrCreateAuto($buyerName, $cost->getUser(), $role);
-     
-                 $income->setCompany($buyerCompany);
-             } else {
-                 // Fallback se il ruolo non viene trovato (non dovrebbe succedere con il seed)
-                 $income->setPatronAlias(($location ?? 'Unknown') . " Trade Exchange");
-             }
+            // Altrimenti procediamo con la logica automatica (Trade Exchange)
+            $role = $this->companyManager->getRoleByCode('TRADER');
+
+            if ($role) {
+                // Naming convention: "{Location} Trade Exchange" instead of "Market at {Location}"
+                $buyerName = $location && $location !== 'Unknown' ? "$location Trade Exchange" : "Local Traders";
+
+                // Crea o trova un'azienda generica che rappresenta il mercato in questa posizione
+                $buyerCompany = $this->companyManager->findOrCreateAuto($buyerName, $cost->getUser(), $role);
+
+                $income->setCompany($buyerCompany);
+            } else {
+                // Fallback se il ruolo non viene trovato (non dovrebbe succedere con il seed)
+                $income->setPatronAlias(($location ?? 'Unknown') . " Trade Exchange");
+            }
         }
         // Dettagli
         $details = $cost->getDetailItems();

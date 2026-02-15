@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% set locale = app.request.locale ?? 'en' %}
 
 {% block title %}Nav-Fi&sup3; - Transaction Ledger{% endblock %}
 
@@ -67,9 +68,9 @@
                             {# Amount #}
                             <td class="font-mono text-sm p-3 align-top text-right font-bold {% if is_void %}line-through text-slate-600{% endif %}">
                                 {% if transaction.amount > 0 %}
-                                    <span class="{% if is_void %}text-rose-900/40{% else %}text-emerald-400{% endif %}">+{{ transaction.amount|number_format(0, '.', ',') }}</span>
+                                    <span class="{% if is_void %}text-rose-900/40{% else %}text-emerald-400{% endif %}">+{{ transaction.amount|format_number({fraction_digit: 0}, 'decimal', 'default', locale) }}</span>
                                 {% elseif transaction.amount < 0 %}
-                                    <span class="{% if is_void %}text-rose-900/40{% else %}text-red-400{% endif %}">{{ transaction.amount|number_format(0, '.', ',') }}</span>
+                                    <span class="{% if is_void %}text-rose-900/40{% else %}text-red-400{% endif %}">{{ transaction.amount|format_number({fraction_digit: 0}, 'decimal', 'default', locale) }}</span>
                                 {% else %}
                                     <span class="text-slate-500">0</span>
                                 {% endif %}

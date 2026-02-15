@@ -13,6 +13,9 @@ use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\UnitOfWork;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 
 #[AsDoctrineListener(event: Events::postPersist, priority: 500, connection: 'default')]
 #[AsDoctrineListener(event: Events::onFlush, priority: 500, connection: 'default')]
@@ -28,7 +31,7 @@ class FinancialEventSubscriber
         $this->handleEvent($args->getObject(), false, true);
     }
 
-    public function onFlush(\Doctrine\ORM\Event\OnFlushEventArgs $args): void
+    public function onFlush(OnFlushEventArgs $args): void
     {
         $em = $args->getObjectManager();
         $uow = $em->getUnitOfWork();
@@ -42,7 +45,7 @@ class FinancialEventSubscriber
         }
     }
 
-    private function processUpdates(object $entity, \Doctrine\ORM\EntityManagerInterface $em, \Doctrine\ORM\UnitOfWork $uow): void
+    private function processUpdates(object $entity, EntityManagerInterface $em, UnitOfWork $uow): void
     {
         if ($entity instanceof Income || $entity instanceof Cost || $entity instanceof MortgageInstallment || $entity instanceof SalaryPayment) {
             // Inverte vecchie transazioni
@@ -67,7 +70,7 @@ class FinancialEventSubscriber
         }
     }
 
-    private function processDeletions(object $entity, \Doctrine\ORM\EntityManagerInterface $em, \Doctrine\ORM\UnitOfWork $uow): void
+    private function processDeletions(object $entity, EntityManagerInterface $em, UnitOfWork $uow): void
     {
         if ($entity instanceof Income || $entity instanceof Cost || $entity instanceof MortgageInstallment || $entity instanceof SalaryPayment) {
             $type = match (true) {
@@ -86,7 +89,7 @@ class FinancialEventSubscriber
         }
     }
 
-    private function handleEvent(object $entity, bool $isUpdate, bool $autoFlush = true, ?\Doctrine\ORM\EntityManagerInterface $emForCompute = null): void
+    private function handleEvent(object $entity, bool $isUpdate, bool $autoFlush = true, ?EntityManagerInterface $emForCompute = null): void
     {
         if ($entity instanceof Income) {
             $this->processIncome($entity, $autoFlush, $emForCompute);
@@ -99,7 +102,7 @@ class FinancialEventSubscriber
         }
     }
 
-    private function processIncome(Income $income, bool $autoFlush, ?\Doctrine\ORM\EntityManagerInterface $emForCompute): void
+    private function processIncome(Income $income, bool $autoFlush, ?EntityManagerInterface $emForCompute): void
     {
         $financialAccount = $income->getFinancialAccount();
         $asset = $financialAccount?->getAsset();
@@ -216,7 +219,7 @@ class FinancialEventSubscriber
         return $txKey !== null && $cancelKey !== null && $txKey > $cancelKey;
     }
 
-    private function processCost(Cost $cost, bool $autoFlush, ?\Doctrine\ORM\EntityManagerInterface $emForCompute): void
+    private function processCost(Cost $cost, bool $autoFlush, ?EntityManagerInterface $emForCompute): void
     {
         $financialAccount = $cost->getFinancialAccount();
         $asset = $financialAccount?->getAsset();
@@ -247,7 +250,7 @@ class FinancialEventSubscriber
         }
     }
 
-    private function processMortgageInstallment(MortgageInstallment $installment, bool $autoFlush, ?\Doctrine\ORM\EntityManagerInterface $emForCompute): void
+    private function processMortgageInstallment(MortgageInstallment $installment, bool $autoFlush, ?EntityManagerInterface $emForCompute): void
     {
         $mortgage = $installment->getMortgage();
         if (!$mortgage) return;
@@ -279,7 +282,7 @@ class FinancialEventSubscriber
         }
     }
 
-    private function processSalaryPayment(SalaryPayment $payment, bool $autoFlush, ?\Doctrine\ORM\EntityManagerInterface $emForCompute): void
+    private function processSalaryPayment(SalaryPayment $payment, bool $autoFlush, ?EntityManagerInterface $emForCompute): void
     {
         $salary = $payment->getSalary();
         if (!$salary) return;

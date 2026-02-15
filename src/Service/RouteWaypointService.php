@@ -156,11 +156,15 @@ final class RouteWaypointService
                     $activeRestored = true;
                 }
             }
-            
-            // Se la rotta è attiva ma non abbiamo trovato il waypoint attivo (es. cambio percorso),
-            // forse dovremmo forzare il primo come attivo?
-            // Per ora, seguiamo la logica "se lo trovo bene, altrimenti niente".
-            // TODO: Gestire caso "Ships off course"
+
+            // Gestione caso "Ships off course": se la nave era attiva su un waypoint rimosso 
+            // e non abbiamo trovato una corrispondenza esatta nel nuovo percorso, reset al punto iniziale.
+            if ($route->isActive() && !$activeRestored) {
+                $first = $route->getWaypoints()->first();
+                if ($first) {
+                    $first->setActive(true);
+                }
+            }
 
             $this->enrichWaypointFromTravellerMap($waypoint);
 
