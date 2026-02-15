@@ -102,7 +102,7 @@ class FinancialAccountManager
 
         $bankRole = $this->companyManager->getRoleByCode(CompanyRole::ROLE_BANK);
         if (!$bankRole) {
-            throw new \RuntimeException('CompanyRole BANK not found in database. Run context:import.');
+            throw new RuntimeException('CompanyRole BANK not found in database. Run context:import.');
         }
 
         return $this->companyManager->findOrCreateAuto($bankName ?? 'Unknown Bank', $user, $bankRole);

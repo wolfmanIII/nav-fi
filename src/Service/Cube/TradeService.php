@@ -2,10 +2,13 @@
 
 namespace App\Service\Cube;
 
+use RuntimeException;
+
 use App\Entity\Cost;
 use App\Entity\Income;
 use App\Repository\IncomeCategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use LogicException;
 use App\Entity\LocalLaw;
 use App\Entity\Company;
 use App\Service\CompanyManager;
@@ -34,7 +37,7 @@ class TradeService
         if (!$category) {
             // Fallback o eccezione? Potremmo provare 'speculative_trade' o simili se 'TRADE' fallisce,
             // ma per ora assumiamo che TRADE esista come controparte del Cost TRADE
-            throw new \RuntimeException("Income Category 'TRADE' not found.");
+            throw new RuntimeException("Income Category 'TRADE' not found.");
         }
 
         $income = new Income();

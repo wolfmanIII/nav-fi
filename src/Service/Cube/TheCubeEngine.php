@@ -3,6 +3,7 @@
 namespace App\Service\Cube;
 
 use App\Entity\BrokerSession;
+use RuntimeException;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use App\Service\Cube\Generator\OpportunityGeneratorInterface;
 use App\Service\RouteMathHelper;
@@ -146,7 +147,7 @@ class TheCubeEngine
         }
 
         if (!$selectedGenerator) {
-            throw new \RuntimeException("No suitable generator found for type: $type");
+            throw new RuntimeException("No suitable generator found for type: $type");
         }
 
         $opp = $selectedGenerator->generate($context, $maxDist, $randomizer);

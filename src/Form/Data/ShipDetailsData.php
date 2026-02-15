@@ -3,6 +3,7 @@
 namespace App\Form\Data;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Dto\AssetDetailItem;
 
 class ShipDetailsData
 {
@@ -33,22 +34,22 @@ class ShipDetailsData
     #[Assert\Valid]
     public GenericComponentData $cargo;
 
-    /** @var \App\Dto\AssetDetailItem[] */
+    /** @var AssetDetailItem[] */
     public array $staterooms = [];
 
-    /** @var \App\Dto\AssetDetailItem[] */
+    /** @var AssetDetailItem[] */
     public array $commonAreas = [];
 
-    /** @var \App\Dto\AssetDetailItem[] */
+    /** @var AssetDetailItem[] */
     public array $weapons = [];
 
-    /** @var \App\Dto\AssetDetailItem[] */
+    /** @var AssetDetailItem[] */
     public array $systems = [];
 
-    /** @var \App\Dto\AssetDetailItem[] */
+    /** @var AssetDetailItem[] */
     public array $software = [];
 
-    /** @var \App\Dto\AssetDetailItem[] */
+    /** @var AssetDetailItem[] */
     public array $craft = [];
 
     public ?int $techLevel = null;
@@ -75,7 +76,7 @@ class ShipDetailsData
         $dto->mDrive = DriveData::fromArray($data['mDrive'] ?? [], 'rating');
         $dto->powerPlant = DriveData::fromArray($data['powerPlant'] ?? [], 'output');
         $dto->fuel = FuelData::fromArray($data['fuel'] ?? []);
-        
+
         $dto->bridge = GenericComponentData::fromArray($data['bridge'] ?? []);
         $dto->computer = GenericComponentData::fromArray($data['computer'] ?? []);
         $dto->sensors = GenericComponentData::fromArray($data['sensors'] ?? []);
@@ -83,7 +84,7 @@ class ShipDetailsData
 
         // Helper per le collezioni
         $hydrateCollection = fn(array $items) => array_map(
-            fn($item) => \App\Dto\AssetDetailItem::fromArray($item),
+            fn($item) => AssetDetailItem::fromArray($item),
             $items
         );
 
@@ -96,14 +97,14 @@ class ShipDetailsData
 
         $dto->techLevel = isset($data['techLevel']) ? (int)$data['techLevel'] : null;
         $dto->totalCost = isset($data['totalCost']) ? (float)$data['totalCost'] : null;
-        
+
         return $dto;
     }
 
     public function toArray(): array
     {
         $serializeCollection = fn(array $items) => array_map(
-            fn($item) => $item instanceof \App\Dto\AssetDetailItem ? $item->toArray() : $item,
+            fn($item) => $item instanceof AssetDetailItem ? $item->toArray() : $item,
             $items
         );
 

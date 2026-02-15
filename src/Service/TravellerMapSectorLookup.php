@@ -224,7 +224,7 @@ class TravellerMapSectorLookup
 
             // Validazione semplice: controlla se sembra un file tab
             if (!str_contains($content, 'Hex') && !str_contains($content, 'Name')) {
-                throw new \RuntimeException('Invalid sector data received');
+                throw new RuntimeException('Invalid sector data received');
             }
 
             // Pulisci vecchi file per questo settore

@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use Psr\Log\LoggerInterface;
+use InvalidArgumentException;
+use RuntimeException;
 
 class RouteOptimizationService
 {
@@ -50,7 +52,7 @@ class RouteOptimizationService
             array_column($destinations, 'sector')
         ));
 
-        $systemMap = []; 
+        $systemMap = [];
         $this->sectorCoordsMap = [];
         $this->grid = [];
         $this->pathCache = [];
@@ -62,10 +64,10 @@ class RouteOptimizationService
 
             foreach ($systems as $sys) {
                 $key = $sectorName . ':' . $sys['hex'];
-                
+
                 // Pre-calcola coordinate cubiche globali
                 $cube = $this->mathHelper->getGlobalCubeCoordinates($sys['hex'], $coords);
-                
+
                 $sys['sector'] = $sectorName;
                 $sys['cube'] = $cube;
                 $systemMap[$key] = $sys;
@@ -83,11 +85,11 @@ class RouteOptimizationService
 
         // Valida esistenza
         if (!isset($systemMap[$startKey])) {
-            throw new \InvalidArgumentException("Partenza {$startPoint['hex']} non trovata");
+            throw new InvalidArgumentException("Partenza {$startPoint['hex']} non trovata");
         }
         foreach ($destKeys as $key) {
             if (!isset($systemMap[$key])) {
-                throw new \InvalidArgumentException("Destinazione $key non trovata");
+                throw new InvalidArgumentException("Destinazione $key non trovata");
             }
         }
 
@@ -116,7 +118,7 @@ class RouteOptimizationService
         }
 
         // Converti i key di ritorno in dati strutturati
-        $finalPath = array_map(function($key) use ($systemMap) {
+        $finalPath = array_map(function ($key) use ($systemMap) {
             return [
                 'sector' => $systemMap[$key]['sector'],
                 'hex' => $systemMap[$key]['hex']
@@ -165,7 +167,7 @@ class RouteOptimizationService
         }
 
         if ($bestRoute === null) {
-            throw new \RuntimeException("Nessuna rotta valida trovata (Check jump rating or constraints)");
+            throw new RuntimeException("Nessuna rotta valida trovata (Check jump rating or constraints)");
         }
 
         return ['path' => $bestRoute, 'total_jumps' => $minTotalJumps];
@@ -185,7 +187,7 @@ class RouteOptimizationService
 
             foreach ($unvisited as $idx => $candKey) {
                 if (!isset($this->pathCache[$currentKey][$candKey])) continue;
-                
+
                 $jumps = $this->pathCache[$currentKey][$candKey]['jumps'];
                 if ($jumps < $maxJumps) {
                     $maxJumps = $jumps;
@@ -195,7 +197,7 @@ class RouteOptimizationService
             }
 
             if ($nearestKey === null) {
-                throw new \RuntimeException("Impossibile raggiungere le destinazioni rimanenti (Check jump rating or constraints)");
+                throw new RuntimeException("Impossibile raggiungere le destinazioni rimanenti (Check jump rating or constraints)");
             }
 
             $cached = $this->pathCache[$currentKey][$nearestKey];
@@ -282,7 +284,7 @@ class RouteOptimizationService
         // UWP format: X000000-0. First char is Starport.
         $starport = $system['uwp'][0] ?? 'X';
         $hasStarport = !in_array($starport, ['E', 'X']);
-        
+
         // Gas Giants (fuel scoop): gas_giants > 0
         $hasGasGiant = ($system['gas_giants'] ?? 0) > 0;
 

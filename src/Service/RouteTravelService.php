@@ -63,7 +63,7 @@ class RouteTravelService
         $targetWp = $this->getWaypointByPosition($route, $targetPosition);
 
         if (!$targetWp) {
-            throw new \LogicException("NAVIGATION ERROR: Coordinate di destinazione fuori raggio o fine rotta raggiunta.");
+            throw new LogicException("NAVIGATION ERROR: Coordinate di destinazione fuori raggio o fine rotta raggiunta.");
         }
 
         // Transito waypoint

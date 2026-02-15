@@ -23,6 +23,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use App\Entity\CompanyRole;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
 use App\Entity\Campaign;
@@ -211,7 +213,7 @@ class CostType extends AbstractType
                 'help' => 'Who are we paying? (Vendor/Entity)',
             ])
             ->add('vendorRole', EntityType::class, [
-                'class' => \App\Entity\CompanyRole::class, // Need to ensure use statement or fully qualified
+                'class' => CompanyRole::class,
                 'mapped' => false,
                 'required' => false,
                 'label' => 'Role (if new)',
@@ -255,7 +257,7 @@ class CostType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'textarea m-1 w-full', 'rows' => 3],
             ])
-            ->add('targetSector', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, [
+            ->add('targetSector', ChoiceType::class, [
                 'mapped' => false,
                 'required' => false,
                 'label' => 'Target Sector',
@@ -265,7 +267,7 @@ class CostType extends AbstractType
                     'class' => 'select select-bordered w-full bg-slate-950/50 border-slate-700',
                 ],
             ])
-            ->add('targetWorld', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, [
+            ->add('targetWorld', ChoiceType::class, [
                 'mapped' => false,
                 'required' => false,
                 'label' => 'Target World',
@@ -292,7 +294,7 @@ class CostType extends AbstractType
             $form = $event->getForm();
 
             $date = $form->get('paymentDate')->getData();
-            if ($date instanceof \App\Model\ImperialDate) {
+            if ($date instanceof ImperialDate) {
                 $cost->setPaymentDay($date->getDay());
                 $cost->setPaymentYear($date->getYear());
             }
@@ -351,7 +353,7 @@ class CostType extends AbstractType
                 $world = trim($world);
 
                 // Ridefiniamo il settore con il dato pre-impostato
-                $form->add('targetSector', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, [
+                $form->add('targetSector', ChoiceType::class, [
                     'mapped' => false,
                     'required' => false,
                     'label' => 'Target Sector',
@@ -363,7 +365,7 @@ class CostType extends AbstractType
                     ],
                 ]);
 
-                $form->add('targetWorld', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, [
+                $form->add('targetWorld', ChoiceType::class, [
                     'mapped' => false,
                     'required' => false,
                     'label' => 'Target World',

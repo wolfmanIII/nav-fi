@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
+use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: CrewRepository::class)]
 #[ORM\Index(name: 'idx_crew_user', columns: ['user_id'])]
@@ -56,7 +57,7 @@ class Crew
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $birthWorld = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::GUID)]
+    #[ORM\Column(type: Types::GUID)]
     private ?string $code = null;
 
     #[ORM\ManyToOne(inversedBy: 'crews')]
