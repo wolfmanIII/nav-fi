@@ -10,12 +10,12 @@
 *   **Framework**: Symfony 7.4 (PHP 8.2+).
 *   **Frontend**:
     *   **Core**: Twig + Symfony Asset Mapper.
-    *   **JS**: Stimulus.js (controller per `year-limit`, `tom-select`, `imperial-date`, `salary-pro-rata`).
+    *   **JS**: Stimulus.js (controller per `year_limit`, `tom_select`, `imperial_date`, `salary_pro_rata`).
     *   **CSS**: Tailwind CSS 4 + DaisyUI (Tema "Abyss", dark mode nativa).
 *   **Database**: Doctrine ORM (PostgreSQL primario).
     *   **BCMath**: Utilizzato per tutti i calcoli monetari (Cr/MCr) per evitare errori di virgola mobile.
 *   **Security**: MFA (TOTP) + OAuth (Google Login). Ownership strict via Voters e controlli di integrità a livello di Campagna. Gestione errori standardizzata tramite `\Throwable` per la cattura di runtime error fatali.
-*   **PDF Generation**: `KnpSnappyBundle` con `wkhtmltopdf` (Qt patched).
+*   **PDF Generation**: `GotenbergPdfGenerator` tramite **Gotenberg API** (conversione Chromium-based per massima fedeltà CSS).
 
 ## 2. Architettura "Financial Core" (The Ledger)
 
@@ -126,6 +126,6 @@ I payout e i costi seguono gli standard ufficiali Traveller Core.
 
 ## Appendice B: Codici di Riferimento
 ### Cost Categories
-- `PERSONAL`, `CREW_GEAR`, `SHIP_GEAR`, `SHIP_SOFTWARE`, `SHIP_MAINT`, `SHIP_REPAIR`, `MEDICAL`, `TRAVEL`, `LEGAL`, `RECRUITMENT`.
+- `PERSONAL`, `CREW_GEAR`, `ASSET_GEAR`, `ASSET_SOFTWARE`, `ASSET_MAINT`, `ASSET_REPAIR`, `ASSET_RESUPPLY`, `MEDICAL`, `TRAVEL`, `PENALTY`, `MORTGAGE_PENALTY`, `LEGAL`, `RECRUITMENT`, `TRADE`.
 ### Income Categories
 - `FREIGHT`, `PASSENGERS`, `MAIL`, `CHARTER`, `CONTRACT`, `TRADE`, `SALVAGE`, `PRIZE`, `SUBSIDY`, `SERVICES`, `INSURANCE`, `INTEREST`.
