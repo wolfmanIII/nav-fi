@@ -83,7 +83,7 @@
                                 </h2>
                             </div>
                             <div class="flex items-center gap-1">
-                                {{ tooltip.link('Inspect route', '', 'icons/search.html.twig', path('app_route_details', { id: route.id }), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400' }) }}
+                                {{ tooltip.link('Inspect route', '', 'icons/waypoint.html.twig', path('app_route_details', { id: route.id }), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400' }) }}
                                 {{ tooltip.link('Edit route', '', 'icons/action-edit.html.twig', path('app_route_edit', { id: route.id }), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400' }) }}
                                 
                                 {% if not route.active %}
