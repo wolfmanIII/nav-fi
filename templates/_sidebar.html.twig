@@ -116,7 +116,7 @@
                 </details>
             </li>
             <li>
-                {% set manual_active = current_route starts with 'app_operation' %}
+                {% set manual_active = current_route starts with 'app_operation' or current_route == 'app_docs_navigation' %}
                 <details {% if manual_active %}open{% endif %} data-controller="sidebar-module" data-action="toggle->sidebar-module#toggle">
                     <summary data-sidebar-module-target="summary" class="text-xs uppercase tracking-widest text-slate-400 hover:text-cyan-300 relative overflow-hidden">Manuals & Flows</summary>
                     <ul data-sidebar-module-target="content">
@@ -130,6 +130,12 @@
                             <a href="{{ path('app_operations_flow') }}" class="{% if current_route == 'app_operations_flow' %}text-cyan-400 font-bold{% endif %}">
                                 {% include 'icons/operations-flow.html.twig' with {'dim': '18'} %}
                                 <span>Systems Flow</span>
+                            </a>
+                        </li>
+                        <li data-sidebar-module-target="item">
+                            <a href="{{ path('app_docs_navigation') }}" class="{% if current_route == 'app_docs_navigation' %}text-cyan-400 font-bold{% endif %}">
+                                {% include 'icons/waypoint.html.twig' with {'dim': '18'} %}
+                                <span>Nav-Systems Manual</span>
                             </a>
                         </li>
                     </ul>

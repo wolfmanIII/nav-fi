@@ -54,7 +54,12 @@ export default class extends Controller {
                 // Dispatch events for map and table
                 if (data.allWaypoints) {
                     window.dispatchEvent(new CustomEvent('navfi:route-updated', { detail: { waypoints: data.allWaypoints } }));
-                    window.dispatchEvent(new CustomEvent('navfi:route-refresh', { detail: { waypoints: data.allWaypoints } }));
+                    window.dispatchEvent(new CustomEvent('navfi:route-refresh', {
+                        detail: {
+                            waypoints: data.allWaypoints,
+                            routeActive: data.routeActive
+                        }
+                    }));
                 }
 
                 this.dispatch('route-updated');
@@ -91,7 +96,12 @@ export default class extends Controller {
 
                 if (data.allWaypoints) {
                     window.dispatchEvent(new CustomEvent('navfi:route-updated', { detail: { waypoints: data.allWaypoints } }));
-                    window.dispatchEvent(new CustomEvent('navfi:route-refresh', { detail: { waypoints: data.allWaypoints } }));
+                    window.dispatchEvent(new CustomEvent('navfi:route-refresh', {
+                        detail: {
+                            waypoints: data.allWaypoints,
+                            routeActive: data.routeActive
+                        }
+                    }));
                 }
 
                 window.NavFiToast.notify('NAV-COMPUTER: Link terminated. Bookmark saved.', 'info');
@@ -156,7 +166,12 @@ export default class extends Controller {
                 // Global refresh for map and tables
                 if (data.allWaypoints) {
                     window.dispatchEvent(new CustomEvent('navfi:route-updated', { detail: { waypoints: data.allWaypoints } }));
-                    window.dispatchEvent(new CustomEvent('navfi:route-refresh', { detail: { waypoints: data.allWaypoints } }));
+                    window.dispatchEvent(new CustomEvent('navfi:route-refresh', {
+                        detail: {
+                            waypoints: data.allWaypoints,
+                            routeActive: data.routeActive
+                        }
+                    }));
                 }
 
                 window.NavFiToast.notify(`NAV-COMPUTER: ${verb} sequence complete.`, 'success');

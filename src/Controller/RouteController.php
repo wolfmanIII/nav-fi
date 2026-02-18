@@ -285,6 +285,7 @@ final class RouteController extends BaseController
 
         return new JsonResponse([
             'success' => true,
+            'routeActive' => $route->isActive(),
             'waypoint' => [
                 'id' => $waypoint->getId(),
                 'position' => $waypoint->getPosition(),
@@ -344,6 +345,7 @@ final class RouteController extends BaseController
 
         return new JsonResponse([
             'success' => true,
+            'routeActive' => $route->isActive(),
             'updatedWaypoints' => $updatedWaypoints,
             // Return FULL list for map update
             'allWaypoints' => $this->serializeWaypoints($route, $sectorLookup),
@@ -375,6 +377,7 @@ final class RouteController extends BaseController
 
             return new JsonResponse([
                 'success' => true,
+                'routeActive' => $route->isActive(),
                 'allWaypoints' => $this->serializeWaypoints($route, $sectorLookup),
                 'hasInvalidJumps' => $waypointService->hasInvalidJumps($route),
             ]);
@@ -402,8 +405,10 @@ final class RouteController extends BaseController
 
         try {
             $travelService->activate($route);
+            $em->flush();
             return new JsonResponse([
                 'success' => true,
+                'routeActive' => $route->isActive(),
                 'allWaypoints' => $this->serializeWaypoints($route, $sectorLookup)
             ]);
         } catch (Throwable $e) {
@@ -430,8 +435,10 @@ final class RouteController extends BaseController
 
         try {
             $travelService->close($route);
+            $em->flush();
             return new JsonResponse([
                 'success' => true,
+                'routeActive' => $route->isActive(),
                 'allWaypoints' => $this->serializeWaypoints($route, $sectorLookup)
             ]);
         } catch (Throwable $e) {
@@ -464,6 +471,7 @@ final class RouteController extends BaseController
 
             return new JsonResponse([
                 'success' => true,
+                'routeActive' => $route->isActive(),
                 'activeWaypointId' => $targetWp->getId(),
                 'activeWaypointHex' => $targetWp->getHex(),
                 'activeWaypointSector' => $targetWp->getSector(),
@@ -478,6 +486,46 @@ final class RouteController extends BaseController
     /**
      * Helper to serialize all waypoints for map
      */
+    #[RouteAttr('/route/{id}/set-bookmark/{waypointId}', name: 'app_route_set_bookmark', methods: ['POST'])]
+    public function setBookmark(
+        int $id,
+        int $waypointId,
+        EntityManagerInterface $em,
+        RouteWaypointService $waypointService,
+        TravellerMapSectorLookup $sectorLookup
+    ): JsonResponse {
+        $route = $em->getRepository(Route::class)->find($id);
+        if (!$route) {
+            return new JsonResponse(['error' => 'Route not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $this->denyAccessUnlessGranted('route_edit', $route);
+
+        if ($route->isActive()) {
+            return new JsonResponse(['error' => 'NAV-ERROR: Active link detected. Termination required for re-sync.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $targetWaypoint = $em->getRepository(RouteWaypoint::class)->find($waypointId);
+        if (!$targetWaypoint || $targetWaypoint->getRoute()->getId() !== $route->getId()) {
+            return new JsonResponse(['error' => 'Waypoint mismatch'], Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            foreach ($route->getWaypoints() as $wp) {
+                $wp->setActive($wp->getId() === $targetWaypoint->getId());
+            }
+            $em->flush();
+
+            return new JsonResponse([
+                'success' => true,
+                'allWaypoints' => $this->serializeWaypoints($route, $sectorLookup),
+                'hasInvalidJumps' => $waypointService->hasInvalidJumps($route),
+            ]);
+        } catch (Throwable $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
     private function serializeWaypoints(Route $route, TravellerMapSectorLookup $sectorLookup): array
     {
         $data = [];

@@ -25,12 +25,16 @@ export default class extends Controller {
         deleteUrl: String,
         lookupUrl: String,
         routeId: Number,
-        recalculateUrl: String
+        recalculateUrl: String,
+        active: Boolean
     };
 
     connect() {
         this.onRouteRefreshBound = (event) => {
             if (event.detail && event.detail.waypoints) {
+                if (event.detail.routeActive !== undefined) {
+                    this.activeValue = event.detail.routeActive;
+                }
                 this.refreshTable(event.detail.waypoints);
                 if (event.detail.hasInvalidJumps !== undefined) {
                     this.toggleInvalidJumpAlert(event.detail.hasInvalidJumps);
@@ -136,6 +140,9 @@ export default class extends Controller {
             const data = await response.json();
 
             if (data.success) {
+                if (data.routeActive !== undefined) {
+                    this.activeValue = data.routeActive;
+                }
                 this.addRowToTable(data.waypoint);
                 this.closeModal();
                 this.hideEmptyRow();
@@ -181,7 +188,8 @@ export default class extends Controller {
                 window.dispatchEvent(new CustomEvent('navfi:route-refresh', {
                     detail: {
                         waypoints: data.allWaypoints,
-                        hasInvalidJumps: data.hasInvalidJumps
+                        hasInvalidJumps: data.hasInvalidJumps,
+                        routeActive: data.routeActive
                     }
                 }));
 
@@ -217,16 +225,71 @@ export default class extends Controller {
         this.checkEmptyTable();
     }
 
+    // Imposta il waypoint come attivo (Bookmark Manual Override)
+    async setBookmark(event) {
+        const waypointId = event.currentTarget.dataset.waypointId;
+        const url = `/route/${this.routeIdValue}/set-bookmark/${waypointId}`;
+
+        try {
+            const response = await fetch(url, { method: 'POST' });
+            const data = await response.json();
+
+            if (data.success) {
+                this.refreshTable(data.allWaypoints);
+                this.toggleInvalidJumpAlert(data.hasInvalidJumps);
+
+                // Dispatch event for map update
+                window.dispatchEvent(new CustomEvent('navfi:route-updated', {
+                    detail: { waypoints: data.allWaypoints }
+                }));
+
+                window.NavFiToast.notify('NAV-COMPUTER: Manual override complete. Bookmark re-synced.', 'success');
+            } else {
+                window.NavFiToast.notify(data.error || 'Override failure', 'error');
+            }
+        } catch (e) {
+            console.error('Bookmark override failed:', e);
+            window.NavFiToast.notify('Network error', 'error');
+        }
+    }
+
     // Aggiunge riga alla tabella
     addRowToTable(wp) {
         const row = document.createElement('tr');
-        const activeClass = wp.active ? 'bg-cyan-500/10 border-cyan-500/30' : 'hover:bg-emerald-500/5 transition-colors border-slate-800/50';
-        row.className = `${activeClass} text-slate-300 border-b`;
+        const activeClass = wp.active ? 'bg-emerald-500/10 shadow-[inset_0_0_20px_rgba(16,185,129,0.1)]' : 'hover:bg-emerald-500/5';
+        row.className = `${activeClass} transition-all duration-300 text-slate-300 border-b border-slate-800/50`;
 
         // Determina classe badge per zona
         let badgeClass = 'badge-ghost text-slate-300';
         if (wp.zone === 'R') badgeClass = 'badge-error text-white';
         else if (wp.zone === 'A') badgeClass = 'badge-warning text-black';
+
+        // Colonna Sync: Pulsante se inattiva, Indicatore se attiva
+        let syncColumn = '';
+        if (!this.activeValue) {
+            syncColumn = `
+                <div class="tooltip tooltip-right" data-tip="SET_POSITION // Sync Nav-Link Cursor">
+                    <button type="button" 
+                            class="btn btn-xs btn-circle ${wp.active ? 'btn-success shadow-[0_0_10px_rgba(34,197,94,0.3)]' : 'btn-ghost text-slate-500 hover:text-emerald-400'}"
+                            data-action="route-waypoint-modal#setBookmark"
+                            data-waypoint-id="${wp.id}">
+                        ${wp.active ?
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' :
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>'
+                }
+                    </button>
+                </div>
+            `;
+        } else if (wp.active) {
+            syncColumn = `
+                <div class="flex justify-center">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                </div>
+            `;
+        }
 
         row.innerHTML = `
             <td class="text-center p-2">
@@ -242,6 +305,7 @@ export default class extends Controller {
                     </button>
                 ` : '<span class="opacity-30">—</span>'}
             </td>
+            <td class="text-center p-1">${syncColumn}</td>
             <td class="font-mono text-xs p-2 text-slate-500 text-center">${wp.position}</td>
             <td class="font-mono text-xs p-2">${wp.sector || '—'}</td>
             <td class="p-2">
@@ -249,7 +313,7 @@ export default class extends Controller {
                     ${wp.world || '—'}
                 </span>
             </td>
-            <td class="font-mono text-xs p-2 border-r border-slate-800/50 font-bold text-emerald-400">${wp.hex}</td>
+            <td class="font-mono text-xs p-2 border-r border-slate-800/50 font-bold text-emerald-400 text-center">${wp.hex}</td>
             <td class="font-mono text-xs p-2">${wp.uwp || '—'}</td>
             <td class="font-mono text-xs p-2 text-right text-emerald-300">${wp.jumpDistance || '—'}</td>
             <td class="text-center p-2">
@@ -310,6 +374,9 @@ export default class extends Controller {
             const data = await response.json();
 
             if (data.success) {
+                if (data.routeActive !== undefined) {
+                    this.activeValue = data.routeActive;
+                }
                 this.refreshTable(data.allWaypoints);
                 this.toggleInvalidJumpAlert(data.hasInvalidJumps);
 

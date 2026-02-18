@@ -25,6 +25,7 @@
          data-route-waypoint-modal-delete-url-value="{{ path('app_route_waypoint_delete', {id: route.id, waypointId: '__ID__'}) }}"
          data-route-waypoint-modal-lookup-url-value="{{ path('app_route_waypoint_lookup') }}"
          data-route-waypoint-modal-route-id-value="{{ route.id }}"
+         data-route-waypoint-modal-active-value="{{ route.active ? 'true' : 'false' }}"
          data-route-waypoint-modal-recalculate-url-value="{{ path('app_route_recalculate', {id: route.id}) }}">
         {% embed 'components/_hero_header.html.twig' with {
             icon: 'icons/routes.html.twig',
@@ -422,10 +423,11 @@
                     <thead>
                     <tr class="border-b border-slate-800">
                         <th class="bg-slate-900/50 w-12"></th>
+                        <th class="bg-slate-900/50 w-10 text-center font-orbitron text-[9px] tracking-widest text-slate-500 uppercase">Sync</th>
                         <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">#</th>
                         <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Sector</th>
                         <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">World</th>
-                        <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">Hex</th>
+                        <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50 text-center">Hex</th>
                         <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50">UWP</th>
                         <th class="font-rajdhani uppercase tracking-widest text-[11px] text-slate-400 bg-slate-900/50 text-right">Distance(pc)</th>
                         <th class="bg-slate-900/50 w-12"></th>
@@ -434,7 +436,7 @@
                     <tbody class="divide-y divide-slate-800/50" data-route-waypoint-modal-target="tableBody">
                     {% if route.waypoints|length > 0 %}
                         {% for waypoint in route.waypoints %}
-                            <tr class="transition-colors text-slate-300 {{ waypoint.active ? 'bg-cyan-900/20 shadow-[inset_0_0_20px_rgba(34,211,238,0.1)] border-l-2 border-cyan-500' : 'hover:bg-emerald-500/5' }}">
+                            <tr class="transition-all duration-300 text-slate-300 {{ waypoint.active ? 'bg-emerald-500/10 shadow-[inset_0_0_20px_rgba(16,185,129,0.1)]' : 'hover:bg-emerald-500/5' }}">
                                 <td class="text-center p-2">
                                     {% if waypoint.hex %}
                                         <button type="button"
@@ -448,6 +450,29 @@
                                         </button>
                                     {% else %}
                                         <span class="opacity-30">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center p-1">
+                                    {% if not route.active %}
+                                        <div class="tooltip tooltip-right" data-tip="SET_POSITION // Sync Nav-Link Cursor">
+                                            <button type="button" 
+                                                    class="btn btn-xs btn-circle {{ waypoint.active ? 'btn-success shadow-[0_0_10px_rgba(34,197,94,0.3)]' : 'btn-ghost text-slate-500 hover:text-emerald-400' }}"
+                                                    data-action="route-waypoint-modal#setBookmark"
+                                                    data-waypoint-id="{{ waypoint.id }}">
+                                                {% if waypoint.active %}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                                                {% else %}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                                                {% endif %}
+                                            </button>
+                                        </div>
+                                    {% elseif waypoint.active %}
+                                        <div class="flex justify-center">
+                                            <span class="relative flex h-2 w-2">
+                                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                            </span>
+                                        </div>
                                     {% endif %}
                                 </td>
                                 <td class="font-mono text-xs p-2 text-slate-500">{{ waypoint.position }}</td>
