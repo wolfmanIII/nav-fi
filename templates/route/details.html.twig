@@ -26,56 +26,85 @@
          data-route-waypoint-modal-lookup-url-value="{{ path('app_route_waypoint_lookup') }}"
          data-route-waypoint-modal-route-id-value="{{ route.id }}"
          data-route-waypoint-modal-recalculate-url-value="{{ path('app_route_recalculate', {id: route.id}) }}">
-        <div class="relative rounded-2xl bg-slate-950 border border-slate-800 shadow-lg mb-6">
-            <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
-                <div class="absolute top-0 right-0 p-4 opacity-10">
-                    {% include 'icons/routes.html.twig' with { dim: 128, class: 'text-cyan-500' } %}
+        {% embed 'components/_hero_header.html.twig' with {
+            icon: 'icons/routes.html.twig',
+            theme: 'cyan',
+            subheader: 'Route Dossier // Details',
+            title: route.name,
+            titleSuffix: '// ' ~ (route.startHex ?? 'Unknown') ~ ' → ' ~ (route.destHex ?? 'Unknown'),
+            description: route.description ?? 'Navigation data and waypoint sequence.',
+            asset: route.asset
+        } %}
+            {% block content %}
+                <div class="flex gap-2 mt-2">
+                    {% if route.avoidRedZones %}
+                        <div class="badge badge-error gap-1 text-[10px] uppercase font-bold tracking-wider text-white">
+                            {% include 'icons/shield.html.twig' with {dim: 12} %}
+                            Avoid Red Zones
+                        </div>
+                    {% endif %}
+                    {% if route.preferHighPort %}
+                        <div class="badge badge-info gap-1 text-[10px] uppercase font-bold tracking-wider text-white">
+                            {% include 'icons/starport.html.twig' with {dim: 12} %}
+                            Require Starport
+                        </div>
+                    {% endif %}
                 </div>
-            </div>
-            <div class="relative z-10 p-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-                <div>
-                     <div class="flex items-center gap-2 text-cyan-500/80 mb-1">
-                        {% include 'icons/routes.html.twig' with { dim: 16 } %}
-                        <p class="text-xs uppercase tracking-[0.3em] font-orbitron font-bold">Route Dossier // Details</p>
-                    </div>
-                    <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight flex items-center gap-3 font-orbitron">
-                        {{ route.name }}
-                        <span class="text-xs align-top opacity-50 font-mono pt-2 normal-case tracking-normal text-slate-400">
-                            // {{ route.startHex ?? 'Unknown' }} &rarr; {{ route.destHex ?? 'Unknown' }}
+            {% endblock %}
+
+            {% block badge_area %}
+                {% if route.active %}
+                    <div class="badge border-emerald-500/50 bg-emerald-500/10 gap-1.5 px-2.5 py-1.5 text-[9px] font-orbitron font-bold text-emerald-400 tracking-wider uppercase">
+                        <span class="relative flex h-1.5 w-1.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
                         </span>
-                    </h1>
-                    <p class="text-xs text-slate-500 font-mono uppercase tracking-wider mt-1">
-                        {{ route.description ?? 'Navigation data and waypoint sequence.' }}
-                    </p>
-                    <div class="flex gap-2 mt-2">
-                        {% if route.avoidRedZones %}
-                            <div class="badge badge-error gap-1 text-[10px] uppercase font-bold tracking-wider text-white">
-                                {% include 'icons/shield.html.twig' with {dim: 12} %}
-                                Avoid Red Zones
-                            </div>
-                        {% endif %}
-                        {% if route.preferHighPort %}
-                            <div class="badge badge-info gap-1 text-[10px] uppercase font-bold tracking-wider text-white">
-                                {% include 'icons/starport.html.twig' with {dim: 12} %}
-                                Require Starport
-                            </div>
-                        {% endif %}
+                        Link_Active
                     </div>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <a href="{{ path('app_route_index') }}" class="btn btn-outline btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase">
-                        {% include 'icons/back.html.twig' %}
-                    </a>
-                    <a href="{{ path('app_route_edit', { id: route.id }) }}" class="btn btn-outline btn-primary btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase">
-                       {% include 'icons/routes.html.twig' %}
-                    </a>
-                    <a href="{{ mapUrl }}" target="_blank" rel="noopener" class="btn btn-outline btn-info btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase flex items-center">
-                        {% include 'icons/travellermap.html.twig' with { dim: 16 } %}
-                        TRAVELLERMAP.COM
-                    </a>
-                </div>
-            </div>
-        </div>
+                {% endif %}
+            {% endblock %}
+
+            {% block actions %}
+                {% import '_tooltip.html.twig' as UI %}
+                {{ UI.link(
+                    'Back to Routes List',
+                    'Back',
+                    'icons/back.html.twig',
+                    path('app_route_index'),
+                    {
+                        position: 'tooltip-bottom',
+                        linkClass: 'btn btn-outline btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase border-slate-700 hover:border-slate-500'
+                    }
+                ) }}
+                
+                {{ UI.link(
+                    'Edit Route Settings',
+                    'Edit',
+                    'icons/routes.html.twig',
+                    path('app_route_edit', { id: route.id }),
+                    {
+                        position: 'tooltip-bottom',
+                        linkClass: 'btn btn-outline btn-primary btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase shadow-lg shadow-cyan-500/10'
+                    }
+                ) }}
+
+                {{ UI.link(
+                    'Open TravellerMap.com',
+                    'TravellerMap',
+                    'icons/travellermap.html.twig',
+                    mapUrl,
+                    {
+                        position: 'tooltip-bottom',
+                        showLabel: true,
+                        linkClass: 'btn btn-outline btn-info btn-sm gap-2 font-orbitron text-[10px] tracking-widest uppercase border-cyan-500/30 hover:bg-cyan-500/10',
+                        attrs: {
+                            'target': '_blank',
+                            'rel': 'noopener'
+                        }
+                    }
+                ) }}
+            {% endblock %}
+        {% endembed %}
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div class="rounded-xl border border-base-300 bg-base-200 p-4">
@@ -201,7 +230,8 @@
                      data-controller="route-travel"
                      data-route-travel-id-value="{{ route.id }}"
                      data-route-travel-active-value="{{ route.active ? 'true' : 'false' }}"
-                     data-route-travel-has-invalid-jumps-value="{{ hasInvalidJumps ? 'true' : 'false' }}">
+                     data-route-travel-has-invalid-jumps-value="{{ hasInvalidJumps ? 'true' : 'false' }}"
+                     data-route-travel-close-url-value="{{ path('app_route_close', {id: route.id}) }}">
 
                     {{ UI.button(
                         'RETRACE // Return to Previous Waypoint',
@@ -219,13 +249,32 @@
                     ) }}
 
                     <div class="tooltip tooltip-top" data-tip="INITIATE // Enable Navigation Tracking">
-                        <button class="btn btn-md btn-circle btn-outline border-cyan-500 text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.3)] transition-all duration-300 relative group"
+                        <button class="btn btn-md btn-circle btn-outline border-cyan-500 text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.3)] transition-all duration-300 relative group disabled:opacity-30 disabled:cursor-not-allowed"
                                 data-action="route-travel#togglePlay"
                                 data-route-travel-target="play"
-                                type="button">
+                                type="button"
+                                {{ route.active or hasInvalidJumps ? 'disabled' : '' }}>
                              <div class="absolute inset-0 rounded-full border border-cyan-400 opacity-0 group-hover:animate-ping"></div>
                             {% include 'icons/nav-engage.html.twig' %}
                         </button>
+                    </div>
+
+                    <div data-route-travel-target="closeButtonContainer">
+                        {{ UI.button(
+                            'DECOUPLE // Suspend Nav-Link Session',
+                            'Decouple',
+                            'icons/disconnect.html.twig',
+                            {
+                                dim: 24,
+                                position: 'tooltip-top',
+                                buttonClass: 'btn btn-md btn-circle btn-outline border-red-500 text-red-500 hover:bg-red-500/20 hover:border-red-400 shadow-[0_0_15px_rgba(239,68,68,0.2)] transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed',
+                                attrs: {
+                                    'data-action': 'route-travel#close',
+                                    'data-route-travel-target': 'close',
+                                    'disabled': route.active ? false : true
+                                }
+                            }
+                        ) }}
                     </div>
 
                     {{ UI.button(

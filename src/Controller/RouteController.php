@@ -20,6 +20,7 @@ use Symfony\Component\Routing\Attribute\Route as RouteAttr;
 use App\Entity\User;
 use App\Service\RouteTravelService;
 use App\Service\ImperialDateHelper;
+use Throwable;
 
 final class RouteController extends BaseController
 {
@@ -237,6 +238,9 @@ final class RouteController extends BaseController
             throw new NotFoundHttpException();
         }
 
+        // Verifica restrizioni operative via Voter
+        $this->denyAccessUnlessGranted('route_delete', $route);
+
         $em->remove($route);
         $em->flush();
 
@@ -374,7 +378,7 @@ final class RouteController extends BaseController
                 'allWaypoints' => $this->serializeWaypoints($route, $sectorLookup),
                 'hasInvalidJumps' => $waypointService->hasInvalidJumps($route),
             ]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
@@ -402,7 +406,35 @@ final class RouteController extends BaseController
                 'success' => true,
                 'allWaypoints' => $this->serializeWaypoints($route, $sectorLookup)
             ]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    #[RouteAttr('/route/{id}/close', name: 'app_route_close', methods: ['POST'])]
+    public function close(
+        int $id,
+        EntityManagerInterface $em,
+        RouteTravelService $travelService,
+        TravellerMapSectorLookup $sectorLookup
+    ): JsonResponse {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $route = $em->getRepository(Route::class)->findOneForUserWithWaypoints($id, $user);
+        if (!$route) {
+            return new JsonResponse(['error' => 'Route not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $travelService->close($route);
+            return new JsonResponse([
+                'success' => true,
+                'allWaypoints' => $this->serializeWaypoints($route, $sectorLookup)
+            ]);
+        } catch (Throwable $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
@@ -438,7 +470,7 @@ final class RouteController extends BaseController
                 'sessionDate' => $campaign ? $dateHelper->format($campaign->getSessionDay(), $campaign->getSessionYear()) : null,
                 'allWaypoints' => $this->serializeWaypoints($route, $sectorLookup)
             ]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }

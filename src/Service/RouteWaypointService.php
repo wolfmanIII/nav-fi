@@ -147,7 +147,7 @@ final class RouteWaypointService
             $waypoint->setHex($point['hex']);
             $waypoint->setSector($point['sector']);
             $waypoint->setPosition($position++);
-            $waypoint->setRoute($route);
+            $route->addWaypoint($waypoint);
 
             // Ripristina stato attivo se corrisponde
             if ($activeWpData && !$activeRestored) {

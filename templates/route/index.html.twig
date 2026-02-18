@@ -60,7 +60,18 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {% if routes|length > 0 %}
                 {% for route in routes %}
-                    <div class="group relative flex flex-col rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 shadow-lg transition-all hover:border-emerald-500/30 hover:shadow-emerald-500/10 hover:-translate-y-1">
+                    <div class="group relative flex flex-col rounded-xl border {{ route.active ? 'border-emerald-500/40 bg-slate-900/80 shadow-[0_0_20px_rgba(16,185,129,0.05)]' : 'border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-lg' }} p-4 transition-all hover:border-emerald-500/30 hover:-translate-y-1">
+                        
+                        {# Status Indicator Overlay #}
+                        {% if route.active %}
+                            <div class="absolute -top-2.5 right-4 z-10 flex items-center gap-2 px-3 py-1 rounded-full bg-slate-950 border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)] animate-pulse">
+                                <span class="relative flex h-2 w-2">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                </span>
+                                <span class="text-[8px] font-orbitron font-bold text-emerald-400 tracking-[0.2em] uppercase">LINK_ACTIVE</span>
+                            </div>
+                        {% endif %}
                         {# Card Header: Name & Actions #}
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center gap-2">
@@ -74,19 +85,28 @@
                             <div class="flex items-center gap-1">
                                 {{ tooltip.link('Inspect route', '', 'icons/search.html.twig', path('app_route_details', { id: route.id }), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400' }) }}
                                 {{ tooltip.link('Edit route', '', 'icons/action-edit.html.twig', path('app_route_edit', { id: route.id }), { position: 'tooltip-left', dim: 16, linkClass: 'p-2 rounded-lg hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400' }) }}
-                                {{ tooltip.link('Delete route', '', 'icons/action-trash.html.twig', path('app_route_delete', { id: route.id }), { 
-                                    position: 'tooltip-left', 
-                                    dim: 16, 
-                                    linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400',
-                                    attrs: {
-                                        'data-turbo-method': 'post',
-                                        'data-turbo-confirm': 'Are you sure you want to purge this route from the nav computer? This action cannot be undone.',
-                                        'data-confirm-title': 'Purge Route?',
-                                        'data-confirm-type': 'danger',
-                                        'data-confirm-text': 'Purge Log',
-                                        'data-confirm-cancel': 'Abort'
-                                    }
-                                }) }}
+                                
+                                {% if not route.active %}
+                                    {{ tooltip.link('Delete route', '', 'icons/action-trash.html.twig', path('app_route_delete', { id: route.id }), { 
+                                        position: 'tooltip-left', 
+                                        dim: 16, 
+                                        linkClass: 'p-2 rounded-lg hover:bg-red-500/20 text-red-400',
+                                        attrs: {
+                                            'data-turbo-method': 'post',
+                                            'data-turbo-confirm': 'Are you sure you want to purge this route from the nav computer? This action cannot be undone.',
+                                            'data-confirm-title': 'Purge Route?',
+                                            'data-confirm-type': 'danger',
+                                            'data-confirm-text': 'Purge Log',
+                                            'data-confirm-cancel': 'Abort'
+                                        }
+                                    }) }}
+                                {% else %}
+                                    <div class="tooltip tooltip-left" data-tip="NAV-SYNC ACTIVE // Purge sequence inhibited">
+                                        <div class="p-2 rounded-lg text-slate-700 cursor-not-allowed">
+                                            {% include 'icons/action-trash.html.twig' with { dim: 16 } %}
+                                        </div>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
 

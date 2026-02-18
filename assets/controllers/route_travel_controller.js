@@ -1,11 +1,12 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ['play', 'rewind', 'forward'];
+    static targets = ['play', 'rewind', 'forward', 'close', 'closeButtonContainer'];
     static values = {
         id: Number,
         active: Boolean,
-        hasInvalidJumps: Boolean
+        hasInvalidJumps: Boolean,
+        closeUrl: String
     };
 
     connect() {
@@ -64,6 +65,42 @@ export default class extends Controller {
             }
         } catch (error) {
             console.error('Nav-Fi Travel: Error activating route', error);
+            window.NavFiToast.notify('Network error', 'error');
+        }
+    }
+
+    async close() {
+        if (!this.activeValue) return;
+
+        const confirmed = await window.NavFiConfirmation.confirm({
+            title: 'TERMINATE NAV-LINK',
+            message: 'Suspend navigation tracking? Current waypoint coordinates will be preserved as travel bookmark.',
+            confirmText: 'TERMINATE',
+            type: 'warning'
+        });
+
+        if (!confirmed) return;
+
+        try {
+            const response = await fetch(this.closeUrlValue, { method: 'POST' });
+
+            if (response.ok) {
+                const data = await response.json();
+                this.activeValue = false;
+                this.updateState();
+
+                if (data.allWaypoints) {
+                    window.dispatchEvent(new CustomEvent('navfi:route-updated', { detail: { waypoints: data.allWaypoints } }));
+                    window.dispatchEvent(new CustomEvent('navfi:route-refresh', { detail: { waypoints: data.allWaypoints } }));
+                }
+
+                window.NavFiToast.notify('NAV-COMPUTER: Link terminated. Bookmark saved.', 'info');
+            } else {
+                const data = await response.json();
+                window.NavFiToast.notify(data.error || 'NAV-SYNC: Termination failure', 'error');
+            }
+        } catch (error) {
+            console.error('Nav-Fi Travel: Error closing route', error);
             window.NavFiToast.notify('Network error', 'error');
         }
     }
@@ -133,6 +170,7 @@ export default class extends Controller {
     }
 
     updateState() {
+        // Toggle Active Classes
         if (this.activeValue) {
             this.playTarget.classList.add('btn-active', 'text-emerald-400', 'border-emerald-500');
             this.playTarget.classList.remove('text-cyan-400', 'border-cyan-500');
@@ -141,17 +179,25 @@ export default class extends Controller {
             this.playTarget.classList.add('text-cyan-400', 'border-cyan-500');
         }
 
+        // Engage Button (Play): Disable if active OR has invalid jumps
+        this.playTarget.disabled = this.activeValue || this.hasInvalidJumpsValue;
+
+        // Decouple Button (Close): Disable if inactive
+        if (this.hasCloseTarget) {
+            this.closeTarget.disabled = !this.activeValue;
+        }
+
+        // Transit/Retrace Buttons: Disable if inactive OR has invalid jumps
         this.rewindTarget.disabled = !this.activeValue || this.hasInvalidJumpsValue;
         this.forwardTarget.disabled = !this.activeValue || this.hasInvalidJumpsValue;
 
+        // Visual feedback for Invalid Jumps
         if (this.hasInvalidJumpsValue) {
-            this.playTarget.disabled = true;
             this.playTarget.classList.add('opacity-50', 'cursor-not-allowed');
             this.playTarget.title = "NAV-DATA ERROR: RECALCULATION REQUIRED";
         } else {
-            this.playTarget.disabled = false;
             this.playTarget.classList.remove('opacity-50', 'cursor-not-allowed');
-            this.playTarget.title = ""; // Clear title if not disabled by invalid jumps
+            this.playTarget.title = "";
         }
     }
 }
